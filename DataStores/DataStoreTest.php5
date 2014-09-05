@@ -1,7 +1,7 @@
 <?php
   require_once("BeanDataStore.php5");
   require_once("UserDataStore.php5");
-  require_once("../User.php5");
+  require_once("../BusinessObjects/User.php5");
   testUserDataStore();
   $query_array = array();
   $col = array("customfieldvalues");
@@ -17,7 +17,7 @@
      $user =  new User();
      $user->setCompanySeq(1);
      $user->setUserName("test");
-     $user->setDateOfJoining(new DateTime());
+     $user->setCreatedOn(new DateTime());
      $user->setEmailId("baljeet@gmail.com");
      $user->setIsEnabled(true);
      $user->setCustomFieldValues("customFieldValues");

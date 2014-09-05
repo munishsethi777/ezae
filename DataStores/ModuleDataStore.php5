@@ -1,6 +1,8 @@
 <?php
-  class ModuleDataStore extends BeanDataStore{
-      
+require_once("BeanDataStore.php5");
+require_once("../BusinessObjects/Module.php5");
+ 
+class ModuleDataStore extends BeanDataStore{
     private static $moduleDataStore;
      
     public static function getInstance()

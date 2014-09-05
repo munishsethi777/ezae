@@ -1,5 +1,4 @@
 <?php
-  require_once("../User.php5");
   require_once("MainDB.php5");
      
   class BeanDataStore {  
