@@ -1,13 +1,9 @@
 <?php
 require_once("BeanDataStore.php5");
  require_once("../BusinessObjects/Company.php5");
- class CompanyDataStore{       
+ class CompanyDataStore extends BeanDataStore{       
     private static $beanDataStore ;
     private static $companyDataStore;
-    
-    public function __construct(){
-       self::$beanDataStore = new BeanDataStore();
-    }
     
     public static function getInstance()
     {
