@@ -16,7 +16,8 @@ require_once("BeanDataStore.php5");
     }
     public function findByUserName($name){
         $colValuePair = array();
-       /*'name' is columnName*/ $colValuePair["name"] = $name;
+       /*'name' is columnName*/ 
+        $colValuePair["name"] = $name;
         $ComapnyList = $this->executeConditionQuery($colValuePair);
         if(sizeof($ComapnyList) > 0){
             return $ComapnyList[0];
