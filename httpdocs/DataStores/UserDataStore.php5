@@ -1,6 +1,6 @@
 <?php
  require_once("BeanDataStore.php5");
- require_once("../BusinessObjects/User.php5"); 
+ require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/User.php5"); 
  class UserDataStore extends BeanDataStore{       
     private static $userDataStore;
      
@@ -28,10 +28,7 @@
         $colValuePair = array();
         /*'companyseq' is columnName*/ $colValuePair["companyseq"] = $companySeq;
         $userList = $this->executeConditionQuery($colValuePair);
-        if(sizeof($userList) > 0){
-            return $userList[0];
-        }
-        return null;
+        return $userList;
     }
     
       public function findCustomfield($userSeq){

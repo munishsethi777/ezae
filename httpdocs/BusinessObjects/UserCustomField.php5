@@ -1,6 +1,6 @@
 <?php
-  class CustomField{
-      private $seq,$userSeq,$name,$title,$description,$type;  
+  class UserCustomField{
+      private $seq,$companySeq,$name,$title,$description,$type;  
       
       public function setSeq($seq_){
         $this->seq = $seq_;
@@ -9,11 +9,11 @@
         return $this->seq;
       }
       
-      public function setUserSeq($UserSeq_){
-        $this->userSeq = $UserSeq_;
+      public function setCompanySeq($companySeq_){
+        $this->companySeq = $companySeq_;
       }
-      public function getUserSeq(){
-        return $this->userSeq;
+      public function getCompanySeq(){
+        return $this->companySeq;
       }
       
       public function setName($name_){
