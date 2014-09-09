@@ -9,7 +9,7 @@ require_once("BeanDataStore.php5");
     {
         if (!self::$companyDataStore)
         {
-            self::$companyDataStore = new CompanyDataStore("Company");           
+            self::$companyDataStore = new CompanyDataStore("Company",Company::$tableName);           
             return self::$companyDataStore;
         }
         return self::$companyDataStore;        

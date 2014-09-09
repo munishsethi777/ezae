@@ -1,6 +1,6 @@
 <?php
   class User{
-    
+      public static $tableNames = "user";
       private $seq,$username,$password,$emailid,$companyseq,$customfieldvalues,$createdon,$isenabled;
       
       public function setSeq($seq_){

@@ -1,6 +1,7 @@
 <?php
   
   class Module{
+      public static $tableName = "modules";
       private $seq,$companyseq,$dateofexpiry,$title,$description,$uploadedby,$createdon,$isenabled;
       
       public function setSeq($seq_){

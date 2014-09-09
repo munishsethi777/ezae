@@ -1,6 +1,7 @@
 <?php
   class Company{
       
+      public static $tableName = "companies"; 
       private $seq,$name,$description,$emailId,$mobileno,$contactperson,$createdon,$isenabled;
           
       public function setSeq($seq_){

@@ -8,7 +8,7 @@ class ActivityDataStore extends BeanDataStore{
     {
         if (!self::$activityDataStore)
         {
-            self::$activityDataStore = new ActivityDataStore("Activity");           
+            self::$activityDataStore = new ActivityDataStore("Activity",Activity::$tableName);           
             return self::$activityDataStore;
         }
         return self::$activityDataStore;        

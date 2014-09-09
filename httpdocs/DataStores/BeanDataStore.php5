@@ -6,9 +6,9 @@
     private $className ;
     private $tableName ;
      
-    public function __construct($className_){       
+    public function __construct($className_,$tableName){       
       $this->className  = $className_;
-      $this->tableName = strtolower($className_);
+      $this->tableName = $tableName;
     }
        
    public function save($object)  {
@@ -111,10 +111,14 @@
     public function executeConditionQuery($colValuePair){
        foreach ($colValuePair as $key => $value)
        {
-        if ($value != '')
-        { $query_array[] = $key.' = '. "'" . $value . "'";}
+        ///if ($value != ''){
+         $query_array[] = $key.' = '. "'" . $value . "'";//}
+       }
+        $query = "SELECT * FROM " .  $this->tableName;
+        if($query_array != undefined){
+            $query .= " WHERE " .implode(" AND ", $query_array);
         }
-      $query = "SELECT * FROM " .  $this->tableName . " WHERE " .implode(" AND ", $query_array); 
+       
       $db = MainDB::getInstance();
       $conn = $db->getConnection();      
       $sth = $conn->prepare($query);          

@@ -9,7 +9,7 @@
     {
         if (!self::$adminDataStore)
         {
-            self::$adminDataStore = new AdminDataStore("Admin");           
+            self::$adminDataStore = new AdminDataStore("Admin",Admin::$tableName);         
                 return self::$adminDataStore;
         }
         return self::$adminDataStore;        

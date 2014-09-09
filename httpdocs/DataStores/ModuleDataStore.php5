@@ -1,6 +1,6 @@
 <?php
 require_once("BeanDataStore.php5");
-require_once("../BusinessObjects/Module.php5");
+require_once($ConstantsArray['dbServerUrl']. "BusinessObjects\\Module.php5");
  
 class ModuleDataStore extends BeanDataStore{
     private static $moduleDataStore;
@@ -9,7 +9,7 @@ class ModuleDataStore extends BeanDataStore{
     {
         if (!self::$moduleDataStore)
         {
-            self::$moduleDataStore = new ModuleDataStore("Module");           
+            self::$moduleDataStore = new ModuleDataStore("Module",Module::$tableName);           
                 return self::$moduleDataStore;
         }
         return self::$moduleDataStore;        
@@ -19,10 +19,7 @@ class ModuleDataStore extends BeanDataStore{
         $colValuePair = array();
        /*'companyseq' is columnName*/ $colValuePair["companyseq"] = $companySeq;
         $moduleList = $this->executeConditionQuery($colValuePair);
-        if(sizeof($moduleList) > 0){
-            return $moduleList[0];
-        }
-        return null;
+        return $moduleList;
     }
   }
 ?>

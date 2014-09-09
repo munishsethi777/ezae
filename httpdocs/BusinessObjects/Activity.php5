@@ -1,6 +1,7 @@
 <?php
   class Activity{
       
+      public static $tableName = "activity";
       private $seq,$moduleseq,$userseq,$iscompleted,$progress,$dateofplay;
       
       public function setSeq($seq_){

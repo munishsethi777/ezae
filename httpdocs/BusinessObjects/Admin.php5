@@ -1,6 +1,6 @@
 <?php
   class Admin{
-    
+      public static $tableName = "admins";
       private $seq,$username,$password,$emailid,$companyseq,$name,$createdon,$isenabled;
 
       public function setSeq($seq_){
