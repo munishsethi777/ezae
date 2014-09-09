@@ -9,7 +9,7 @@
     {
         if (!self::$userCustomFieldsDataStore)
         {
-            self::$userCustomFieldsDataStore = new UserCustomFieldsDataStore("UserCustomField");           
+            self::$userCustomFieldsDataStore = new UserCustomFieldsDataStore("UserCustomField",UserCustomField::$tableName);           
                 return self::$userCustomFieldsDataStore;
         }
         return self::$userCustomFieldsDataStore;        
