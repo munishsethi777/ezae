@@ -1,14 +1,15 @@
 <?php
  require_once("BeanDataStore.php5");
+
  require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/User.php5"); 
+
  class UserDataStore extends BeanDataStore{       
-    private static $userDataStore;
-     
+    private static $userDataStore ;
     public static function getInstance()
     {
         if (!self::$userDataStore)
         {
-            self::$userDataStore = new UserDataStore("User");           
+            self::$userDataStore = new UserDataStore("User",User::$tableNames);    
                 return self::$userDataStore;
         }
         return self::$userDataStore;        

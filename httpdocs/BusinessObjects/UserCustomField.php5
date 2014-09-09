@@ -1,7 +1,9 @@
 <?php
+
   class UserCustomField{
+      public static $tableName = "usercustomfields";
       private $seq,$companySeq,$name,$title,$description,$type;  
-      
+
       public function setSeq($seq_){
         $this->seq = $seq_;
       }
