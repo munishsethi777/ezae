@@ -75,13 +75,16 @@
                         </div>
                     </li>
                     <li class="active">
-                        <a href="index.html"><i class="fa fa-th-large"></i> <span class="nav-label">Dashboard</span></a>
+                        <a href="index.html"><i class="fa fa-dashboard"></i> <span class="nav-label">Dashboard</span></a>
                     </li>
                     <li>
-                        <a href="layouts.html"><i class="fa fa-diamond"></i> <span class="nav-label">Modules Management</span></a>
+                        <a href="layouts.html"><i class="fa fa-angellist"></i> <span class="nav-label">LeaderBoards</span></a>
                     </li>
                     <li>
-                        <a href="layouts.html"><i class="fa fa-diamond"></i> <span class="nav-label">Learning Plans</span></a>
+                        <a href="layouts.html"><i class="fa fa-archive"></i> <span class="nav-label">Modules Management</span></a>
+                    </li>
+                    <li>
+                        <a href="layouts.html"><i class="fa fa-gift"></i> <span class="nav-label">Learning Plans</span></a>
                     </li>
                     <li>
                         <a href="#"><i class="fa fa-bar-chart-o"></i> <span class="nav-label">Reporting</span><span class="fa arrow"></span></a>
@@ -93,22 +96,22 @@
                         </ul>
                     </li>
                     <li>
-                        <a href="mailbox.html"><i class="fa fa-envelope"></i> <span class="nav-label">Learners </span><span class="label label-warning pull-right">1024</span></a>
+                        <a href="mailbox.html"><i class="fa fa-group"></i> <span class="nav-label">Learners </span><span class="label label-warning pull-right">1024</span></a>
                         <ul class="nav nav-second-level">
-                            <li><a href="mailbox.html">Import</a></li>
+                            <li><a href="importLearners.php">Import</a></li>
                             <li><a href="mail_detail.html">Add New</a></li>
                             <li><a href="mail_compose.html">Manage learners</a></li>
                             <li><a href="email_template.html">Learning Profiles</a></li>
                         </ul>
                     </li>
                     <li>
-                        <a href="widgets.html"><i class="fa fa-flask"></i> <span class="nav-label">Messages</span> </a>
+                        <a href="widgets.html"><i class="fa fa-send"></i> <span class="nav-label">Messages</span> </a>
                     </li>
                     <li>
-                        <a href="widgets.html"><i class="fa fa-flask"></i> <span class="nav-label">Notifications</span> </a>
+                        <a href="widgets.html"><i class="fa fa-bell-o"></i> <span class="nav-label">Notifications</span> </a>
                     </li>
                     <li>
-                        <a href="#"><i class="fa fa-edit"></i> <span class="nav-label">Company</span><span class="fa arrow"></span></a>
+                        <a href="#"><i class="fa fa-life-ring"></i> <span class="nav-label">Company</span><span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <li><a href="form_basic.html">Company Profile</a></li>
                             <li><a href="form_advanced.html">Administrators</a></li>

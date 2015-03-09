@@ -69,7 +69,6 @@
             $("#jqxgrid").jqxGrid(
             {
                 theme:'arctic',
-                height: '100%',
                 width: '100%',
                 source: dataAdapter,
                 filterable: true,
@@ -93,7 +92,7 @@
                     listSource.push($.parseJSON('{"label":"'+ this.text +'", "value": "'+ this.datafield +'", "checked":true}'));
                 });
             }
-            $("#jqxUserCustomFieldslistbox").jqxListBox({theme:'arctic', source: listSource, width: '100%', height: '100%',  checkboxes: true });
+            $("#jqxUserCustomFieldslistbox").jqxListBox({theme:'arctic', source: listSource, width: '100%', height: '300',  checkboxes: true });
             $("#jqxUserCustomFieldslistbox").on('checkChange', function (event) {
                 $("#jqxgrid").jqxGrid('beginupdate');
                 if (event.args.checked) {
@@ -178,7 +177,7 @@
             <div id="jqxUserCustomFieldslistbox"></div>
         </div>
         <div class="col-sm-10">
-            <div  id="jqxgrid"></div>
+            <div id="jqxgrid"></div>
         </div>
     </div>
     <div style="margin:12px;">
