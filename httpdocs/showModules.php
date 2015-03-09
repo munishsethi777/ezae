@@ -1,15 +1,10 @@
-<?
-    //require_once('IConstants.inc');
-    //require_once($ConstantsArray['dbServerUrl'] ."Managers\\UserMgr.php");
-
-?>
+<?include("adminMenu.php");?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    
 <link rel="stylesheet" href="jqwidgets/styles/jqx.base.css" type="text/css" />
-<link rel="stylesheet" href="jqwidgets/styles/jqx.office.css" type="text/css" />
-<script type="text/javascript" src="scripts/jquery-1.10.2.min.js"></script>  
+<link rel="stylesheet" href="jqwidgets/styles/jqx.arctic.css" type="text/css" />
+<script type="text/javascript" src="scripts/jquery-1.10.2.min.js"></script>
 <script type="text/javascript" src="jqwidgets/jqxcore.js"></script>
 <script type="text/javascript" src="jqwidgets/jqxbuttons.js"></script>
 <script type="text/javascript" src="jqwidgets/jqxscrollbar.js"></script>
@@ -18,38 +13,45 @@
 <script type="text/javascript" src="jqwidgets/jqxmenu.js"></script>
 <script type="text/javascript" src="jqwidgets/jqxdata.js"></script>
 <script type="text/javascript" src="jqwidgets/jqxgrid.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxgrid.sort.js"></script>    
+<script type="text/javascript" src="jqwidgets/jqxgrid.sort.js"></script>
 <script type="text/javascript" src="jqwidgets/jqxgrid.selection.js"></script>
 <script type="text/javascript" src="jqwidgets/jqxgrid.pager.js"></script>
 <script type="text/javascript" src="jqwidgets/jqxgrid.filter.js"></script>
 <script type="text/javascript">
         $(document).ready(function (){
-            var url = 'ajaxModuleMgr.php5?call=getModulesForGrid';
+            var url = 'ajaxModuleMgr.php?call=getModulesForGrid';
             $.getJSON(url, function(data){
                 loadGrid(data);
             });
         });
-        function loadGrid(data){   
+        function loadGrid(data){
             var columns = $.parseJSON(data.columns);
             var rows = $.parseJSON(data.data);
             var source =
             {
                 datatype: "json",
                 id: 'id',
-                 localData: rows
+                localData: rows,
+                datafields: [
+                    { name: 'title' },
+                    { name: 'description' },
+                    { name: 'uploadedby'},
+                    { name: 'dateofexpiry', type: 'date'},
+                    { name: 'createdon' , type: 'date'}
+                ],
             };
             var dataAdapter = new $.jqx.dataAdapter(source);
             $("#jqxgrid").jqxGrid(
             {
-                theme:'office',
+                theme:'arctic',
                 width: 1200,
                 height:600,
                 source: dataAdapter,
                 filterable: true,
                 sortable: true,
                 autoshowfiltericon: true,
-                columns: columns
-            }); 
+                columns: columns,
+            });
         }
     </script>
 </head>

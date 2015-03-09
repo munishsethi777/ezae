@@ -1,20 +1,20 @@
 <?php
  require_once("BeanDataStore.php5");
- require_once($ConstantsArray['dbServerUrl']. "BusinessObjects\\Admin.php5");
- 
- class AdminDataStore extends BeanDataStore{       
+ require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/Admin.php5");
+
+ class AdminDataStore extends BeanDataStore{
     private static $adminDataStore;
-     
+
     public static function getInstance()
     {
         if (!self::$adminDataStore)
         {
-            self::$adminDataStore = new AdminDataStore("Admin",Admin::$tableName);         
+            self::$adminDataStore = new AdminDataStore("Admin",Admin::$tableName);
                 return self::$adminDataStore;
         }
-        return self::$adminDataStore;        
+        return self::$adminDataStore;
     }
-    
+
     public function findByUserName($userName){
         $colValuePair = array();
         $colValuePair["username"] = $userName;
@@ -24,8 +24,8 @@
         }
         return null;
     }
-    
-     public function findByCompany($companySeq){
+
+    public function findByCompany($companySeq){
         $colValuePair = array();
         /*'companyseq' is columnName*/ $colValuePair["companyseq"] = $companySeq;
         $userList = $this->executeConditionQuery($colValuePair);
@@ -34,10 +34,10 @@
         }
         return null;
     }
-    
-    
-    
-       
-    
+
+
+
+
+
  }
 ?>
