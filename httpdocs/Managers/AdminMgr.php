@@ -55,6 +55,32 @@ class AdminMgr{
         return json_encode($mainJsonArray);
 
     }
+    public function getLearnersWithCustomFieldsGridJSON($companySeq){
+        $userFieldsJSON = $this->getUserAllFieldsJsonByCompany($companySeq);
+        $userFieldsArr = json_decode($userFieldsJSON);
+        unset($userFieldsArr[1]);//removing password field
+
+        $usersDS = UserDataStore::getInstance();
+        $users = $usersDS->findByCompany($companySeq);
+        $fullArr = array();
+        foreach($users as $user){
+            $arr = array();
+            $arr['id'] = $user->getSeq();
+            $arr['username'] = $user->getUserName();
+            //$arr['password'] = $dataArr['password'];
+            $arrCustomFields = ActivityMgr::getCustomValuesArray($user->getCustomFieldValues());
+            $arr = array_merge($arr,$arrCustomFields);
+            array_push($fullArr,$arr);
+        }
+
+        $mainJsonArray = array();
+        $mainJsonArray["columns"] = json_encode($userFieldsArr);
+        $mainJsonArray["data"] = json_encode($fullArr);
+        $dataFieldsArr = $this->getDataFieldsArr($userFieldsArr);//for column types
+        $mainJsonArray["datafields"] = json_encode($dataFieldsArr);;
+
+        return json_encode($mainJsonArray);
+    }
 
     //called from ajaxAdminMgr
     public function getActivitiesGridJSON($companySeq,$moduleSeq){

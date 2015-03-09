@@ -1,6 +1,6 @@
 <?php
     require_once('..\\IConstants.inc');
-    require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/User.php5");
+    require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/User.php");
     require_once($ConstantsArray['dbServerUrl'] ."DataStores/UserDataStore.php5");
 
     $userImporter = new UserImporter();
@@ -23,6 +23,7 @@
                 $pass = str_replace("/","",$pass);
                 $user->setPassword($pass);
                 $user->setCompanySeq(1);
+                $user->setAdminSeq(1);
                 $user->setCreatedOn(new DateTime());
                 $user->setIsEnabled(true);
                 $customVal = "";
@@ -35,7 +36,7 @@
                     $customVal .= $fieldName .":". $val .";";
                 }
                 $user->setCustomFieldValues($customVal);
-                //$userDataStore->save($user);
+                $userDataStore->save($user);
 
             }
         }

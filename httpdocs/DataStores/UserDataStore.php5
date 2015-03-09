@@ -26,7 +26,8 @@
 
      public function findByCompany($companySeq){
         $colValuePair = array();
-        /*'companyseq' is columnName*/ $colValuePair["companyseq"] = $companySeq;
+        /*'companyseq' is columnName*/
+        $colValuePair["companyseq"] = $companySeq;
         $userList = self::executeConditionQuery($colValuePair);
         return $userList;
     }

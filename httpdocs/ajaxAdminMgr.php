@@ -7,11 +7,19 @@
   require_once($ConstantsArray['dbServerUrl'] ."Utils/SessionUtil.php5");
 
   $call = $_GET["call"];
+  //New API for learnersManagement
+  if($call == "getLearnersForGrid"){
+    $sessionUtil = SessionUtil::getInstance();
+    $companySeq = $sessionUtil->getAdminLoggedInCompanySeq();
+    $adminMgr = AdminMgr::getInstance();
+    $gridJSON = $adminMgr->getLearnersWithCustomFieldsGridJSON($companySeq);
+    echo $gridJSON;
+    return;
+  }
 
   if($call == "getUsersForGrid"){
     $sessionUtil = SessionUtil::getInstance();
     $companySeq = $sessionUtil->getAdminLoggedInCompanySeq();
-    //$companySeq = 1;
     $adminMgr = AdminMgr::getInstance();
     $userGridJSON = $adminMgr->getUsersGridJSON($companySeq);
     echo $userGridJSON;
@@ -21,7 +29,6 @@
   if($call == "getModulesJson"){
     $sessionUtil = SessionUtil::getInstance();
     $companySeq = $sessionUtil->getAdminLoggedInCompanySeq();
-    //$companySeq = 1;
     $adminMgr = AdminMgr::getInstance();
     $modulesJson = $adminMgr->getModulesDataJson($companySeq);
     echo $modulesJson;
@@ -31,7 +38,6 @@
   if($call == "getCustomFieldsJson"){
     $sessionUtil = SessionUtil::getInstance();
     $companySeq = $sessionUtil->getAdminLoggedInCompanySeq();
-    //$companySeq = 1;
     $adminMgr = AdminMgr::getInstance();
     $customFieldsJSON =  $adminMgr->getCustomFieldsJSON($companySeq);
     echo $customFieldsJSON;
@@ -41,7 +47,6 @@
   if($call == "getActivityDataForGrid"){
     $sessionUtil = SessionUtil::getInstance();
     $companySeq = $sessionUtil->getAdminLoggedInCompanySeq();
-    //$companySeq = 1;
     $moduleSeq = $_GET['moduleSeq'];
     $adminMgr = AdminMgr::getInstance();
     $activityGridJSON = $adminMgr->getActivitiesGridJSON($companySeq,$moduleSeq);

@@ -74,7 +74,7 @@
                             EZAE
                         </div>
                     </li>
-                    <li class="active">
+                    <li>
                         <a href="index.html"><i class="fa fa-dashboard"></i> <span class="nav-label">Dashboard</span></a>
                     </li>
                      <li>
@@ -98,12 +98,12 @@
                             <li><a href="analytics.php">Progress Analytics</a></li>
                         </ul>
                     </li>
-                    <li>
+                    <li class="active">
                         <a href="mailbox.html"><i class="fa fa-group"></i> <span class="nav-label">Learners </span><span class="label label-warning pull-right">1024</span></a>
                         <ul class="nav nav-second-level">
                             <li><a href="importLearners.php">Import</a></li>
                             <li><a href="mail_detail.html">Add New</a></li>
-                            <li><a href="mail_compose.html">Manage learners</a></li>
+                            <li class="active"><a href="manageLearners.php">Manage learners</a></li>
                             <li><a href="email_template.html">Learning Profiles</a></li>
                         </ul>
                     </li>

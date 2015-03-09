@@ -1,9 +1,9 @@
 <?php
 require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/UserCustomfield.php");
 require_once($ConstantsArray['dbServerUrl'] ."DataStores/BeanDataStore.php5");
-require_once($ConstantsArray['dbServerUrl']. "Utils/SessionUtil.php5");           
-  class CustomFieldMgr{      
-  private static $customFieldMgr; 
+require_once($ConstantsArray['dbServerUrl']. "Utils/SessionUtil.php5");
+  class CustomFieldMgr{
+  private static $customFieldMgr;
     public static function getInstance()
     {
         if (!self::$customFieldMgr)
@@ -12,29 +12,8 @@ require_once($ConstantsArray['dbServerUrl']. "Utils/SessionUtil.php5");
         }
         return self::$customFieldMgr;
     }
-    
-    public function saveCustomFields($isAjaxCall = false){
-        $id = $_GET["id"];
-        $fieldName = $_GET["fieldName"];
-        $fieldType = $_GET["fieldType"];
-        $required = $_GET["isRequired"];
-        $isRequired = false;
-        if($required == "on"){
-             $isRequired  =  true;
-        } 
-        $customField = new UserCustomField();
-        $customField->setSeq(intval($id));
-        $customField->setName($fieldName);
-        $customField->setTitle($fieldName);
-        $customField->setFieldType($fieldType);
-        $customField->setIsRequired($isRequired);
-       // $sessionUtil = SessionUtil::getInstance();
-       // $companySeq = $sessionUtil->getAdminLoggedInCompanySeq();
-       // $adminSeq =  $sessionUtil->getAdminLoggedInSeq();       
-        $customField->setCompanySeq(10);//Todo;
-        $customField->setAdminSeq(2);
-        $customField->setDescription("test");
-        
+
+    public function saveCustomFields($customField,$isAjaxCall = false){
         $dataStore = new BeanDataStore(get_class($customField),UserCustomField::$tableName);
         $id = $dataStore->save($customField);
         if($isAjaxCall){
@@ -48,10 +27,10 @@ require_once($ConstantsArray['dbServerUrl']. "Utils/SessionUtil.php5");
         $row["name"] = $customField->getName();
         $row["type"] = $customField->getFieldType();
         $row["required"] = $customField->getIsRequired();
-        return json_encode($row);   
+        return json_encode($row);
     }
     function getCustomfieldsForGrid(){
-        $fullArr = array();          
+        $fullArr = array();
         $dataStore  = new BeanDataStore("UserCustomField",UserCustomField::$tableName);
         $customFields = $dataStore->findAll();
         foreach($customFields as $customField){
@@ -66,12 +45,11 @@ require_once($ConstantsArray['dbServerUrl']. "Utils/SessionUtil.php5");
         }
         return json_encode($fullArr);
     }
-    
-    public function deleteCustomFields(){
-        $ids = $_GET["ids"];
+
+    public function deleteCustomFields($ids){
         $dataStore = new BeanDataStore("UserCustomField",UserCustomField::$tableName);
         $dataStore->deleteInList($ids);
-        return json_encode($row);   
+        return json_encode($row);
     }
   }
 ?>
