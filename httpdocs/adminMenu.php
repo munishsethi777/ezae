@@ -77,6 +77,9 @@
                     <li class="active">
                         <a href="index.html"><i class="fa fa-dashboard"></i> <span class="nav-label">Dashboard</span></a>
                     </li>
+                     <li>
+                        <a href="Customfields.php"><i class="fa fa-th-large"></i> <span class="nav-label">CustomFields</span></a>
+                    </li>
                     <li>
                         <a href="layouts.html"><i class="fa fa-angellist"></i> <span class="nav-label">LeaderBoards</span></a>
                     </li>

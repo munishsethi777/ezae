@@ -1,6 +1,6 @@
 <?php
  require_once("BeanDataStore.php5");
- require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/Activity.php5");
+ require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/Activity.php");
  require_once($ConstantsArray['dbServerUrl']. "Managers/AdminMgr.php");
 class ActivityDataStore extends BeanDataStore{
    private static $activityDataStore;

@@ -95,6 +95,14 @@ class SessionUtil{
                 return $arr[2];
         }
     }
+    
+    public function getAdminLoggedInSeq(){
+      if($_SESSION[self::$LOGIN_MODE] == "admin" &&
+            $_SESSION[self::$ADMIN_LOGGED_IN] != null){
+                $arr = $_SESSION[self::$ADMIN_LOGGED_IN];
+                return $arr[0];
+        }
+    }
 
     public function destroySession(){
         $boolAdmin = self::isSessionAdmin();

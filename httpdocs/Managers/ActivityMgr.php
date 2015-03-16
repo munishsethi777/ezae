@@ -1,5 +1,5 @@
 <?php
-require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/Activity.php5");
+require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/Activity.php");
 require_once($ConstantsArray['dbServerUrl']. "DataStores/ActivityDataStore.php5");
 
 class ActivityMgr{

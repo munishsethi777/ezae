@@ -10,7 +10,14 @@
       $this->className  = $className_;
       $this->tableName = $tableName;
     }
-
+   private function key_implode($array) {
+         $fields = array();
+         foreach($array as $field => $val) {
+           $fields[] = "$field = '$val'";
+        }
+        $result = join(', ', $fields) ;
+        return $result;
+    } 
    public function save($object)  {
       $columnValueArry[] = array();
       $columns[] = array();
@@ -31,9 +38,9 @@
                     if($value instanceof DateTime){
                         $value = $value->format('Y-m-d H:i:s');
                     }
-                    if($id > 0){
-                        $value = "'" . $value . "'";
-                    }
+                    //if($id > 0){
+//                        $value = "'" . $value . "'";
+//                    }
                     $columnValueArry[$column] =  $value;
                 }
             }
@@ -47,10 +54,11 @@
        $conn = $db_New->getConnection();
 
        if($id > 0){ //update query
-          $r=array();
-          array_walk($columnValueArry, create_function('$b, $c', 'global $r; $r[]="$c=$b";'));
-          $columnString = implode(', ', $r);
-          $SQL = "Update ". strtolower($this->className) ." set " . $columnString . " where seq = " . $id;
+          //$r=array();
+         // array_walk($columnValueArry, create_function('$b, $c', 'global $r; $r[]="$c=$b";'));
+          //$columnString = implode(', ', $r);
+          $columnString = $this->key_implode($columnValueArry);
+          $SQL = "Update ". strtolower($this->tableName) ." set " . $columnString . " where seq = " . $id;
           $STH = $conn->prepare($SQL);
           $STH->execute();
        }else{//Insert Query
@@ -59,10 +67,14 @@
          $SQL = "INSERT INTO ". $this->tableName ." ({$columnString}) VALUES ({$valueString})";
          $STH = $conn->prepare($SQL);
          $STH->execute(array_values($columnValueArry));
-       }
-
+         
+       }       
        $error = $STH->errorInfo();
-       return $error;
+       if($error[2] <> ""){
+            throw new Exception($error[2]);
+       } 
+       $id = $conn->lastInsertId(); 
+       return $id;
     }
     function findAll(){
        $db = MainDB::getInstance();
@@ -98,14 +110,21 @@
         $error = $stmt->errorInfo();
         throwException($error);
     }
-
+    public function deleteInList($ids){
+        $db = MainDB::getInstance();
+        $conn = $db->getConnection();
+        $stmt = $conn->prepare("delete from " . $this->tableName . " where seq in(" . $ids . ")");
+        $stmt->execute();
+        $error = $stmt->errorInfo();
+        $this->throwException($error);
+    }
     public function deleteAll(){
         $db = MainDB::getInstance();
         $conn = $db->getConnection();
         $stmt = $conn->prepare("delete from " . $this->tableName);
         $stmt->execute();
         $error = $stmt->errorInfo();
-        throwException($error);
+        $this->throwException($error);
     }
 
     public function executeConditionQuery($colValuePair){
@@ -166,7 +185,7 @@
     }
 
 
-    function throwException($error){
+   private function throwException($error){
        if($error[2] <> ""){
               throw new Exception($error[2]);
        }

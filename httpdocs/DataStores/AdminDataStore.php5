@@ -1,6 +1,6 @@
 <?php
  require_once("BeanDataStore.php5");
- require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/Admin.php5");
+ require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/Admin.php");
 
  class AdminDataStore extends BeanDataStore{
     private static $adminDataStore;

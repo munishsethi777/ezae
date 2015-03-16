@@ -1,6 +1,6 @@
 <?php
 require_once("BeanDataStore.php5");
-require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/Module.php5");
+require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/Module.php");
 
 class ModuleDataStore extends BeanDataStore{
     private static $moduleDataStore;
@@ -19,7 +19,8 @@ class ModuleDataStore extends BeanDataStore{
         $colValuePair = array();
        /*'companyseq' is columnName*/
         $colValuePair["companyseq"] = $companySeq;
-        $moduleList = $this->executeConditionQuery($colValuePair);
+        //$moduleList = $this->executeConditionQuery($colValuePair);
+        $moduleList = $this->findAll();
         return $moduleList;
     }
   }

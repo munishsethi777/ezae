@@ -1,6 +1,6 @@
 <?php
  require_once("BeanDataStore.php5");
- require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/UserCustomField.php5");
+ require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/UserCustomField.php");
   
  class UserCustomFieldsDataStore extends BeanDataStore{       
     private static $userCustomFieldsDataStore;

@@ -1,9 +1,10 @@
 <?php
-require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/Module.php5");
+require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/Module.php");
 require_once($ConstantsArray['dbServerUrl']. "DataStores/AdminDataStore.php5");
 require_once($ConstantsArray['dbServerUrl']. "DataStores/ModuleDataStore.php5");
 require_once($ConstantsArray['dbServerUrl']. "DataStores/ActivityDataStore.php5");
 require_once($ConstantsArray['dbServerUrl']. "Utils/ChartsUtil.php");
+require_once($ConstantsArray['dbServerUrl']. "Utils/SessionUtil.php5");
 class AdminMgr{
 
     private static $adminMgr;
@@ -232,6 +233,31 @@ class AdminMgr{
             array_push($dataFieldsArr,$arr);
         }
         return $dataFieldsArr;
+    }
+    
+    public function saveAdmin($companySeq){
+            $name = $_GET["adminName"];
+            $password = $_GET["adminPassword"];
+            $email = $_GET["adminEmail"];
+            $mobile = $_GET["adminMobile"];
+            $admin = new Admin();
+            $admin->setCompanySeq($companySeq);
+            $admin->setName($name);
+            $admin->setUserName($name);
+            $admin->setPassword($password); //TODO -- save encrypted password -- 
+            $admin->setEmailId($email);
+            $admin->setMobileNo($mobile);
+            $admin->setIsSuper(false);
+            $admin->setIsEnabled(true);
+            $admin->setLastModifiedOn(new DateTime());
+            $admin->setCreatedOn(new DateTime());            
+            $ADS = AdminDataStore::getInstance();
+            $id = $ADS->save($admin);
+            if($id > 0){
+                $sessionUtil = SessionUtil::getInstance();
+                $sessionUtil->createAdminSession($admin);
+            }          
+       
     }
 
 }
