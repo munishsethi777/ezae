@@ -132,6 +132,14 @@ class AdminMgr{
 
     }
 
+    //called from ajaxAdminMgr for registration form settings
+    public function getLearnersFieldsForFormManagementHtml($companySeq){
+        $customFields =  $this->getCustomFieldsByCompany($companySeq);
+        $customFieldsFormGenerator = CustomFieldsFormGenerator::getInstance();
+        $html = $customFieldsFormGenerator->getDivsForFormSettings($customFields);
+        return $html;
+
+    }
     //called from ajaxAdminMgr for compartive data
     public function getModuleComparativeForChart($moduleSeq, $customFieldName, $criteria,$companySeq){
         $chartsUtil = ChartsUtil::getInstance();
@@ -260,7 +268,7 @@ class AdminMgr{
         }
         return $dataFieldsArr;
     }
-    
+
     public function saveAdmin($companySeq){
             $name = $_GET["adminName"];
             $password = $_GET["adminPassword"];
@@ -270,20 +278,20 @@ class AdminMgr{
             $admin->setCompanySeq($companySeq);
             $admin->setName($name);
             $admin->setUserName($name);
-            $admin->setPassword($password); //TODO -- save encrypted password -- 
+            $admin->setPassword($password); //TODO -- save encrypted password --
             $admin->setEmailId($email);
             $admin->setMobileNo($mobile);
             $admin->setIsSuper(false);
             $admin->setIsEnabled(true);
             $admin->setLastModifiedOn(new DateTime());
-            $admin->setCreatedOn(new DateTime());            
+            $admin->setCreatedOn(new DateTime());
             $ADS = AdminDataStore::getInstance();
             $id = $ADS->save($admin);
             if($id > 0){
                 $sessionUtil = SessionUtil::getInstance();
                 $sessionUtil->createAdminSession($admin);
-            }          
-       
+            }
+
     }
 
 }
