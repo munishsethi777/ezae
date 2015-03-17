@@ -17,7 +17,8 @@ require_once($ConstantsArray['dbServerUrl']. "Utils/SessionUtil.php5");
         $dataStore = new BeanDataStore(get_class($customField),UserCustomField::$tableName);
         $id = $dataStore->save($customField);
         if($isAjaxCall){
-              return $this->getSavedRowArray($customField);
+            $customField->setSeq($id);
+            return $this->getSavedRowArray($customField);
         }
         return $id;
     }
