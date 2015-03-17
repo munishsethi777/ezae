@@ -4,14 +4,14 @@
         <link href="styles/animate.css" rel="stylesheet">
         <link href="styles/style.css" rel="stylesheet">
         <link href="styles/custom.css" rel="stylesheet">
-        <link href="styles/toastr.min.css" rel="stylesheet">      
+        <link href="styles/toastr.min.css" rel="stylesheet">
         <script type="text/javascript" src="scripts/jquery-1.10.2.min.js"></script>
         <script src="scripts/bootstrap.min.js"></script>
-        <script src="scripts/jquery.metisMenu.js"></script>          
+        <script src="scripts/jquery.metisMenu.js"></script>
          <script src="scripts/example.js"></script>
 
-         <script src="scripts/bootbox.js"></script> 
-            
+         <script src="scripts/bootbox.js"></script>
+
          <!-- Custom and plugin javascript -->
         <script src="scripts/inspinia.js"></script>
         <script src="scripts/toastr.min.js"></script>
@@ -33,8 +33,10 @@
         <script type="text/javascript" src="jqwidgets/jqxgrid.columnsresize.js"></script>
         <script type="text/javascript" src="jqwidgets/jqxdata.export.js"></script>
         <script type="text/javascript" src="jqwidgets/jqxgrid.export.js"></script>
-        <script type="text/javascript" src="jqwidgets/jqxvalidator.js"></script>    
+        <script type="text/javascript" src="jqwidgets/jqxvalidator.js"></script>
         <script type="text/javascript" src="jqwidgets/jqxcombobox.js"></script>
+        <script type="text/javascript" src="jqwidgets/jqxcheckbox.js"></script>
+
         <script>
             $(function() {
                toastr.options = {
@@ -53,4 +55,4 @@
                       "hideMethod": "fadeOut"
                       }
             });
-         </script> 
+         </script>
