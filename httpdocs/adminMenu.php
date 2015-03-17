@@ -104,7 +104,7 @@
                             <li><a href="importLearners.php">Import</a></li>
                             <li class="active"><a href="manageLearners.php">Manage learners</a></li>
                             <li><a href="manageRegistrationForm.php">Registration Form</a></li>
-                            <li><a href="email_template.html">Learning Profiles</a></li>
+                            <li><a href="manageLearnerProfiles.php">Learner's Profiles</a></li>
                         </ul>
                     </li>
                     <li>
