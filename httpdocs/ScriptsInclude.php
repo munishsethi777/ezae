@@ -1,22 +1,16 @@
-        <script type="text/javascript" src="scripts/jquery-1.10.2.min.js"></script>   
         <link href="styles/bootstrap.min.css" rel="stylesheet">
         <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
         <link href="styles/animate.css" rel="stylesheet">
         <link href="styles/style.css" rel="stylesheet">
         <link href="styles/custom.css" rel="stylesheet">
-
         <link href="styles/toastr.min.css" rel="stylesheet">
-        <script type="text/javascript" src="scripts/jquery-1.10.2.min.js"></script>
+        <link href="styles/plugins/steps/jquery.steps.css" rel="stylesheet">
+        <link href="styles/toastr.min.css" rel="stylesheet">
+        
+        <script type="text/javascript" src="scripts/jquery-1.10.2.min.js"></script>     
         <script src="scripts/bootstrap.min.js"></script>
         <script src="scripts/jquery.metisMenu.js"></script>
-         <script src="scripts/example.js"></script>
-
-         <script src="scripts/bootbox.js"></script>
-
-
-        <link href="styles/plugins/steps/jquery.steps.css" rel="stylesheet">
-        <link href="styles/toastr.min.css" rel="stylesheet">      
-        
+        <script src="scripts/bootbox.js"></script>       
         <script src="scripts/bootstrap.min.js"></script>
         <script src="scripts/jquery.metisMenu.js"></script>          
          <script src="scripts/example.js"></script> 
