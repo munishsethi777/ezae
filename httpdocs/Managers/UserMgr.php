@@ -1,6 +1,8 @@
 <?php
-    require_once($ConstantsArray['dbServerUrl']. "DataStores/UserDataStore.php5");
-    require_once($ConstantsArray['dbServerUrl']. "DataStores/UserCustomFieldsDataStore.php5");
+set_include_path(get_include_path() . PATH_SEPARATOR . '../../../Classes/');    
+require_once($ConstantsArray['dbServerUrl']. "DataStores/UserDataStore.php5");
+require_once($ConstantsArray['dbServerUrl']. "DataStores/UserCustomFieldsDataStore.php5");
+include $ConstantsArray['dbServerUrl'] . '//PHPExcel/IOFactory.php';
 
 class UserMgr{
 
@@ -28,10 +30,104 @@ class UserMgr{
         }
         return null;
     }
-
-
-
-
+    
+    //Import Learners
+    public function importLearners($file){
+        //$inputFileName = 'sampleData/Users.xlsx';
+        $inputFileName = $file['tmp_name'];
+        //echo 'Loading file ',pathinfo($inputFileName,PATHINFO_BASENAME),' using IOFactory to identify the format<br />';
+        $objPHPExcel = PHPExcel_IOFactory::load($inputFileName);
+       // echo '<hr />';
+        $sheetData = $objPHPExcel->getActiveSheet()->toArray(null,true,true,true);
+        return $sheetData;
+    }
+    
+    public function getLearnersFieldGridData($sheetData){
+        $firstRow = $sheetData[1];
+        $i = 1;        
+        $dataFieldArr = array();
+        $columnsArr = array();
+        $fieldNameRow = array();
+        $fieldTypeRow = array(); 
+        $rows = array();
+        foreach ($firstRow as $key => $value) {
+            $fieldName =  "field" . $i;
+            $dataFields = array();
+            $dataFields['name'] = $fieldName;
+            $dataFields['type'] = "string";
+            array_push($dataFieldArr,$dataFields);
+            
+            
+            $col = array();
+            $col['text'] = "Field " . $i;
+            $col['datafield'] = $fieldName;
+            $col['width'] = 250;
+            $col['columntype'] = "template";
+            $col['createeditor'] = "createGridEditor";
+            $col['initeditor'] = "initGridEditor"; 
+            $col['geteditorvalue'] = "gridEditorValue";
+            array_push($columnsArr,$col);
+            
+            $fieldNameRow[$fieldName] =  $value;
+            $fieldTypeRow[$fieldName] =   "text"; 
+            $i++;
+        }
+        array_push($rows,$fieldNameRow);
+        array_push($rows,$fieldTypeRow);
+         
+        $mainJsonArray = array();
+        $mainJsonArray["columns"] = $columnsArr;
+        $mainJsonArray["rows"] = $rows;
+        $mainJsonArray["dataFields"] = $dataFieldArr;
+        $mainJsonArray["fieldNames"] = $fieldNameRow;
+        $mainJsonArray["fieldTypes"] = $fieldTypeRow;
+        return json_encode($mainJsonArray);
+    } 
+    private function getDataFieldsAndColumns($row){
+        $fullArr = array();
+        $colArr = array();
+        $dataFieldArr = array();
+        foreach ($row as $key => $value) {
+            $dataFields = array();
+            $dataFields['name'] = $value;
+            $dataFields['type'] = "string";
+            array_push($dataFieldArr,$dataFields);
+            
+            $col = array();
+            $col['text'] = $value;
+            $col['datafield'] = $value;
+            $col['width'] = 250;
+            array_push($colArr,$col);  
+        }
+        array_push($fullArr,$dataFieldArr);
+        array_push($fullArr,$colArr);
+        return $fullArr;
+    } 
+    public function getLearnersDataForGrid($sheetData){
+        $rows = array();                
+        $learnersArr =  $sheetData;
+        $fieldRow = $learnersArr[1]; 
+        $dataFieldAndColArr = $this->getDataFieldsAndColumns($fieldRow);
+        $dataFields = $dataFieldAndColArr[0];
+        $columns = $dataFieldAndColArr[1];
+        unset($learnersArr[1]);  //Remove fields Row
+        foreach($learnersArr as $row){
+            $i = 0;
+            
+            $col = array();            
+            foreach ($row as $key => $value){                
+                $rowData[$dataFields[$i]['name']] = $value;
+                $i++;                
+            }
+            array_push($rows,$rowData);
+        }
+        $mainJsonArray = array();
+        $mainJsonArray["dataFields"] = $dataFields;       
+        $mainJsonArray["columns"] = $columns;
+        $mainJsonArray["rows"] = $rows;
+        return json_encode($mainJsonArray);
+    }
+      
 
 }
 

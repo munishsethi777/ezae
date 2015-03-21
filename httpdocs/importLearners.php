@@ -1,86 +1,106 @@
 <?include("sessioncheck.php");?>
-<!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Administration - Easy Assessment Engine</title>
-<script src="scripts/jquery-2.1.1.js"></script>
-<link rel="stylesheet" href="jqwidgets/styles/jqx.base.css" type="text/css" />
-<link rel="stylesheet" href="jqwidgets/styles/jqx.arctic.css" type="text/css" />
-<script type="text/javascript" src="jqwidgets/jqxcore.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxbuttons.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxscrollbar.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxlistbox.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxdropdownlist.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxmenu.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxdata.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxgrid.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxgrid.edit.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxgrid.sort.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxgrid.selection.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxgrid.pager.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxgrid.filter.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxlistbox.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxcombobox.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxdraw.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxchart.core.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxnumberinput.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxinput.js"></script>
-
-
-<link href="styles/plugins/iCheck/custom.css" rel="stylesheet">
-<link href="styles/plugins/steps/jquery.steps.css" rel="stylesheet">
-<!-- Steps -->
-<script src="scripts/plugins/staps/jquery.steps.min.js"></script>
-
-<!-- Jquery Validate -->
-<script src="scripts/plugins/validate/jquery.validate.min.js"></script>
-<!-- iCheck -->
-<script src="scripts/plugins/iCheck/icheck.min.js"></script>
+<?include "ScriptsInclude.php"?> 
 <script type="text/javascript">
         $(document).ready(function (){
             $("#wizard").steps();
+
             $('.i-checks').iCheck({
                 checkboxClass: 'icheckbox_square-green',
                 radioClass: 'iradio_square-green',
             });
 
-            createFieldsGrid();
-            createDataGrid();
+            //Start----Import Learner button-------   
 
+             $("#importButton").click(function(e){
+                    importLearners(e,this);
+             });
+             $('#matchingform').jqxValidator({
+                hintType: 'label',
+                animationDuration: 0,
+                rules: [
+                 { 
+                 input: '#uSelect', message: 'User Name is required!', action: 'keyup, blur', 
+                       rule: function (select){
+                                return validate("uSelect");
+                       }                  
+                 },
+                 { 
+                 input: '#pSelect', message: 'Password is required!', action: 'keyup, blur', 
+                       rule: function (select){
+                                return validate("pSelect");
+                       }                  
+                 }
+                ]
+             });
+             function validate(input){
+                    index = document.getElementById(input).selectedIndex;
+                    if(index > 0){
+                        return true;
+                    }
+                   return false;
+             }
+            $("#saveButton").click(function(e){
+                var validationResult = function (isValid){
+                   if (isValid) {
+                        saveImportedData(e,this);
+                    }
+                }
+               $('#matchingform').jqxValidator('validate', validationResult);
+       
+            });
+            
+            $("#matchingform").on('validationSuccess', function () {
+                $("#createCompanyForm-iframe").fadeIn('fast');
+            }); 
+             
         });
-        function createFieldsGrid(){
+         
+        function importLearners(e,btn){
+            $("#errorDiv").hide();
+            $("#msgDiv").hide();            
+            e.preventDefault();
+            var l = Ladda.create(btn);
+            l.start();            
+             $('#importLearnerForm').ajaxSubmit(function( data ){
+                  l.stop();
+                  var obj = $.parseJSON(data);
+                  var message = obj.message;
+                   if(obj.success == 1){
+                       var fieldGridData = $.parseJSON(obj.fieldGridData);
+                       createFieldsGrid(fieldGridData);
+                       var data = $.parseJSON(obj.data);
+                       createDataGrid(data);
+                       populatedFields();
+                        //$("#wizard").steps("setStep", 2); 
+                       toastr.success(message);
+                   } else{
+                       toastr.error(message,"Import Failed");  
+                   }             
+                 
+             })             
+        }
+        
+        function createFieldsGrid(fieldGridData){
             // prepare the data
-            var data = {};
-            var row = {};
-            row["field1"] = "1";
-            row["field2"] = "2";
-            row["field3"] = "3";
-            row["field4"] = "4";
-            row["field5"] = "5";
-            data[0] = row;
+            // fieldNamesRow = fieldGridData.rows;
+             var data = {};           
+             data = fieldGridData.rows;
 
-            var row = {};
-            row["field1"] = "Text";
-            row["field2"] = "Text";
-            row["field3"] = "Text";
-            row["field4"] = "Text";
-            row["field5"] = "Text";
-            data[1] = row;
-
+            //fieldTypeRow = fieldGridData.fieldTypes;
+            //var row = fieldTypeRow;
+//            data[1] = fieldTypeRow;
+            dataFields = fieldGridData.dataFields;   
             var source =
             {
                 localdata: data,
-                datatype: "local",
-                datafields:
-                [
-                    { name: 'field1', type: 'string' },
-                    { name: 'field2', type: 'string' },
-                    { name: 'field3', type: 'string' },
-                    { name: 'field4', type: 'string' },
-                    { name: 'field5', type: 'string' }
-                ],
+                datatype: "json",                
+                datafields:dataFields,
             };
             var dataAdapter = new $.jqx.dataAdapter(source);
             var createGridEditor = function(row, cellValue, editor, cellText, width, height)
@@ -123,13 +143,8 @@
                 showheader:true,
                 editable: true,
                 selectionmode: 'singlecell',
-                columns: [
-                  { text: 'Field 1', datafield: 'field1', width: 250, columntype: 'template', createeditor: createGridEditor,  initeditor: initGridEditor,geteditorvalue: gridEditorValue },
-                  { text: 'Field 2', datafield: 'field2', width: 250, columntype: 'template', createeditor: createGridEditor,  initeditor: initGridEditor,geteditorvalue: gridEditorValue },
-                  { text: 'Field 3', datafield: 'field3', width: 250, columntype: 'template', createeditor: createGridEditor,  initeditor: initGridEditor,geteditorvalue: gridEditorValue },
-                  { text: 'Field 4', datafield: 'field4', width: 250, columntype: 'template', createeditor: createGridEditor,  initeditor: initGridEditor,geteditorvalue: gridEditorValue},
-                  { text: 'Field 5', datafield: 'field5', width: 250, columntype: 'template', createeditor: createGridEditor,  initeditor: initGridEditor,geteditorvalue: gridEditorValue}
-                ],ready: function () {
+                columns: fieldGridData.columns,
+                ready: function () {
                     $("body").mousemove(function () {
                         var scrolling = $("#learnersFieldsGrid").jqxGrid("scrolling");
                         if (scrolling.horizontal == true) {
@@ -141,55 +156,18 @@
                     });
                 }
             });
+            
         }
-        function createDataGrid(){
+        function createDataGrid(gridData){
             // prepare the data
+            
             var data = {};
-            var firstNames =
-            [
-                "Andrew", "Nancy", "Shelley", "Regina", "Yoshi", "Antoni", "Mayumi", "Ian", "Peter", "Lars", "Petra", "Martin", "Sven", "Elio", "Beate", "Cheryl", "Michael", "Guylene"
-            ];
-            var lastNames =
-            [
-                "Fuller", "Davolio", "Burke", "Murphy", "Nagase", "Saavedra", "Ohno", "Devling", "Wilson", "Peterson", "Winkler", "Bein", "Petersen", "Rossi", "Vileid", "Saylor", "Bjorn", "Nodier"
-            ];
-            var productNames =
-            [
-                "Black Tea", "Green Tea", "Caffe Espresso", "Doubleshot Espresso", "Caffe Latte", "White Chocolate Mocha", "Cramel Latte", "Caffe Americano", "Cappuccino", "Espresso Truffle", "Espresso con Panna", "Peppermint Mocha Twist"
-            ];
-            var priceValues =
-            [
-                "2.25", "1.5", "3.0", "3.3", "4.5", "3.6", "3.8", "2.5", "5.0", "1.75", "3.25", "4.0"
-            ];
-            var generaterow = function (i) {
-                var row = {};
-                var productindex = Math.floor(Math.random() * productNames.length);
-                var price = parseFloat(priceValues[productindex]);
-                var quantity = 1 + Math.round(Math.random() * 10);
-                row["firstname"] = firstNames[Math.floor(Math.random() * firstNames.length)];
-                row["lastname"] = lastNames[Math.floor(Math.random() * lastNames.length)];
-                row["productname"] = productNames[productindex];
-                row["price"] = price;
-                row["quantity"] = quantity;
-                row["total"] = price * quantity;
-                return row;
-            }
-            for (var i = 0; i < 10; i++) {
-                var row = generaterow(i);
-                data[i] = row;
-            }
+            data = gridData.rows
             var source =
             {
                 localdata: data,
-                datatype: "local",
-                datafields:
-                [
-                    { name: 'firstname', type: 'string' },
-                    { name: 'lastname', type: 'string' },
-                    { name: 'productname', type: 'string' },
-                    { name: 'quantity', type: 'number' },
-                    { name: 'price', type: 'number' }
-                ],
+                datatype: "json",
+                datafields: gridData.dataFields,
                 pagesize: 6
             };
             var dataAdapter = new $.jqx.dataAdapter(source);
@@ -202,13 +180,8 @@
                 source: dataAdapter,
                 showtoolbar: false,
                 showheader:false,
-                columns: [
-                  { text: 'First Name', datafield: 'firstname', width: 250 },
-                  { text: 'Last Name', datafield: 'lastname', width: 250 },
-                  { text: 'Product', datafield: 'productname', width: 250 },
-                  { text: 'Quantity', datafield: 'quantity', width: 250, cellsalign: 'right' },
-                  { text: 'Price', datafield: 'price', width: 250, cellsalign: 'right' }
-                ],ready: function () {
+                columns: gridData.columns 
+                ,ready: function () {
                     $("body").mousemove(function () {
                         var scrolling = $("#learnersDataGrid").jqxGrid("scrolling");
                         if (scrolling.horizontal == true) {
@@ -219,6 +192,30 @@
                     });
                 }
             });
+            
+        }
+        function populatedFields(){
+            var row = $('#learnersFieldsGrid').jqxGrid('getrowdata', 0);
+            var options = "<option value=''>Select Field</option>"; 
+            $.each(row, function(key, value) {
+                if(value != 0){ 
+                    options += "<option value='" + value + "'>" + value + "</option>";
+                }
+               $("#uSelect").html(options);
+               $("#pSelect").html(options);
+               $("#eSelect").html(options);    
+           })            
+        }
+        function saveImportedData(){
+            $matchingFormData = $("#matchingform").serializeArray();
+            var fieldRows = $("#learnersFieldsGrid").jqxGrid('getrows');
+            var fieldData = JSON.stringify(fieldRows);
+            var dataRows = $("#learnersDataGrid").jqxGrid('getrows');   
+            var data = JSON.stringify(dataRows);
+            var url = "Actions/CustomFieldAction.php?call=saveImportedFields&fieldData=" + fieldData + "&data=" + data;
+            $.get(url,$matchingFormData,function( data ){
+                showResponseDiv(data);                                  
+            }); 
         }
 </script>
 <style type="text/css">
@@ -261,7 +258,8 @@
 
                             <h2>Select and Import File</h2>
                             <div class="row">
-                                <form method="get" class="form-horizontal wizard-big">
+                                <form method="post" id="importLearnerForm" action="Actions/LearnerAction.php" enctype= "multipart/form-data" class="form-horizontal wizard-big">
+                                <input type="hidden" value="importLearners" name="call">
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">Select File Type</label>
                                     <div class="col-sm-8">
@@ -281,8 +279,13 @@
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">Select File</label>
                                     <div class="col-sm-8">
-                                        <input type="file" name="file" id="inputImage" >
+                                        <input type="file" name="fileUpload" id="fileUpload">
                                     </div>
+                                </div>
+                                <div class="col-sm-8">
+                                    <button class="btn btn-primary ladda-button" data-style="expand-right" id="importButton" type="button">
+                                        <span class="ladda-label">Import</span>
+                                    </button>
                                 </div>
                                 </form>
                             </div>
@@ -303,36 +306,31 @@
                             <h2>Match Basic fields</h2>
                             <p>From the imported data, what fields would you like to treat as username, password and email ids of learners.</p>
                             <div class="row">
-                                <form method="get" class="form-horizontal wizard-big">
+                                <form id="matchingform" class="form-horizontal wizard-big">    
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">Username</label>
                                         <div class="col-sm-4">
-                                            <select class="form-control m-b" name="account">
-                                                <option value="">Select Field</option>
-                                                <option value="fullName">Full Name</option>
-                                                <option value="employeeCode">Employee Code</option>
+                                            <select class="form-control m-b" name="userName" id="uSelect">
                                             </select>
                                         </div>
 
                                         <label class="col-sm-2 control-label">Prefixed with</label>
                                         <div class="col-sm-4">
-                                            <input id="userName" name="userName" type="text" class="form-control required">
+                                            <input id="userNamePrefix" name="userNamePrefix" type="text" class="form-control required">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">Password</label>
                                         <div class="col-sm-4">
-                                            <select class="form-control m-b" name="account">
-                                                <option value="">Select Field</option>
-                                                <option value="fullName">Full Name</option>
-                                                <option value="employeeCode">Employee Code</option>
+                                            <select class="form-control m-b" name="password" id="pSelect">
+                                               
                                             </select>
                                         </div>
 
                                         <label class="col-sm-2 control-label">OR</label>
                                         <div class="col-sm-4">
                                             <div class="checkbox i-checks">
-                                                <label style="padding-left:0px"><input type="checkbox" value=""><i></i> Generate random passwords</label>
+                                                <label style="padding-left:0px"><input type="checkbox" id="randomPassword" name="randomPassword"><i></i> Generate random passwords</label>
                                             </div>
                                         </div>
                                     </div>
@@ -340,16 +338,21 @@
                                         <label class="col-sm-2 control-label">Email Id</label>
                                         <div class="col-sm-4">
                                             <div class="checkbox i-checks">
-                                                 <select class="form-control m-b" name="account">
-                                                    <option value="">Select Field</option>
-                                                    <option value="fullName">Full Name</option>
-                                                    <option value="employeeCode">Employee Code</option>
+                                                 <select class="form-control m-b" name="emailId" id="eSelect">
+                                                    
                                                 </select>
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="col-sm-8">
+                                        <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveButton" type="button">
+                                            <span class="ladda-label">Save Imported Data</span>
+                                        </button>
+                                    </div>                                     
                                 </form>
                             </div>
+                            <div id="msgDiv" class="alert alert-success alert-dismissable" style="display:none;"></div>
+                            <div id="errorDiv" class="alert alert-danger alert-dismissable" style="display:none;"></div> 
                         </div>
                     </div>
 

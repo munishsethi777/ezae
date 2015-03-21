@@ -75,4 +75,18 @@
                       "hideMethod": "fadeOut"
                       }
             });
+            function showResponseDiv(data){
+                var obj = $.parseJSON(data);
+                var message = obj.message;
+                var statusDiv = '<button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>';
+                statusDiv += obj.message;
+                if(obj.success == 1){
+                    $("#msgDiv").show();
+                    $("#msgDiv").html(statusDiv)
+
+                }else{
+                    $("#errorDiv").show();
+                    $("#errorDiv").html(statusDiv)
+                }                                  
+            }
          </script>

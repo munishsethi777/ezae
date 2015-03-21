@@ -1,6 +1,7 @@
 <?php
 require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/UserCustomfield.php");
 require_once($ConstantsArray['dbServerUrl'] ."DataStores/BeanDataStore.php5");
+require_once($ConstantsArray['dbServerUrl'] ."DataStores/UserCustomFieldsDataStore.php5");
 require_once($ConstantsArray['dbServerUrl']. "Utils/SessionUtil.php5");
   class CustomFieldMgr{
   private static $customFieldMgr;
@@ -29,11 +30,12 @@ require_once($ConstantsArray['dbServerUrl']. "Utils/SessionUtil.php5");
         $row["required"] = $customField->getIsRequired();
         return json_encode($row);
     }
-    function getCustomfieldsForGrid(){
+    function getCustomfieldsForGrid($companySeq){
         $fullArr = array();
-        $dataStore  = new BeanDataStore("UserCustomField",UserCustomField::$tableName);
-        $customFields = $dataStore->findAll();
-        foreach($customFields as $customField){
+        $dataStore  = UserCustomFieldsDataStore::getInstance();
+        //$cFields = $dataStore->findByCompany($companySeq);
+        $cFields = $dataStore->findAll();
+        foreach($cFields as $customField){
             $field = new UserCustomField();
             $field = $customField;
             $arr = array();
