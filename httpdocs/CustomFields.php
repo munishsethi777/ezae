@@ -16,12 +16,13 @@
                ]
         });
 
-        $("#saveButton").click(function () {
+        $("#saveButton").click(function (e) {
              $("#errorDiv").hide();
              $("#msgDiv").hide();
+             var btn  = this;
             var validationResult = function (isValid) {
                 if (isValid) {
-                    submitCreate();
+                    submitCreate(e,btn);
                 }
             }
             $('#customFieldForm').jqxValidator('validate', validationResult);
@@ -30,7 +31,10 @@
             $("#createCompanyForm-iframe").fadeIn('fast');
         });
     })
-    function submitCreate(){
+    function submitCreate(e,btn){
+         e.preventDefault();
+         var l = Ladda.create(btn);
+         l.start();
         $formData = $("#customFieldForm").serializeArray();
             $.get( "Actions/CustomFieldAction.php?call=saveCustomField", $formData,function( data ){
                 if(data != ""){
@@ -49,7 +53,7 @@
                        }else{
                          $("#jqxgrid").jqxGrid('addrow', null, dataRow);
                        }
-
+                       l.stop();
                    }else{
                        $("#errorDiv").show();
                        $("#errorDiv").html(statusDiv)
@@ -236,9 +240,10 @@
                                                         <label> <input name="isRequired" id="isRequired" type="checkbox" class="i-checks"> Required </label>
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
-                                                        <button class="btn btn-primary" id="saveButton" type="button"><strong>Save</strong></button>
-
+                                                        <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>                                                        
+                                                        <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveButton" type="button">
+                                                            <span class="ladda-label">Save</span>
+                                                        </button>
                                                     </div>
                                                 </form>
                                             </div>

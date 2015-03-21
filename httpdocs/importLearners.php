@@ -35,6 +35,9 @@
                        rule: function (select){
                                 return validate("pSelect");
                        }                  
+                 },
+                 {
+                 input: '#userNamePrefix', message: 'Prefix is required!', action: 'keyup, blur', rule:'required'
                  }
                 ]
              });
@@ -46,9 +49,10 @@
                    return false;
              }
             $("#saveButton").click(function(e){
+                var btn = this;
                 var validationResult = function (isValid){
                    if (isValid) {
-                        saveImportedData(e,this);
+                        saveImportedData(e,btn);
                     }
                 }
                $('#matchingform').jqxValidator('validate', validationResult);
@@ -206,7 +210,10 @@
                $("#eSelect").html(options);    
            })            
         }
-        function saveImportedData(){
+        function saveImportedData(e,btn){
+            e.preventDefault();
+            var l = Ladda.create(btn);
+            l.start();
             $matchingFormData = $("#matchingform").serializeArray();
             var fieldRows = $("#learnersFieldsGrid").jqxGrid('getrows');
             var fieldData = JSON.stringify(fieldRows);
@@ -214,7 +221,8 @@
             var data = JSON.stringify(dataRows);
             var url = "Actions/CustomFieldAction.php?call=saveImportedFields&fieldData=" + fieldData + "&data=" + data;
             $.get(url,$matchingFormData,function( data ){
-                showResponseDiv(data);                                  
+                showResponseDiv(data);
+                l.stop();                                  
             }); 
         }
 </script>
@@ -345,15 +353,16 @@
                                         </div>
                                     </div>
                                     <div class="col-sm-8">
-                                        <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveButton" type="button">
-                                            <span class="ladda-label">Save Imported Data</span>
-                                        </button>
+                                    <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveButton" type="button">
+                                        <span class="ladda-label">Save Imported Data</span>
+                                    </button>
                                     </div>                                     
                                 </form>
-                            </div>
-                            <div id="msgDiv" class="alert alert-success alert-dismissable" style="display:none;"></div>
-                            <div id="errorDiv" class="alert alert-danger alert-dismissable" style="display:none;"></div> 
+                            </div> 
+                             <div id="msgDiv" class="alert alert-success alert-dismissable" style="display:none;"></div>
+                             <div id="errorDiv" class="alert alert-danger alert-dismissable" style="display:none;"></div>                            
                         </div>
+                       
                     </div>
 
                 </div>
