@@ -18,10 +18,10 @@
                        ]
             });
             //$('#loginButton').jqxButton({ width: 100, height: 25 });
-            $("#createButton").click(function () {
+            $("#createButton").click(function (e) {
                 var validationResult = function (isValid) {
                     if (isValid) {
-                        submitCreate();
+                        submitCreate(e,btn);
                     }
                 }
                 $('#createCompanyForm').jqxValidator('validate', validationResult);
@@ -31,7 +31,9 @@
             });
         });
 
-        function submitCreate(){
+        function submitCreate(e,btn){
+            var l = Ladda.create(btn);
+            l.start();
             $formData = $("#createCompanyForm").serializeArray();
                 $.get( "Actions/CompanyAction.php?call=saveCompany", $formData,function( data ){
                     if(data != ""){
@@ -42,7 +44,7 @@
                              toastr.error(obj.message,'Failed');
                          }
                     }
-                });
+                }).always(function() { l.stop(); }); 
         }
     </script>
 </head>
@@ -138,7 +140,8 @@
                             </div>
                             <div class="form-group">
                                 <div class="col-sm-offset-3 col-sm-9">
-                                    <input type="button" id = "createButton" class="btn btn-primary block full-width m-b" value="Create"/>
+                                    <button class="btn btn-primary full-width ladda-button" data-style="expand-right" id="createButton" type="button">
+                                    <span class="ladda-label">Save</span></button>  
                                 </div>
                             </div>
                         </form>
