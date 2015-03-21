@@ -26,7 +26,7 @@ require_once($ConstantsArray['dbServerUrl']. "Utils/SessionUtil.php5");
     private function getSavedRowArray($customField){
         $row = array();
         $row["id"] = $customField->getSeq();
-        $row["name"] = $customField->getName();
+        $row["name"] = $customField->getTitle();
         $row["type"] = $customField->getFieldType();
         $row["required"] = $customField->getIsRequired();
         return json_encode($row);

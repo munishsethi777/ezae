@@ -21,8 +21,12 @@
         $userNameField = $_GET["userName"];
         $passwordField = $_GET["password"]; 
         $emailField = $_GET["emailId"]; 
-        $prefix = $_GET["userNamePrefix"]; 
-        $randomPassword =$_GET["randomPassword"];
+        $prefix = $_GET["userNamePrefix"];
+        $randomPassword = "off";
+        if(isset($_GET["randomPassword"])){
+           $randomPassword =$_GET["randomPassword"];      
+        }
+        
         $isRandomPassword = $randomPassword == "on";
         
         $fieldData = $_GET["fieldData"];
@@ -51,15 +55,16 @@
         $id = $_GET["id"];
         $fieldName = $_GET["fieldName"];
         $fieldType = $_GET["fieldType"];
-        $required = $_GET["isRequired"];
-        $isRequired = false;
-        if($required == "on"){
-             $isRequired  =  true;
+        $required = "off";
+        if(isset($_GET["isRequired"])){
+            $required = $_GET["isRequired"];  
         }
+        $isRequired = $required == "on" ? 1 : 0; 
         $customField = new UserCustomField();
         $customField->setSeq(intval($id));
-        $customField->setName($fieldName);
         $customField->setTitle($fieldName);
+        $name =  str_replace(" ","_",trim($fieldName));
+        $customField->setName($name);        
         $customField->setFieldType($fieldType);
         $customField->setIsRequired($isRequired);        
         $adminSeq =  $sessionUtil->getAdminLoggedInSeq();
@@ -175,19 +180,26 @@
          return $msg;  
      }
      
+     function createCustomFieldObj($name,$type,$companySeq,$adminSeq) {
+        $customField = new UserCustomField();
+        $title = $name;
+        $customField->setTitle($title);
+        $name =  str_replace(" ","_",trim($name)); 
+        $customField->setName($name);
+        $customField->setFieldType($type);
+        $customField->setIsRequired(0); 
+        $customField->setCompanySeq($companySeq);
+        $customField->setAdminSeq($adminSeq);
+        return  $customField;
+     }
+     
      function saveFieldRowsData($fieldData,$companySeq,$adminSeq){
          $names = $fieldData[0];
          $types = $fieldData[1];
          unset($names["uid"]);
          unset($types["uid"]);
          foreach($names as  $key => $value){
-            $customField = new UserCustomField();
-            $customField->setName($names[$key]);
-            $customField->setTitle($names[$key]);
-            $customField->setFieldType($types[$key]);
-            $customField->setIsRequired(true); 
-            $customField->setCompanySeq($companySeq);
-            $customField->setAdminSeq($adminSeq);
+            $customField = createCustomFieldObj($names[$key],$types[$key],$companySeq,$adminSeq);
             try{
                 $customFieldMgr = CustomFieldMgr ::getInstance();
                 $id = $customFieldMgr->saveCustomFields($customField);
@@ -200,7 +212,7 @@
      function saveUserRowsData($data,$userNameField,$passwordField,$emailId,$prefix,$isRandom,$companySeq,$adminSeq){
         $userDataStore = UserDataStore::getInstance();
         foreach($data as  $key => $value){
-            $userName = $value[$userNameField] . $prefix;
+            $userName = $prefix . $value[$userNameField];
             $email = $value[$emailId];
             $password = "";
             if(!$isRandom){
