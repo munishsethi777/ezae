@@ -2845,7 +2845,7 @@ video {
   #page-wrapper {
     position: inherit;
     margin: 0 0 0 240px;
-    min-height: 1000px;
+    min-height: 768px;
   }
 }
 .title-action {
@@ -4938,7 +4938,7 @@ body.skin-3 {
   #page-wrapper {
     position: inherit;
     margin: 0 0 0 220px;
-    min-height: 1200px;
+    min-height: 768px;
   }
   .navbar-static-side {
     z-index: 101;

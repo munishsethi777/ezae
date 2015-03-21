@@ -5,6 +5,8 @@
   require_once($ConstantsArray['dbServerUrl'] ."Managers/ActivityMgr.php");
   require_once($ConstantsArray['dbServerUrl'] ."Managers/ModuleMgr.php5");
   require_once($ConstantsArray['dbServerUrl'] ."Utils/SessionUtil.php5");
+  require_once($ConstantsArray['dbServerUrl'] ."Utils/CustomFieldsFormGenerator.php");
+
 
   $call = $_GET["call"];
   //New API for learnersManagement
@@ -15,6 +17,22 @@
     $gridJSON = $adminMgr->getLearnersWithCustomFieldsGridJSON($companySeq);
     echo $gridJSON;
     return;
+  }
+
+  if($call == "getLearnersCustomFieldForm"){
+      $sessionUtil = SessionUtil::getInstance();
+      $companySeq = $sessionUtil->getAdminLoggedInCompanySeq();
+      $customFieldsFormGenerator = CustomFieldsFormGenerator::getInstance();
+      $html = $customFieldsFormGenerator->getFormHtmlForCompany($companySeq);
+      echo $html;
+  }
+
+  if($call == "getLearnersFieldsForFormManagement"){
+      $sessionUtil = SessionUtil::getInstance();
+      $companySeq = $sessionUtil->getAdminLoggedInCompanySeq();
+      $adminMgr = AdminMgr::getInstance();
+      $html =  $adminMgr->getLearnersFieldsForFormManagementHtml($companySeq);
+      echo $html;
   }
 
   if($call == "getUsersForGrid"){
