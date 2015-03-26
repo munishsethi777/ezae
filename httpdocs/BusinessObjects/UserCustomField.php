@@ -2,8 +2,8 @@
 
   class UserCustomField{
       public static $tableName = "usercustomfields";
-      private $seq,$companyseq,$name,$title,$description,$fieldtype,$adminseq,$isrequired;
-
+      private $seq,$companyseq,$name,$title,$fieldtype,$adminseq;
+ 
       public function setSeq($seq_){
         $this->seq = $seq_;
       }
@@ -32,13 +32,7 @@
           return $this->title;
       }
 
-      public function setDescription($description_){
-        $this->description = $description_;
-      }
-      public function getDescription(){
-        return $this->description;
-      }
-
+      
       public function setFieldType($type_){
         $this->fieldtype = $type_;
       }
@@ -53,13 +47,6 @@
 
       public function getAdminSeq(){
          return $this->adminseq;
-      }
-      
-      public function setIsRequired($isRequired_){
-         $this->isrequired = $isRequired_;
-      }
-      public function getIsRequired(){
-         return $this->isrequired;
       }
 
   }

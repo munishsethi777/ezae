@@ -7,14 +7,33 @@
 <title>Administration - Easy Assessment Engine</title>
 <?include "ScriptsInclude.php"?> 
 <script type="text/javascript">
+		 var FIELD_NAME_MESSAGE = "Invalid Field Name in "
+		 var DUPLICATE_FIELD_NAME_MESSAGE = "Duplicate Field Name : - "
+		 var FIELD_GRID_ID = "#learnersFieldsGrid";
+		 
         $(document).ready(function (){
-            $("#wizard").steps();
-
-            $('.i-checks').iCheck({
+           
+            $("#wform").steps({
+                bodyTag: "div",
+                onStepChanging: function (event, currentIndex, newIndex)
+                {
+                    // Always allow going backward even if the current step contains invalid fields!
+                    
+                    if (currentIndex < newIndex && currentIndex == 1)
+					{
+                        return validateFieldNames();
+                    }else{
+						return true;
+					}
+                }
+			}); 
+	   
+			$('.i-checks').iCheck({
                 checkboxClass: 'icheckbox_square-green',
                 radioClass: 'iradio_square-green',
             });
-
+            showFirstRowContainChk();
+			
             //Start----Import Learner button-------   
 
              $("#importButton").click(function(e){
@@ -64,7 +83,19 @@
             }); 
              
         });
-         
+        
+        function showFirstRowContainChk(){
+            url = "Actions/CustomFieldAction.php?call=isCustomFieldsExists"
+            $.get(url,function(data){
+                 var result = $.parseJSON(data);
+                 if(result.isExist == 1){
+                    $("#firstRowChk").hide();    
+                 }else{
+                     $("#firstRowChk").show();   
+                 }                
+            });                  
+        } 
+        
         function importLearners(e,btn){
             $("#errorDiv").hide();
             $("#msgDiv").hide();            
@@ -89,10 +120,12 @@
                  
              })             
         }
-        
+       
         function createFieldsGrid(fieldGridData){
             // prepare the data
             // fieldNamesRow = fieldGridData.rows;
+			
+			
              var data = {};           
              data = fieldGridData.rows;
 
@@ -116,6 +149,7 @@
                     editor.jqxDropDownList({autoDropDownHeight: true,  width: width, height: height, source: ['Text', 'Numeric', 'Date', 'Yes/No']});
                 }
             }
+			
             var initGridEditor = function (row, cellvalue, editor, celltext, pressedkey) {
                 if(row == 0){
                     var inputField = editor.find('input');
@@ -156,12 +190,34 @@
                             var position = $('#learnersFieldsGrid').jqxGrid('scrollposition');
                             $('#learnersDataGrid').jqxGrid('scrollposition');
                             $('#learnersDataGrid').jqxGrid('scrolloffset', position.top,position.left);
+							
                         };
-                    });
-                }
+                    });	
+					populateFieldDropDown();					
+                 }
             });
-            
         }
+		
+        function populateFieldDropDown(){
+			var columns = $("#learnersFieldsGrid").jqxGrid("columns").records;			
+			var createEditor = function(row, cellValue, editor, cellText, width, height)
+            {
+              	url = "Actions/CustomFieldAction.php?call=getCustomFieldNames";
+				$.get(url,function(data){
+					var obj = $.parseJSON(data);
+					if(obj.names.length > 0){
+						editor.jqxDropDownList({autoDropDownHeight: true,  width: width, height: height, source: obj.names});
+					}else{
+						editor.find('input').val();
+					}					
+				});
+            }
+			$.each(columns, function(key, value){
+				$('#learnersFieldsGrid').jqxGrid('setcolumnproperty', value.datafield, 'createeditor', createEditor);
+			});
+			
+		}
+		
         function createDataGrid(gridData){
             // prepare the data
             
@@ -221,13 +277,39 @@
             var data = JSON.stringify(dataRows);
             var url = "Actions/CustomFieldAction.php?call=saveImportedFields&fieldData=" + fieldData + "&data=" + data;
             $.get(url,$matchingFormData,function( data ){
-                showResponseDiv(data);
+                showResponseDiv(data,"mainDiv");
                 l.stop();                                  
             }); 
         }
+        function validateFieldNames(){
+            var row = $('#learnersFieldsGrid').jqxGrid('getrowdata', 0);
+			var flag = true;
+			var temp = [];
+			var hasDup = [];
+			delete row['uid'];
+            $.each(row, function(key, value){
+				if(value == "" || value == "{FieldName}"){
+					flag = false;
+					toastr.error(FIELD_NAME_MESSAGE + key + ".","Field Name Error");
+					return false;
+				}else{
+					if($.inArray(value, temp) === -1) {
+				        temp.push(value);
+				    }else{
+						
+						hasDup.push(value);
+				    }
+				}
+			});
+			if(hasDup.length > 0){
+				flag = false;
+				toastr.error(DUPLICATE_FIELD_NAME_MESSAGE + hasDup,"Field Name Error");
+			}
+			return flag;
+        }
 </script>
 <style type="text/css">
-#wizard .content{
+#wForm .content{
     height:500px;
 }
 </style>
@@ -260,7 +342,7 @@
                     <h5>Create Learners Database</h5>
                 </div>
                 <div class="ibox-content">
-                    <div id="wizard">
+                    <div id="wform" action="#" class="wizard-big">
                         <h1>First Step</h1>
                         <div class="step-content">
 
@@ -276,11 +358,13 @@
 
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group" id="firstRowChk" style="display: none;">
                                     <label class="col-sm-2 control-label">Field Labels</label>
                                     <div class="col-sm-8">
                                         <div class="checkbox i-checks">
-                                            <label style="padding-left:0px"><input type="checkbox" value=""><i></i> First row contains field names </label>
+                                            <label style="padding-left:0px">
+                                                <input type="checkbox" id="isfirstRowField" name="isfirstRowField"><i></i> First row contains field names 
+                                            </label>
                                         </div>
                                     </div>
                                 </div>
@@ -300,17 +384,21 @@
                         </div>
 
                         <h1>Second Step</h1>
-                        <div class="step-content">
+                        <div class="step-content" >
                             <h2>Manage Imported Data</h2>
                             <p>Please set Field names, Type and if is required. Also have a look at imported data from file.</p>
                             <div class="row">
-                                <div id="learnersFieldsGrid"></div>
-                                <div id="learnersDataGrid"></div>
+                             <form id="gridForm" action="#" class="wizard-big">
+                                <fieldset>  
+                                    <div id="learnersFieldsGrid"></div>
+                                    <div id="learnersDataGrid"></div>
+                                </fieldset>
+                             </form>
                             </div>
                         </div>
 
                         <h1>Third Step</h1>
-                        <div class="step-content">
+                        <div class="step-content maindiv">
                             <h2>Match Basic fields</h2>
                             <p>From the imported data, what fields would you like to treat as username, password and email ids of learners.</p>
                             <div class="row">
@@ -359,8 +447,7 @@
                                     </div>                                     
                                 </form>
                             </div> 
-                             <div id="msgDiv" class="alert alert-success alert-dismissable" style="display:none;"></div>
-                             <div id="errorDiv" class="alert alert-danger alert-dismissable" style="display:none;"></div>                            
+                                                         
                         </div>
                        
                     </div>

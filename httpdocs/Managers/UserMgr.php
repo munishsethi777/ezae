@@ -1,7 +1,7 @@
 <?php
 set_include_path(get_include_path() . PATH_SEPARATOR . '../../../Classes/');    
 require_once($ConstantsArray['dbServerUrl']. "DataStores/UserDataStore.php5");
-require_once($ConstantsArray['dbServerUrl']. "DataStores/UserCustomFieldsDataStore.php5");
+require_once($ConstantsArray['dbServerUrl']. "DataStores/UserCustomFieldsDataStore.php5");         
 include $ConstantsArray['dbServerUrl'] . '//PHPExcel/IOFactory.php';
 
 class UserMgr{
@@ -42,7 +42,7 @@ class UserMgr{
         return $sheetData;
     }
     
-    public function getLearnersFieldGridData($sheetData){
+    public function getLearnersFieldGridData($sheetData,$isFirstRowContainsFields,$isCustomfieldsExists){
         $firstRow = $sheetData[1];
         $i = 1;        
         $dataFieldArr = array();
@@ -55,33 +55,42 @@ class UserMgr{
             $dataFields = array();
             $dataFields['name'] = $fieldName;
             $dataFields['type'] = "string";
-            array_push($dataFieldArr,$dataFields);
-            
+            array_push($dataFieldArr,$dataFields);            
             
             $col = array();
             $col['text'] = "Field " . $i;
             $col['datafield'] = $fieldName;
             $col['width'] = 250;
-            $col['columntype'] = "template";
-            $col['createeditor'] = "createGridEditor";
-            $col['initeditor'] = "initGridEditor"; 
-            $col['geteditorvalue'] = "gridEditorValue";
+            $col['columntype'] = "template";        
+            //$col['createeditor'] = '%createGridEditor%';
+           // $col['initeditor'] = "initGridEditor"; 
+          // $col['geteditorvalue'] = "gridEditorValue";
+            //$col = $this->replaceQuotes($col);
             array_push($columnsArr,$col);
+            if($isFirstRowContainsFields || $isCustomfieldsExists){
+                $fieldNameRow[$fieldName] =  $value;                
+            }else{
+                $fieldNameRow[$fieldName] =  "{FieldName}";
+            }
+            $fieldTypeRow[$fieldName] =   "Text";     
             
-            $fieldNameRow[$fieldName] =  $value;
-            $fieldTypeRow[$fieldName] =   "text"; 
             $i++;
         }
         array_push($rows,$fieldNameRow);
-        array_push($rows,$fieldTypeRow);
-         
+        if(!$isCustomfieldsExists){
+            array_push($rows,$fieldTypeRow);    
+        }
         $mainJsonArray = array();
         $mainJsonArray["columns"] = $columnsArr;
         $mainJsonArray["rows"] = $rows;
         $mainJsonArray["dataFields"] = $dataFieldArr;
         $mainJsonArray["fieldNames"] = $fieldNameRow;
         $mainJsonArray["fieldTypes"] = $fieldTypeRow;
-        return json_encode($mainJsonArray);
+        $json = json_encode($mainJsonArray);
+        //$replace_keys[] = '"' . "%createGridEditor%" . '"';
+        //$value_arr[] = "createGridEditor";
+        //$jsonStr = str_replace($replace_keys, $value_arr, $json); 
+        return $json;
     } 
     private function getDataFieldsAndColumns($row){
         $fullArr = array();
@@ -103,17 +112,19 @@ class UserMgr{
         array_push($fullArr,$colArr);
         return $fullArr;
     } 
-    public function getLearnersDataForGrid($sheetData){
+    public function getLearnersDataForGrid($sheetData,$isFirstRowContainsFields){
         $rows = array();                
         $learnersArr =  $sheetData;
         $fieldRow = $learnersArr[1]; 
         $dataFieldAndColArr = $this->getDataFieldsAndColumns($fieldRow);
         $dataFields = $dataFieldAndColArr[0];
         $columns = $dataFieldAndColArr[1];
-        unset($learnersArr[1]);  //Remove fields Row
+        if($isFirstRowContainsFields){
+            unset($learnersArr[1]);    
+        }
+          //Remove fields Row
         foreach($learnersArr as $row){
-            $i = 0;
-            
+            $i = 0;            
             $col = array();            
             foreach ($row as $key => $value){                
                 $rowData[$dataFields[$i]['name']] = $value;

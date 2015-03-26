@@ -75,18 +75,23 @@
                       "hideMethod": "fadeOut"
                       }
             });
-            function showResponseDiv(data){
+            function showResponseDiv(data,divClassName){
                 var obj = $.parseJSON(data);
-                var message = obj.message;
-                var statusDiv = '<button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>';
-                statusDiv += obj.message;
+                var message = obj.message;              
+                $("#msgDiv").remove(); 
+                $("#errorDiv").remove(); 
                 if(obj.success == 1){
-                    $("#msgDiv").show();
-                    $("#msgDiv").html(statusDiv)
-
+                    var statusDiv = '<div id="msgDiv" class="alert alert-success alert-dismissable">';
+                    statusDiv += '<button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>';
+                    statusDiv += obj.message;
+                    statusDiv += '</div>';                    
+                    $("." + divClassName).append(statusDiv);
                 }else{
-                    $("#errorDiv").show();
-                    $("#errorDiv").html(statusDiv)
+                    var errorDiv = '<div id="errorDiv" class="alert alert-danger alert-dismissable">';
+                    errorDiv += '<button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>';
+                    errorDiv += obj.message;
+                    errorDiv += '</div>';
+                    $("." + divClassName).append(errorDiv);
                 }                                  
             }
          </script>
