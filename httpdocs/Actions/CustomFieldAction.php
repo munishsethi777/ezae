@@ -12,12 +12,10 @@
    $sessionUtil = SessionUtil::getInstance();
    $companySeq = $sessionUtil->getAdminLoggedInCompanySeq();
    $adminSeq =  $sessionUtil->getAdminLoggedInSeq();
-    if($call == "saveImportedFields"){     
-        
+   if($call == "saveImportedFields"){
         $data = $_GET["data"];
         $data = str_replace('\\', '', $data);
-        $rows = json_decode($data,true);
-        
+        $rows = json_decode($data,true);        
         $userNameField = $_GET["userName"];
         $passwordField = $_GET["password"]; 
         $emailField = $_GET["emailId"]; 
@@ -27,13 +25,11 @@
            $randomPassword =$_GET["randomPassword"];      
         }
         
-        $isRandomPassword = $randomPassword == "on";
-        
+        $isRandomPassword = $randomPassword == "on";        
         $fieldData = $_GET["fieldData"];
         $fieldData = str_replace('\\', '', $fieldData);
         $fieldRows = json_decode($fieldData,true);
-        $names = $fieldRows[0];
-        $types = $fieldRows[1];
+       
          
         $msg = validateImportedData($rows,$fieldRows,$userNameField,$passwordField,$emailField);
         if(count($msg) > 0){
@@ -41,8 +37,12 @@
             foreach($msg as  $key => $value){
                 $message .=  $value . "<br/>";   
             }      
-        }else{             
-             saveFieldRowsData($fieldRows,$companySeq,$adminSeq);
+        }else{
+             $customMgr = CustomFieldMgr::getInstance();
+             $isExist = $customMgr->isExists($adminSeq,$companySeq);
+             if(!$isExist){
+                saveFieldRowsData($fieldRows,$companySeq,$adminSeq);    
+             }             
              saveUserRowsData($rows,$userNameField,$passwordField,$emailField,$prefix,$isRandomPassword,$companySeq,$adminSeq);
              $message = "Imported data Saved successfully";
         }
@@ -55,18 +55,12 @@
         $id = $_GET["id"];
         $fieldName = $_GET["fieldName"];
         $fieldType = $_GET["fieldType"];
-        $required = "off";
-        if(isset($_GET["isRequired"])){
-            $required = $_GET["isRequired"];  
-        }
-        $isRequired = $required == "on" ? 1 : 0; 
         $customField = new UserCustomField();
         $customField->setSeq(intval($id));
         $customField->setTitle($fieldName);
         $name =  str_replace(" ","_",trim($fieldName));
         $customField->setName($name);        
-        $customField->setFieldType($fieldType);
-        $customField->setIsRequired($isRequired);        
+        $customField->setFieldType($fieldType);    
         $adminSeq =  $sessionUtil->getAdminLoggedInSeq();
         $customField->setCompanySeq($companySeq);
         $customField->setAdminSeq($adminSeq);
@@ -105,22 +99,32 @@
         echo $json;
     }
 
-     if($call == "deleteCustomfield"){
-         $ids = $_GET["ids"];
+     if($call == "isCustomFieldsExists"){
+         $isExist = 0;
          try{
             $customFieldMgr = CustomFieldMgr ::getInstance();
-            $customfields = $customFieldMgr->deleteCustomFields($ids);
-            $message = "Record Deleted successfully";
+            $isExist = $customFieldMgr->isExists($adminSeq,$companySeq);
         }catch(Exception $e){
             $success = 0;
             $message  = $e->getMessage();
         }
         $response = new ArrayObject();
-        $response["message"]  = $message;
-        $response["success"]  = $success;
-        $response["data"] = $customfields;
-
+        $response["isExist"]  = $isExist;
         echo json_encode($response);
+     }
+     
+     if($call == "getCustomFieldNames"){
+         $isExist = 0;
+         try{
+            $customFieldMgr = CustomFieldMgr ::getInstance();
+            $titles = $customFieldMgr->getCustomfieldTitles($adminSeq,$companySeq);
+        }catch(Exception $e){
+            $success = 0;
+            $message  = $e->getMessage();
+        }
+        $response = new ArrayObject();
+        $response["names"]  = $titles;
+        echo json_encode($response);   
      }
      function getResponse($success,$message){
         $response = new ArrayObject();
@@ -150,12 +154,22 @@
      function validateFieldData($fieldRows){
         $msg = array();
         $names = $fieldRows[0];
+        unset($names["uid"]);
+        $values = array();
+        $duplicate = array();
         foreach($names as  $key => $value){
            if(StringUtil::IsNullOrEmptyString($value)){
-                $msg[$key] = $key + " cannot be null";    
+                $msg[$key] = $key . " cannot be null";    
+           }else{
+                 if (in_array($value, $values)){
+                     $msg[$key] = $key . " has dulicate Value :- $value .";    
+                 }else{
+                     array_push($values,$value);
+                 }
            }
          }
-        return $msg;         
+         return $msg;
+                 
      }
      
      function validateData($data,$userNameField,$passwordField,$emailField){
@@ -187,7 +201,6 @@
         $name =  str_replace(" ","_",trim($name)); 
         $customField->setName($name);
         $customField->setFieldType($type);
-        $customField->setIsRequired(0); 
         $customField->setCompanySeq($companySeq);
         $customField->setAdminSeq($adminSeq);
         return  $customField;
@@ -231,6 +244,7 @@
             $customVal = "";
             unset($value["uid"]);
             foreach($value as $id => $val){
+               //$val = urlencode($val);
                 $customVal .= $id .":". $val .";";
             }
             $user->setCustomFieldValues($customVal);

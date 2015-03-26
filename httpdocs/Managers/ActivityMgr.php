@@ -54,9 +54,12 @@ class ActivityMgr{
         $mainLineArray = explode(';', $lines);
         $mainArray = array();
         foreach($mainLineArray as $line){
-            $nameValueArray = explode(':', $line);
-            $val = $nameValueArray[1];
-            $mainArray[trim($nameValueArray[0])] = $val;
+            if($line != "") {
+                $nameValueArray = explode(':', $line);
+                $val = $nameValueArray[1];
+                $mainArray[trim($nameValueArray[0])] = $val;    
+            }
+            
         }
         return $mainArray;
 

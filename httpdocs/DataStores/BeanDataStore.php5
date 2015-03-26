@@ -128,16 +128,40 @@
     }
 
     public function executeConditionQuery($colValuePair){
+       $query_array = array();
        foreach ($colValuePair as $key => $value)
        {
         ///if ($value != ''){
          $query_array[] = $key.' = '. "'" . $value . "'";//}
        }
         $query = "SELECT * FROM " .  $this->tableName;
-        if($query_array != undefined){
+        if(count($query_array) > 0){
             $query .= " WHERE " .implode(" AND ", $query_array);
         }
 
+      $db = MainDB::getInstance();
+      $conn = $db->getConnection();
+      $sth = $conn->prepare($query);
+      $sth->execute();
+     //$sth->setAttribute(PDO::MYSQL_ATTR_INIT_COMMAND, "SET NAMES 'utf8'");
+      $error = $sth->errorInfo();
+      if($error[2] <> ""){
+          throw new Exception($error[2]);
+      }
+      $objList = $sth->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $this->className);
+      return $objList;
+    }
+    
+    public function executeCountQuery($colValuePair = null){
+       foreach ($colValuePair as $key => $value)
+       {
+        ///if ($value != ''){
+         $query_array[] = $key.' = '. "'" . $value . "'";//}
+       }
+        $query = "SELECT count(*) FROM " .  $this->tableName;
+        if($colValuePair != null){            
+            $query .= " WHERE " .implode(" AND ", $query_array);                 
+        }
       $db = MainDB::getInstance();
       $conn = $db->getConnection();
       $sth = $conn->prepare($query);
@@ -146,10 +170,11 @@
       if($error[2] <> ""){
           throw new Exception($error[2]);
       }
-      $objList = $sth->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $this->className);
-      return $objList;
+      $result = $sth->fetch(PDO::FETCH_NUM);
+      $count = intval($result[0]);
+      return $count;
     }
-
+    
     public function executeQuery($query){
         $db = MainDB::getInstance();
         $conn = $db->getConnection();
