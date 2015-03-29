@@ -4,65 +4,68 @@
 <?include "ScriptsInclude.php"?>
 <script type="text/javascript">
     $(document).ready(function(){
-        var url = 'Actions/CustomFieldAction.php?call=getCustomFields';
+        var url = 'Actions/LearningProfileAction.php?call=getLearnerProfilesForGrid';
                 $.getJSON(url, function(data){
                 loadGrid(data);
         });
-        $('#customFieldForm').jqxValidator({
+        $('#learningProfileForm').jqxValidator({
             hintType: 'label',
             animationDuration: 0,
             rules: [
-               { input: '#fieldName', message: 'Field Name is required!', action: 'keyup, blur', rule: 'required' }
+               { input: '#name', message: 'Profile Name is required!', action: 'keyup, blur', rule: 'required' }
                ]
         });
 
-        $("#saveButton").click(function () {
-             $("#errorDiv").hide();
-             $("#msgDiv").hide();
-            var validationResult = function (isValid) {
-                if (isValid) {
-                    submitCreate();
-                }
-            }
-            $('#customFieldForm').jqxValidator('validate', validationResult);
-        });
+         $("#saveBtn").click(function(e){
+                ValidateAndSave(e,this);
+            });
+            
+            $("#saveNewBtn").click(function(e){
+                ValidateAndSave(e,this); 
+         });
+        
         $("#customFieldForm").on('validationSuccess', function () {
             $("#createCompanyForm-iframe").fadeIn('fast');
         });
     })
-    function submitCreate(){
-        $formData = $("#customFieldForm").serializeArray();
-            $.get( "Actions/CustomFieldAction.php?call=saveCustomField", $formData,function( data ){
-                if(data != ""){
-                   var obj = $.parseJSON(data);
-                   var statusDiv = '<button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>';
-                   statusDiv += obj.message;
-                   if(obj.success == 1){
-                       $("#msgDiv").show();
-                       $("#msgDiv").html(statusDiv)
-                       $('#customFieldForm')[0].reset();
-                       var dataRow = $.parseJSON(obj.row);
-                       var id = $("#id").val();
-                       if(id != "0"){
-                           var selectedrowindex = $("#jqxgrid").jqxGrid('getselectedrowindex');
-                           $("#jqxgrid").jqxGrid('updaterow', id, dataRow);
-                       }else{
-                         $("#jqxgrid").jqxGrid('addrow', null, dataRow);
-                       }
-
-                   }else{
-                       $("#errorDiv").show();
-                       $("#errorDiv").html(statusDiv)
-                   }
-                }
-        });
+    
+    function ValidateAndSave(e,btn){
+        var validationResult = function (isValid) {
+            if (isValid) {
+                saveLearningProfile(e,btn);
+            }
+        }
+        $('#learningProfileForm').jqxValidator('validate', validationResult);
     }
+    
+     function saveLearningProfile(e,btn){
+            e.preventDefault();
+            var l = Ladda.create(btn);
+            l.start();            
+             $('#learningProfileForm').ajaxSubmit(function( data ){
+                   l.stop();
+                   var obj = $.parseJSON(data);
+                   var dataRow = $.parseJSON(obj.row);
+                   var id = $("#id").val();
+                   if(id != "0"){
+                       var selectedrowindex = $("#jqxgrid").jqxGrid('getselectedrowindex');
+                       $("#jqxgrid").jqxGrid('updaterow', id, dataRow);
+                   }else{
+                     $("#jqxgrid").jqxGrid('addrow', null, dataRow);
+                   }
+                  if(btn.id == "saveBtn"){
+                     showResponseToastr(data,"createNewModalForm","learningProfileForm","mainDiv"); 
+                  }else{
+                     showResponseNotification(data,"mainDiv","learningProfileForm");
+                  }
+                               
+             })             
+     }
     function loadGrid(data){
         var columns = [
           { text: 'id', datafield: 'id' , hidden:true},
-          { text: 'Field Name' , datafield: 'name', width: 250 },
-          { text: 'Field Type', datafield: 'type' },
-          { text: 'Required', datafield: 'required', columntype: 'checkbox'}
+          { text: 'Profile Name' , datafield: 'tag', width: 250 },
+          { text: 'Description', datafield: 'description' }
         ]
         var rows = Array();
         var dataFields = Array();
@@ -77,9 +80,8 @@
             localData: rows,
             datafields: [
                 { name: 'id', type: 'integer' },
-                { name: 'name', type: 'string' },
-                { name: 'type', type: 'string' },
-                { name: 'required', type: 'bool' }
+                { name: 'tag', type: 'string' },
+                { name: 'description', type: 'string' }
             ],
             addrow: function (rowid, rowdata, position, commit) {
                 commit(true);
@@ -127,26 +129,28 @@
 
                 // create new row.
                 addButton.click(function (event) {
-                    $("#msgDiv").hide();
-                    $("#errorDiv").hide();
-                    $("#customFieldForm")[0].reset();
+                    $("#msgDiv").remove();
+                    $("#errorDiv").remove();
+                    $("#id").val("0");
+                    $("#learningProfileForm")[0].reset();
                     $('#createNewModalForm').modal('show');
                 });
                 // update row.
                 editButton.click(function (event) {
-                    $("#msgDiv").hide();
-                    $("#errorDiv").hide();
+                    $("#msgDiv").remove();
+                    $("#errorDiv").remove();
                     var selectedrowindex = $("#jqxgrid").jqxGrid('getselectedrowindex');
                     var row = $('#jqxgrid').jqxGrid('getrowdata', selectedrowindex);
                     $("#id").val(row.id);
-                    $("#fieldName").val(row.name);
-                    $('#fieldType').val(row.type).attr("selected", "selected");
-                    $('#isRequired').attr('checked', row.required);
+                    $("#name").val(row.tag);
+                    $("#description").val(row.description);
                     $('#createNewModalForm').modal('show');
                 });
                 // delete row.
                 deleteButton.click(function (event) {
-                     deleteRows();
+                    gridId = "jqxgrid"
+                    deleteUrl = "Actions/LearningProfileAction.php?call=deleteLearningProfile";
+                    deleteRows(gridId,deleteUrl);
                 });
                 // reload grid data.
                 reloadButton.click(function (event) {
@@ -155,38 +159,7 @@
             }
         });
     }
-    function deleteRows(){
-        var selectedRowIndexes = $("#jqxgrid").jqxGrid('selectedrowindexes');
-        if(selectedRowIndexes.length > 0){
-            bootbox.confirm("Are you sure you want to delete selected row(s)?", function(result) {
-                if(result){
-                    var ids = [];
-                    $.each(selectedRowIndexes, function(index , value){
-                        var dataRow = $("#jqxgrid").jqxGrid('getrowdata', value);
-                        ids.push(dataRow.id);
-                    });
-                    $.get( "Actions/CustomFieldAction.php?call=deleteCustomfield&ids=" + ids,function( data ){
-                        if(data != ""){
-                            var obj = $.parseJSON(data);
-                            var message = obj.message;
-                            if(obj.success == 1){
-                                toastr.success(message,'Success');
-                                $.each(selectedRowIndexes, function(index , value){
-                                    var id = $("#jqxgrid").jqxGrid('getrowid', value);
-                                    var commit = $("#jqxgrid").jqxGrid('deleterow', id);
-                                });
-                            }else{
-                                toastr.error(message,'Failed');
-                            }
-                        }
-                    });
-                }
-            });
-        }else{
-             bootbox.alert("No row selected.Please select row to delete!", function() {});
-        }
-
-    }
+    
 </script>
 </head>
 <body class='default'>
@@ -224,34 +197,29 @@
                                         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                                         <h4 class="modal-title">Create/Edit Custom Fields</h4>
                                     </div>
-                                    <div class="modal-body">
+                                    <div class="modal-body mainDiv">
                                         <div class="row" >
                                             <div class="col-sm-12">
-                                                <form role="form" id="customFieldForm" class="form-horizontal">
+                                                <form  role="form" method="post" action="Actions/LearningProfileAction.php" id="learningProfileForm" class="form-horizontal">
+                                                    <input type="hidden" id="call" name="call" value="saveLearningProfile">
                                                     <input type="hidden" id="id" name="id" value="0">
-                                                    <div id="msgDiv" class="alert alert-success alert-dismissable" style="display:none;"></div>
-                                                    <div id="errorDiv" class="alert alert-danger alert-dismissable" style="display:none;"></div>
                                                     <div class="form-group">
-                                                        <label>Field Name</label>
-                                                        <input type="text" id="fieldName" name="fieldName" placeholder="Field Name" class="form-control">
+                                                        <label>Profile Name</label>
+                                                        <input type="text" id="name" name="name" placeholder="Profile Name" class="form-control">
                                                     </div>
                                                     <div class="form-group">
-                                                        <label>Field Type</label>
-                                                        <select id="fieldType" name="fieldType" class="form-control">
-                                                        <option value="string">Text</option>
-                                                        <option value="date">Date</option>
-                                                        <option value="numeric">Numeric</option>
-                                                        <option value="boolean">Yes/No</option>
-                                                        </select>
+                                                        <label>Description</label>
+                                                        <input type="text" id="description" name="description" placeholder="Description" class="form-control">
                                                     </div>
-                                                    <div class="form-group">
-                                                        <label> <input name="isRequired" id="isRequired" type="checkbox" class="i-checks"> Required </label>
-                                                    </div>
-                                                    <div class="modal-footer">
+                                                    <div class="modal-footer">                                                       
+                                                        <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveBtn" type="button">
+                                                            <span class="ladda-label">Save</span>
+                                                        </button>
+                                                        <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveNewBtn" type="button">
+                                                            <span class="ladda-label">Save & New</span>
+                                                        </button>
                                                         <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
-                                                        <button class="btn btn-primary" id="saveButton" type="button"><strong>Save</strong></button>
-
-                                                    </div>
+                                                     </div>
                                                 </form>
                                             </div>
                                         </div>

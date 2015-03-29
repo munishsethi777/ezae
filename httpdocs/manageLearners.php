@@ -172,7 +172,6 @@
                        $("#learnersGrid").jqxGrid('updaterow', id, dataRow);
                    }else{
                      $("#learnersGrid").jqxGrid('addrow', null, dataRow);
-                     $("#id").val(dataRow.id);
                    }
                   if(btn.id == "saveBtn"){
                      showResponseToastr(data,"createNewModalForm","customFieldForm","mainDiv"); 
