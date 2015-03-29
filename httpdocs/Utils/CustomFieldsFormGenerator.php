@@ -25,15 +25,28 @@
            $customFieldForm = self::getFormForCustomFields($customFieldsArr);
            return $customFieldForm;
         }
+        public function getCustomFieldsArray($customFields){           
+            $fields = explode(",", $customFields);
+            // Output array
+            $customFieldArray = array();
 
+            // Loop over the first explode() result
+            foreach ($fields as $field) {
+              // Assign each pair to $s, $q
+              list($s, $q) = explode(":", $field);
+              // And put them onto an array keyed by size
+              $customFieldArray[$s] = $q;
+            }    
+            return $customFieldArray;
+        }
         private function getFormForCustomFields($customFieldsArr){
             $html = "";
             foreach($customFieldsArr as $userCustomField){
                 $usrCustomFld = new UserCustomField();
                 $usrCustomFld = $userCustomField;
                 $labelTitle = $usrCustomFld->getTitle();
-                $inputCode = '<input type="text" id="'. $usrCustomFld->getName()
-                        .'" placeholder="'. $usrCustomFld->getTitle() .'" id="exampleInputEmail2" class="form-control">';
+                $inputCode = '<input type="text" name="cus_'. $usrCustomFld->getName() .'" id=cus_'. $usrCustomFld->getName()
+                        .' placeholder="'. $usrCustomFld->getTitle() .'" class="form-control">';
 
                 if($usrCustomFld->getFieldType() == "boolean"){
                     $inputCode = '<div class="checkbox i-checks">'.

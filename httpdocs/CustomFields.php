@@ -35,7 +35,7 @@
          e.preventDefault();
          var l = Ladda.create(btn);
          l.start();
-        $formData = $("#customFieldForm").serializeArray();
+         $formData = $("#customFieldForm").serializeArray();
             $.get( "Actions/CustomFieldAction.php?call=saveCustomField", $formData,function( data ){
                 if(data != ""){
                    var obj = $.parseJSON(data);
@@ -52,6 +52,7 @@
                            $("#jqxgrid").jqxGrid('updaterow', id, dataRow);
                        }else{
                          $("#jqxgrid").jqxGrid('addrow', null, dataRow);
+                         $("#id").val(dataRow.id);
                        }
                        l.stop();
                    }else{
@@ -151,7 +152,7 @@
                 });
                 // delete row.
                 deleteButton.click(function (event) {
-                     deleteRows();
+                     deleteRows("jqxgrid","Actions/CustomFieldAction.php?call=deleteCustomfield");
                 });
                 // reload grid data.
                 reloadButton.click(function (event) {
@@ -160,38 +161,38 @@
             }
         });
     }
-    function deleteRows(){
-        var selectedRowIndexes = $("#jqxgrid").jqxGrid('selectedrowindexes');
-        if(selectedRowIndexes.length > 0){
-            bootbox.confirm("Are you sure you want to delete selected row(s)?", function(result) {
-                if(result){
-                    var ids = [];
-                    $.each(selectedRowIndexes, function(index , value){
-                        var dataRow = $("#jqxgrid").jqxGrid('getrowdata', value);
-                        ids.push(dataRow.id);
-                    });
-                    $.get( "Actions/CustomFieldAction.php?call=deleteCustomfield&ids=" + ids,function( data ){
-                        if(data != ""){
-                            var obj = $.parseJSON(data);
-                            var message = obj.message;
-                            if(obj.success == 1){
-                                toastr.success(message,'Success');
-                                $.each(selectedRowIndexes, function(index , value){
-                                    var id = $("#jqxgrid").jqxGrid('getrowid', value);
-                                    var commit = $("#jqxgrid").jqxGrid('deleterow', id);
-                                });
-                            }else{
-                                toastr.error(message,'Failed');
-                            }
-                        }
-                    });
-                }
-            });
-        }else{
-             bootbox.alert("No row selected.Please select row to delete!", function() {});
-        }
+    //function deleteRows(){
+//        var selectedRowIndexes = $("#jqxgrid").jqxGrid('selectedrowindexes');
+//        if(selectedRowIndexes.length > 0){
+//            bootbox.confirm("Are you sure you want to delete selected row(s)?", function(result) {
+//                if(result){
+//                    var ids = [];
+//                    $.each(selectedRowIndexes, function(index , value){
+//                        var dataRow = $("#jqxgrid").jqxGrid('getrowdata', value);
+//                        ids.push(dataRow.id);
+//                    });
+//                    $.get( "Actions/CustomFieldAction.php?call=deleteCustomfield&ids=" + ids,function( data ){
+//                        if(data != ""){
+//                            var obj = $.parseJSON(data);
+//                            var message = obj.message;
+//                            if(obj.success == 1){
+//                                toastr.success(message,'Success');
+//                                $.each(selectedRowIndexes, function(index , value){
+//                                    var id = $("#jqxgrid").jqxGrid('getrowid', value);
+//                                    var commit = $("#jqxgrid").jqxGrid('deleterow', id);
+//                                });
+//                            }else{
+//                                toastr.error(message,'Failed');
+//                            }
+//                        }
+//                    });
+//                }
+//            });
+//        }else{
+//             bootbox.alert("No row selected.Please select row to delete!", function() {});
+//        }
 
-    }
+    //}
 </script>
 </head>
 <body class='default'>

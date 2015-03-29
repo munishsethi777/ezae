@@ -28,7 +28,6 @@ require_once($ConstantsArray['dbServerUrl']. "Utils/SessionUtil.php5");
         $row["id"] = $customField->getSeq();
         $row["name"] = $customField->getTitle();
         $row["type"] = $customField->getFieldType();
-        $row["required"] = $customField->getIsRequired();
         return json_encode($row);
     }
     function getCustomfieldsForGrid($companySeq){
@@ -43,7 +42,6 @@ require_once($ConstantsArray['dbServerUrl']. "Utils/SessionUtil.php5");
             $arr['id'] = $field->getSeq();
             $arr['name'] = $field->getTitle();
             $arr['type'] = $field->getFieldType();
-            $arr['required'] = $field->getIsRequired();
             array_push($fullArr,$arr);
         }
         return json_encode($fullArr);
@@ -52,7 +50,6 @@ require_once($ConstantsArray['dbServerUrl']. "Utils/SessionUtil.php5");
     public function deleteCustomFields($ids){
         $dataStore = new BeanDataStore("UserCustomField",UserCustomField::$tableName);
         $dataStore->deleteInList($ids);
-        return json_encode($row);
     }
     
     public function isExists($adminSeq,$companyseq){

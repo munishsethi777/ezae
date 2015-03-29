@@ -53,11 +53,12 @@ class ActivityMgr{
     public static function getCustomValuesArray($lines){
         $mainLineArray = explode(';', $lines);
         $mainArray = array();
+        $prefix = "cus_";
         foreach($mainLineArray as $line){
             if($line != "") {
                 $nameValueArray = explode(':', $line);
                 $val = $nameValueArray[1];
-                $mainArray[trim($nameValueArray[0])] = $val;    
+                $mainArray[trim("cus_".$nameValueArray[0])] =  $val;    
             }
             
         }

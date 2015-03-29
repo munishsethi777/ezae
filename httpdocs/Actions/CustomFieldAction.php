@@ -1,6 +1,7 @@
  <?php
  require_once('../IConstants.inc');
  require_once($ConstantsArray['dbServerUrl'] ."Managers/CustomFieldMgr.php");
+ require_once($ConstantsArray['dbServerUrl'] ."Managers/UserMgr.php"); 
  require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/User.php");
  require_once($ConstantsArray['dbServerUrl'] ."Utils/StringUtil.php"); 
  require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/UserCustomfield.php");
@@ -112,7 +113,22 @@
         $response["isExist"]  = $isExist;
         echo json_encode($response);
      }
-     
+     if($call == "deleteCustomfield"){
+         $ids = $_GET["ids"];
+         try{
+            $customFieldMgr = CustomFieldMgr ::getInstance();
+            $customFieldMgr->deleteCustomFields($ids);
+            $message = "Record Deleted successfully";
+        }catch(Exception $e){
+            $success = 0;
+            $message  = $e->getMessage();
+        }
+        $response = new ArrayObject();
+        $response["message"]  = $message;
+        $response["success"]  = $success;
+
+        echo json_encode($response);
+     }
      if($call == "getCustomFieldNames"){
          $isExist = 0;
          try{
@@ -223,7 +239,7 @@
      }
      
      function saveUserRowsData($data,$userNameField,$passwordField,$emailId,$prefix,$isRandom,$companySeq,$adminSeq){
-        $userDataStore = UserDataStore::getInstance();
+        $userMgr = UserMgr::getInstance();
         foreach($data as  $key => $value){
             $userName = $prefix . $value[$userNameField];
             $email = $value[$emailId];
@@ -248,7 +264,7 @@
                 $customVal .= $id .":". $val .";";
             }
             $user->setCustomFieldValues($customVal);
-            $userDataStore->save($user);
+            $userMgr->Save($user);
         }  
      }
 ?>

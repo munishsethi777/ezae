@@ -58,7 +58,7 @@ class AdminMgr{
     public function getLearnersWithCustomFieldsGridJSON($companySeq){
         $userFieldsJSON = $this->getUserAllFieldsJsonByCompany($companySeq);
         $userFieldsArr = json_decode($userFieldsJSON);
-        unset($userFieldsArr[1]);//removing password field
+        unset($userFieldsArr[2]);//removing password field
 
         $usersDS = UserDataStore::getInstance();
         $users = $usersDS->findByCompany($companySeq);
@@ -67,6 +67,7 @@ class AdminMgr{
             $arr = array();
             $arr['id'] = $user->getSeq();
             $arr['username'] = $user->getUserName();
+            $arr['emailid'] = $user->getEmailId();
             //$arr['password'] = $dataArr['password'];
             $arrCustomFields = ActivityMgr::getCustomValuesArray($user->getCustomFieldValues());
             $arr = array_merge($arr,$arrCustomFields);
@@ -203,7 +204,7 @@ class AdminMgr{
             $arr['id'] = $userObj->getSeq();
             $arr['username'] = $userObj->getUserName();
             $arr['password'] = $userObj->getPassword();
-            //$arr['emailid'] = $userObj->getEmailId();
+            $arr['emailid'] = $userObj->getEmailId();
             $arrCustomFields = ActivityMgr::getCustomValuesArray($userObj->getCustomFieldValues());
             $arr = array_merge($arr,$arrCustomFields);
             array_push($fullArr,$arr);
@@ -215,6 +216,13 @@ class AdminMgr{
         $fullArr = array();
         if($isOnlyCustomFields == false){
             $arr = array();
+            $arr['text'] = "id";
+            $arr['datafield'] = "id";
+            $arr['type'] = "integer";
+            $arr['hidden'] = true;
+            array_push($fullArr,$arr);
+            
+            $arr = array(); 
             $arr['text'] = "User name";
             $arr['datafield'] = "username";
             $arr['type'] = "string";
@@ -230,7 +238,7 @@ class AdminMgr{
             $arr['text'] = "EmailId";
             $arr['datafield'] = "emailid";
             $arr['type'] = "string";
-            //array_push($fullArr,$arr);
+            array_push($fullArr,$arr);
         }
 
         foreach($customFields as $customField){
@@ -238,7 +246,8 @@ class AdminMgr{
             $field = $customField;
             $arr = array();
             $arr['text'] = $field->getTitle();
-            $arr['datafield'] = $field->getName();
+            $prefix = "cus_";
+            $arr['datafield'] = $prefix . $field->getName();
             $arr['type'] = $field->getFieldType();
             if($field->getFieldType() == "date"){
                 $arr['cellsformat'] = "d";
