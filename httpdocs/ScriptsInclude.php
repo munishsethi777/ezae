@@ -94,4 +94,83 @@
                     $("." + divClassName).append(errorDiv);
                 }                                  
             }
-         </script>
+            
+            function showResponseNotification(data,divClassName,formId){
+                var obj = $.parseJSON(data);
+                var message = obj.message;              
+                $("#msgDiv").remove(); 
+                $("#errorDiv").remove(); 
+                if(obj.success == 1){
+                    var statusDiv = getStatusDiv(message)
+                    $("." + divClassName).append(statusDiv);
+                    $("#" + formId)[0].reset();
+                }else{
+                    var errorDiv = getErrorDiv(message);
+                    $("." + divClassName).append(errorDiv);
+                }                                  
+            }
+            
+            
+            function getErrorDiv(message){
+                var errorDiv = '<div id="errorDiv" class="alert alert-danger alert-dismissable">';
+                    errorDiv += '<button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>';
+                    errorDiv += message;
+                    errorDiv += '</div>';
+                    return errorDiv;    
+            }
+            function getStatusDiv(message){
+                 var statusDiv = '<div id="msgDiv" class="alert alert-success alert-dismissable">';
+                    statusDiv += '<button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>';
+                    statusDiv += message;
+                    statusDiv += '</div>';
+                    return statusDiv;    
+            }
+            function showResponseToastr(data,modelId,formId,divClassName){
+                var obj = $.parseJSON(data);
+                $("#msgDiv").remove(); 
+                $("#errorDiv").remove(); 
+                var message = obj.message;                
+                if(obj.success == 1){
+                    $("#" + modelId).modal('hide');
+                    $("#" + formId)[0].reset();
+                    toastr.success(message); 
+                }else{
+                   var errorDiv = getErrorDiv(message);
+                   $("." + divClassName).append(errorDiv);
+                }                                   
+            }
+            
+            
+            function deleteRows(gridId,deleteURL){
+                var selectedRowIndexes = $("#" + gridId).jqxGrid('selectedrowindexes');
+                if(selectedRowIndexes.length > 0){
+                    bootbox.confirm("Are you sure you want to delete selected row(s)?", function(result) {
+                        if(result){
+                            var ids = [];
+                            $.each(selectedRowIndexes, function(index , value){
+                                var dataRow = $("#" + gridId).jqxGrid('getrowdata', value);
+                                ids.push(dataRow.id);
+                            });
+                            $.get( deleteURL + "&ids=" + ids,function( data ){
+                                if(data != ""){
+                                    var obj = $.parseJSON(data);
+                                    var message = obj.message;
+                                    if(obj.success == 1){
+                                        toastr.success(message,'Success');
+                                        $.each(selectedRowIndexes, function(index , value){
+                                            var id = $("#"  + gridId).jqxGrid('getrowid', value);
+                                            var commit = $("#"  + gridId).jqxGrid('deleterow', id);
+                                        });
+                                    }else{
+                                        toastr.error(message,'Failed');
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }else{
+                     bootbox.alert("No row selected.Please select row to delete!", function() {});
+                }
+
+        }
+       </script>

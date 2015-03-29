@@ -1,13 +1,14 @@
 <?php
 set_include_path(get_include_path() . PATH_SEPARATOR . '../../../Classes/');    
 require_once($ConstantsArray['dbServerUrl']. "DataStores/UserDataStore.php5");
+require_once($ConstantsArray['dbServerUrl']. "Managers/ActivityMgr.php"); 
 require_once($ConstantsArray['dbServerUrl']. "DataStores/UserCustomFieldsDataStore.php5");         
 include $ConstantsArray['dbServerUrl'] . '//PHPExcel/IOFactory.php';
 
 class UserMgr{
 
     private static $userMgr;
-
+   
     public static function getInstance()
     {
         if (!self::$userMgr)
@@ -138,7 +139,35 @@ class UserMgr{
         $mainJsonArray["rows"] = $rows;
         return json_encode($mainJsonArray);
     }
-      
+     
+    public function deleteUsersByIds($ids){
+        $dataStore = UserDataStore::getInstance();
+        $dataStore->deleteInList($ids);
+    }
+    public function Save($user,$isAjaxCall = false,$isChangePassword){
+        $dataStore = UserDataStore::getInstance();
+        $id = $dataStore->saveUser($user,$isChangePassword);        
+        if($isAjaxCall){
+            $user->setSeq($id);
+            return $this->getSavedRowArray($user);    
+        }
+        return $id;
+    }
+    private function getSavedRowArray($user){
+        $userObj = new User();
+        $userObj = $user;
+        $row = array();
+        $row["id"] = $userObj->getSeq();
+        $row["username"] = $userObj->getUserName();
+        $row["password"] = $userObj->getPassword();
+        $row["emailid"] = $userObj->getEmailId();
+        $row["createDate"] = $userObj->getCreatedOn();
+        $userCustomFields = $userObj->getCustomFieldValues();
+        $activityMgr = ActivityMgr::getInstance();
+        $customfieldArry = $activityMgr->getCustomValuesArray($userCustomFields);
+        $row = array_merge($row,$customfieldArry);        
+        return json_encode($row);
+    } 
 
 }
 

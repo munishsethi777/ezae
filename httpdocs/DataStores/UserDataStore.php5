@@ -5,6 +5,7 @@
  class UserDataStore extends BeanDataStore{
 
     private static $userDataStore ;
+    
     public static function getInstance()
     {
         if (!self::$userDataStore)
@@ -40,6 +41,41 @@
         if(sizeof($colList) > 0){
             return $colList[0]["customfieldValues"];
         }
+      }
+      public function saveUser($userObj,$isChangePassword){
+        $user = new User();
+        $user = $userObj;
+        $id = $user->getSeq();        
+        if($id > 0){
+            $UPDATE = "update users set username=:username,emailid=:emailId,companyseq=:comanyseq, customfieldvalues=:customfieldvalues,isenabled=:isenabled,adminseq=:adminseq,lastmodifiedon=:lastmodified " ;             
+            $db_New = MainDB::getInstance();
+            $conn = $db_New->getConnection();
+            if($isChangePassword){
+                $UPDATE .= ", password=:password where seq=:seq";  
+            }else{
+                $UPDATE .= "where seq=:seq";  
+            }
+            $stmt = $conn->prepare($UPDATE);
+            $stmt->bindValue(':username', $user->getUserName());
+            $stmt->bindValue(':emailId', $user->getEmailId());
+            $stmt->bindValue(':comanyseq',$user->getCompanySeq());
+            $stmt->bindValue(':customfieldvalues',$user->getCustomFieldValues());
+            $stmt->bindValue(':isenabled',$user->getIsEnabled());
+            $stmt->bindValue(':adminseq',$user->getAdminSeq());
+            $stmt->bindValue(':lastmodified',$user->getLastModifiedOn()->format('Y-m-d H:i:s'));
+            if($isChangePassword){ 
+                $stmt->bindValue(':password', $user->getPassword());     
+            }
+            $stmt->bindValue(':seq',$user->getSeq());
+            $stmt->execute(); 
+            $error = $stmt->errorInfo();
+            if($error[2] <> ""){
+                throw new Exception($error[2]);
+            }        
+        }else{
+            $id = self::save($userObj);    
+        }
+        return $id;   
       }
 
 

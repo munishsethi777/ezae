@@ -4,44 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Administration - Easy Assessment Engine</title>
-<script src="scripts/jquery-2.1.1.js"></script>
-<link rel="stylesheet" href="jqwidgets/styles/jqx.base.css" type="text/css" />
-<link rel="stylesheet" href="jqwidgets/styles/jqx.arctic.css" type="text/css" />
-<script type="text/javascript" src="jqwidgets/jqxcore.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxbuttons.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxscrollbar.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxlistbox.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxdropdownlist.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxmenu.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxdata.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxgrid.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxgrid.edit.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxgrid.sort.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxgrid.selection.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxgrid.pager.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxgrid.filter.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxlistbox.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxcombobox.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxdraw.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxchart.core.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxnumberinput.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxinput.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxcheckbox.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxcheckbox.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxgrid.columnsresize.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxgrid.columnsreorder.js"></script>
+ <?include "ScriptsInclude.php"?>
 
-<link href="styles/plugins/iCheck/custom.css" rel="stylesheet">
-<link href="styles/plugins/steps/jquery.steps.css" rel="stylesheet">
-<!-- Steps -->
-<script src="scripts/plugins/staps/jquery.steps.min.js"></script>
-
-<!-- Jquery Validate -->
-<script src="scripts/plugins/validate/jquery.validate.min.js"></script>
-<!-- iCheck -->
-<script src="scripts/plugins/iCheck/icheck.min.js"></script>
 <script type="text/javascript">
         $(document).ready(function (){
+            
             var url = 'ajaxAdminMgr.php?call=getLearnersForGrid';
             $.getJSON(url, function(data){
                 loadGrid(data);
@@ -49,7 +16,36 @@
                 //loadColsList(data.columns);
             })
             loadFormFields();
+            
+            $("#saveBtn").click(function(e){
+                ValidateAndSave(e,this);
+            });
+            
+            $("#saveNewBtn").click(function(e){
+                ValidateAndSave(e,this); 
+            });
+            $("#isChangePassword").change(function(e){
+                var isChecked = this.checked;
+                if(isChecked){
+                    $("#passwordDiv").show();    
+                }else{
+                    $("#passwordDiv").hide();
+                } 
+            });
+            //$('input[type="checkbox"][name="isChangePassword"]').on('ifChecked', function(event){
+//                alert(event.type + ' callback');
+//            });
         });
+        
+        function ValidateAndSave(e,btn){
+            var validationResult = function (isValid) {
+                if (isValid) {
+                    saveLearners(e,btn);
+                }
+            }
+            $('#customFieldForm').jqxValidator('validate', validationResult);
+        }
+        
         function loadFormFields(){
             var url = 'ajaxAdminMgr.php?call=getLearnersCustomFieldForm';
             $.get(url, function(data){
@@ -122,15 +118,19 @@
                     addButton.click(function (event) {
                         $("#msgDiv").hide();
                         $("#errorDiv").hide();
+                        $("#id").val("0");  
                         $("#customFieldForm")[0].reset();
+                        $('#changePasswordChkDiv').hide();
+                        $("#passwordDiv").show();
                         $('#createNewModalForm').modal('show');
                     });
                     // delete selected row.
                     deleteButton.click(function (event) {
-                        var selectedrowindex = $("#learnersGrid").jqxGrid('getselectedrowindex');
-                        var rowscount = $("#learnersGrid").jqxGrid('getdatainformation').rowscount;
-                        var id = $("#learnersGrid").jqxGrid('getrowid', selectedrowindex);
-                        $("#learnersGrid").jqxGrid('deleterow', id);
+                       // var selectedrowindex = $("#learnersGrid").jqxGrid('getselectedrowindex');
+//                        var rowscount = $("#learnersGrid").jqxGrid('getdatainformation').rowscount;
+//                        var id = $("#learnersGrid").jqxGrid('getrowid', selectedrowindex);
+//                        $("#learnersGrid").jqxGrid('deleterow', id);
+                        deleteRows("learnersGrid","Actions/LearnerAction.php?call=deleteLearners");     
                     });
                     // edit grid data.
                     editButton.click(function (event) {
@@ -145,7 +145,8 @@
                                 $('#'+value.datafield).iCheck('check');
                             }
                         });
-
+                        $('#changePasswordChkDiv').show();
+                        $("#passwordDiv").hide();  
                         $('#createNewModalForm').modal('show');
                     });
                     // reload grid data.
@@ -155,9 +156,34 @@
 
                 }
             });
-
+        }
+         function saveLearners(e,btn){
+            e.preventDefault();
+            var l = Ladda.create(btn);
+            l.start();            
+             $('#customFieldForm').ajaxSubmit(function( data ){
+                  l.stop();
+                  var obj = $.parseJSON(data);
+                   var dataRow = $.parseJSON(obj.row);
+                   $("#createdDate").val(dataRow.createDate);
+                   var id = $("#id").val();
+                   if(id != "0"){
+                       var selectedrowindex = $("#learnersGrid").jqxGrid('getselectedrowindex');
+                       $("#learnersGrid").jqxGrid('updaterow', id, dataRow);
+                   }else{
+                     $("#learnersGrid").jqxGrid('addrow', null, dataRow);
+                     $("#id").val(dataRow.id);
+                   }
+                  if(btn.id == "saveBtn"){
+                     showResponseToastr(data,"createNewModalForm","customFieldForm","mainDiv"); 
+                  }else{
+                     showResponseNotification(data,"mainDiv","customFieldForm");
+                  }
+                               
+             })             
         }
 </script>
+
 </head>
 <body class='default'>
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -201,18 +227,57 @@
                     <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                     <h4 class="modal-title">Create/Edit Learner</h4>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body mainDiv">
                     <div class="row" >
                         <div class="col-sm-12">
-                            <form role="form" id="customFieldForm" class="form-horizontal">
+                            <form role="form" method="post" action="Actions/LearnerAction.php" id="customFieldForm" class="form-horizontal">
+                                <input type="hidden" value="saveLearners" name="call">
+                                <input type="hidden" value="createdDate" name="createdDate">  
                                 <input type="hidden" id="id" name="id" value="0">
                                 <div id="msgDiv" class="alert alert-success alert-dismissable" style="display:none;"></div>
-                                <div id="errorDiv" class="alert alert-danger alert-dismissable" style="display:none;"></div>
+                                <div id="errorDiv" class="alert alert-danger alert-dismissable" style="display:none;"></div>                                
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">User Name</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" id="username" name="username" placeholder="User Name" class="form-control">
+                                    </div>
+                                </div>
+                                 <div class="form-group" style="display: none;" id="changePasswordChkDiv">
+                                    <label> <input name="isChangePassword" id="isChangePassword" type="checkbox"> Change Password </label>
+                                </div>
+                                <div id="passwordDiv">
+                                    <div class="form-group">
+                                    <label class="col-sm-3 control-label">Password</label>
+                                    <div class="col-sm-9">
+                                        <input type="password" id="password" name="password" Placeholder="Password"  class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Confirm Password</label>
+                                    <div class="col-sm-9">
+                                        <input type="password" id="confirmPassword" name="confirmPassword" Placeholder="Confirm Password"  class="form-control">
+                                    </div>
+                                </div>
+                                </div>
+                                
+                                 <div class="form-group">
+                                    <label class="col-sm-3 control-label">Email</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" id="emailid" name="emailid" Placeholder="example@mail.com"  class="form-control">
+                                    </div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+                                <h4 class="modal-title">Custom Fields</h4>
                                 <div id="formFieldsDiv"></div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
-                                    <button class="btn btn-primary" id="saveButton" type="button"><strong>Save</strong></button>
-
+                                
+                                <div class="modal-footer">                                   
+                                     <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveBtn" type="button">
+                                        <span class="ladda-label">Save</span>
+                                    </button>
+                                    <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveNewBtn" type="button">
+                                        <span class="ladda-label">Save & New</span>
+                                    </button>
+                                     <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
                                 </div>
                             </form>
                         </div>
@@ -224,3 +289,4 @@
 </div>
 </body>
 </html>
+ <script src="scripts/FormValidators/ManageLearnersValidations.js"></script> 
