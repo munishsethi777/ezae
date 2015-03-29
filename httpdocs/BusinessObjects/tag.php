@@ -1,6 +1,6 @@
 <?php
   class tag {
-        private $seq,$tag,$adminseq,$companyseq,$createdon ;
+        private $seq,$tag,$description,$adminseq,$companyseq,$createdon ;
         public function setSeq($seq_){
             $this->seq = $seq_;
         }
@@ -16,7 +16,13 @@
         public function getTag(){
             return $this->tag;
         }
-        
+        public function setDescription($des_){
+            $this->description = $des_;
+        }
+
+        public function getDescription(){
+            return $this->description;
+        }
         public function setAdminSeq($adminseq_){
             $this->adminseq = $adminseq_;
         }
