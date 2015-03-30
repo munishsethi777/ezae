@@ -135,6 +135,7 @@
                 addButton.click(function (event) {
                     $("#msgDiv").hide();
                     $("#errorDiv").hide();
+                    $("#id").val(0);
                     $("#customFieldForm")[0].reset();
                     $('#createNewModalForm').modal('show');
                 });
