@@ -65,5 +65,6 @@ function validate(input){
     if(index > 0){
         return true;
     }
+    alert("Please Select Profile!")
    return false;
 }

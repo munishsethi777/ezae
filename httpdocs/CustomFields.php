@@ -17,20 +17,25 @@
         });
 
         $("#saveButton").click(function (e) {
-             $("#errorDiv").hide();
-             $("#msgDiv").hide();
-             var btn  = this;
-            var validationResult = function (isValid) {
-                if (isValid) {
-                    submitCreate(e,btn);
-                }
-            }
-            $('#customFieldForm').jqxValidator('validate', validationResult);
+            validateAndSave(e,this); 
+        });
+        $("#saveNewBtn").click(function (e) {
+            validateAndSave(e,this); 
         });
         $("#customFieldForm").on('validationSuccess', function () {
             $("#createCompanyForm-iframe").fadeIn('fast');
         });
     })
+    function validateAndSave(e,btn){
+        $("#errorDiv").hide();
+        $("#msgDiv").hide();
+        var validationResult = function (isValid) {
+            if (isValid) {
+                submitCreate(e,btn);
+            }
+        }
+        $('#customFieldForm').jqxValidator('validate', validationResult);   
+    }
     function submitCreate(e,btn){
          e.preventDefault();
          var l = Ladda.create(btn);
@@ -42,9 +47,6 @@
                    var statusDiv = '<button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>';
                    statusDiv += obj.message;
                    if(obj.success == 1){
-                       $("#msgDiv").show();
-                       $("#msgDiv").html(statusDiv)
-                       $('#customFieldForm')[0].reset();
                        var dataRow = $.parseJSON(obj.row);
                        var id = $("#id").val();
                        if(id != "0"){
@@ -52,13 +54,14 @@
                            $("#jqxgrid").jqxGrid('updaterow', id, dataRow);
                        }else{
                          $("#jqxgrid").jqxGrid('addrow', null, dataRow);
-                         $("#id").val(dataRow.id);
                        }
                        l.stop();
-                   }else{
-                       $("#errorDiv").show();
-                       $("#errorDiv").html(statusDiv)
                    }
+                   if(btn.id == "saveButton"){
+                     showResponseToastr(data,"createNewModalForm","customFieldForm","mainDiv"); 
+                  }else{
+                     showResponseNotification(data,"mainDiv","customFieldForm");
+                  }
                 }
         });
     }
@@ -218,13 +221,11 @@
                                         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                                         <h4 class="modal-title">Create/Edit Custom Fields</h4>
                                     </div>
-                                    <div class="modal-body">
+                                    <div class="modal-body mainDiv">
                                         <div class="row" >
                                             <div class="col-sm-12">
                                                 <form role="form" id="customFieldForm" class="form-horizontal">
                                                     <input type="hidden" id="id" name="id" value="0">
-                                                    <div id="msgDiv" class="alert alert-success alert-dismissable" style="display:none;"></div>
-                                                    <div id="errorDiv" class="alert alert-danger alert-dismissable" style="display:none;"></div>
                                                     <div class="form-group">
                                                         <label>Field Name</label>
                                                         <input type="text" id="fieldName" name="fieldName" placeholder="Field Name" class="form-control">
@@ -242,10 +243,13 @@
                                                         <label> <input name="isRequired" id="isRequired" type="checkbox" class="i-checks"> Required </label>
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>                                                        
                                                         <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveButton" type="button">
                                                             <span class="ladda-label">Save</span>
                                                         </button>
+                                                        <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveNewBtn" type="button">
+                                                            <span class="ladda-label">Save & New</span>
+                                                        </button>
+                                                         <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
                                                     </div>
                                                 </form>
                                             </div>

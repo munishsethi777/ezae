@@ -53,7 +53,7 @@
             var options = ""; 
             $.each(profiles, function(key, value){
                 options += "<option value='" + value.id + "'>" + value.tag + "</option>";
-                $("#profileSelect_chosen").html(options);  
+                $("#profileSelect").html(options);  
             })
             $(".chosen-select").chosen({width:"100%"});
         }
