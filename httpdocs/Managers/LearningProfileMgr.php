@@ -1,6 +1,7 @@
 <?php
     require_once($ConstantsArray['dbServerUrl']. "DataStores/BeanDataStore.php5");
     require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/tag.php");
+    require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/UserLearningProfile.php");
     class LearningProfileMgr{
         private static $learnerProfileMgr;
         private static $dataStore;   
@@ -55,5 +56,15 @@
             $row["description"] = $learningProfileObj->getDescription();
             return json_encode($row);
         } 
+        
+        public function setProfileOnLearner($userLearningProfiles){
+            $dataStore = new BeanDataStore("UserLearningProfile","userlearningprofiles");
+            $id = $dataStore->save($userLearningProfiles);
+            return $id;           
+        }
+        public function removeProfileFromLearner($learnerSeq){
+            $dataStore = new BeanDataStore("UserLearningProfile","userlearningprofiles");
+            $dataStore->executeQuery("delete from userlearningprofiles where userseq =" .$learnerSeq);
+        }
     }
 ?>

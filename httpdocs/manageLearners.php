@@ -12,15 +12,27 @@
             var url = 'ajaxAdminMgr.php?call=getLearnersForGrid';
             $.getJSON(url, function(data){
                 loadGrid(data);
-
-                //loadColsList(data.columns);
             })
             loadFormFields();
-            
+            var url = 'Actions/LearnerAction.php?call=getLearningProfiles';
+            $.getJSON(url, function(data){
+                profiles = $.parseJSON(data.data);
+                populateDropdown(profiles);
+            })
             $("#saveBtn").click(function(e){
                 ValidateAndSave(e,this);
             });
             
+            $("#setProfileBtn").click(function(e){
+                var btn = this
+                var validationResult = function (isValid) {
+                    if (isValid) {
+                        setProfile(e,btn);
+                    }
+                }
+                $('#setProfileForm').jqxValidator('validate', validationResult);
+            });
+             
             $("#saveNewBtn").click(function(e){
                 ValidateAndSave(e,this); 
             });
@@ -36,6 +48,15 @@
 //                alert(event.type + ' callback');
 //            });
         });
+        
+        function populateDropdown(profiles){
+            var options = ""; 
+            $.each(profiles, function(key, value){
+                options += "<option value='" + value.id + "'>" + value.tag + "</option>";
+                $("#profileSelect_chosen").html(options);  
+            })
+            $(".chosen-select").chosen({width:"100%"});
+        }
         
         function ValidateAndSave(e,btn){
             var validationResult = function (isValid) {
@@ -99,6 +120,7 @@
                     var container = $("<div style='overflow: hidden; position: relative; margin: 5px;height:30px'></div>");
                     var addButton = $("<div style='float: left; margin-left: 5px;'><i class='fa fa-plus-square'></i><span style='margin-left: 4px; position: relative;'>Add</span></div>");
                     var deleteButton = $("<div style='float: left; margin-left: 5px;'><i class='fa fa-times-circle'></i><span style='margin-left: 4px; position: relative;'>Delete</span></div>");
+                    var setProfile = $("<div style='float: left; margin-left: 5px;'><i class='fa fa-plus-square'></i><span style='margin-left: 4px; position: relative;'>Set Profile</span></div>");
                     var exportButton = $("<div style='float: left; margin-left: 5px;'><i class='fa fa-file-excel-o'></i><span style='margin-left: 4px; position: relative;'>Export</span></div>");
                     var editButton = $("<div style='float: left; margin-left: 5px;'><i class='fa fa-edit'></i><span style='margin-left: 4px; position: relative;'>Edit</span></div>");
                     var reloadButton = $("<div style='float: left; margin-left: 5px;'><i class='fa fa-refresh'></i><span style='margin-left: 4px; position: relative;'>Reload</span></div>");
@@ -106,11 +128,13 @@
                     container.append(addButton);
                     container.append(editButton);
                     container.append(deleteButton);
+                    container.append(setProfile);   
                     container.append(exportButton);
                     container.append(reloadButton);
                     statusbar.append(container);
                     addButton.jqxButton({  width: 65, height: 18 });
                     deleteButton.jqxButton({  width: 65, height: 18 });
+                    setProfile.jqxButton({  width: 110, height: 18 });
                     editButton.jqxButton({  width: 65, height: 18 });
                     exportButton.jqxButton({  width: 65, height: 18 });
                     reloadButton.jqxButton({  width: 70, height: 18 });
@@ -123,6 +147,17 @@
                         $('#changePasswordChkDiv').hide();
                         $("#passwordDiv").show();
                         $('#createNewModalForm').modal('show');
+                    });
+                    setProfile.click(function (event) {
+                        $("#id").val("0");
+                        var selectedRowIndexes = $("#learnersGrid").jqxGrid('selectedrowindexes');
+                        var names = [];
+                        $.each(selectedRowIndexes, function(index , value){
+                            var dataRow = $("#learnersGrid").jqxGrid('getrowdata', value);
+                            names.push(dataRow.username);
+                        });
+                        $("#learnerNamesDiv").html(names.join()); 
+                        $('#setProfileModelForm').modal('show');
                     });
                     // delete selected row.
                     deleteButton.click(function (event) {
@@ -156,6 +191,19 @@
 
                 }
             });
+        }
+         function setProfile(e,btn){
+            e.preventDefault();
+            var l = Ladda.create(btn);
+            l.start(); 
+            var ids = $("#learnersGrid").jqxGrid('selectedrowindexes');
+            $("#ids").val(ids);          
+            $('#setProfileForm').ajaxSubmit(function( data ){
+                   l.stop();
+                  // var obj = $.parseJSON(data);
+                   //var dataRow = $.parseJSON(obj.row);
+                   showResponseToastr(data,"setProfileModelForm","setProfileForm","profileMainDiv");                     
+             })             
         }
          function saveLearners(e,btn){
             e.preventDefault();
@@ -218,7 +266,7 @@
         </div>
     </div>
 
-
+    <?include "SetProfile.php"?>
     <div id="createNewModalForm" class="modal fade" aria-hidden="true">
         <div class="modal-dialog" >
             <div class="modal-content">

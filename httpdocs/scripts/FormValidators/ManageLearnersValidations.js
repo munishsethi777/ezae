@@ -43,3 +43,27 @@ function reuiredIf(input){
     }
     return true;
 }
+
+$('#setProfileForm').jqxValidator({
+    hintType: 'label',
+    animationDuration: 0,
+    rules: [
+         { 
+         input: '#profileSelect', message: 'Select Profile!', action: 'keyup, blur', 
+               rule: function (select){
+                        return validate("profileSelect");
+               }                     
+         }
+            
+    ]
+});
+$("#setProfileForm").on('validationSuccess', function () {
+    $("#setProfileForm-iframe").fadeIn('fast');
+});
+function validate(input){
+    index = document.getElementById(input).selectedIndex;
+    if(index > 0){
+        return true;
+    }
+   return false;
+}

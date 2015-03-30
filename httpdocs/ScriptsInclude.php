@@ -6,7 +6,7 @@
         <link href="styles/toastr.min.css" rel="stylesheet">
         <link href="styles/plugins/steps/jquery.steps.css" rel="stylesheet">
         <link href="styles/toastr.min.css" rel="stylesheet">
-        
+        <link href="styles/plugins/chosen/chosen.css" rel="stylesheet">   
         <script type="text/javascript" src="scripts/jquery-1.10.2.min.js"></script>     
         <script src="scripts/bootstrap.min.js"></script>
         <script src="scripts/jquery.metisMenu.js"></script>
@@ -56,7 +56,8 @@
         <script src="scripts/plugins/validate/jquery.validate.min.js"></script>
         <!-- iCheck -->
         <script src="scripts/plugins/iCheck/icheck.min.js"></script>
-
+        <!-- Chosen -->
+        <script src="scripts/plugins/chosen/chosen.jquery.js"></script>
         <script>
             $(function() {
                toastr.options = {

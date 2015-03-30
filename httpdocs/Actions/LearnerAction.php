@@ -1,6 +1,7 @@
 <?php
  require_once('../IConstants.inc');  
  require_once($ConstantsArray['dbServerUrl'] ."Managers/UserMgr.php");
+ require_once($ConstantsArray['dbServerUrl'] ."Managers/LearningProfileMgr.php");
  require_once($ConstantsArray['dbServerUrl'] ."Managers/CustomFieldMgr.php");
     $call = "";
    if(isset($_POST["call"])){
@@ -104,11 +105,50 @@
         }
         writeResponse($message,$success);
      }
+     if(isset($_GET["call"]) && $_GET["call"] == "getLearningProfiles"){
+         try{
+            $lpMgr = LearningProfileMgr::getInstance();
+            $data = $lpMgr->getLearnerProfilesForGrid($adminSeq,$companySeq);
+        }catch(Exception $e){
+            $success = 0;
+            $message  = $e->getMessage();
+        }
+        $res = new ArrayObject(); 
+        $res["data"]  = $data;        
+        echo json_encode($res);
+     }
      
+     if($call == "setProfile"){
+         try{
+            $ids = $_POST["ids"];
+            $ids = explode(",",$ids);
+            $profiles = $_POST["profileSelect"];
+            $lpMgr = LearningProfileMgr::getInstance();
+            foreach($ids as $key=>$value){
+                $lpMgr->removeProfileFromLearner($value);
+                foreach($profiles as $k=>$v){
+                    $userLearningProfile = new UserLearningProfile();
+                    $userLearningProfile->setAdminSeq($adminSeq);
+                    $userLearningProfile->setTagSeq($v);
+                    $userLearningProfile->setUserSeq($value);
+                    $data = $lpMgr->setProfileOnLearner($userLearningProfile);    
+                }       
+            }     
+            $message  = "Profile set successfully on selected learners";     
+        }catch(Exception $e){
+            $success = 0;
+            $message  = $e->getMessage();
+        }
+        $res = new ArrayObject();
+        $res["message"]  = $message;
+        $res["success"]  = $success; 
+        $res["data"]  = $data;        
+        echo json_encode($res);
+     }
      function writeResponse($message,$success){
         $response = new ArrayObject();
         $response["message"]  = $message;
-        $response["success"]  = $success;
+        $response["success"]  = $success; 
         echo json_encode($response);   
      }  
     
