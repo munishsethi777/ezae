@@ -200,14 +200,23 @@
          function setProfile(e,btn){
             e.preventDefault();
             var l = Ladda.create(btn);
-            l.start(); 
-            var ids = $("#learnersGrid").jqxGrid('selectedrowindexes');
+            l.start();
+            var ids = [];
+            //alert($("#profileSelect option:selected").text()); 
+            var selectedIndexes  = $("#learnersGrid").jqxGrid('selectedrowindexes');
+            $.each(selectedIndexes,function(key,value) {
+                ids.push($("#learnersGrid").jqxGrid('getrowid',value)); 
+            })
             $("#ids").val(ids);          
             $('#setProfileForm').ajaxSubmit(function( data ){
                    l.stop();
                   // var obj = $.parseJSON(data);
                    //var dataRow = $.parseJSON(obj.row);
-                   showResponseToastr(data,"setProfileModelForm","setProfileForm","profileMainDiv");                     
+                    showResponseToastr(data,"setProfileModelForm","setProfileForm","profileMainDiv");
+                    $.each(selectedIndexes,function(key,value) {
+                        $("#learnersGrid").jqxGrid('setcellvalue', selectedIndexes, "profiles", "New Value"); 
+                    })    
+                                        
              })             
         }
          function saveLearners(e,btn){

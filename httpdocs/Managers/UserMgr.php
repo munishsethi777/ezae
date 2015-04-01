@@ -167,8 +167,20 @@ class UserMgr{
         $customfieldArry = $activityMgr->getCustomValuesArray($userCustomFields);
         $row = array_merge($row,$customfieldArry);        
         return json_encode($row);
+    }
+    
+    public function getUserLearningProfileArray($userSeq){
+        $userDataStore = UserDataStore::getInstance();
+        $profiles = $userDataStore->getUserLearningProfiles();
+        return $profiles;
     } 
 
+    public function getUserLearningProfiles($userSeq){
+        $userDataStore = UserDataStore::getInstance();
+        $profiles = $userDataStore->getUserLearningProfiles($userSeq);
+        $profiles = implode(", " ,$profiles);
+        return $profiles;
+    }
 }
 
 ?>

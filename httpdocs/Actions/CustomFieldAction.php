@@ -6,7 +6,6 @@
  require_once($ConstantsArray['dbServerUrl'] ."Utils/StringUtil.php"); 
  require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/UserCustomfield.php");
  require_once($ConstantsArray['dbServerUrl'] ."DataStores/UserDataStore.php5");
-
    $call = $_GET["call"];
    $success = 1;
    $message = "";

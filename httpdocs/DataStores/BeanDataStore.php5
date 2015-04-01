@@ -139,6 +139,7 @@ class BeanDataStore {
         $db = MainDB::getInstance();
         $conn = $db->getConnection();
         $STH = $conn->prepare($query);
+        $STH->execute();
         $this->throwException($STH->errorInfo());
         $objList = $STH->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $this->className);
         return $objList;
@@ -185,7 +186,7 @@ class BeanDataStore {
       $conn = $db->getConnection();
       $sth = $conn->prepare($query);
       $sth->execute();
-      $this->throwException($sth->errorInfo());
+      //$this->throwException($sth->errorInfo());
       $objList = $sth->fetchAll();
       return $objList;
     }

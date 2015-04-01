@@ -5,6 +5,7 @@ require_once($ConstantsArray['dbServerUrl']. "DataStores/ModuleDataStore.php5");
 require_once($ConstantsArray['dbServerUrl']. "DataStores/ActivityDataStore.php5");
 require_once($ConstantsArray['dbServerUrl']. "Utils/ChartsUtil.php");
 require_once($ConstantsArray['dbServerUrl']. "Utils/SessionUtil.php5");
+require_once($ConstantsArray['dbServerUrl']. "Managers/UserMgr.php");
 class AdminMgr{
 
     private static $adminMgr;
@@ -59,7 +60,7 @@ class AdminMgr{
         $userFieldsJSON = $this->getUserAllFieldsJsonByCompany($companySeq);
         $userFieldsArr = json_decode($userFieldsJSON);
         unset($userFieldsArr[2]);//removing password field
-
+        $userMgr = UserMgr::getInstance();
         $usersDS = UserDataStore::getInstance();
         $users = $usersDS->findByCompany($companySeq);
         $fullArr = array();
@@ -68,6 +69,8 @@ class AdminMgr{
             $arr['id'] = $user->getSeq();
             $arr['username'] = $user->getUserName();
             $arr['emailid'] = $user->getEmailId();
+            $profile = $userMgr->getUserLearningProfiles($user->getSeq());
+            $arr['profiles'] = $profile;
             //$arr['password'] = $dataArr['password'];
             $arrCustomFields = ActivityMgr::getCustomValuesArray($user->getCustomFieldValues());
             $arr = array_merge($arr,$arrCustomFields);
@@ -205,6 +208,7 @@ class AdminMgr{
             $arr['username'] = $userObj->getUserName();
             $arr['password'] = $userObj->getPassword();
             $arr['emailid'] = $userObj->getEmailId();
+            $arr['profiles'] = $userObj->getEmailId();
             $arrCustomFields = ActivityMgr::getCustomValuesArray($userObj->getCustomFieldValues());
             $arr = array_merge($arr,$arrCustomFields);
             array_push($fullArr,$arr);
@@ -237,6 +241,12 @@ class AdminMgr{
             $arr = array();
             $arr['text'] = "EmailId";
             $arr['datafield'] = "emailid";
+            $arr['type'] = "string";
+            array_push($fullArr,$arr);
+            
+            $arr = array();
+            $arr['text'] = "Profiles";
+            $arr['datafield'] = "profiles";
             $arr['type'] = "string";
             array_push($fullArr,$arr);
         }

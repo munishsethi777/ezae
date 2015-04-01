@@ -78,6 +78,16 @@
         return $id;   
       }
 
+      
+      public function getUserLearningProfiles($userSeq){
+        $query = "select lp.tag from userlearningprofiles ulp inner join learningprofiles lp on ulp.tagseq  = lp.seq where ulp.userseq = $userSeq";
+        $learningProfileList = self::executeQuery($query);
+        $arr = array();
+        foreach($learningProfileList as $k=>$v){
+           array_push($arr,$v[0]);     
+        }
+        return $arr;
+    }
 
 
  }

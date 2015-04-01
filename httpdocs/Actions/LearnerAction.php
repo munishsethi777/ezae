@@ -124,6 +124,7 @@
             $ids = explode(",",$ids);
             $profiles = $_POST["profileSelect"];
             $lpMgr = LearningProfileMgr::getInstance();
+            $id = 0;
             foreach($ids as $key=>$value){
                 $lpMgr->removeProfileFromLearner($value);
                 foreach($profiles as $k=>$v){
@@ -131,9 +132,9 @@
                     $userLearningProfile->setAdminSeq($adminSeq);
                     $userLearningProfile->setTagSeq($v);
                     $userLearningProfile->setUserSeq($value);
-                    $data = $lpMgr->setProfileOnLearner($userLearningProfile);    
+                    $id = $lpMgr->setProfileOnLearner($userLearningProfile);    
                 }       
-            }     
+            }
             $message  = "Profile set successfully on selected learners";     
         }catch(Exception $e){
             $success = 0;
@@ -142,7 +143,7 @@
         $res = new ArrayObject();
         $res["message"]  = $message;
         $res["success"]  = $success; 
-        $res["data"]  = $data;        
+       // $res["data"]  = $data;        
         echo json_encode($res);
      }
      function writeResponse($message,$success){
