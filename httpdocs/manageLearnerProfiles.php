@@ -136,10 +136,15 @@
                     $('#createNewModalForm').modal('show');
                 });
                 // update row.
-                editButton.click(function (event) {
+                editButton.click(function (event){
                     $("#msgDiv").remove();
                     $("#errorDiv").remove();
-                    var selectedrowindex = $("#jqxgrid").jqxGrid('getselectedrowindex');
+                    $("#learningProfileForm")[0].reset(); 
+                    var selectedrowindex = $("#jqxgrid").jqxGrid('selectedrowindexes');
+                    if(selectedrowindex.length != 1){
+                        bootbox.alert("Please Select single row for edit.", function() {});
+                        return;    
+                    }
                     var row = $('#jqxgrid').jqxGrid('getrowdata', selectedrowindex);
                     $("#id").val(row.id);
                     $("#name").val(row.tag);

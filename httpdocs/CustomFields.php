@@ -12,7 +12,7 @@
             hintType: 'label',
             animationDuration: 0,
             rules: [
-               { input: '#fieldName', message: 'Field Name is required!', action: 'keyup, blur', rule: 'required' }
+               { input: '#fieldName', message: 'Field Name is required!', action: 'keyup, blur', rule: 'required' } 
                ]
         });
 
@@ -44,8 +44,6 @@
             $.get( "Actions/CustomFieldAction.php?call=saveCustomField", $formData,function( data ){
                 if(data != ""){
                    var obj = $.parseJSON(data);
-                   var statusDiv = '<button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>';
-                   statusDiv += obj.message;
                    if(obj.success == 1){
                        var dataRow = $.parseJSON(obj.row);
                        var id = $("#id").val();
@@ -62,15 +60,15 @@
                   }else{
                      showResponseNotification(data,"mainDiv","customFieldForm");
                   }
+                  $("#jqxgrid").jqxGrid('clearselection');
                 }
         });
     }
     function loadGrid(data){
         var columns = [
           { text: 'id', datafield: 'id' , hidden:true},
-          { text: 'Field Name' , datafield: 'name', width: 250 },
-          { text: 'Field Type', datafield: 'type' },
-          { text: 'Required', datafield: 'required', columntype: 'checkbox'}
+          { text: 'Field Name' , datafield: 'name' },
+          { text: 'Field Type', datafield: 'type' }
         ]
         var rows = Array();
         var dataFields = Array();
@@ -145,8 +143,13 @@
                 // update row.
                 editButton.click(function (event) {
                     $("#msgDiv").hide();
-                    $("#errorDiv").hide();
-                    var selectedrowindex = $("#jqxgrid").jqxGrid('getselectedrowindex');
+                    $("#errorDiv").hide();                   
+                    var selectedrowindex = $("#jqxgrid").jqxGrid('selectedrowindexes');
+                    if(selectedrowindex.length != 1){
+                         bootbox.alert("Please Select single row for edit.", function() {});
+                         return;    
+                    }
+                    $("#customFieldForm")[0].reset();
                     var row = $('#jqxgrid').jqxGrid('getrowdata', selectedrowindex);
                     $("#id").val(row.id);
                     $("#fieldName").val(row.name);
@@ -238,9 +241,6 @@
                                                         <option value="numeric">Numeric</option>
                                                         <option value="boolean">Yes/No</option>
                                                         </select>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label> <input name="isRequired" id="isRequired" type="checkbox" class="i-checks"> Required </label>
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveButton" type="button">

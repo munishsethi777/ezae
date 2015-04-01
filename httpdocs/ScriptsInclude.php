@@ -157,16 +157,20 @@
                                     var obj = $.parseJSON(data);
                                     var message = obj.message;
                                     if(obj.success == 1){
+                                       
                                         toastr.success(message,'Success');
-                                        $.each(selectedRowIndexes, function(index , value){
-                                            var id = $("#"  + gridId).jqxGrid('getrowid', value);
-                                            var commit = $("#"  + gridId).jqxGrid('deleterow', id);
-                                        });
+                                       //$.each(selectedRowIndexes, function(index , value){
+                                          //  var id = $("#"  + gridId).jqxGrid('getrowid', value);
+                                            var commit = $("#"  + gridId).jqxGrid('deleterow', ids);
+                                            $("#"+gridId).jqxGrid('clearselection');                                           
+                                        //});
                                     }else{
                                         toastr.error(message,'Failed');
                                     }
                                 }
+                                 
                             });
+                           
                         }
                     });
                 }else{

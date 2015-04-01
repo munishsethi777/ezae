@@ -37,8 +37,34 @@
             //Start----Import Learner button-------   
 
              $("#importButton").click(function(e){
-                    importLearners(e,this);
+                var btn = this;
+                var validationResult = function (isValid){
+                   if (isValid) {
+                        importLearners(e,btn); 
+                    }
+                }
+                $('#importLearnerForm').jqxValidator('validate', validationResult);
+                    
              });
+             
+             $('#importLearnerForm').jqxValidator({
+                hintType: 'label',
+                animationDuration: 0,
+                rules: [
+                 { input: '#fileUpload', message: 'Select file for import!', action: 'keyup, blur',rule: function (input, commit) {
+                        return validateFile(input);               
+                    } 
+                 }
+                ]
+             });
+             
+             function validateFile(input){
+                val = input[0].value;
+                if(val != ""){
+                    return true;
+                }
+                return false;
+             }
              $('#matchingform').jqxValidator({
                 hintType: 'label',
                 animationDuration: 0,
@@ -58,8 +84,12 @@
                  {
                  input: '#userNamePrefix', message: 'Prefix is required!', action: 'keyup, blur', rule:'required'
                  }
+                
                 ]
              });
+             
+             
+             
              function validate(input){
                     index = document.getElementById(input).selectedIndex;
                     if(index > 0){

@@ -171,7 +171,12 @@
                     editButton.click(function (event) {
                         $("#msgDiv").hide();
                         $("#errorDiv").hide();
-                        var selectedrowindex = $("#learnersGrid").jqxGrid('getselectedrowindex');
+                        $("#customFieldForm")[0].reset();  
+                        var selectedrowindex = $("#learnersGrid").jqxGrid('selectedrowindexes');
+                        if(selectedrowindex.length != 1){
+                             bootbox.alert("Please Select single row for edit.", function() {});
+                             return;    
+                        }
                         var row = $('#learnersGrid').jqxGrid('getrowdata', selectedrowindex);
                         $("#id").val(row.id);
                         $.each(columns, function (key, value){
@@ -226,7 +231,7 @@
                   }else{
                      showResponseNotification(data,"mainDiv","customFieldForm");
                   }
-                               
+                 $("#learnersGrid").jqxGrid('clearselection');              
              })             
         }
 </script>
