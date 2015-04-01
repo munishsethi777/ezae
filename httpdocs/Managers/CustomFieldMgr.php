@@ -34,7 +34,7 @@ require_once($ConstantsArray['dbServerUrl']. "Utils/SessionUtil.php5");
         $fullArr = array();
         $dataStore  = UserCustomFieldsDataStore::getInstance();
         //$cFields = $dataStore->findByCompany($companySeq);
-        $cFields = $dataStore->findAll();
+        $cFields = $dataStore->findAllByCompany();
         foreach($cFields as $customField){
             $field = new UserCustomField();
             $field = $customField;
@@ -51,14 +51,14 @@ require_once($ConstantsArray['dbServerUrl']. "Utils/SessionUtil.php5");
         $dataStore = new BeanDataStore("UserCustomField",UserCustomField::$tableName);
         $dataStore->deleteInList($ids);
     }
-    
+
     public function isExists($adminSeq,$companyseq){
         $dataStore = new BeanDataStore("UserCustomField",UserCustomField::$tableName);
         $params = array();
         $params['adminseq'] = $adminSeq;
         $params['companyseq'] = $companyseq;
         $count = $dataStore->executeCountQuery($params);
-        return $count > 0;   
+        return $count > 0;
     }
     public function getCustomfieldTitles($adminSeq,$companyseq){
         $dataStore = new BeanDataStore("UserCustomField",UserCustomField::$tableName);
@@ -68,11 +68,11 @@ require_once($ConstantsArray['dbServerUrl']. "Utils/SessionUtil.php5");
         $params['adminseq'] = $adminSeq;
         $params['companyseq'] = $companyseq;
         $titles = $dataStore->executeAttributeQuery($attributes,$params);
-        $titleArr = array();        
+        $titleArr = array();
         foreach($titles as $arr ){
             array_push($titleArr,$arr[0]);
         }
-        return $titleArr;   
+        return $titleArr;
     }
   }
 ?>

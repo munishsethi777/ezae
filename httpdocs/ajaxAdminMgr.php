@@ -6,6 +6,9 @@
   require_once($ConstantsArray['dbServerUrl'] ."Managers/ModuleMgr.php5");
   require_once($ConstantsArray['dbServerUrl'] ."Utils/SessionUtil.php5");
   require_once($ConstantsArray['dbServerUrl'] ."Utils/CustomFieldsFormGenerator.php");
+  require_once($ConstantsArray['dbServerUrl'] ."log4php/Logger.php");
+  Logger::configure($ConstantsArray['dbServerUrl'] .'log4php/log4php.xml');
+  $logger = Logger::getLogger("logger");
 
 
   $call = $_GET["call"];
@@ -158,10 +161,12 @@
       $adminMgr = new AdminMgr();
       $admin = $adminMgr->logInAdmin($username,$password);
       if($admin){
+          $logger->info("Login Successful");
           $sessionUtil = SessionUtil::getInstance();
           $sessionUtil->createAdminSession($admin);
           echo 1;
       }else{
+          $logger->info("Login Failure");
           echo 0;
       }
       return;
