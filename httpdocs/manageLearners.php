@@ -203,6 +203,9 @@
             l.start();
             var ids = [];
             //alert($("#profileSelect option:selected").text()); 
+           var selctedValues =  $.map($("#profileSelect_chosen").find(".search-choice span"), function (option) {
+                                    return $(option).text()
+                                    });
             var selectedIndexes  = $("#learnersGrid").jqxGrid('selectedrowindexes');
             $.each(selectedIndexes,function(key,value) {
                 ids.push($("#learnersGrid").jqxGrid('getrowid',value)); 
@@ -210,13 +213,14 @@
             $("#ids").val(ids);          
             $('#setProfileForm').ajaxSubmit(function( data ){
                    l.stop();
-                  // var obj = $.parseJSON(data);
+                   var obj = $.parseJSON(data);
                    //var dataRow = $.parseJSON(obj.row);
                     showResponseToastr(data,"setProfileModelForm","setProfileForm","profileMainDiv");
-                    $.each(selectedIndexes,function(key,value) {
-                        $("#learnersGrid").jqxGrid('setcellvalue', selectedIndexes, "profiles", "New Value"); 
-                    })    
-                                        
+                    if(obj.success == 1){
+                        $.each(selectedIndexes,function(key,value) {
+                            $("#learnersGrid").jqxGrid('setcellvalue', value, "profiles", selctedValues); 
+                        });        
+                    }             
              })             
         }
          function saveLearners(e,btn){
