@@ -68,9 +68,10 @@ class BeanDataStore {
             $SQL = "INSERT INTO ". $this->tableName ." ({$columnString}) VALUES ({$valueString})";
             $STH = $conn->prepare($SQL);
             $STH->execute(array_values($columnValueArry));
+            $id = $conn->lastInsertId();
         }
         $this->throwException($STH->errorInfo());
-        $id = $conn->lastInsertId();
+       
         return $id;
     }
 
@@ -125,7 +126,13 @@ class BeanDataStore {
         $STH->execute();
         $this->throwException($STH->errorInfo());
     }
-
+    public function deleteAllByCompany(){
+        $db = MainDB::getInstance();
+        $conn = $db->getConnection();
+        $STH = $conn->prepare("delete from " . $this->tableName . " where companyseq = " . $this->companySeq);
+        $STH->execute();
+        $this->throwException($STH->errorInfo());
+    }
     public function executeConditionQuery($colValuePair){
         $query_array = array();
         foreach ($colValuePair as $key => $value){

@@ -13,6 +13,9 @@
             checkboxClass: 'icheckbox_square-green'
         })
         loadFieldBlocks();
+        $("#saveBtn").click(function(e){
+            saveSignupfields(e,this);
+        })
     })
     function loadFieldBlocks(){
         var url = 'ajaxAdminMgr.php?call=getLearnersFieldsForFormManagement';
@@ -22,6 +25,16 @@
                 checkboxClass: 'icheckbox_square-green'
             })
         });
+    }
+    
+    function saveSignupfields(e,btn){
+        e.preventDefault();
+        var l = Ladda.create(btn);
+        l.start();            
+        $('#SignupFieldForm').ajaxSubmit(function( data ){
+            l.stop();
+            showResponseNotification(data,"mainDiv","#SignupFieldForm");
+        })             
     }
 </script>
 </head>
@@ -45,11 +58,21 @@
             </div>
         </div>
 
-        <div class="wrapper wrapper-content animated fadeIn">
+        <div class="wrapper wrapper-content animated fadeIn mainDiv">
             <p>You may drag and drop various field sections to maintain the sequance of registration form fields.</p>
-            <div class="col-lg-12" id="customFieldsBlock">
-
-            </div>
+            <form role="form"  method="post" action="Actions/SignupFormAction.php" id="SignupFieldForm" class="form-horizontal">
+                <input type="hidden" value="saveSignupFormFields" name="call"> 
+                <div class="col-lg-12" id="customFieldsBlock">
+                    
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveBtn" type="button">
+                        <span class="ladda-label">Save</span></button>  
+                    </div>
+                </div>
+            </form>
+            
         </div>
 </body>
 </html>

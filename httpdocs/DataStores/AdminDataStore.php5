@@ -35,6 +35,10 @@
         return null;
     }
 
+    public function ChangePassword($password,$adminSeq){
+        $query = "update admins set password  = '$password' where seq = $adminSeq ";
+        $this->executeQuery($query);   
+    }
 
 
 

@@ -1,7 +1,8 @@
 <?php
 require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/Company.php");  
 require_once($ConstantsArray['dbServerUrl'] ."Managers/AdminMgr.php");
-require_once($ConstantsArray['dbServerUrl'] ."DataStores/CompanyDataStore.php");       
+require_once($ConstantsArray['dbServerUrl'] ."DataStores/CompanyDataStore.php");
+require_once($ConstantsArray['dbServerUrl'] ."Utils/SessionUtil.php5");         
 class CompanyMgr{
     
     private static $companyMgr;
@@ -22,7 +23,7 @@ class CompanyMgr{
         $contactPerson = $_GET["contactperson"];
         $address = $_GET["address"];
         $phone =   $_GET["phone"];
-        
+        $isUpdate = $_GET["isUpdate"];
         $company = new Company();
         $company->setName($name);
         $company->setDescription($description);
@@ -33,12 +34,23 @@ class CompanyMgr{
         $company->setPhone($phone);
         $company->setIsEnabled(true);
         $company->setCreatedOn(new DateTime());
+        if($isUpdate == "true"){
+            $sessionUtil = SessionUtil::getInstance();
+            $seq = $sessionUtil->getAdminLoggedInCompanySeq();
+            $company->setSeq($seq);   
+        }
         
         $CDS = CompanyDataStore::getInstance();
         $id = $CDS->save($company);
         $adminMgr = new AdminMgr();
         $adminMgr->saveAdmin($id);       
         
+    }
+    
+    public function getCompanyBySeq($companySeq){
+        $CDS = CompanyDataStore::getInstance();
+        $company =  $CDS->FindBySeq($companySeq);
+        return $company;      
     }   
 }
      

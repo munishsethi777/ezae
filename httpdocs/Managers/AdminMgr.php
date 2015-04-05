@@ -6,6 +6,7 @@ require_once($ConstantsArray['dbServerUrl']. "DataStores/ActivityDataStore.php5"
 require_once($ConstantsArray['dbServerUrl']. "Utils/ChartsUtil.php");
 require_once($ConstantsArray['dbServerUrl']. "Utils/SessionUtil.php5");
 require_once($ConstantsArray['dbServerUrl']. "Managers/UserMgr.php");
+require_once($ConstantsArray['dbServerUrl']. "Managers/SignupFormMgr.php");  
 class AdminMgr{
 
     private static $adminMgr;
@@ -21,12 +22,20 @@ class AdminMgr{
     }
     //called from ajaxAdminMgr
     public function logInAdmin($username, $password){
-            $adminDataStore = AdminDataStore::getInstance();
-            $admin = new Admin();
-            $admin = $adminDataStore->findByUserName($username);
-            return $admin;
+        $adminDataStore = AdminDataStore::getInstance();
+        $admin = new Admin();
+        $admin = $adminDataStore->findByUserName($username);
+        return $admin;
     }
-
+    public function isPasswordExist($password){
+        $adminDataStore = AdminDataStore::getInstance();
+        $sessionUtil = SessionUtil::getInstance();
+        $adminSeq = $sessionUtil->getAdminLoggedInSeq();
+        $params["password"] = $password;
+        $params["seq"] = $adminSeq;
+        $count = $adminDataStore->executeCountQuery($params);
+        return $count > 0;
+    }
     //called from ajaxAdminMgr
     public static function getModulesDataJson($companySeq){
         $modules = AdminMgr::getModulesByCompany($companySeq);
@@ -138,12 +147,17 @@ class AdminMgr{
 
     //called from ajaxAdminMgr for registration form settings
     public function getLearnersFieldsForFormManagementHtml($companySeq){
-        $customFields =  $this->getCustomFieldsByCompany($companySeq);
         $customFieldsFormGenerator = CustomFieldsFormGenerator::getInstance();
-        $html = $customFieldsFormGenerator->getDivsForFormSettings($customFields);
+        $signupFieldMgr = SignupFormMgr::getInstance();
+        $customFields = $signupFieldMgr->getSignupFormFields($companySeq);
+        $isExists =  count($customFields) > 0;
+        if(!$isExists){
+            $customFields =  $this->getCustomFieldsByCompany($companySeq);    
+        }                      
+        $html = $customFieldsFormGenerator->getDivsForFormSettings($customFields,$isExists);
         return $html;
-
     }
+    
     //called from ajaxAdminMgr for compartive data
     public function getModuleComparativeForChart($moduleSeq, $customFieldName, $criteria,$companySeq){
         $chartsUtil = ChartsUtil::getInstance();
@@ -293,6 +307,7 @@ class AdminMgr{
             $password = $_GET["adminPassword"];
             $email = $_GET["adminEmail"];
             $mobile = $_GET["adminMobile"];
+            $isUpdate = $_GET["isUpdate"];
             $admin = new Admin();
             $admin->setCompanySeq($companySeq);
             $admin->setName($name);
@@ -304,6 +319,11 @@ class AdminMgr{
             $admin->setIsEnabled(true);
             $admin->setLastModifiedOn(new DateTime());
             $admin->setCreatedOn(new DateTime());
+            if($isUpdate == "true"){
+                $sessionUtil = SessionUtil::getInstance();
+                $seq = $sessionUtil->getAdminLoggedInSeq();
+                $admin->setSeq($seq);   
+            }
             $ADS = AdminDataStore::getInstance();
             $id = $ADS->save($admin);
             if($id > 0){
@@ -311,6 +331,20 @@ class AdminMgr{
                 $sessionUtil->createAdminSession($admin);
             }
 
+    }
+    public function ChangePassword($password){
+        $adminDataStore = AdminDataStore::getInstance();
+        $sessionUtil = SessionUtil::getInstance();
+        $adminSeq = $sessionUtil->getAdminLoggedInSeq();
+        $companySeq = $sessionUtil->getAdminLoggedInCompanySeq();
+        $adminDataStore->ChangePassword($password,$adminSeq);
+    }
+    
+     public function FindBySeq($seq){
+        $adminDataStore = AdminDataStore::getInstance();
+        $adminObj =  new Admin();
+        $adminObj = $adminDataStore->findBySeq($seq);
+        return $adminObj;
     }
 
 }

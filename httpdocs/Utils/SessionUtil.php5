@@ -13,9 +13,9 @@ class SessionUtil{
     private static $USER_COMPANY_SEQ = "userCompanyseq";
 
 	private static $sessionUtil;
-	public static function getInstance(){
-        session_start();
+	public static function getInstance(){       
 		if (!self::$sessionUtil){
+            session_start();
 			self::$sessionUtil = new SessionUtil();
 			return self::$sessionUtil;
 		}
@@ -24,9 +24,9 @@ class SessionUtil{
 
     public function createAdminSession(Admin $admin){
         $arr = new ArrayObject();
-        $arr[$ADMIN_SEQ] = $admin->getSeq();
-        $arr[$ADMIN_NAME] = $admin->getName();
-        $arr[$ADMIN_COMPANY_SEQ] = $admin->getCompanySeq();
+        $arr[0] = $admin->getSeq();
+        $arr[1] = $admin->getName();
+        $arr[2] = $admin->getCompanySeq();
 
         $_SESSION[self::$ADMIN_LOGGED_IN] = $arr;
         $_SESSION[self::$LOGIN_MODE] = 'admin';

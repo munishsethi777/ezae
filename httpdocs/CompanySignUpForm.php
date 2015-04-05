@@ -19,6 +19,7 @@
             });
             //$('#loginButton').jqxButton({ width: 100, height: 25 });
             $("#createButton").click(function (e) {
+                var btn = this;
                 var validationResult = function (isValid) {
                     if (isValid) {
                         submitCreate(e,btn);
@@ -36,6 +37,7 @@
             l.start();
             $formData = $("#createCompanyForm").serializeArray();
                 $.get( "Actions/CompanyAction.php?call=saveCompany", $formData,function( data ){
+                    l.stop();
                     if(data != ""){
                          var obj = $.parseJSON(data);
                          if(obj.success == 1){

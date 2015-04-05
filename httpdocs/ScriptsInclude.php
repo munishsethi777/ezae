@@ -132,8 +132,12 @@
                 $("#errorDiv").remove(); 
                 var message = obj.message;                
                 if(obj.success == 1){
-                    $("#" + modelId).modal('hide');
-                    $("#" + formId)[0].reset();
+                    if(modelId != null){
+                        $("#" + modelId).modal('hide');    
+                    }
+                    if(formId != null){
+                        $("#" + formId)[0].reset();    
+                    }
                     toastr.success(message); 
                 }else{
                    var errorDiv = getErrorDiv(message);

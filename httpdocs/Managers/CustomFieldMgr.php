@@ -1,5 +1,5 @@
 <?php
-require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/UserCustomfield.php");
+require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/UserCustomField.php");
 require_once($ConstantsArray['dbServerUrl'] ."DataStores/BeanDataStore.php5");
 require_once($ConstantsArray['dbServerUrl'] ."DataStores/UserCustomFieldsDataStore.php5");
 require_once($ConstantsArray['dbServerUrl']. "Utils/SessionUtil.php5");

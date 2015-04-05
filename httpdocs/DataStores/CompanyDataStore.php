@@ -24,5 +24,15 @@ require_once("BeanDataStore.php5");
         return null;
     }
     
+    public function FindBySeq($companySeq){
+        $colValuePair = array(); 
+        $colValuePair["seq"] = $companySeq;
+        $ComapnyList = $this->executeConditionQuery($colValuePair);
+        if(sizeof($ComapnyList) > 0){
+            return $ComapnyList[0];
+        }    
+    }
+    
+    
  }
 ?>

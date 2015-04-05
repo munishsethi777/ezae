@@ -63,9 +63,8 @@
                             <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">Amandeep Dubey</strong>
                              </span> <span class="text-muted text-xs block">Administrator - JCB <b class="caret"></b></span> </span> </a>
                             <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                                <li><a href="profile.html">Profile</a></li>
-                                <li><a href="contacts.html">Contacts</a></li>
-                                <li><a href="mailbox.html">Mailbox</a></li>
+                                <li><a href="AdminSettings.php">Profile</a></li>
+                                <li><a href="ChangePasswordForm.php">Change Password</a></li>
                                 <li class="divider"></li>
                                 <li><a href="logout.php">Logout</a></li>
                             </ul>
@@ -78,7 +77,7 @@
                         <a href="index.html"><i class="fa fa-dashboard"></i> <span class="nav-label">Dashboard</span></a>
                     </li>
                      <li>
-                        <a href="Customfields.php"><i class="fa fa-th-large"></i> <span class="nav-label">CustomFields</span></a>
+                        <a href="CustomFields.php"><i class="fa fa-th-large"></i> <span class="nav-label">CustomFields</span></a>
                     </li>
                     <li>
                         <a href="layouts.html"><i class="fa fa-angellist"></i> <span class="nav-label">LeaderBoards</span></a>

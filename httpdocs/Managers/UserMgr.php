@@ -2,7 +2,8 @@
 set_include_path(get_include_path() . PATH_SEPARATOR . '../../../Classes/');    
 require_once($ConstantsArray['dbServerUrl']. "DataStores/UserDataStore.php5");
 require_once($ConstantsArray['dbServerUrl']. "Managers/ActivityMgr.php"); 
-require_once($ConstantsArray['dbServerUrl']. "DataStores/UserCustomFieldsDataStore.php5");         
+require_once($ConstantsArray['dbServerUrl']. "DataStores/UserCustomFieldsDataStore.php5");
+require_once($ConstantsArray['dbServerUrl']. "Utils/StringUtil.php");         
 include $ConstantsArray['dbServerUrl'] . '//PHPExcel/IOFactory.php';
 
 class UserMgr{
@@ -52,30 +53,32 @@ class UserMgr{
         $fieldTypeRow = array(); 
         $rows = array();
         foreach ($firstRow as $key => $value) {
-            $fieldName =  "field" . $i;
-            $dataFields = array();
-            $dataFields['name'] = $fieldName;
-            $dataFields['type'] = "string";
-            array_push($dataFieldArr,$dataFields);            
-            
-            $col = array();
-            $col['text'] = "Field " . $i;
-            $col['datafield'] = $fieldName;
-            $col['width'] = 250;
-            $col['columntype'] = "template";        
-            //$col['createeditor'] = '%createGridEditor%';
-           // $col['initeditor'] = "initGridEditor"; 
-          // $col['geteditorvalue'] = "gridEditorValue";
-            //$col = $this->replaceQuotes($col);
-            array_push($columnsArr,$col);
-            if($isFirstRowContainsFields || $isCustomfieldsExists){
-                $fieldNameRow[$fieldName] =  $value;                
-            }else{
-                $fieldNameRow[$fieldName] =  "{FieldName}";
-            }
-            $fieldTypeRow[$fieldName] =   "Text";     
-            
+            //if(!StringUtil::IsNullOrEmptyString($value)){
+                $fieldName =  "field" . $i;
+                $dataFields = array();
+                $dataFields['name'] = $fieldName;
+                $dataFields['type'] = "string";
+                array_push($dataFieldArr,$dataFields);            
+                
+                $col = array();
+                $col['text'] = "Field " . $i;
+                $col['datafield'] = $fieldName;
+                $col['width'] = 250;
+                $col['columntype'] = "template";        
+                //$col['createeditor'] = '%createGridEditor%';
+               // $col['initeditor'] = "initGridEditor"; 
+              // $col['geteditorvalue'] = "gridEditorValue";
+                //$col = $this->replaceQuotes($col);
+                array_push($columnsArr,$col);
+                if($isFirstRowContainsFields || $isCustomfieldsExists){
+                    $fieldNameRow[$fieldName] =  $value;                
+                }else{
+                    $fieldNameRow[$fieldName] =  "{FieldName}";
+                }
+                $fieldTypeRow[$fieldName] =   "Text";
+            //}
             $i++;
+            
         }
         array_push($rows,$fieldNameRow);
         if(!$isCustomfieldsExists){
@@ -98,16 +101,18 @@ class UserMgr{
         $colArr = array();
         $dataFieldArr = array();
         foreach ($row as $key => $value) {
-            $dataFields = array();
-            $dataFields['name'] = $value;
-            $dataFields['type'] = "string";
-            array_push($dataFieldArr,$dataFields);
-            
-            $col = array();
-            $col['text'] = $value;
-            $col['datafield'] = $value;
-            $col['width'] = 250;
-            array_push($colArr,$col);  
+            //if(!StringUtil::IsNullOrEmptyString($value)){
+                $dataFields = array();
+                $dataFields['name'] = $value;
+                $dataFields['type'] = "string";
+                array_push($dataFieldArr,$dataFields);
+                
+                $col = array();
+                $col['text'] = $value;
+                $col['datafield'] = $value;
+                $col['width'] = 250;
+                array_push($colArr,$col);
+            //}  
         }
         array_push($fullArr,$dataFieldArr);
         array_push($fullArr,$colArr);
@@ -127,8 +132,10 @@ class UserMgr{
         foreach($learnersArr as $row){
             $i = 0;            
             $col = array();            
-            foreach ($row as $key => $value){                
+            foreach ($row as $key => $value){ 
+             //if(!StringUtil::IsNullOrEmptyString($value)){               
                 $rowData[$dataFields[$i]['name']] = $value;
+             ///}
                 $i++;                
             }
             array_push($rows,$rowData);
@@ -144,7 +151,7 @@ class UserMgr{
         $dataStore = UserDataStore::getInstance();
         $dataStore->deleteInList($ids);
     }
-    public function Save($user,$isAjaxCall = false,$isChangePassword){
+    public function Save($user,$isAjaxCall = false,$isChangePassword = false){
         $dataStore = UserDataStore::getInstance();
         $id = $dataStore->saveUser($user,$isChangePassword);        
         if($isAjaxCall){
