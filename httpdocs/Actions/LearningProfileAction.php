@@ -28,6 +28,7 @@
             $learner->setAdminSeq($adminSeq);
             $learner->setCompanySeq($companySeq);
             $learner->setCreatedOn(new DateTime());
+            $learner->setLastModifiedOn(new DateTime());
             
             $lpMgr = LearningProfileMgr::getInstance();
             $data = $lpMgr->Save($learner,true);
@@ -54,10 +55,10 @@
             $success = 0;
             $message  = $e->getMessage();
         }
-        $response = new ArrayObject();
-        $response["data"] = $data;
-        $json = json_encode($response);
-        echo $json;
+        //$response = new ArrayObject();
+//        $response["data"] = $data;
+//        $json = json_encode($response);
+        echo $data;
     }
     if($call == "deleteLearningProfile"){
          $ids = $_GET["ids"];
