@@ -28,6 +28,7 @@ require_once($ConstantsArray['dbServerUrl']. "Utils/SessionUtil.php5");
         $row["id"] = $customField->getSeq();
         $row["name"] = $customField->getTitle();
         $row["type"] = $customField->getFieldType();
+        $row["lastmodifiedon"] = $customField->getLastModifiedOn()->format("m-d-Y h:m:s A");
         return json_encode($row);
     }
     function getCustomfieldsForGrid($companySeq){
@@ -42,6 +43,7 @@ require_once($ConstantsArray['dbServerUrl']. "Utils/SessionUtil.php5");
             $arr['id'] = $field->getSeq();
             $arr['name'] = $field->getTitle();
             $arr['type'] = $field->getFieldType();
+            $arr['lastmodifiedon'] = $field->getLastModifiedOn(); 
             array_push($fullArr,$arr);
         }
         return json_encode($fullArr);

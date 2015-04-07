@@ -29,6 +29,7 @@
                 $arr['id'] = $lp->getSeq();
                 $arr['tag'] = $lp->getTag();
                 $arr['description'] = $lp->getDescription();
+                $arr['lastmodifiedon'] = $lp->getLastModifiedOn();                
                 array_push($fullArr,$arr);
             }
             return json_encode($fullArr);    
@@ -54,6 +55,7 @@
             $row["id"] = $learningProfileObj->getSeq();
             $row["tag"] = $learningProfileObj->getTag();
             $row["description"] = $learningProfileObj->getDescription();
+            $row['lastmodifiedon'] = $learningProfileObj->getLastModifiedOn()->format("m-d-Y h:m:s A");                
             return json_encode($row);
         } 
         

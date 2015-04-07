@@ -1,7 +1,7 @@
 <?php
   class User{
       public static $tableNames = "users";
-      private $seq,$username,$password,$emailid,$companyseq,$customfieldvalues,$createdon,$isenabled,$lastmodfiedon,$adminseq;
+      private $seq,$username,$password,$emailid,$companyseq,$customfieldvalues,$createdon,$isenabled,$lastmodifiedon,$adminseq;
 
       public function setSeq($seq_){
         $this->seq = $seq_;
@@ -59,10 +59,10 @@
       }
       
       public function setLastModifiedOn($lastModifiedOn_){
-          $this->lastmodfiedon = $lastModifiedOn_;
+          $this->lastmodifiedon = $lastModifiedOn_;
       }
       public function getLastModifiedOn(){
-          return $this->lastmodfiedon;          
+          return $this->lastmodifiedon;          
       }
       
       public function setAdminSeq($adminSeq_){

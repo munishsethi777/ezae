@@ -73,7 +73,9 @@ class AdminMgr{
         $usersDS = UserDataStore::getInstance();
         $users = $usersDS->findByCompany($companySeq);
         $fullArr = array();
-        foreach($users as $user){
+        foreach($users as $userObj){
+            $user = new User();
+            $user = $userObj;
             $arr = array();
             $arr['id'] = $user->getSeq();
             $arr['username'] = $user->getUserName();
@@ -83,6 +85,7 @@ class AdminMgr{
             //$arr['password'] = $dataArr['password'];
             $arrCustomFields = ActivityMgr::getCustomValuesArray($user->getCustomFieldValues());
             $arr = array_merge($arr,$arrCustomFields);
+            $arr["lastmodifiedon"] = $user->getLastModifiedOn();
             array_push($fullArr,$arr);
         }
 
@@ -225,6 +228,7 @@ class AdminMgr{
             $arr['profiles'] = $userObj->getEmailId();
             $arrCustomFields = ActivityMgr::getCustomValuesArray($userObj->getCustomFieldValues());
             $arr = array_merge($arr,$arrCustomFields);
+            $arr['lastmodifiedon'] = $userObj->getLastModifiedOn();
             array_push($fullArr,$arr);
         }
         return json_encode($fullArr);
@@ -263,6 +267,8 @@ class AdminMgr{
             $arr['datafield'] = "profiles";
             $arr['type'] = "string";
             array_push($fullArr,$arr);
+            
+            
         }
 
         foreach($customFields as $customField){
@@ -279,6 +285,12 @@ class AdminMgr{
             }
             array_push($fullArr,$arr);
         }
+            $arr = array();
+            $arr['text'] = "Modified On";
+            $arr['datafield'] = "lastmodifiedon";
+            $arr['type'] = "date";
+            $arr['cellsformat'] = "MM-dd-yyyy hh:mm:ss tt";
+            array_push($fullArr,$arr);
         return json_encode($fullArr);
 
     }

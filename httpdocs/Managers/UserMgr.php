@@ -168,10 +168,10 @@ class UserMgr{
         $row["username"] = $userObj->getUserName();
         $row["password"] = $userObj->getPassword();
         $row["emailid"] = $userObj->getEmailId();
-        $row["createDate"] = $userObj->getCreatedOn();
         $userCustomFields = $userObj->getCustomFieldValues();
         $activityMgr = ActivityMgr::getInstance();
         $customfieldArry = $activityMgr->getCustomValuesArray($userCustomFields);
+        $row["lastmodifiedon"] = $userObj->getLastModifiedOn()->format("m-d-Y h:m:s A");
         $row = array_merge($row,$customfieldArry);        
         return json_encode($row);
     }
