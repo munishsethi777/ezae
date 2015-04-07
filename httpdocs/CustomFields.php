@@ -4,10 +4,8 @@
 <?include "ScriptsInclude.php"?>
 <script type="text/javascript">
     $(document).ready(function(){
-        var url = 'Actions/CustomFieldAction.php?call=getCustomFields';
-                $.getJSON(url, function(data){
-                loadGrid(data);
-        });
+        //populateGrid();
+        loadGrid();
         $('#customFieldForm').jqxValidator({
             hintType: 'label',
             animationDuration: 0,
@@ -22,10 +20,16 @@
         $("#saveNewBtn").click(function (e) {
             validateAndSave(e,this); 
         });
-        $("#customFieldForm").on('validationSuccess', function () {
+        $("#customFieldForm").on('validationSuccess', function (){
             $("#createCompanyForm-iframe").fadeIn('fast');
         });
     })
+    function populateGrid(){
+         var url = 'Actions/CustomFieldAction.php?call=getCustomFields';
+                $.getJSON(url, function(data){
+                loadGrid(data);
+        });
+    }
     function validateAndSave(e,btn){
         $("#errorDiv").hide();
         $("#msgDiv").hide();
@@ -55,38 +59,44 @@
                        }
                        l.stop();
                    }
-                   if(btn.id == "saveButton"){
+                  if(btn.id == "saveButton"){
                      showResponseToastr(data,"createNewModalForm","customFieldForm","mainDiv"); 
                   }else{
                      showResponseNotification(data,"mainDiv","customFieldForm");
                   }
                   $("#jqxgrid").jqxGrid('clearselection');
+                  
                 }
         });
     }
-    function loadGrid(data){
+    function loadGrid(){
         var columns = [
           { text: 'id', datafield: 'id' , hidden:true},
           { text: 'Field Name' , datafield: 'name' },
-          { text: 'Field Type', datafield: 'type' }
+          { text: 'Field Type', datafield: 'type' },
+          { text: 'Modified On', datafield: 'lastmodifiedon',cellsformat: 'MM-dd-yyyy hh:mm:ss tt' } 
         ]
         var rows = Array();
         var dataFields = Array();
-        if(data != null){
-            rows = $.parseJSON(data.data);
-        }
+        //if(data != null){
+//            rows = $.parseJSON(data.data);
+//        }
         var source =
         {
             datatype: "json",
             id: 'id',
+            
             pagesize: 20,
-            localData: rows,
+            //localData: rows,
             datafields: [
                 { name: 'id', type: 'integer' },
                 { name: 'name', type: 'string' },
                 { name: 'type', type: 'string' },
+                { name: 'lastmodifiedon', type: 'date' },
                 { name: 'required', type: 'bool' }
             ],
+            url: 'Actions/CustomFieldAction.php?call=getCustomFields',
+           
             addrow: function (rowid, rowdata, position, commit) {
                 commit(true);
             },
@@ -98,6 +108,7 @@
             }
         };
         var dataAdapter = new $.jqx.dataAdapter(source);
+        
         $("#jqxgrid").jqxGrid(
         {
             height: '100%',
@@ -163,7 +174,7 @@
                 });
                 // reload grid data.
                 reloadButton.click(function (event) {
-                    $("#jqxgrid").jqxGrid({ source: dataAdapter });
+                   $("#jqxgrid").jqxGrid({ source: dataAdapter });
                 });
             }
         });

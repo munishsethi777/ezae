@@ -4,10 +4,10 @@
 <?include "ScriptsInclude.php"?>
 <script type="text/javascript">
     $(document).ready(function(){
-        var url = 'Actions/LearningProfileAction.php?call=getLearnerProfilesForGrid';
-                $.getJSON(url, function(data){
-                loadGrid(data);
-        });
+      //  var url = 'Actions/LearningProfileAction.php?call=getLearnerProfilesForGrid';
+//                $.getJSON(url, function(data){
+                loadGrid();
+        //});
         $('#learningProfileForm').jqxValidator({
             hintType: 'label',
             animationDuration: 0,
@@ -61,28 +61,31 @@
                                
              })             
      }
-    function loadGrid(data){
+    function loadGrid(){
         var columns = [
           { text: 'id', datafield: 'id' , hidden:true},
           { text: 'Profile Name' , datafield: 'tag', width: 250 },
-          { text: 'Description', datafield: 'description' }
+          { text: 'Description', datafield: 'description' },
+          { text: 'Modified On', datafield: 'lastmodifiedon' ,cellsformat: 'MM-dd-yyyy hh:mm:ss tt' }
         ]
-        var rows = Array();
-        var dataFields = Array();
-        if(data != null){
-            rows = $.parseJSON(data.data);
-        }
+       // var rows = Array();
+//        var dataFields = Array();
+//        if(data != null){
+//            rows = $.parseJSON(data.data);
+//        }
         var source =
         {
             datatype: "json",
             id: 'id',
             pagesize: 20,
-            localData: rows,
+            //localData: rows,
             datafields: [
                 { name: 'id', type: 'integer' },
                 { name: 'tag', type: 'string' },
-                { name: 'description', type: 'string' }
+                { name: 'description', type: 'string' },
+                { name: 'lastmodifiedon', type: 'date' }
             ],
+            url: 'Actions/LearningProfileAction.php?call=getLearnerProfilesForGrid',
             addrow: function (rowid, rowdata, position, commit) {
                 commit(true);
             },

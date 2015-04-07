@@ -299,13 +299,16 @@
         function saveImportedData(e,btn){
             e.preventDefault();
             var l = Ladda.create(btn);
-            l.start();
-            $matchingFormData = $("#matchingform").serializeArray();
+            l.start();          
+           
             var fieldRows = $("#learnersFieldsGrid").jqxGrid('getrows');
             var fieldData = JSON.stringify(fieldRows);
             var dataRows = $("#learnersDataGrid").jqxGrid('getrows');   
             var data = JSON.stringify(dataRows);
-            var url = "Actions/CustomFieldAction.php?call=saveImportedFields&fieldData=" + fieldData + "&data=" + data;
+            $("#fieldData").val(fieldData);
+            $("#data").val(data);
+            $matchingFormData = $("#matchingform").serializeArray();                
+            var url = "Actions/CustomFieldAction.php?call=saveImportedFields";
             $.get(url,$matchingFormData,function( data ){
                 showResponseDiv(data,"mainDiv");
                 l.stop();                                  
@@ -432,7 +435,9 @@
                             <h2>Match Basic fields</h2>
                             <p>From the imported data, what fields would you like to treat as username, password and email ids of learners.</p>
                             <div class="row">
-                                <form id="matchingform" class="form-horizontal wizard-big">    
+                                <form id="matchingform" class="form-horizontal wizard-big"> 
+                                    <input id="fieldData" name="fieldData" type="hidden">  
+                                    <input id="data" name="data" type="hidden">     
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">Username</label>
                                         <div class="col-sm-4">

@@ -66,7 +66,7 @@
         $adminSeq =  $sessionUtil->getAdminLoggedInSeq();
         $customField->setCompanySeq($companySeq);
         $customField->setAdminSeq($adminSeq);
-
+        $customField->setLastModifiedOn(new DateTime());
         $dataRow = "";
         try{
             $customFieldMgr = CustomFieldMgr ::getInstance();
@@ -95,10 +95,10 @@
             $success = 0;
             $message  = $e->getMessage();
         }
-        $response = new ArrayObject();
-        $response["data"] = $customfields;
-        $json = json_encode($response);
-        echo $json;
+       // $response = new ArrayObject();
+       // $response["data"] = $customfields;
+       // $json = json_encode($response);
+        echo $customfields;
     }
 
     if($call == "isCustomFieldsExists"){
@@ -221,6 +221,7 @@
         $customField->setFieldType($type);
         $customField->setCompanySeq($companySeq);
         $customField->setAdminSeq($adminSeq);
+        $customField->setLastModifiedOn(new DateTime()); 
         return  $customField;
      }
 
@@ -258,6 +259,7 @@
             $user->setCompanySeq($companySeq);
             $user->setAdminSeq($adminSeq);
             $user->setCreatedOn(new DateTime());
+            $user->setLastModifiedOn(new DateTime());
             $user->setIsEnabled(true);
             $customVal = "";
             unset($value["uid"]);
