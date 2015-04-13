@@ -79,7 +79,7 @@
         private function getDraggableHtmlForEachField($userCustomField,$isRequired = false,$isVisible = false){
             $customFieldObj = new UserCustomField();
             $customFieldObj = $userCustomField;              
-            $html = '<div class="ibox border-bottom">';
+            $html = '<div class="ibox border-bottom" id="block_'.$customFieldObj->getSeq()  . '">';
             $html .= '<input type="hidden" name="seq[]" value="' . $customFieldObj->getSeq() . '" />';
             $html .= '<input type="hidden" name="fieldName_'. $customFieldObj->getSeq() . '" value="' . $customFieldObj->getName() . '" />';
             $html .= '<input type="hidden" name="fieldType_'. $customFieldObj->getSeq() . '" value="' . $customFieldObj->getFieldType() . '" />';

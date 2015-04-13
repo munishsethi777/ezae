@@ -23,7 +23,7 @@ $('#customFieldForm').jqxValidator({
                
            }
        },
-       { input: '#emailid', message: 'Email Name is required!', action: 'keyup, blur', rule: 'required' },
+       
        { input: '#emailid', message: 'Invalid e-mail!', action: 'keyup', rule: 'email' },
        ]
 });

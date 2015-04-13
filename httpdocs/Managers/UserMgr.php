@@ -70,9 +70,12 @@ class UserMgr{
               // $col['geteditorvalue'] = "gridEditorValue";
                 //$col = $this->replaceQuotes($col);
                 array_push($columnsArr,$col);
-                if($isFirstRowContainsFields || $isCustomfieldsExists){
+                if($isFirstRowContainsFields){
                     $fieldNameRow[$fieldName] =  $value;                
-                }else{
+                }else if($isCustomfieldsExists){
+                    $fieldNameRow[$fieldName] =  "Select Field";      
+                }
+                else{
                     $fieldNameRow[$fieldName] =  "{FieldName}";
                 }
                 $fieldTypeRow[$fieldName] =   "Text";

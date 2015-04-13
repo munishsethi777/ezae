@@ -10,12 +10,19 @@ require_once($ConstantsArray['dbServerUrl']. "Managers/SignupFormMgr.php");
 class AdminMgr{
 
     private static $adminMgr;
+    private static $adminDataStore;
+    private static $adminSeq;
+    private static $sessionUtil;
+
 
     public static function getInstance()
     {
         if (!self::$adminMgr)
         {
             self::$adminMgr = new AdminMgr();
+            self::$adminDataStore = AdminDataStore::getInstance();
+            self::$sessionUtil = SessionUtil::getInstance();   
+            self::$adminSeq = self::$sessionUtil->getAdminLoggedInSeq();            
             return self::$adminMgr;
         }
         return self::$adminMgr;
@@ -26,6 +33,15 @@ class AdminMgr{
         $admin = new Admin();
         $admin = $adminDataStore->findByUserName($username);
         return $admin;
+    }
+    public function getSignupFormHeaderText(){
+        $params["seq"] = self::$adminSeq;
+        $attributes[0] = "signupformheader";
+        $text = self::$adminDataStore->executeAttributeQuery($attributes,$params);
+        if(count($text) > 0){
+           return $text[0][0]; 
+        }
+        return null;
     }
     public function isPasswordExist($password){
         $adminDataStore = AdminDataStore::getInstance();
@@ -158,7 +174,12 @@ class AdminMgr{
             $customFields =  $this->getCustomFieldsByCompany($companySeq);    
         }                      
         $html = $customFieldsFormGenerator->getDivsForFormSettings($customFields,$isExists);
-        return $html;
+        $adminMgr = AdminMgr::getInstance();
+        $headerText = $adminMgr->getSignupFormHeaderText();
+        $response = array();
+        $response["html"] = $html;
+        $response["headerText"] = $headerText;
+        return json_encode($response);
     }
     
     //called from ajaxAdminMgr for compartive data
@@ -213,6 +234,11 @@ class AdminMgr{
         $customFields = $this->getCustomFieldsByCompany($companySeq);
         $userFieldsJSON = self::getUserFieldsGridHeadersJSON($customFields);
         return $userFieldsJSON;
+    }
+    
+    public function updateHeaderText($headerText,$adminSeq){
+        $adminDataStore = AdminDataStore::getInstance();
+        $adminDataStore->updateHeaderText($headerText,$adminSeq);
     }
 
     private static function getUsersDataJson($users){
