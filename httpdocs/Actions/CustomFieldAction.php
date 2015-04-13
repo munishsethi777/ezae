@@ -1,6 +1,7 @@
 <?php
  require_once('../IConstants.inc');
  require_once($ConstantsArray['dbServerUrl'] ."Managers/CustomFieldMgr.php");
+ require_once($ConstantsArray['dbServerUrl'] ."Managers/CompanyMgr.php");
  require_once($ConstantsArray['dbServerUrl'] ."Managers/UserMgr.php"); 
  require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/User.php");
  require_once($ConstantsArray['dbServerUrl'] ."Utils/StringUtil.php"); 
@@ -47,6 +48,7 @@
              }
              saveUserRowsData($rows,$userNameField,$passwordField,$emailField,$prefix,$isRandomPassword,$companySeq,$adminSeq);
              $message = "Imported data Saved successfully";
+             updatePrefix($companySeq,$prefix);
         }
 
         $response = getResponse($success,$message);
@@ -270,5 +272,10 @@
             $user->setCustomFieldValues($customVal);
             $userMgr->Save($user);
         }
+     }
+     
+     function updatePrefix($companySeq,$prefix){
+        $companyMgr = CompanyMgr::getInstance();
+        $companyMgr->updateCompanyPrefix($companySeq,$prefix);   
      }
 ?>

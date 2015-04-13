@@ -51,7 +51,18 @@ class CompanyMgr{
         $CDS = CompanyDataStore::getInstance();
         $company =  $CDS->FindBySeq($companySeq);
         return $company;      
-    }   
+    }
+    
+    public function getCompanyPrefix($companySeq){
+        $CDS = CompanyDataStore::getInstance();
+        $prefix =  $CDS->getPrefix($companySeq);
+        return $prefix;      
+    }
+    
+    public function updateCompanyPrefix($companySeq,$prefix){    
+        $CDS = CompanyDataStore::getInstance();
+        $prefix =  $CDS->updateCompanyPrefix($companySeq,$prefix);
+    }     
 }
      
     

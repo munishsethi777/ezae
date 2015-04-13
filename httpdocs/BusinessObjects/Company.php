@@ -2,7 +2,7 @@
   class Company{
 
       public static $tableName = "companies";
-      private $seq,$name,$description,$emailid,$mobileno,$contactperson,$createdon,$isenabled,$address,$phone;
+      private $seq,$name,$description,$emailid,$mobileno,$contactperson,$createdon,$isenabled,$address,$phone,$prefix;
 
       public function setSeq($seq_){
         $this->seq = $seq_;
@@ -72,6 +72,13 @@
       }
       public function getPhone(){
         return $this->phone;
+      }
+      
+      public function setPrefix($prefix_){
+        $this->prefix = $prefix_;
+      }
+      public function getPrefix(){
+        return $this->prefix;
       }
 
      }

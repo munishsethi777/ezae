@@ -33,6 +33,23 @@ require_once("BeanDataStore.php5");
         }    
     }
     
+    public function getPrefix($companySeq){
+       $params = array();
+       $params["seq"] = $companySeq;
+       $attribute =  array();
+       $attribute[0] = "prefix";
+       $prefix = $this->executeAttributeQuery($attribute,$params);
+       if(isset($prefix)){
+         $prefix = $prefix[0][0];  
+       }
+       return $prefix;
+    }
+    
+        
+    public function updateCompanyPrefix($companySeq,$prefix){    
+        $query = "update companies set prefix  = '$prefix' where seq = $companySeq ";
+        $this->executeQuery($query);      
+    }
     
  }
 ?>

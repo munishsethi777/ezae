@@ -11,6 +11,8 @@
 		 var DUPLICATE_FIELD_NAME_MESSAGE = "Duplicate Field Name : - "
 		 var FIELD_GRID_ID = "#learnersFieldsGrid";
 		 var fieldNames = [];
+         var companyPrefix = "";
+         
         $(document).ready(function (){
            
             $("#wform").steps({
@@ -21,7 +23,8 @@
                     // Always allow going backward even if the current step contains invalid fields!
                       
                     if(newIndex == 2){
-                        populatedFields();   
+                        populatedFields();
+                        populatePrefix();   
                      }
                     if (currentIndex < newIndex && currentIndex == 1)
 					{
@@ -248,9 +251,6 @@
 					if(obj.names.length > 0){
                         fieldNames = obj.names;
 						editor.jqxDropDownList({autoDropDownHeight: true,width: width, height: height, source: obj.names});
-                        
-                  
-                        
 					}else{
 						editor.find('input').val("");
 					}					
@@ -298,10 +298,12 @@
             });
             
         }
-        function populatedFields(){
-            var row = $('#learnersFieldsGrid').jqxGrid('getrowdata', 0);
-            var options = "<option value=''>Select Field</option>"; 
-            $.each(fieldNames, function(key, value) {
+        function populatedFields(){            
+            var options = "<option value=''>Select Field</option>";
+            if(fieldNames.length == 0){
+                 fieldNames = $('#learnersFieldsGrid').jqxGrid('getrowdata', 0);      
+            } 
+            $.each(fieldNames, function(key, value){
                 if(value != 0){ 
                     options += "<option value='" + value + "'>" + value + "</option>";
                 }
@@ -310,6 +312,18 @@
                $("#eSelect").html(options);    
            })            
         }
+        
+        function populatePrefix(){
+            if(companyPrefix == ""){
+                $.get("Actions/CompanyAction.php?call=getPrefix",function(data){
+                    companyPrefix = data;
+                    $("#userNamePrefix").val(companyPrefix); 
+                     populatePrefixUserName();  
+                });        
+            }
+            
+        }
+        
         function saveImportedData(e,btn){
             e.preventDefault();
             var l = Ladda.create(btn);
@@ -357,6 +371,19 @@
 				toastr.error(DUPLICATE_FIELD_NAME_MESSAGE + hasDup,"Field Name Error");
 			}
 			return flag;
+        }
+        function populatePrefixUserName(){
+            fieldName = $("#uSelect").val();
+            var fieldValue = $("#learnersDataGrid").jqxGrid('getcellvalue', 0, fieldName)
+            var prefix = $("#userNamePrefix").val();
+            if(fieldValue == "" || fieldValue == undefined){
+                fieldValue = "UserName";
+            }
+            if(prefix == ""){
+                prefix = "prefix_"
+            }
+            var userName = prefix + fieldValue;
+            $("#prefixExample").html("Example " +  userName);
         }
 </script>
 <style type="text/css">
@@ -474,13 +501,14 @@
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">Username</label>
                                         <div class="col-sm-4">
-                                            <select class="form-control m-b" name="userName" id="uSelect">
+                                            <select class="form-control m-b" name="userName" id="uSelect" onChange="javascript:populatePrefixUserName()">
                                             </select>
                                         </div>
 
                                         <label class="col-sm-2 control-label">Prefixed with</label>
                                         <div class="col-sm-4">
-                                            <input id="userNamePrefix" name="userNamePrefix" type="text" class="form-control required">
+                                            <input id="userNamePrefix" onkeyup="javascript:populatePrefixUserName()" name="userNamePrefix" type="text" class="form-control required">
+                                            <span id="prefixExample" class="help-block m-b-none">Example prefix_UserName </span>
                                         </div>
                                     </div>
                                     <div class="form-group">

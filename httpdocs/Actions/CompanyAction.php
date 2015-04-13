@@ -72,4 +72,16 @@
         $response["message"]  = $message;
         echo json_encode($response);  
     }
+    
+    if($call == "getPrefix"){
+        try{       
+            $companyMgr = CompanyMgr::getInstance();
+            $refix =   $companyMgr->getCompanyPrefix($companySeq); 
+        }catch (Exception $e){
+            $success = 0;
+            $message  = $e->getMessage();    
+        }
+        echo $refix;
+    }
+    
 ?>
