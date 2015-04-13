@@ -21,7 +21,6 @@
                     // Always allow going backward even if the current step contains invalid fields!
                       
                     if(newIndex == 2){
-                        alert(newIndex);
                         populatedFields();   
                      }
                     if (currentIndex < newIndex && currentIndex == 1)
