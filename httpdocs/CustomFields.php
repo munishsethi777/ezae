@@ -69,7 +69,7 @@
                 }
         });
     }
-    function loadGrid(){
+    function loadGrid(){ 
         var columns = [
           { text: 'id', datafield: 'id' , hidden:true},
           { text: 'Field Name' , datafield: 'name' },
@@ -145,6 +145,7 @@
 
                 // create new row.
                 addButton.click(function (event) {
+                    $("#saveNewBtnDiv").show();
                     $("#msgDiv").hide();
                     $("#errorDiv").hide();
                     $("#id").val(0);
@@ -153,6 +154,7 @@
                 });
                 // update row.
                 editButton.click(function (event) {
+                    $("#saveNewBtnDiv").hide();
                     $("#msgDiv").hide();
                     $("#errorDiv").hide();                   
                     var selectedrowindex = $("#jqxgrid").jqxGrid('selectedrowindexes');
@@ -213,7 +215,7 @@
     //}
 </script>
 </head>
-<body class='default'>
+<body class='default'> 
     <div id="wrapper">
         <?include("adminMenu.php");?>
         <div class="adminSingup animated fadeInRight" >
@@ -257,9 +259,11 @@
                                                         <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveButton" type="button">
                                                             <span class="ladda-label">Save</span>
                                                         </button>
-                                                        <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveNewBtn" type="button">
-                                                            <span class="ladda-label">Save & New</span>
-                                                        </button>
+                                                        <span id="saveNewBtnDiv">
+                                                            <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveNewBtn" type="button">
+                                                                <span class="ladda-label">Save & New</span>
+                                                            </button>
+                                                        </span>
                                                          <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
                                                     </div>
                                                 </form>

@@ -39,6 +39,11 @@
         $query = "update admins set password  = '$password' where seq = $adminSeq ";
         $this->executeQuery($query);   
     }
+    
+    public function updateHeaderText($headerText,$adminSeq){
+        $query = "update admins set signupformheader  = '$headerText' where seq = $adminSeq ";
+        $this->executeQuery($query);   
+    }
 
 
 

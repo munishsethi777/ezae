@@ -11,7 +11,6 @@
             $('#createCompanyForm').jqxValidator({
                 rules: [
                        { input: '#name', message: 'Company Name is required!', action: 'keyup, blur', rule: 'required' },
-                       { input: '#email', message: 'Email is required!', action: 'keyup, blur', rule: 'required' },
                        { input: '#adminPassword', message: 'password is required!', action: 'keyup, blur', rule: 'required' }
                       
                        

@@ -140,6 +140,7 @@
                     reloadButton.jqxButton({  width: 70, height: 18 });
                     // create new row.
                     addButton.click(function (event) {
+                        $("#saveNewBtnDiv").show();
                         $("#msgDiv").hide();
                         $("#errorDiv").hide();
                         $("#id").val("0");  
@@ -152,6 +153,7 @@
                         $("#id").val("0");
                         var selectedRowIndexes = $("#learnersGrid").jqxGrid('selectedrowindexes');
                         var names = [];
+                        $("#profileSelect").val("");
                         $.each(selectedRowIndexes, function(index , value){
                             var dataRow = $("#learnersGrid").jqxGrid('getrowdata', value);
                             names.push(dataRow.username);
@@ -169,6 +171,7 @@
                     });
                     // edit grid data.
                     editButton.click(function (event) {
+                        $("#saveNewBtnDiv").hide();
                         $("#msgDiv").hide();
                         $("#errorDiv").hide();
                         $("#customFieldForm")[0].reset();  
@@ -218,7 +221,15 @@
                     showResponseToastr(data,"setProfileModelForm","setProfileForm","profileMainDiv");
                     if(obj.success == 1){
                         $.each(selectedIndexes,function(key,value) {
-                            $("#learnersGrid").jqxGrid('setcellvalue', value, "profiles", selctedValues); 
+                            val = selctedValues;
+                            if(selectedIndexes.length > 1){
+                                profile = $("#learnersGrid").jqxGrid('getcellvalue', value, "profiles");
+                                if(profile != ""){
+                                    profile += "," + selctedValues;
+                                    val = profile;
+                                }    
+                            } 
+                            $("#learnersGrid").jqxGrid('setcellvalue', value, "profiles", val); 
                         });        
                     }             
              })             
@@ -339,9 +350,9 @@
                                      <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveBtn" type="button">
                                         <span class="ladda-label">Save</span>
                                     </button>
-                                    <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveNewBtn" type="button">
+                                    <span id="saveNewBtnDiv"><button class="btn btn-primary ladda-button" data-style="expand-right" id="saveNewBtn" type="button">
                                         <span class="ladda-label">Save & New</span>
-                                    </button>
+                                    </button></span>
                                      <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
                                 </div>
                             </form>

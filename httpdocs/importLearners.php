@@ -10,21 +10,32 @@
 		 var FIELD_NAME_MESSAGE = "Invalid Field Name in "
 		 var DUPLICATE_FIELD_NAME_MESSAGE = "Duplicate Field Name : - "
 		 var FIELD_GRID_ID = "#learnersFieldsGrid";
-		 
+		 var fieldNames = [];
         $(document).ready(function (){
            
             $("#wform").steps({
                 bodyTag: "div",
+                transitionEffect: "slide",
                 onStepChanging: function (event, currentIndex, newIndex)
                 {
                     // Always allow going backward even if the current step contains invalid fields!
-                    
+                      
+                    if(newIndex == 2){
+                        alert(newIndex);
+                        populatedFields();   
+                     }
                     if (currentIndex < newIndex && currentIndex == 1)
 					{
                         return validateFieldNames();
                     }else{
 						return true;
 					}
+                     
+                },
+                
+                onFinished: function (event, currentIndex)
+                {
+                     location.href= ("manageLearners.php")
                 }
 			}); 
 	   
@@ -141,7 +152,7 @@
                        createFieldsGrid(fieldGridData);
                        var data = $.parseJSON(obj.data);
                        createDataGrid(data);
-                       populatedFields();
+                       //populatedFields();
                         //$("#wizard").steps("setStep", 2); 
                        toastr.success(message);
                    } else{
@@ -236,9 +247,13 @@
 				$.get(url,function(data){
 					var obj = $.parseJSON(data);
 					if(obj.names.length > 0){
-						editor.jqxDropDownList({autoDropDownHeight: true,  width: width, height: height, source: obj.names});
+                        fieldNames = obj.names;
+						editor.jqxDropDownList({autoDropDownHeight: true,width: width, height: height, source: obj.names});
+                        
+                  
+                        
 					}else{
-						editor.find('input').val();
+						editor.find('input').val("");
 					}					
 				});
             }
@@ -287,7 +302,7 @@
         function populatedFields(){
             var row = $('#learnersFieldsGrid').jqxGrid('getrowdata', 0);
             var options = "<option value=''>Select Field</option>"; 
-            $.each(row, function(key, value) {
+            $.each(fieldNames, function(key, value) {
                 if(value != 0){ 
                     options += "<option value='" + value + "'>" + value + "</option>";
                 }
@@ -320,10 +335,14 @@
 			var temp = [];
 			var hasDup = [];
 			delete row['uid'];
+            var cellclass = function (row, columnfield, value) {
+                return 'red';
+            }
             $.each(row, function(key, value){
-				if(value == "" || value == "{FieldName}"){
+				if(value == "" || value == "{FieldName}" || value == "Select Field"){
 					flag = false;
 					toastr.error(FIELD_NAME_MESSAGE + key + ".","Field Name Error");
+                    $('#learnersFieldsGrid').jqxGrid('setcolumnproperty', key, 'cellclassname', cellclass);
 					return false;
 				}else{
 					if($.inArray(value, temp) === -1) {
@@ -350,6 +369,21 @@
 
 
 <body class='default'>
+<style>
+       .red:not(.jqx-grid-cell-hover):not(.jqx-grid-cell-selected), .jqx-widget .red:not(.jqx-grid-cell-hover):not(.jqx-grid-cell-selected) {
+            color: black;
+            background-color: #ED5565;
+        }
+        .red {
+            color: black\9;
+            background-color: #e83636\9;
+        }
+        .none:not(.jqx-grid-cell-hover):not(.jqx-grid-cell-selected), .jqx-widget .none:not(.jqx-grid-cell-hover):not(.jqx-grid-cell-selected) {
+            color: black;
+            background-color: none;
+        }
+
+</style>
 <div class="wrapper wrapper-content animated fadeInRight">
     <?include("adminMenu.php");?>
     <div class="row wrapper border-bottom white-bg page-heading">
@@ -376,7 +410,7 @@
                 </div>
                 <div class="ibox-content">
                     <div id="wform" action="#" class="wizard-big">
-                        <h1>First Step</h1>
+                        <h1>Import Learners</h1>
                         <div class="step-content">
 
                             <h2>Select and Import File</h2>
@@ -416,7 +450,7 @@
                             </div>
                         </div>
 
-                        <h1>Second Step</h1>
+                        <h1>Identify header fields</h1>
                         <div class="step-content" >
                             <h2>Manage Imported Data</h2>
                             <p>Please set Field names, Type and if is required. Also have a look at imported data from file.</p>
@@ -430,7 +464,7 @@
                             </div>
                         </div>
 
-                        <h1>Third Step</h1>
+                        <h1>Match login details</h1>
                         <div class="step-content maindiv">
                             <h2>Match Basic fields</h2>
                             <p>From the imported data, what fields would you like to treat as username, password and email ids of learners.</p>

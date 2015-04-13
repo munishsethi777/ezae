@@ -1,7 +1,7 @@
 <?php
   class Admin{
       public static $tableName = "admins";
-      private $seq,$username,$password,$emailid,$companyseq,$name,$createdon,$isenabled,$lastmodifiedon,$mobileno,$issuper;
+      private $seq,$username,$password,$emailid,$companyseq,$name,$createdon,$isenabled,$lastmodifiedon,$mobileno,$issuper,$signupformheader;
 
       public function setSeq($seq_){
         $this->seq = $seq_;
@@ -74,6 +74,12 @@
       }
       public function getIsSuper(){
         return $this->issuper;
+      }
+      public function setSignupFormHeader($header_){
+        $this->signupformheader = $header_;
+      }
+      public function getSignupFormHeader(){
+        return $this->signupformheader;
       }
   }
 ?>

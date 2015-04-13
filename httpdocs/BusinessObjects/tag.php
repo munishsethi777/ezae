@@ -1,6 +1,6 @@
 <?php
   class tag {
-        private $seq,$tag,$description,$adminseq,$companyseq,$createdon ;
+        private $seq,$tag,$description,$adminseq,$companyseq,$createdon,$lastmodifiedon ;
         public function setSeq($seq_){
             $this->seq = $seq_;
         }
@@ -43,6 +43,12 @@
         }
         public function getCreatedOn(){
             return $this->createdon;
+        }
+        public function setLastModifiedOn($lastModifiedOn_){
+            $this->lastmodifiedon = $lastModifiedOn_;
+        }
+        public function getLastModifiedOn(){
+            return $this->lastmodifiedon;
         }
         
   }

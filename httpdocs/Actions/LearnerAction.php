@@ -125,8 +125,10 @@
             $profiles = $_POST["profileSelect"];
             $lpMgr = LearningProfileMgr::getInstance();
             $id = 0;
+            if(count($ids) == 1){
+                $lpMgr->removeProfileFromLearner($ids[0]);    
+            }
             foreach($ids as $key=>$value){
-                $lpMgr->removeProfileFromLearner($value);
                 foreach($profiles as $k=>$v){
                     $userLearningProfile = new UserLearningProfile();
                     $userLearningProfile->setAdminSeq($adminSeq);
@@ -135,6 +137,7 @@
                     $id = $lpMgr->setProfileOnLearner($userLearningProfile);    
                 }       
             }
+            $data = $lpMgr->getLearnerProfilesForGrid($adminSeq,$companySeq);
             $message  = "Profile set successfully on selected learners";     
         }catch(Exception $e){
             $success = 0;
@@ -143,7 +146,7 @@
         $res = new ArrayObject();
         $res["message"]  = $message;
         $res["success"]  = $success; 
-       // $res["data"]  = $data;        
+        //$res["data"]  = $data;        
         echo json_encode($res);
      }
      function writeResponse($message,$success){

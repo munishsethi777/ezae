@@ -132,6 +132,7 @@
 
                 // create new row.
                 addButton.click(function (event) {
+                    $("#saveNewBtnDiv").show();
                     $("#msgDiv").remove();
                     $("#errorDiv").remove();
                     $("#id").val("0");
@@ -140,6 +141,7 @@
                 });
                 // update row.
                 editButton.click(function (event){
+                    $("#saveNewBtnDiv").hide();
                     $("#msgDiv").remove();
                     $("#errorDiv").remove();
                     $("#learningProfileForm")[0].reset(); 
@@ -223,9 +225,9 @@
                                                         <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveBtn" type="button">
                                                             <span class="ladda-label">Save</span>
                                                         </button>
-                                                        <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveNewBtn" type="button">
+                                                        <span id="saveNewBtnDiv"><button class="btn btn-primary ladda-button" data-style="expand-right" id="saveNewBtn" type="button">
                                                             <span class="ladda-label">Save & New</span>
-                                                        </button>
+                                                        </button></span>
                                                         <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
                                                      </div>
                                                 </form>
