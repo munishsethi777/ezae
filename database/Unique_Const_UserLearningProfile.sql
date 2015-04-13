@@ -1,0 +1,1 @@
+ALTER TABLE `userlearningprofiles` ADD UNIQUE `unique_index`(userseq, tagseq);
