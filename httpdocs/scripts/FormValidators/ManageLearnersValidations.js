@@ -8,21 +8,21 @@ $('#customFieldForm').jqxValidator({
                 return reuiredIf(input);               
            } 
        },
-       { input: '#confirmPassword', message: 'Confirm Password is required!', action: 'keyup, blur', rule: function (input, commit) {
-                return reuiredIf(input);               
-           }
-       },
-       { input: '#confirmPassword', message: 'Confirm Password doesn\'t match!', action: 'keyup, focus', rule: function (input, commit) {
-               if(isCheckValidtion()){
-                   if (input.val() === $('#password').val()) {
-                        return true;
-                   }
-                   return false;       
-               }
-               return true;
-               
-           }
-       },
+       //{ input: '#confirmPassword', message: 'Confirm Password is required!', action: 'keyup, blur', rule: function (input, commit) {
+//                return reuiredIf(input);               
+//           }
+//       },
+//       { input: '#confirmPassword', message: 'Confirm Password doesn\'t match!', action: 'keyup, focus', rule: function (input, commit) {
+//               if(isCheckValidtion()){
+//                   if (input.val() === $('#password').val()) {
+//                        return true;
+//                   }
+//                   return false;       
+//               }
+//               return true;
+//               
+//           }
+//       },
        
        { input: '#emailid', message: 'Invalid e-mail!', action: 'keyup', rule: 'email' },
        ]

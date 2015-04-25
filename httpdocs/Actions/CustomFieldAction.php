@@ -2,8 +2,10 @@
  require_once('../IConstants.inc');
  require_once($ConstantsArray['dbServerUrl'] ."Managers/CustomFieldMgr.php");
  require_once($ConstantsArray['dbServerUrl'] ."Managers/CompanyMgr.php");
- require_once($ConstantsArray['dbServerUrl'] ."Managers/UserMgr.php"); 
+ require_once($ConstantsArray['dbServerUrl'] ."Managers/UserMgr.php");
+ require_once($ConstantsArray['dbServerUrl'] ."Managers/MatchingRuleMgr.php");   
  require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/User.php");
+ require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/MatchingRule.php");
  require_once($ConstantsArray['dbServerUrl'] ."Utils/StringUtil.php"); 
  require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/UserCustomField.php");
  require_once($ConstantsArray['dbServerUrl'] ."DataStores/UserDataStore.php5");
@@ -49,6 +51,7 @@
              saveUserRowsData($rows,$userNameField,$passwordField,$emailField,$prefix,$isRandomPassword,$companySeq,$adminSeq);
              $message = "Imported data Saved successfully";
              updatePrefix($companySeq,$prefix);
+             saveMatchingRules($userNameField,$passwordField,$emailField);
         }
 
         $response = getResponse($success,$message);
@@ -150,6 +153,25 @@
     $response["success"]  = $success;
     $response["message"]  = $message;
     return $response;
+    }
+    
+    
+    if($call == "getMatchingRule"){
+        try{
+            $matchingRuleMgr = MatchingRuleMgr::getInstance();       
+            $matchingRule = $matchingRuleMgr->getMatchingRule();
+            $json = "";
+            if(isset($matchingRule)){
+                $arr =  (array) $matchingRule;
+                $json = json_encode($arr, JSON_FORCE_OBJECT);
+                $json = str_replace("\\u0000MatchingRule\\u0000","",$json);    
+            }
+        }catch(Exception $e){
+            $success = 0;
+            $message  = $e->getMessage();
+        }
+        $json = json_encode($json);
+        echo $json;
     }
     function validateImportedData($data,$fieldData,$userNameField,$passwordField,$emailField){
      $msg = array();
@@ -278,4 +300,19 @@
         $companyMgr = CompanyMgr::getInstance();
         $companyMgr->updateCompanyPrefix($companySeq,$prefix);   
      }
+     
+     function saveMatchingRules($userNameField,$passwordField,$emailField){
+        global $companySeq;
+        global $adminSeq;
+        $matchingRule = new MatchingRule();
+        $matchingRule->setAdminSeq($adminSeq);
+        $matchingRule->setCompanySeq($companySeq);
+        $matchingRule->setUserNameField($userNameField);
+        $matchingRule->setEmailField($emailField);
+        $matchingRule->setPasswordField($passwordField);
+        $matchingRuleMgr = MatchingRuleMgr::getInstance();
+        $id = $matchingRuleMgr->saveMatchingRule($matchingRule);    
+     }
+     
+     
 ?>

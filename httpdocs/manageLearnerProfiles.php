@@ -45,20 +45,22 @@
              $('#learningProfileForm').ajaxSubmit(function( data ){
                    l.stop();
                    var obj = $.parseJSON(data);
-                   var dataRow = $.parseJSON(obj.row);
-                   var id = $("#id").val();
-                   if(id != "0"){
-                       var selectedrowindex = $("#jqxgrid").jqxGrid('getselectedrowindex');
-                       $("#jqxgrid").jqxGrid('updaterow', id, dataRow);
-                   }else{
-                     $("#jqxgrid").jqxGrid('addrow', null, dataRow);
+                   var dataRow = "";
+                   if(obj.success == 1){
+                        var dataRow = $.parseJSON(obj.row);  
+                        var id = $("#id").val();
+                       if(id != "0"){
+                           var selectedrowindex = $("#jqxgrid").jqxGrid('getselectedrowindex');
+                           $("#jqxgrid").jqxGrid('updaterow', id, dataRow);
+                       }else{
+                         $("#jqxgrid").jqxGrid('addrow', null, dataRow);
+                       }  
                    }
-                  if(btn.id == "saveBtn"){
+                   if(btn.id == "saveBtn"){
                      showResponseToastr(data,"createNewModalForm","learningProfileForm","mainDiv"); 
                   }else{
                      showResponseNotification(data,"mainDiv","learningProfileForm");
-                  }
-                               
+                  }                           
              })             
      }
     function loadGrid(){
@@ -66,6 +68,7 @@
           { text: 'id', datafield: 'id' , hidden:true},
           { text: 'Profile Name' , datafield: 'tag', width: 250 },
           { text: 'Description', datafield: 'description' },
+          { text: 'Icon', datafield: 'awesomefontid' },
           { text: 'Modified On', datafield: 'lastmodifiedon' ,cellsformat: 'MM-dd-yyyy hh:mm:ss tt' }
         ]
        // var rows = Array();
@@ -83,6 +86,7 @@
                 { name: 'id', type: 'integer' },
                 { name: 'tag', type: 'string' },
                 { name: 'description', type: 'string' },
+                { name: 'awesomefontid', type: 'string' },
                 { name: 'lastmodifiedon', type: 'date' }
             ],
             url: 'Actions/LearningProfileAction.php?call=getLearnerProfilesForGrid',
@@ -155,6 +159,10 @@
                     $("#name").val(row.tag);
                     $("#description").val(row.description);
                     $('#createNewModalForm').modal('show');
+                    var selectedAwFont = $('#icon' + row.id).attr('class').replace("fa ","");
+                    if(selectedAwFont != ""){
+                        $("#awesomeFontId").val(selectedAwFont);    
+                    }
                 });
                 // delete row.
                 deleteButton.click(function (event) {
@@ -221,6 +229,17 @@
                                                         <label>Description</label>
                                                         <input type="text" id="description" name="description" placeholder="Description" class="form-control">
                                                     </div>
+                                                    <div class="form-group"> 
+                                                        <label>Icons</label> 
+                                                         <select class="form-control" id="awesomeFontId" name="awesomeFontId" style="font-family: 'FontAwesome', Helvetica;">
+                                                            <option value="fa-medium">&#xf23a; Medium</option> 
+                                                            <option value="fa-sellsy">&#xf213; Sellsy</option>
+                                                            <option value="fa-diamond">&#xf219; Diamond</option> 
+                                                            <option value="fa-user-secret">&#xf21b; Secret</option>
+                                                            <option value="fa-venus">&#xf221; Venus</option>     
+<                                                        </select>
+                                                    </div>
+                                                    
                                                     <div class="modal-footer">                                                       
                                                         <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveBtn" type="button">
                                                             <span class="ladda-label">Save</span>

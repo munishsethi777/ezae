@@ -59,7 +59,7 @@
                 $usrCustomFld = new UserCustomField();
                 $usrCustomFld = $userCustomField;
                 $labelTitle = $usrCustomFld->getTitle();
-                $inputCode = '<input type="text" name="cus_'. $usrCustomFld->getName() .'" id=cus_'. $usrCustomFld->getName()
+                $inputCode = '<input type="text" onkeyup="fillFormData(this)" name="cus_'. $usrCustomFld->getName() .'" id=cus_'. $usrCustomFld->getName()
                         .' placeholder="'. $usrCustomFld->getTitle() .'" class="form-control">';
 
                 if($usrCustomFld->getFieldType() == "boolean"){

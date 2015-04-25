@@ -7,8 +7,10 @@
  <?include "ScriptsInclude.php"?>
 
 <script type="text/javascript">
+        var mathingRule = "";
         $(document).ready(function (){
-            
+            toggleForm(true);
+            getMatchingRule();
             var url = 'ajaxAdminMgr.php?call=getLearnersForGrid';
             $.getJSON(url, function(data){
                 loadGrid(data);
@@ -36,12 +38,12 @@
             $("#saveNewBtn").click(function(e){
                 ValidateAndSave(e,this); 
             });
-            $("#isChangePassword").change(function(e){
+            $("#isMakeChange").change(function(e){
                 var isChecked = this.checked;
                 if(isChecked){
-                    $("#passwordDiv").show();    
+                    toggleForm(false);     
                 }else{
-                    $("#passwordDiv").hide();
+                    toggleForm(true); 
                 } 
             });
             //$('input[type="checkbox"][name="isChangePassword"]').on('ifChecked', function(event){
@@ -65,6 +67,12 @@
                 }
             }
             $('#customFieldForm').jqxValidator('validate', validationResult);
+        }
+        
+        function toggleForm(disabled){
+            $('#username').prop('readonly',disabled);
+            $('#password').prop('readonly',disabled);
+            $('#emailid').prop('readonly',disabled);
         }
         
         function loadFormFields(){
@@ -200,7 +208,7 @@
                 }
             });
         }
-         function setProfile(e,btn){
+        function setProfile(e,btn){
             e.preventDefault();
             var l = Ladda.create(btn);
             l.start();
@@ -234,7 +242,7 @@
                     }             
              })             
         }
-         function saveLearners(e,btn){
+        function saveLearners(e,btn){
             e.preventDefault();
             var l = Ladda.create(btn);
             l.start();            
@@ -257,6 +265,34 @@
                   }
                  $("#learnersGrid").jqxGrid('clearselection');              
              })             
+        }
+        
+        function fillFormData(input){
+            if(mathingRule != ""){
+                var name = input.name;
+               var value = input.value;
+               prefix = "cus_";
+               var userNameField = prefix + mathingRule.usernamefield;
+               var emailField = prefix + mathingRule.emailfield;
+               var passwordField = prefix + mathingRule.passwordfield;    
+               if(userNameField.trim() ==  name){
+                    $("#username").val(value);         
+               }             
+               if(emailField.trim() ==  name){
+                    $("#emailid").val(value);         
+               }
+               if(passwordField.trim() ==  name){
+                    $("#password").val(value);         
+               }         
+            }
+        }
+        
+        function getMatchingRule(){
+            $.getJSON("Actions/CustomFieldAction.php?call=getMatchingRule", function(data){
+                if(data != ""){
+                    mathingRule = $.parseJSON(data);                    
+                }
+            }) 
         }
 </script>
 
@@ -311,30 +347,29 @@
                                 <input type="hidden" value="createdDate" name="createdDate">  
                                 <input type="hidden" id="id" name="id" value="0">
                                 <div id="msgDiv" class="alert alert-success alert-dismissable" style="display:none;"></div>
-                                <div id="errorDiv" class="alert alert-danger alert-dismissable" style="display:none;"></div>                                
+                                <div id="errorDiv" class="alert alert-danger alert-dismissable" style="display:none;"></div>
+                               
+                                <h4 class="modal-title">Learner Details</h4>
+                                <div id="formFieldsDiv"></div>
+                                
+                                 <div class="hr-line-dashed"></div>
+                                <div class="form-group">
+                                    <label> <input name="isMakeChange" id="isMakeChange" type="checkbox"> Make Change </label>
+                                </div>                                    
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">User Name</label>
                                     <div class="col-sm-9">
                                         <input type="text" id="username" name="username" placeholder="User Name" class="form-control">
                                     </div>
                                 </div>
-                                 <div class="form-group" style="display: none;" id="changePasswordChkDiv">
-                                    <label> <input name="isChangePassword" id="isChangePassword" type="checkbox"> Change Password </label>
-                                </div>
-                                <div id="passwordDiv">
-                                    <div class="form-group">
+                                
+                                <div class="form-group">
                                     <label class="col-sm-3 control-label">Password</label>
                                     <div class="col-sm-9">
-                                        <input type="password" id="password" name="password" Placeholder="Password"  class="form-control">
+                                        <input type="text" id="password" name="password" Placeholder="Password"  class="form-control">
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="col-sm-3 control-label">Confirm Password</label>
-                                    <div class="col-sm-9">
-                                        <input type="password" id="confirmPassword" name="confirmPassword" Placeholder="Confirm Password"  class="form-control">
-                                    </div>
-                                </div>
-                                </div>
+                               
                                 
                                  <div class="form-group">
                                     <label class="col-sm-3 control-label">Email</label>
@@ -342,10 +377,6 @@
                                         <input type="text" id="emailid" name="emailid" Placeholder="example@mail.com"  class="form-control">
                                     </div>
                                 </div>
-                                <div class="hr-line-dashed"></div>
-                                <h4 class="modal-title">Custom Fields</h4>
-                                <div id="formFieldsDiv"></div>
-                                
                                 <div class="modal-footer">                                   
                                      <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveBtn" type="button">
                                         <span class="ladda-label">Save</span>

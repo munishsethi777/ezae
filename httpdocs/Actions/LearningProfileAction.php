@@ -20,17 +20,19 @@
             }
             $tag = $_POST["name"];
             $description = $_POST["description"];
-            
+            $awesomeFontId = $_POST["awesomeFontId"];
             $learner = new tag();
             $learner->setSeq($id);
             $learner->setTag($tag);
             $learner->setDescription($description);
+            $learner->setAwesomeFontId($awesomeFontId);
             $learner->setAdminSeq($adminSeq);
             $learner->setCompanySeq($companySeq);
             $learner->setCreatedOn(new DateTime());
             $learner->setLastModifiedOn(new DateTime());
             
             $lpMgr = LearningProfileMgr::getInstance();
+            $data = "";
             $data = $lpMgr->Save($learner,true);
             $message = "Learner Profile Saved Successfully."; 
             if($id > 0){
@@ -43,7 +45,10 @@
         $response = new ArrayObject();
         $response["message"]  = $message;
         $response["success"]  = $success;
-        $response["row"] = $data;
+        if($data != null){
+            $response["row"] = $data;   
+        }
+       
         $json = json_encode($response);
         echo $json;
     }  

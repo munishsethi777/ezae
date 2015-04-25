@@ -29,6 +29,7 @@
                 $arr['id'] = $lp->getSeq();
                 $arr['tag'] = $lp->getTag();
                 $arr['description'] = $lp->getDescription();
+                $arr['awesomefontid'] = "<i id='icon". $lp->getSeq() . "' class='fa ". $lp->getAwesomeFontId() . "'></i>";
                 $arr['lastmodifiedon'] = $lp->getLastModifiedOn();                
                 array_push($fullArr,$arr);
             }
@@ -55,6 +56,7 @@
             $row["id"] = $learningProfileObj->getSeq();
             $row["tag"] = $learningProfileObj->getTag();
             $row["description"] = $learningProfileObj->getDescription();
+            $row['awesomefontid'] = "<i id='icon". $learningProfileObj->getSeq() . "' class='fa ". $learningProfileObj->getAwesomeFontId() . "'></i>";         
             $row['lastmodifiedon'] = $learningProfileObj->getLastModifiedOn()->format("m-d-Y h:m:s A");                
             return json_encode($row);
         } 
