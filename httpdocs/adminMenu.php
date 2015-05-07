@@ -50,19 +50,21 @@
 
 <!-- Toastr -->
 <script src="scripts/plugins/toastr/toastr.min.js"></script>
-
+ <?include "UpdateProfilePicture.php"?> 
 
 <nav class="navbar-default navbar-static-side" role="navigation">
             <div class="sidebar-collapse">
                 <ul class="nav" id="side-menu">
                     <li class="nav-header">
-                        <div class="dropdown profile-element"> <span>
-                            <img alt="image" class="img-circle" src="img/profile_small.jpg" />
-                             </span>
+                        <div class="dropdown profile-element"> 
+                            <div id="profilePicDiv">
+                                <img alt="image" id="profilePicImg" class="img-circle" width="50px;" src="Images\UserImages\<?echo($adminSeq)?>.png"/>
+                            </div>
                             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                             <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">Amandeep Dubey</strong>
                              </span> <span class="text-muted text-xs block">Administrator - JCB <b class="caret"></b></span> </span> </a>
                             <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                                <li><a href="#openUploader" onclick="openUploader()">Update Profile Picture</a></li>
                                 <li><a href="AdminSettings.php">Profile</a></li>
                                 <li><a href="ChangePasswordForm.php">Change Password</a></li>
                                 <li class="divider"></li>
@@ -80,13 +82,17 @@
                         <a href="CustomFields.php"><i class="fa fa-th-large"></i> <span class="nav-label">CustomFields</span></a>
                     </li>
                     <li>
-                        <a href="layouts.html"><i class="fa fa-angellist"></i> <span class="nav-label">LeaderBoards</span></a>
+                        <a href="ManageLeaderBoard.php"><i class="fa fa-angellist"></i> <span class="nav-label">LeaderBoards</span></a>
                     </li>
                     <li>
                         <a href="layouts.html"><i class="fa fa-archive"></i> <span class="nav-label">Modules Management</span></a>
                     </li>
                     <li>
                         <a href="layouts.html"><i class="fa fa-gift"></i> <span class="nav-label">Learning Plans</span></a>
+                        <ul class="nav nav-second-level">
+                            <li><a href="createLearningPlan.php">Create Learning Plan</a></li>
+                            <li><a href="ManageLearningPlan.php">View Learning Plans</a></li>
+                        </ul>
                     </li>
                     <li>
                         <a href="#"><i class="fa fa-bar-chart-o"></i> <span class="nav-label">Reporting</span><span class="fa arrow"></span></a>

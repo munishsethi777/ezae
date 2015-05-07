@@ -2,7 +2,7 @@
 
   class Module{
       public static $tableName = "modules";
-      private $seq,$dateofexpiry,$title,$description,$uploadedby,$createdon,$isenabled,$ispaid,$maxscore,$price,$passpercent,$lastmodifiedon;
+      private $seq,$dateofexpiry,$title,$description,$uploadedby,$createdon,$isenabled,$ispaid,$maxscore,$price,$passpercent,$lastmodifiedon,$companyseq;
 
       public function setSeq($seq_){
         $this->seq = $seq_;
@@ -76,6 +76,12 @@
       public function getLastModifiedOn(){
         return $this->lastmodifiedon;
       }
+      public function setCompanySeq($companySeq_){
+            $this->companyseq = $companySeq_;
+        }
+        public function getCompanySeq(){
+            return $this->companyseq;
+        }
   }
 
 ?>

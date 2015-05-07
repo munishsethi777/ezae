@@ -69,9 +69,15 @@
                 }
         });
     }
+    function HandleCheckbox(value,isChecked){
+        $('#usernamechk').prop('checked',(value == "username" && isChecked));
+        $('#passwordchk').prop('checked',(value == "password" && isChecked));
+        $('#emailchk').prop('checked',(value == "email" && isChecked));
+    }
     function loadGrid(){ 
         var columns = [
           { text: 'id', datafield: 'id' , hidden:true},
+          { text: 'mappedfield', datafield: 'mappedfield' , hidden:true},
           { text: 'Field Name' , datafield: 'name' },
           { text: 'Field Type', datafield: 'type' },
           { text: 'Modified On', datafield: 'lastmodifiedon',cellsformat: 'MM-dd-yyyy hh:mm:ss tt' } 
@@ -93,7 +99,7 @@
                 { name: 'name', type: 'string' },
                 { name: 'type', type: 'string' },
                 { name: 'lastmodifiedon', type: 'date' },
-                { name: 'required', type: 'bool' }
+                { name: 'mappedfield', type: 'string' },
             ],
             url: 'Actions/CustomFieldAction.php?call=getCustomFields',
            
@@ -149,6 +155,7 @@
                     $("#msgDiv").hide();
                     $("#errorDiv").hide();
                     $("#id").val(0);
+                    $("#mappedField").val("");
                     $("#customFieldForm")[0].reset();
                     $('#createNewModalForm').modal('show');
                 });
@@ -167,7 +174,11 @@
                     $("#id").val(row.id);
                     $("#fieldName").val(row.name);
                     $('#fieldType').val(row.type).attr("selected", "selected");
-                    $('#isRequired').attr('checked', row.required);
+                    $('#usernamechk').attr('checked', row.mappedfield == "usernamefield");
+                    $('#passwordchk').attr('checked', row.mappedfield == "passwordfield");
+                    $('#emailchk').attr('checked', row.mappedfield == "emailfield");
+                    $("#mappedField").val(row.mappedfield);
+                    
                     $('#createNewModalForm').modal('show');
                 });
                 // delete row.
@@ -180,39 +191,8 @@
                 });
             }
         });
-    }
-    //function deleteRows(){
-//        var selectedRowIndexes = $("#jqxgrid").jqxGrid('selectedrowindexes');
-//        if(selectedRowIndexes.length > 0){
-//            bootbox.confirm("Are you sure you want to delete selected row(s)?", function(result) {
-//                if(result){
-//                    var ids = [];
-//                    $.each(selectedRowIndexes, function(index , value){
-//                        var dataRow = $("#jqxgrid").jqxGrid('getrowdata', value);
-//                        ids.push(dataRow.id);
-//                    });
-//                    $.get( "Actions/CustomFieldAction.php?call=deleteCustomfield&ids=" + ids,function( data ){
-//                        if(data != ""){
-//                            var obj = $.parseJSON(data);
-//                            var message = obj.message;
-//                            if(obj.success == 1){
-//                                toastr.success(message,'Success');
-//                                $.each(selectedRowIndexes, function(index , value){
-//                                    var id = $("#jqxgrid").jqxGrid('getrowid', value);
-//                                    var commit = $("#jqxgrid").jqxGrid('deleterow', id);
-//                                });
-//                            }else{
-//                                toastr.error(message,'Failed');
-//                            }
-//                        }
-//                    });
-//                }
-//            });
-//        }else{
-//             bootbox.alert("No row selected.Please select row to delete!", function() {});
-//        }
-
-    //}
+     }
+    
 </script>
 </head>
 <body class='default'> 
@@ -242,6 +222,7 @@
                                             <div class="col-sm-12">
                                                 <form role="form" id="customFieldForm" class="form-horizontal">
                                                     <input type="hidden" id="id" name="id" value="0">
+                                                    <input type="hidden" id="mappedField" name="mappedField"> 
                                                     <div class="form-group">
                                                         <label>Field Name</label>
                                                         <input type="text" id="fieldName" name="fieldName" placeholder="Field Name" class="form-control">
@@ -255,6 +236,14 @@
                                                         <option value="boolean">Yes/No</option>
                                                         </select>
                                                     </div>
+                                                     <div class="form-group">                                                                                                               
+                                                        <div class="col-sm-4">
+                                                            <label class="checkbox-inline"><input type="checkbox" onchange="HandleCheckbox(this.value,this.checked)"  value="username" name="username_map" checked="checked" id="usernamechk"> UserName </label></div> 
+                                                        <div class="col-sm-4">
+                                                            <label class="checkbox-inline"><input type="checkbox" onchange="HandleCheckbox(this.value,this.checked)"  value="password" name="password_map" id="passwordchk"> Password </label></div> 
+                                                        <div class="col-sm-3">
+                                                            <label class="checkbox-inline"><input type="checkbox" onchange="HandleCheckbox(this.value,this.checked)" value="email" name="email_map" id="emailchk"> Email </label></div>
+                                                     </div>
                                                     <div class="modal-footer">
                                                         <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveButton" type="button">
                                                             <span class="ladda-label">Save</span>

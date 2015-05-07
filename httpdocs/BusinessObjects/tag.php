@@ -1,6 +1,6 @@
 <?php
   class tag {
-        private $seq,$tag,$description,$adminseq,$companyseq,$createdon,$lastmodifiedon ;
+        private $seq,$tag,$description,$adminseq,$companyseq,$createdon,$lastmodifiedon,$awesomefontid;
         public function setSeq($seq_){
             $this->seq = $seq_;
         }
@@ -49,6 +49,13 @@
         }
         public function getLastModifiedOn(){
             return $this->lastmodifiedon;
+        }
+        public function setAwesomeFontId($fontId_){
+            $this->awesomefontid = $fontId_;
+        }
+
+        public function getAwesomeFontId(){
+            return $this->awesomefontid;
         }
         
   }

@@ -1,7 +1,8 @@
 <?php
   class LearningPlan{
-        public static $tableNames = "learningplans";
-        private $seq,$adminseq,$companyseq,$title,$description,$isleaderboard,$issequencelocked,$isenabled,$expiringon,$createdon,$lastmodifiedon;
+        public static $tableName = "learningplans";
+         public static $className = "LearningPlan";
+        private $seq,$adminseq,$companyseq,$title,$description,$isleaderboard,$issequencelocked,$isactive,$activateon,$deactivateon,$createdon,$lastmodifiedon;
         
         public function setSeq($seq_){
             $this->seq = $seq_;
@@ -43,25 +44,30 @@
             return $this->isleaderboard;
         }
         
-        public function setIsSequence($isSequenceLocked_){
+        public function setIsSequenceLocked($isSequenceLocked_){
             $this->issequencelocked = $isSequenceLocked_;
         }
-        public function getIsSequence(){
+        public function getIsSequenceLocked(){
             return $this->issequencelocked;
         }
         
-        public function setIsEnabled($isEnabled_){
-            $this->isenabled = $isEnabled_;
+        public function setIsActive($isActive_){
+            $this->isactive = $isActive_;
         }
-        public function getIsEnabled(){
-            return $this->isenabled;
+        public function getIsActive(){
+            return $this->isactive;
         }
-        
-        public function setExpiringOn($expiringOn_){
-            $this->expiringon = $expiringOn_;
+        public function setActivateOn($activateOn_){
+            $this->activateon = $activateOn_;
         }
-        public function getExpiringOn(){
-            return $this->expiringon;
+        public function getActivateOn(){
+            return $this->activateon;
+        }
+        public function setDeactivateOn($deactivateOn_){
+            $this->deactivateon = $deactivateOn_;
+        }
+        public function getDeactivateOn(){
+            return $this->deactivateon;
         }
         
         public function setCreatedOn($createdOn_){

@@ -1,6 +1,6 @@
 <?php                                        
   
-  $ConstantsArray = array('dbServerUrl' => 'D:\\projects\\ezae\\httpdocs\\');
+  $ConstantsArray = array('dbServerUrl' => 'D:\\projects\\ezae\\httpdocs\\','ImagePath' => 'D:\\projects\\ezae\\httpdocs\\Images\\UserImages\\');
   $ConstantsArray["CUSTOM_FIELD_PREFIX"]  = "cus_";
   //$ConstantsArray = array('dbServerUrl' => '/home/satyain/public_html/giftcard/');
   //Logger::configure($ConstantsArray['dbServerUrl'] .'log4php/log4php.xml');  

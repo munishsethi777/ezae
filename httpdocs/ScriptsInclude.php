@@ -9,6 +9,11 @@
         <link href="styles/plugins/chosen/chosen.css" rel="stylesheet">  
         <link href="styles/plugins/summernote/summernote.css" rel="stylesheet">
         <link href="styles/plugins/summernote/summernote-bs3.css" rel="stylesheet"> 
+         <link href="styles/plugins/cropper/cropper.min.css" rel="stylesheet"> 
+        <link href="styles/plugins/ionRangeSlider/ion.rangeSlider.css" rel="stylesheet">
+         <link href="styles/plugins/ionRangeSlider/ion.rangeSlider.skinFlat.css" rel="stylesheet">
+          <link href="styles/jquery.datetimepicker.css" rel="stylesheet">
+         
         <script type="text/javascript" src="scripts/jquery-1.10.2.min.js"></script>     
         <script src="scripts/bootstrap.min.js"></script>
         <script src="scripts/jquery.metisMenu.js"></script>
@@ -60,9 +65,11 @@
         <script src="scripts/plugins/iCheck/icheck.min.js"></script>
         <!-- Chosen -->
         <script src="scripts/plugins/chosen/chosen.jquery.js"></script>
-        
+        <script src="scripts/jquery.datetimepicker.js"></script> 
+       
         <!-- SUMMERNOTE -->
         <script src="scripts/plugins/summernote/summernote.min.js"></script>
+        <script src="scripts/plugins/cropper/cropper.min.js"></script>
         <script>
             $(function() {
                toastr.options = {
@@ -80,7 +87,38 @@
                       "showMethod": "fadeIn",
                       "hideMethod": "fadeOut"
                       }
+                      
+                      $.date = function(dateObject) {
+                        var d = new Date(dateObject);
+                        var day = d.getDate();
+                        var month = d.getMonth() + 1;
+                        var year = d.getFullYear();
+                        if (day < 10) {
+                            day = "0" + day;
+                        }
+                        if (month < 10) {
+                            month = "0" + month;
+                        }
+                        var date = day + "/" + month + "/" + year;
+                       
+                        
+                        var time = formatAMPM(d);
+                        return date + " " + time;
+                      };
+                      
+                      
             });
+            
+            function formatAMPM(date) {
+              var hours = date.getHours();
+              var minutes = date.getMinutes();
+              var ampm = hours >= 12 ? 'pm' : 'am';
+              hours = hours % 12;
+              hours = hours ? hours : 12; // the hour '0' should be '12'
+              minutes = minutes < 10 ? '0'+minutes : minutes;
+              var strTime = hours + ':' + minutes + ' ' + ampm;
+              return strTime;
+            }
             function showResponseDiv(data,divClassName){
                 var obj = $.parseJSON(data);
                 var message = obj.message;              

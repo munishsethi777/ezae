@@ -2329,9 +2329,23 @@ label.error {
   text-align: center;
   width: 100%;
 }
+.img-preview-lg {
+  height: 184px;
+  width: 184px;
+  margin-top: 15px;
+}
 .img-preview-sm {
   height: 130px;
   width: 200px;
+}
+.img-preview-md {
+  height: 100px;
+  width: 100px;
+}
+
+.img-preview-sm {
+  height: 50px;
+  width: 50px;
 }
 /* Forum styles  */
 .forum-post-container .media {

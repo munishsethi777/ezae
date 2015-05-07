@@ -29,21 +29,28 @@ require_once($ConstantsArray['dbServerUrl']. "Utils/SessionUtil.php5");
         $row["name"] = $customField->getTitle();
         $row["type"] = $customField->getFieldType();
         $row["lastmodifiedon"] = $customField->getLastModifiedOn()->format("m-d-Y h:m:s A");
-        return json_encode($row);
+        return $row;
     }
+    
+    
+    function getJson($customField) {
+        $arr = array();
+        $arr['id'] = $customField->getSeq();
+        $arr['name'] = $customField->getTitle();
+        $arr['type'] = $customField->getFieldType();
+        $arr['lastmodifiedon'] = $customField->getLastModifiedOn();
+        $matchinRuleMgr = MatchingRuleMgr::getInstance();
+        $mappedField = $matchinRuleMgr->findNameForCustomfield($customField->getTitle());
+        $arr["mappedfield"] = $mappedField;
+        return $arr;     
+    }
+    
     function getCustomfieldsForGrid($companySeq){
         $fullArr = array();
         $dataStore  = UserCustomFieldsDataStore::getInstance();
-        //$cFields = $dataStore->findByCompany($companySeq);
         $cFields = $dataStore->findAllByCompany();
         foreach($cFields as $customField){
-            $field = new UserCustomField();
-            $field = $customField;
-            $arr = array();
-            $arr['id'] = $field->getSeq();
-            $arr['name'] = $field->getTitle();
-            $arr['type'] = $field->getFieldType();
-            $arr['lastmodifiedon'] = $field->getLastModifiedOn(); 
+            $arr = $this->getJson($customField);
             array_push($fullArr,$arr);
         }
         return json_encode($fullArr);

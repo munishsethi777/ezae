@@ -16,12 +16,20 @@ class BeanDataStore {
     }
     private function key_implode($array) {
          $fields = array();
-         foreach($array as $field => $val) {
-           $fields[] = "$field = '$val'";
+         foreach($array as $field => $val) { 
+         if(is_null($val)){
+             $fields[] = "$field = NULL";    
+         }else{
+             $fields[] = "$field = '$val'";     
+         }          
+          
         }
         $result = join(', ', $fields) ;
         return $result;
     }
+    
+
+    
     public function save($object)  {
         $columnValueArry[] = array();
         $columns[] = array();
@@ -151,7 +159,40 @@ class BeanDataStore {
         $objList = $STH->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $this->className);
         return $objList;
     }
-
+    
+    public function deleteByAttribute($colValuePair = null){
+        foreach ($colValuePair as $key => $value){
+            $query_array[] = $key.' = '. "'" . $value . "'";
+        }
+        $query = "delete FROM " .  $this->tableName;
+        if($colValuePair != null){
+            $query .= " WHERE " .implode(" AND ", $query_array);
+        }
+        $db = MainDB::getInstance();
+        $conn = $db->getConnection();
+        $STH = $conn->prepare($query);
+        $STH->execute();
+        $this->throwException($STH->errorInfo());
+    }
+    
+     public function updateByAttributes($colValuePair,$condiationPair = null){
+        foreach ($condiationPair as $key => $value){
+            $query_array[] = $key.' = '. "'" . $value . "'";
+        }
+        foreach ($colValuePair as $key => $value){
+            $attribute_array[] = $key.' = '. "'" . $value . "'";
+        }
+        $query = "update " .  $this->tableName . "set " . implode(" AND ", $attribute_array);
+        if($condiationPair != null){
+            $query .= " WHERE " .implode(" AND ", $query_array);
+        }
+        $db = MainDB::getInstance();
+        $conn = $db->getConnection();
+        $STH = $conn->prepare($query);
+        $STH->execute();
+        $this->throwException($STH->errorInfo());
+    }
+    
     public function executeCountQuery($colValuePair = null){
         foreach ($colValuePair as $key => $value){
             $query_array[] = $key.' = '. "'" . $value . "'";

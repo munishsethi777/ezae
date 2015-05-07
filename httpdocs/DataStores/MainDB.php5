@@ -11,8 +11,8 @@
 
     public function __construct(){
        try {
-           self::$connectlink = new PDO("sqlsrv:Server=MUNISH-HP\SQLEXPRESS;Database=ezae", 'sa', 'password');
-           //self::$connectlink = new PDO("mssql:dbname=" . $this->database . ";host=" . $this->hostname ,$this->username,$this->password);
+           //self::$connectlink = new PDO("sqlsrv:Server=MUNISH-HP\SQLEXPRESS;Database=ezae", 'sa', 'password');
+           self::$connectlink = new PDO("mysql:dbname=" . $this->database . ";host=" . $this->hostname ,$this->username,$this->password);
        } catch (PDOException $e) {
             die("Database Connection Failed: " . $e->getMessage());
        }

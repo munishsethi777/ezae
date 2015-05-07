@@ -62,6 +62,7 @@
         $id = $_GET["id"];
         $fieldName = $_GET["fieldName"];
         $fieldType = $_GET["fieldType"];
+        $mappedField = $_GET["mappedField"];
         $customField = new UserCustomField();
         $customField->setSeq(intval($id));
         $customField->setTitle($fieldName);
@@ -77,6 +78,20 @@
             $customFieldMgr = CustomFieldMgr ::getInstance();
             $dataRow = $customFieldMgr->saveCustomFields($customField,true);
             $id = $_GET["id"];
+            $value = $fieldName;
+            $attribute = "";
+            if(isset($_GET["username_map"])){              
+                $attribute = "usernamefield";    
+            }
+            if(isset($_GET["password_map"])){                 
+                 $attribute = "passwordfield";    
+            }
+            if(isset($_GET["email_map"])){                
+                 $attribute = "emailfield";                
+            }
+            saveOrUpdateMatchingRules($value,$attribute,$mappedField);
+            $dataRow["mappedfield"] = $attribute;
+            $dataRow = json_encode($dataRow);
             $message  = "Custom Field Saved Sucessfully";
             if(intval($id) > 0){
               $message  = "Custom Field Updated Sucessfully";
@@ -300,7 +315,10 @@
         $companyMgr = CompanyMgr::getInstance();
         $companyMgr->updateCompanyPrefix($companySeq,$prefix);   
      }
-     
+     function saveOrUpdateMatchingRules($value,$attribute,$mappedField){
+        $matchingRuleMgr = MatchingRuleMgr::getInstance();
+        $id = $matchingRuleMgr->SaveOrUpdateByCompany($value,$attribute,$mappedField);   
+     }
      function saveMatchingRules($userNameField,$passwordField,$emailField){
         global $companySeq;
         global $adminSeq;
