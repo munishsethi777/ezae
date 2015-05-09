@@ -44,13 +44,6 @@
             return $this->isleaderboard;
         }
         
-        public function setIsSequenceLocked($isSequenceLocked_){
-            $this->issequencelocked = $isSequenceLocked_;
-        }
-        public function getIsSequenceLocked(){
-            return $this->issequencelocked;
-        }
-        
         public function setIsActive($isActive_){
             $this->isactive = $isActive_;
         }
@@ -82,6 +75,13 @@
         }
         public function getLastModifiedOn(){
             return $this->lastmodifiedon;
+        }
+        
+        public function setIsSequenceLocked($isSequenceLocked_){
+            $this->issequencelocked = $isSequenceLocked_;
+        }
+        public function getIsSequenceLocked(){
+            return $this->issequencelocked;
         }
   }
 ?>

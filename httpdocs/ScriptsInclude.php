@@ -187,7 +187,9 @@
                    $("." + divClassName).append(errorDiv);
                 }                                   
             }
-            
+            function isInArray(value, array) {
+                return array.indexOf(value) > -1;
+            }
             
             function deleteRows(gridId,deleteURL){
                 var selectedRowIndexes = $("#" + gridId).jqxGrid('selectedrowindexes');

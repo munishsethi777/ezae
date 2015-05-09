@@ -83,9 +83,8 @@
                     checkboxClass: 'icheckbox_square-green'
                 });
             });
-
-
         }
+        
         function loadGrid(data){
             var columns = Array();
             var rows = Array();
@@ -269,7 +268,7 @@
         
         function fillFormData(input){
             if(mathingRule != ""){
-                var name = input.name;
+               var name = input.name;
                var value = input.value;
                prefix = "cus_";
                var userNameField = prefix + mathingRule.usernamefield;

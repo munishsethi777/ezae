@@ -23,5 +23,12 @@ class ModuleDataStore extends BeanDataStore{
         $moduleList = $this->findAll();
         return $moduleList;
     }
+    
+    public function findByLearningPlanSeq($learningPlanSeq){
+        $colValuePair = array();
+        $list = $this->executeQuery("select lpc.isenableleaderboard,m.* from learningplans lp inner join learningplancourses lpc on " .
+                                            "lp.seq = lpc.learningplanseq inner join modules m on lpc.courseseq = m.seq where lp.seq = $learningPlanSeq ");
+        return $list;
+    }
   }
 ?>

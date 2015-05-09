@@ -1,7 +1,7 @@
 <?php
   class LearningPlanCourse{
       
-      private $seq,$learningplanseq,$courseseq;
+      private $seq,$learningplanseq,$courseseq,$isenableleaderboard;
       public static $tableName = "learningplancourses";
       public static $className = "LearningPlanCourse";
       
@@ -25,6 +25,13 @@
       public function getCourseSeq(){
         return $this->courseseq;
       }
+      
+      public function setIsEnableLeaderBoard($isleaderBoard_){
+            $this->isenableleaderboard = $isleaderBoard_;
+        }
+        public function getIsEnableLeaderBoard(){
+            return $this->isenableleaderboard;
+        }
       
   }
 ?>

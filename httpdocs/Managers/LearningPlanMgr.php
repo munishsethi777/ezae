@@ -29,16 +29,23 @@
             $id = self::$lpCoursedataStore->deleteByAttribute($columnValue);
         }
         
-        public function saveLearningPlan($learningPlanObj,$courseIds){
+        public function saveLearningPlan($learningPlanObj,$courseIds,$enableLeaderboardArr){
             $learningPlan = new LearningPlan();
             $learningPlan = $learningPlanObj;
             $id = self::$dataStore->save($learningPlan);
             $lpCourseDataStore = new BeanDataStore("","");
             $this->deleteLeaeningPlanCourses($id);
-            foreach ($courseIds as $key=>$value) {
+            $i = 0;
+            foreach ($courseIds as $key=>$value){
+                $val = $enableLeaderboardArr[$value];
+                $enableLeaderboard = 0;
+                if($val == "true"){
+                    $enableLeaderboard = 1;    
+                }               
                 $lpCourse = new LearningPlanCourse();
                 $lpCourse->setCourseSeq($value);
                 $lpCourse->setLearningPlanSeq($id);
+                $lpCourse->setIsEnableLeaderBoard($enableLeaderboard);
                 self::$lpCoursedataStore->save($lpCourse);
             }
             return $id;     
@@ -83,6 +90,7 @@
             $lpArr["deactivateon"] = $learningPlan->getDeactivateOn();
             $lpArr["isactive"] = $learningPlan->getIsActive(); 
             $lpArr["lastmodifiedon"] = $learningPlan->getLastModifiedOn();
+            $lpArr["lockSequence"] = $learningPlan->getIsSequenceLocked() == 1 ? true : false;
             $lpArr["moduleIds"] = self::getCoursesIdBylearnigPlanSeq($learningPlan->getSeq());
             $isDeactivate = false;
             if($learningPlan->getDeactivateOn() != null && $learningPlan->getDeactivateOn() != ""){

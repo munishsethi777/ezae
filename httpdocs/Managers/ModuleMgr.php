@@ -64,6 +64,28 @@ class ModuleMgr{
         return $moduleJson;
      }
      
+     public function getLearningPlanModulesForGrid($larnignPlanSeq){         
+        $moduleDataStore = ModuleDataStore::getInstance();
+        $arrList =  $moduleDataStore->findByLearningPlanSeq($larnignPlanSeq);
+        $mainArr = array();
+        foreach($arrList as $key=>$value){
+            $arr = array();
+            $arr['id'] = $value["seq"];
+            $arr['enableleaderboard'] = $value["isenableleaderboard"] == "1" ? true : false;
+            $arr['title'] = $value["title"];
+            $arr['description'] = $value["description"];
+            $arr['maxscore'] =  $value["maxscore"]; 
+            $arr['passpercent'] =  $value["passpercent"]; 
+            $arr["ispaid"] =  $value["ispaid"] == "1" ? true : false;
+            array_push($mainArr,$arr); 
+        }
+        return json_encode($mainArr);
+     }
+     
+     private function getSelectedModuleForLearningPlan(){
+        $moduleDataStore = ModuleDataStore::getInstance();
+        $modules = $moduleDataStore->findByCompanySeq($companySeq);      
+     } 
     public static function getHeadersJSON(){
         $fullArr = array();
         $arr = array();
