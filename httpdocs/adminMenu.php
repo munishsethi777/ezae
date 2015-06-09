@@ -50,7 +50,15 @@
 
 <!-- Toastr -->
 <script src="scripts/plugins/toastr/toastr.min.js"></script>
- <?include "UpdateProfilePicture.php"?> 
+<?php
+$action = "CompanyAction.php";
+$sessionUtil = SessionUtil::getInstance();
+$adminSeq =  $sessionUtil->getAdminLoggedInSeq();
+$path = "images/AdminImages/" . $adminSeq . ".png";
+if(!file_exists ($path)){
+    $path = "images/dummy.jpg";    
+}?>
+<?include "UpdateProfilePicture.php"?> 
 
 <nav class="navbar-default navbar-static-side" role="navigation">
             <div class="sidebar-collapse">
@@ -58,7 +66,9 @@
                     <li class="nav-header">
                         <div class="dropdown profile-element"> 
                             <div id="profilePicDiv">
-                                <img alt="image" id="profilePicImg" class="img-circle" width="50px;" src="Images\UserImages\<?echo($adminSeq)?>.png"/>
+                                
+                                
+                                <img alt="image" id="profilePicImg" class="img-circle" width="50px;" src="<?echo($path)?>"/>
                             </div>
                             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                             <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">Amandeep Dubey</strong>

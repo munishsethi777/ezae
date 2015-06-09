@@ -78,6 +78,20 @@ if(isset($_POST["moduleIds"])){
                                 <div class="form-group"><label class="col-sm-2 control-label">Description</label>
                                     <div class="col-sm-10"><input type="text" class="form-control" value="<?echo $des?>" name="description"></div>
                                 </div>
+                                 <div class="form-group">
+                                    <label class="col-sm-2 control-label">Profile</label>
+                                        <div class="row"> 
+                                            <div class="col-sm-3">
+                                                 <select class="form-control" id="profiles" name="profile" style="font-family: 'FontAwesome', Helvetica;">
+                                                    <option value="fa-medium">&#xf23a; Medium</option> 
+                                                    <option value="fa-sellsy">&#xf213; Sellsy</option>
+                                                    <option value="fa-diamond">&#xf219; Diamond</option> 
+                                                    <option value="fa-user-secret">&#xf21b; Secret</option>
+                                                    <option value="fa-venus">&#xf221; Venus</option></label>    
+                                           </select> 
+                                            </div> 
+                                    
+                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">Activation</label> 
                                     <div class="col-sm-10">
@@ -163,6 +177,7 @@ if(isset($_POST["moduleIds"])){
         $('#deactiveDate').datetimepicker({step:5,format:"m/d/Y h:i A"});
         loadGrid();
         loadSelectedGrid();
+        populateProfiles();
         $("#saveBtn").click(function(e){
             ValidateAndSave(e,this);
         });
@@ -232,6 +247,16 @@ if(isset($_POST["moduleIds"])){
         });
         $("#addCourseModalForm").modal('hide')
         
+    }
+    function populateProfiles(){
+        var url = 'Actions/LearningProfileAction.php?call=getLearnerProfiles';
+        $.getJSON(url, function(data){
+            var options = "";
+            $.each(data, function(index , value){
+                  options += "<option value='" + value.id + "'>" + value.awesomefontid  + " " + value.tag + "</option>";
+            });
+              $("#profiles").html(options);   
+        });    
     }
     function saveLearningPlan(e,btn){        
         e.preventDefault();

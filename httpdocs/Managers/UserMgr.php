@@ -191,6 +191,33 @@ class UserMgr{
         $profiles = implode(", " ,$profiles);
         return $profiles;
     }
+    
+    public function isPasswordExist($password){
+        $userDataStore = UserDataStore::getInstance();
+        $sessionUtil = SessionUtil::getInstance();
+        $userSeq = $sessionUtil->getUserLoggedInSeq();
+        $params["password"] = $password;
+        $params["seq"] = $userSeq;
+        $count = $userDataStore->executeCountQuery($params);
+        return $count > 0;
+    }
+    
+    public function ChangePassword($password){
+        $userDataStore = UserDataStore::getInstance();
+        $sessionUtil = SessionUtil::getInstance();
+        $userSeq = $sessionUtil->getUserLoggedInSeq();
+        $colVal = array();
+        $condition  = array();
+        $colVal["password"] = $password;
+        $condition["seq"] = $userSeq ;
+        $userDataStore->updateByAttributes($colVal,$condition);
+    }
+    
+    public function getCustomFields($seq){
+        $userDataStore = UserDataStore::getInstance();
+        $customFieldString = $userDataStore->findCustomfield($seq);
+        return $customFieldString; 
+    }
 }
 
 ?>

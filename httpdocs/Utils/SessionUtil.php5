@@ -14,7 +14,7 @@ class SessionUtil{
 
 	private static $sessionUtil;
 	public static function getInstance(){       
-		if (!self::$sessionUtil){
+		if(!self::$sessionUtil){
             session_start();
 			self::$sessionUtil = new SessionUtil();
 			return self::$sessionUtil;
@@ -33,9 +33,9 @@ class SessionUtil{
      }
     public function createUserSession(User $user){
         $arr = new ArrayObject();
-        $arr[$USER_SEQ] = $user->getSeq();
-        $arr[$USER_USERNAME] = $user->getUserName();
-        $arr[$USER_COMPANY_SEQ] = $user->getCompanySeq();
+        $arr[0] = $user->getSeq();
+        $arr[1] = $user->getUserName();
+        $arr[2] = $user->getCompanySeq();
 
         $_SESSION[self::$USER_LOGGED_IN] = $arr;
         $_SESSION[self::$LOGIN_MODE] = 'user';
@@ -120,12 +120,12 @@ class SessionUtil{
         }
 
     }
-    public function sessionCheck($isUser){
+    public function sessionCheck($loginType){
         $bool = self::isSessionAdmin();
-        if($isUser){
+        if($loginType == LoginType::USER){
             $bool = self::isSessionUser();
             if($bool == false){
-                header("location: index.php");
+                header("location: UserLogin.php");
             }
         }else{
             if($bool == false){

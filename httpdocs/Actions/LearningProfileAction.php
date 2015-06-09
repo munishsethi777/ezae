@@ -65,6 +65,18 @@
 //        $json = json_encode($response);
         echo $data;
     }
+    
+    if($call == "getLearnerProfiles"){
+        try{
+            $lpMgr = LearningProfileMgr::getInstance();
+            $data = $lpMgr->findAll();
+        }catch(Exception $e){
+            $success = 0;
+            $message  = $e->getMessage();
+        }
+        echo $data;
+    }
+    
     if($call == "deleteLearningProfile"){
          $ids = $_GET["ids"];
          try{
@@ -83,5 +95,6 @@
         $response["message"]  = $message;
         $response["success"]  = $success;
         echo json_encode($response);   
-     }      
+     }
+          
 ?>

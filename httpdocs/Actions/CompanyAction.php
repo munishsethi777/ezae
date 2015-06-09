@@ -2,6 +2,7 @@
  require_once('../IConstants.inc');  
  require_once($ConstantsArray['dbServerUrl'] ."Managers/CompanyMgr.php");
  require_once($ConstantsArray['dbServerUrl'] ."Managers/AdminMgr.php");
+ require_once($ConstantsArray['dbServerUrl'] ."Utils/ImageUtil.php");     
    $call = "";
    if(isset($_GET["call"])){
         $call = $_GET["call"];     
@@ -91,21 +92,10 @@
     
     if($call == "updateProfilePicture"){
         try{       
-            $img = $_POST['imgSrc'];
-            $img = str_replace('data:image/png;base64,', '', $img);
-            $img = str_replace(' ', '+', $img);
-            $data = base64_decode($img);
-            $file = $ConstantsArray['ImagePath'] . $adminSeq . ".png"; 
-            $uploaded = file_put_contents($file, $data);
-                        
-            $img = $_POST['imgSrcOrg'];
-            $img = str_replace('data:image/', '', $img);
-            $ext  = strtok($img, ';');
-            $img = str_replace($ext . ';base64,', '', $img);
-            $img = str_replace(' ', '+', $img);
-            $data = base64_decode($img);
-            $file = $ConstantsArray['ImagePath'] . $adminSeq . "_org" . ".jpg" ; 
-            $uploaded = file_put_contents($file, $data);
+            $img = $_POST['imgSrc'];                        
+            $orgImg = $_POST['imgSrcOrg'];
+            $path = $ConstantsArray['ImagePath'];
+            $uploaded = ImageUtil::uploadImage($path,$img,$orgImg,$adminSeq);
             $message = "Profile Picture Updated Successfully";
         }catch (Exception $e){
             $success = 0;

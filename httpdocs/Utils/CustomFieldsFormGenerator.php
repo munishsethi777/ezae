@@ -39,11 +39,25 @@
            $customFieldForm = self::getFormForCustomFields($customFieldsArr);
            return $customFieldForm;
         }
+        
+        public function getFormHtmlForUser($userSeq){
+           $UserMgr = UserMgr::getInstance();
+           $sessionUtil =  SessionUtil::getInstance();
+           $companySeq = $sessionUtil->getUserLoggedInCompanySeq();
+           $customfields = $UserMgr->getCustomFields($userSeq);
+           $customFieldValuearr = $this->getCustomFieldsArray($customfields);
+           $UCFDS = UserCustomFieldsDataStore::getInstance();
+           $customFieldsArr = $UCFDS->findByCompany($companySeq);
+           $customFieldForm = self::getFormForCustomFields($customFieldsArr,$customFieldValuearr);
+           return $customFieldForm;
+        }
+        
         public function getCustomFieldsArray($customFields){           
-            $fields = explode(",", $customFields);
+            $fields = explode(";", $customFields);
+            unset($fields[count($fields)-1]);
             // Output array
             $customFieldArray = array();
-
+            
             // Loop over the first explode() result
             foreach ($fields as $field) {
               // Assign each pair to $s, $q
@@ -53,13 +67,18 @@
             }    
             return $customFieldArray;
         }
-        private function getFormForCustomFields($customFieldsArr){
+        
+        public function getFormForCustomFields($customFieldsArr,$customfieldValueArr = null){
             $html = "";
             foreach($customFieldsArr as $userCustomField){
                 $usrCustomFld = new UserCustomField();
                 $usrCustomFld = $userCustomField;
                 $labelTitle = $usrCustomFld->getTitle();
-                $inputCode = '<input type="text" onkeyup="fillFormData(this)" name="cus_'. $usrCustomFld->getName() .'" id=cus_'. $usrCustomFld->getName()
+                $value = "";
+                if($customfieldValueArr != null){
+                    $value =   $customfieldValueArr[$labelTitle] ;
+                }
+                $inputCode = '<input type="text" onkeyup="fillFormData(this)" name="cus_'. $usrCustomFld->getName() .'" value="'. $value .'" id=cus_'. $usrCustomFld->getName()
                         .' placeholder="'. $usrCustomFld->getTitle() .'" class="form-control">';
 
                 if($usrCustomFld->getFieldType() == "boolean"){

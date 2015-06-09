@@ -113,8 +113,7 @@
                 addButton.jqxButton({  width: 65, height: 18 });
                 deleteButton.jqxButton({  width: 70, height: 18 });
                 editButton.jqxButton({  width: 65, height: 18 });
-                reloadButton.jqxButton({  width: 70, height: 18 });
-
+               
                 // create new row.
                 addButton.click(function (event) {
                     location.href = ("createLearningPlan.php");

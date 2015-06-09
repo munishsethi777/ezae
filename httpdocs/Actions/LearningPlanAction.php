@@ -3,6 +3,7 @@ require_once('../IConstants.inc');
 require_once($ConstantsArray['dbServerUrl'] ."Managers/LearningPlanMgr.php");
 require_once($ConstantsArray['dbServerUrl'] ."Managers/LeaderBoardMgr.php");
 require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/LearningPlan.php");
+require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/LearningPlanProfile.php");
 require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/LeaderBoard.php");
 require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/LearningPlanCourse.php");
 require_once($ConstantsArray['dbServerUrl'] ."DataStores/BeanDataStore.php5");   
@@ -72,9 +73,11 @@ if($call == "saveLearningPlan"){
         $id = $learningPlanMgr->saveLearningPlan($learningPlan,$moduleIdArr,$enableLeaderboardArr);
         $leaderBoardMgr = LeaderBoardMgr::getInstance();
         $leaderBoardMgr->deleteByLearningPlan($id);
+        
         if($learningPlan->getIsLeaderBoard() == 1){
             SaveLeaderBoard($id);    
-        }              
+        }
+        saveLearningPlanProfile($id);              
         $message = "Learning Plan saved successfully."; 
     }catch(Exception $e){
         $success = 0;
@@ -94,6 +97,15 @@ function getArray($string){
         $array[$b[0]] = $b[1];
     }
     return $array;
+}
+
+function saveLearningPlanProfile($id){
+    $profile = $_POST["profile"];
+    $learningPlanProfile = new LearningPlanProfile();
+    $learningPlanProfile->setLearningPlanSeq($id);
+    $learningPlanProfile->setLearningProfileSeq($profile);
+    $dataStore = new BeanDataStore("LearningPlanProfile","learningplanprofiles");
+    $dataStore->save($learningPlanProfile);
 }
 
 function SaveLeaderBoard($id){ 

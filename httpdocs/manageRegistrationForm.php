@@ -82,10 +82,7 @@
 </html>
 <script type="text/javascript">
     $(document).ready(function(){
-        WinMove();
-        $('.i-checks').iCheck({
-            checkboxClass: 'icheckbox_square-green'
-        })
+      
         loadFieldBlocks();
         $("#saveBtn").click(function(e){
             saveSignupfields(e,this);

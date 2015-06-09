@@ -1,24 +1,14 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href="jqwidgets/styles/jqx.base.css" type="text/css" />
-        <link rel="stylesheet" href="jqwidgets/styles/jqx.arctic.css" type="text/css" />
-        <script type="text/javascript" src="scripts/jquery-1.10.2.min.js"></script>
-        <script type="text/javascript" src="jqwidgets/jqxcore.js"></script>
-        <script type="text/javascript" src="jqwidgets/jqxexpander.js"></script>
-        <script type="text/javascript" src="jqwidgets/jqxvalidator.js"></script>
-        <script type="text/javascript" src="jqwidgets/jqxbuttons.js"></script>
-        <script type="text/javascript" src="jqwidgets/jqxcheckbox.js"></script>
-        <script type="text/javascript" src="jqwidgets/globalization/globalize.js"></script>
-        <script type="text/javascript" src="jqwidgets/jqxcalendar.js"></script>
-        <script type="text/javascript" src="jqwidgets/jqxdatetimeinput.js"></script>
-        <script type="text/javascript" src="jqwidgets/jqxmaskedinput.js"></script>
-        <script type="text/javascript" src="jqwidgets/jqxinput.js"></script>
-        <link type="text/css" href="styles/bootstrap.css" rel="stylesheet" />
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Administration - Easy Assessment Engine</title>
+        <?include "ScriptsInclude.php"?>
         <script type="text/javascript">
             $(document).ready(function () {
-                $('.form-control').jqxInput({  });
-                $('#loginForm').jqxValidator({
+                //$('.form-control').jqxInput({  });
+                $('#userLoginForm').jqxValidator({
                     rules: [
                            { input: '#usernameInput', message: 'UserName is required!', action: 'keyup, blur', rule: 'required' },
                            { input: '#usernameInput', message: 'UserName must be less than 250 characters!', action: 'keyup, blur', rule: 'length=0,250' },
@@ -28,60 +18,74 @@
                            ]
                 });
                 //$('#loginButton').jqxButton({ width: 100, height: 25 });
-                $("#loginButton").click(function () {
+                $("#loginButton").click(function (e) {
+                    var btn = this;
                     var validationResult = function (isValid) {
                         if (isValid) {
-                            submitLogin();
+                            submitLogin(e,btn);
                         }
                     }
-                    $('#loginForm').jqxValidator('validate', validationResult);
+                    $('#userLoginForm').jqxValidator('validate', validationResult);
                 });
-                $("#loginForm").on('validationSuccess', function () {
-                    $("#loginForm-iframe").fadeIn('fast');
+                $("#userLoginForm").on('validationSuccess', function () {
+                    $("#userLoginForm-iframe").fadeIn('fast');
                 });
             });
 
-            function submitLogin(){
-                $formData = $("#loginForm").serializeArray();
-                $.get( "ajaxUsersMgr.php?call=loginUser", $formData,function( data ){
-                    if(data == 0){
-                        alert("Invaid username or Password");
-                    }else{
-                        window.location = "userHome.php";
-                    }
+            function submitLogin(e,btn){
+                e.preventDefault();
+                var l = Ladda.create(btn);
+                l.start();            
+                $('#userLoginForm').ajaxSubmit(function( data ){
+                      l.stop();
+                      var obj = $.parseJSON(data);
+                      if(obj.success == 1){
+                            window.location = "UserDashboard.php";   
+                      } else{
+                          showResponseNotification(data,"mainDiv","userLoginForm"); 
+                      }
                 });
             }
-            </script>
+         </script>
     </head>
-<body>
+<body class="gray-bg">
+<div class="loginColumns animated fadeInDown">
+    <div class="row">
+        <div class="col-md-6">
+                <h1 class="font-bold">Welcome to EZAE</h1>
+            </div>
+        <div class="col-md-6">
+            <div class="ibox-content mainDiv">               
+                <form class="form-horizontal" action="Actions\UserAction.php" id="userLoginForm" method="POST" name="loginForm">
+                  <input type="hidden" name="call" id="call" value="loginUser"> 
+                  <div class="form-group">
+                    <label for="inputEmail3" class="col-sm-3 control-label">Username</label>
+                    <div class="col-sm-9">
+                      <input type="text" name="username" class="form-control input-lg" id="usernameInput">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-3 control-label">Password</label>
+                    <div class="col-sm-9">
+                      <input type="password" name="password" class="form-control input-lg" id="passwordInput">
+                    </div>
+                  </div>
 
-<div style="width:600px;margin:50px auto;padding:20px;border:1px silver solid">
-    <p style="margin:20px 0px 20px 0px">
-        Welcome to USHA international E learning program on APO If you are not an USHA employee, please close this page
-    </p>
-    <form class="form-horizontal" id="loginForm" method="POST" name="loginForm">
-      <div class="form-group">
-        <label for="inputEmail3" class="col-sm-6 control-label">Employee Id</label>
-        <div class="col-sm-6">
-          <input type="text" name="username" class="form-control input-lg" id="usernameInput">
+                  <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <button class="btn btn-primary ladda-button" data-style="expand-right" id="loginButton" type="button">
+                            <span class="ladda-label">Login</span>
+                        </button>
+                    </div>
+                  </div>
+                </form>
+                <a href="forgotPassword.php">Forgot Password</a><br/>
+            </div>
         </div>
-      </div>
-      <div class="form-group">
-        <label for="inputPassword3" class="col-sm-6  control-label">Date of Birth DDMMYYYY
-        <br><font style="font-weight:normal">Eg. If your DOB is 23rd August 1978 Please input 23081978</font></label>
-        <div class="col-sm-6">
-          <input type="password" name="password" class="form-control input-lg" id="passwordInput">
-        </div>
-      </div>
+         
+    </div>
+</div>
 
-      <div class="form-group">
-        <div class="col-sm-offset-3 col-sm-9">
-          <input type="button" id = "loginButton" class="btn btn-default" value = "Login"/>
-        </div>
-      </div>
-    </form>
-    <a href="forgotPassword.php">Forgot Password</a>
- </div>
 </body>
 </html>
 

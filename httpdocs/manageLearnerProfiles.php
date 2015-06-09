@@ -132,7 +132,7 @@
                 addButton.jqxButton({  width: 65, height: 18 });
                 deleteButton.jqxButton({  width: 70, height: 18 });
                 editButton.jqxButton({  width: 65, height: 18 });
-                reloadButton.jqxButton({  width: 70, height: 18 });
+               
 
                 // create new row.
                 addButton.click(function (event) {
@@ -170,10 +170,7 @@
                     deleteUrl = "Actions/LearningProfileAction.php?call=deleteLearningProfile";
                     deleteRows(gridId,deleteUrl);
                 });
-                // reload grid data.
-                reloadButton.click(function (event) {
-                    $("#jqxgrid").jqxGrid({ source: dataAdapter });
-                });
+              
             }
         });
     }

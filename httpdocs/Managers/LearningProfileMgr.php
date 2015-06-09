@@ -70,5 +70,21 @@
             $dataStore = new BeanDataStore("UserLearningProfile","userlearningprofiles");
             $dataStore->executeQuery("delete from userlearningprofiles where userseq =" .$learnerSeq);
         }
+        private function toJson($learningProfileObj){
+            $row["id"] = $learningProfileObj->getSeq();
+            $row["tag"] = $learningProfileObj->getTag();
+            $row["description"] = $learningProfileObj->getDescription();
+            $row['awesomefontid'] = "<i id='icon". $learningProfileObj->getSeq() . "' class='fa ". $learningProfileObj->getAwesomeFontId() . "'></i>";
+            return $row;
+        }
+        
+        public function findAll(){
+            $profileArr = self::$dataStore->findAllByCompany();
+            $rows = array();
+            foreach($profileArr as $profile){
+                array_push($rows,$this->toJson($profile));
+            }
+            return json_encode($rows);
+        }
     }
 ?>

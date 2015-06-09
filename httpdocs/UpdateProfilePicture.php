@@ -1,7 +1,4 @@
-<?php
-$sessionUtil = SessionUtil::getInstance();
-$adminSeq =  $sessionUtil->getAdminLoggedInSeq();
-?>   
+   
      <?include "ScriptsInclude.php"?> 
     <div id="updateProfilePicModelForm" class="modal fade" aria-hidden="true">
         <div class="modal-dialog" >
@@ -12,7 +9,7 @@ $adminSeq =  $sessionUtil->getAdminLoggedInSeq();
                 </div>
                 <div class="modal-body mainDiv"> 
                     <div class="row">                       
-                         <form  role="form" method="post" enctype= "multipart/form-data" action="Actions/CompanyAction.php" id="UpdateProfilePic" class="form-horizontal">
+                         <form  role="form" method="post" enctype= "multipart/form-data" action="Actions/<?echo $action?>" id="UpdateProfilePic" class="form-horizontal">
                             <input type="hidden" id="call" name="call" value="updateProfilePicture">
                             <input type="hidden" id="imgSrc" name="imgSrc">
                              <input type="hidden" id="imgSrcOrg" name="imgSrcOrg"> 
@@ -25,7 +22,7 @@ $adminSeq =  $sessionUtil->getAdminLoggedInSeq();
                                     </label>            
                                     <div class="col-md-9">                                         
                                         <div class="image-crop">
-                                            <img id="profilePic" src="Images\UserImages\<?echo($adminSeq)?>_org.jpg">
+                                            <img id="profilePic" src="<?echo($path)?>">
                                         </div>
                                     </div>                                        
                                     <div class="col-md-3">                                           
