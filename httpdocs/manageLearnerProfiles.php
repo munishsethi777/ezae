@@ -19,16 +19,16 @@
          $("#saveBtn").click(function(e){
                 ValidateAndSave(e,this);
             });
-            
+
             $("#saveNewBtn").click(function(e){
-                ValidateAndSave(e,this); 
+                ValidateAndSave(e,this);
          });
-        
+
         $("#customFieldForm").on('validationSuccess', function () {
             $("#createCompanyForm-iframe").fadeIn('fast');
         });
     })
-    
+
     function ValidateAndSave(e,btn){
         var validationResult = function (isValid) {
             if (isValid) {
@@ -37,32 +37,33 @@
         }
         $('#learningProfileForm').jqxValidator('validate', validationResult);
     }
-    
-     function saveLearningProfile(e,btn){
+
+    function saveLearningProfile(e,btn){
             e.preventDefault();
             var l = Ladda.create(btn);
-            l.start();            
+            l.start();
              $('#learningProfileForm').ajaxSubmit(function( data ){
                    l.stop();
                    var obj = $.parseJSON(data);
                    var dataRow = "";
                    if(obj.success == 1){
-                        var dataRow = $.parseJSON(obj.row);  
+                        var dataRow = $.parseJSON(obj.row);
                         var id = $("#id").val();
                        if(id != "0"){
                            var selectedrowindex = $("#jqxgrid").jqxGrid('getselectedrowindex');
                            $("#jqxgrid").jqxGrid('updaterow', id, dataRow);
                        }else{
                          $("#jqxgrid").jqxGrid('addrow', null, dataRow);
-                       }  
+                       }
                    }
                    if(btn.id == "saveBtn"){
-                     showResponseToastr(data,"createNewModalForm","learningProfileForm","mainDiv"); 
+                     showResponseToastr(data,"createNewModalForm","learningProfileForm","mainDiv");
                   }else{
                      showResponseNotification(data,"mainDiv","learningProfileForm");
-                  }                           
-             })             
+                  }
+             })
      }
+
     function loadGrid(){
         var columns = [
           { text: 'id', datafield: 'id' , hidden:true},
@@ -122,17 +123,17 @@
                 var addButton = $("<div style='float: left; margin-left: 5px;'><i class='fa fa-plus-square'></i><span style='margin-left: 4px; position: relative;'>    Add</span></div>");
                 var deleteButton = $("<div style='float: left; margin-left: 5px;'><i class='fa fa-times-circle'></i><span style='margin-left: 4px; position: relative;'>Delete</span></div>");
                 var editButton = $("<div style='float: left; margin-left: 5px;'><i class='fa fa-edit'></i><span style='margin-left: 4px; position: relative;'>Edit</span></div>");
-               
+
 
                 container.append(addButton);
                 container.append(editButton);
                 container.append(deleteButton);
-                
+
                 statusbar.append(container);
                 addButton.jqxButton({  width: 65, height: 18 });
                 deleteButton.jqxButton({  width: 70, height: 18 });
                 editButton.jqxButton({  width: 65, height: 18 });
-               
+
 
                 // create new row.
                 addButton.click(function (event) {
@@ -148,11 +149,11 @@
                     $("#saveNewBtnDiv").hide();
                     $("#msgDiv").remove();
                     $("#errorDiv").remove();
-                    $("#learningProfileForm")[0].reset(); 
+                    $("#learningProfileForm")[0].reset();
                     var selectedrowindex = $("#jqxgrid").jqxGrid('selectedrowindexes');
                     if(selectedrowindex.length != 1){
                         bootbox.alert("Please Select single row for edit.", function() {});
-                        return;    
+                        return;
                     }
                     var row = $('#jqxgrid').jqxGrid('getrowdata', selectedrowindex);
                     $("#id").val(row.id);
@@ -161,7 +162,7 @@
                     $('#createNewModalForm').modal('show');
                     var selectedAwFont = $('#icon' + row.id).attr('class').replace("fa ","");
                     if(selectedAwFont != ""){
-                        $("#awesomeFontId").val(selectedAwFont);    
+                        $("#awesomeFontId").val(selectedAwFont);
                     }
                 });
                 // delete row.
@@ -170,11 +171,11 @@
                     deleteUrl = "Actions/LearningProfileAction.php?call=deleteLearningProfile";
                     deleteRows(gridId,deleteUrl);
                 });
-              
+
             }
         });
     }
-    
+
 </script>
 </head>
 <body class='default'>
@@ -226,18 +227,18 @@
                                                         <label>Description</label>
                                                         <input type="text" id="description" name="description" placeholder="Description" class="form-control">
                                                     </div>
-                                                    <div class="form-group"> 
-                                                        <label>Icons</label> 
+                                                    <div class="form-group">
+                                                        <label>Icons</label>
                                                          <select class="form-control" id="awesomeFontId" name="awesomeFontId" style="font-family: 'FontAwesome', Helvetica;">
-                                                            <option value="fa-medium">&#xf23a; Medium</option> 
+                                                            <option value="fa-medium">&#xf23a; Medium</option>
                                                             <option value="fa-sellsy">&#xf213; Sellsy</option>
-                                                            <option value="fa-diamond">&#xf219; Diamond</option> 
+                                                            <option value="fa-diamond">&#xf219; Diamond</option>
                                                             <option value="fa-user-secret">&#xf21b; Secret</option>
-                                                            <option value="fa-venus">&#xf221; Venus</option>     
+                                                            <option value="fa-venus">&#xf221; Venus</option>
 <                                                        </select>
                                                     </div>
-                                                    
-                                                    <div class="modal-footer">                                                       
+
+                                                    <div class="modal-footer">
                                                         <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveBtn" type="button">
                                                             <span class="ladda-label">Save</span>
                                                         </button>

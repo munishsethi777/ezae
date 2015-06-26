@@ -56,18 +56,18 @@ $sessionUtil = SessionUtil::getInstance();
 $adminSeq =  $sessionUtil->getAdminLoggedInSeq();
 $path = "images/AdminImages/" . $adminSeq . ".png";
 if(!file_exists ($path)){
-    $path = "images/dummy.jpg";    
+    $path = "images/dummy.jpg";
 }?>
-<?include "UpdateProfilePicture.php"?> 
+<?include "UpdateProfilePicture.php"?>
 
 <nav class="navbar-default navbar-static-side" role="navigation">
             <div class="sidebar-collapse">
                 <ul class="nav" id="side-menu">
                     <li class="nav-header">
-                        <div class="dropdown profile-element"> 
+                        <div class="dropdown profile-element">
                             <div id="profilePicDiv">
-                                
-                                
+
+
                                 <img alt="image" id="profilePicImg" class="img-circle" width="50px;" src="<?echo($path)?>"/>
                             </div>
                             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
@@ -117,13 +117,17 @@ if(!file_exists ($path)){
                         <a href="mailbox.html"><i class="fa fa-group"></i> <span class="nav-label">Learners </span><span class="label label-warning pull-right">1024</span></a>
                         <ul class="nav nav-second-level">
                             <li><a href="importLearners.php">Import</a></li>
-                            <li class="active"><a href="manageLearners.php">Manage learners</a></li>
+                            <li><a href="manageLearners.php">Manage learners</a></li>
                             <li><a href="manageRegistrationForm.php">Registration Form</a></li>
                             <li><a href="manageLearnerProfiles.php">Learner's Profiles</a></li>
                         </ul>
                     </li>
                     <li>
-                        <a href="widgets.html"><i class="fa fa-send"></i> <span class="nav-label">Messages</span> </a>
+                        <a href="manageMessages.php"><i class="fa fa-send"></i> <span class="nav-label">Communications</span><span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li><a href="manageMessages.php">Manage Messages</a></li>
+                            <li><a href="createMessage.php">Create Message</a></li>
+                        </ul>
                     </li>
                     <li>
                         <a href="widgets.html"><i class="fa fa-bell-o"></i> <span class="nav-label">Notifications</span> </a>
