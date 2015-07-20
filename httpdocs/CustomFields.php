@@ -1,6 +1,8 @@
 <?include("sessioncheck.php");?>
-<html>
+<html lang="en">
 <head>
+<title>EZAE - User Custom Fields</title>
+
 <?include "ScriptsInclude.php"?>
 <script type="text/javascript">
     $(document).ready(function(){
@@ -10,15 +12,15 @@
             hintType: 'label',
             animationDuration: 0,
             rules: [
-               { input: '#fieldName', message: 'Field Name is required!', action: 'keyup, blur', rule: 'required' } 
+               { input: '#fieldName', message: 'Field Name is required!', action: 'keyup, blur', rule: 'required' }
                ]
         });
 
         $("#saveButton").click(function (e) {
-            validateAndSave(e,this); 
+            validateAndSave(e,this);
         });
         $("#saveNewBtn").click(function (e) {
-            validateAndSave(e,this); 
+            validateAndSave(e,this);
         });
         $("#customFieldForm").on('validationSuccess', function (){
             $("#createCompanyForm-iframe").fadeIn('fast');
@@ -38,7 +40,7 @@
                 submitCreate(e,btn);
             }
         }
-        $('#customFieldForm').jqxValidator('validate', validationResult);   
+        $('#customFieldForm').jqxValidator('validate', validationResult);
     }
     function submitCreate(e,btn){
          e.preventDefault();
@@ -60,12 +62,12 @@
                        l.stop();
                    }
                   if(btn.id == "saveButton"){
-                     showResponseToastr(data,"createNewModalForm","customFieldForm","mainDiv"); 
+                     showResponseToastr(data,"createNewModalForm","customFieldForm","mainDiv");
                   }else{
                      showResponseNotification(data,"mainDiv","customFieldForm");
                   }
                   $("#jqxgrid").jqxGrid('clearselection');
-                  
+
                 }
         });
     }
@@ -74,13 +76,13 @@
         $('#passwordchk').prop('checked',(value == "password" && isChecked));
         $('#emailchk').prop('checked',(value == "email" && isChecked));
     }
-    function loadGrid(){ 
+    function loadGrid(){
         var columns = [
           { text: 'id', datafield: 'id' , hidden:true},
           { text: 'mappedfield', datafield: 'mappedfield' , hidden:true},
           { text: 'Field Name' , datafield: 'name' },
           { text: 'Field Type', datafield: 'type' },
-          { text: 'Modified On', datafield: 'lastmodifiedon',cellsformat: 'MM-dd-yyyy hh:mm:ss tt' } 
+          { text: 'Modified On', datafield: 'lastmodifiedon',cellsformat: 'MM-dd-yyyy hh:mm:ss tt' }
         ]
         var rows = Array();
         var dataFields = Array();
@@ -91,7 +93,7 @@
         {
             datatype: "json",
             id: 'id',
-            
+
             pagesize: 20,
             //localData: rows,
             datafields: [
@@ -102,7 +104,7 @@
                 { name: 'mappedfield', type: 'string' },
             ],
             url: 'Actions/CustomFieldAction.php?call=getCustomFields',
-           
+
             addrow: function (rowid, rowdata, position, commit) {
                 commit(true);
             },
@@ -114,10 +116,10 @@
             }
         };
         var dataAdapter = new $.jqx.dataAdapter(source);
-        
+
         $("#jqxgrid").jqxGrid(
         {
-            height: '100%',
+            height: '75%',
             width: '100%',
             source: dataAdapter,
             filterable: true,
@@ -125,7 +127,6 @@
             autoshowfiltericon: true,
             columns: columns,
             pageable: true,
-            autoheight: true,
             altrows: true,
             enabletooltips: true,
             columnsresize: true,
@@ -137,17 +138,17 @@
                 var addButton = $("<div style='float: left; margin-left: 5px;'><i class='fa fa-plus-square'></i><span style='margin-left: 4px; position: relative;'>    Add</span></div>");
                 var deleteButton = $("<div style='float: left; margin-left: 5px;'><i class='fa fa-times-circle'></i><span style='margin-left: 4px; position: relative;'>Delete</span></div>");
                 var editButton = $("<div style='float: left; margin-left: 5px;'><i class='fa fa-edit'></i><span style='margin-left: 4px; position: relative;'>Edit</span></div>");
-               
+
 
                 container.append(addButton);
                 container.append(editButton);
                 container.append(deleteButton);
-               
+
                 statusbar.append(container);
                 addButton.jqxButton({  width: 65, height: 18 });
                 deleteButton.jqxButton({  width: 70, height: 18 });
                 editButton.jqxButton({  width: 65, height: 18 });
-               
+
 
                 // create new row.
                 addButton.click(function (event) {
@@ -163,11 +164,11 @@
                 editButton.click(function (event) {
                     $("#saveNewBtnDiv").hide();
                     $("#msgDiv").hide();
-                    $("#errorDiv").hide();                   
+                    $("#errorDiv").hide();
                     var selectedrowindex = $("#jqxgrid").jqxGrid('selectedrowindexes');
                     if(selectedrowindex.length != 1){
                          bootbox.alert("Please Select single row for edit.", function() {});
-                         return;    
+                         return;
                     }
                     $("#customFieldForm")[0].reset();
                     var row = $('#jqxgrid').jqxGrid('getrowdata', selectedrowindex);
@@ -178,21 +179,21 @@
                     $('#passwordchk').attr('checked', row.mappedfield == "passwordfield");
                     $('#emailchk').attr('checked', row.mappedfield == "emailfield");
                     $("#mappedField").val(row.mappedfield);
-                    
+
                     $('#createNewModalForm').modal('show');
                 });
                 // delete row.
                 deleteButton.click(function (event) {
                      deleteRows("jqxgrid","Actions/CustomFieldAction.php?call=deleteCustomfield");
                 });
-                
+
             }
         });
      }
-    
+
 </script>
 </head>
-<body class='default'> 
+<body class='default'>
     <div id="wrapper">
         <?include("adminMenu.php");?>
         <div class="adminSingup animated fadeInRight" >
@@ -219,7 +220,7 @@
                                             <div class="col-sm-12">
                                                 <form role="form" id="customFieldForm" class="form-horizontal">
                                                     <input type="hidden" id="id" name="id" value="0">
-                                                    <input type="hidden" id="mappedField" name="mappedField"> 
+                                                    <input type="hidden" id="mappedField" name="mappedField">
                                                     <div class="form-group">
                                                         <label>Field Name</label>
                                                         <input type="text" id="fieldName" name="fieldName" placeholder="Field Name" class="form-control">
@@ -233,11 +234,11 @@
                                                         <option value="boolean">Yes/No</option>
                                                         </select>
                                                     </div>
-                                                     <div class="form-group">                                                                                                               
+                                                     <div class="form-group">
                                                         <div class="col-sm-4">
-                                                            <label class="checkbox-inline"><input type="checkbox" onchange="HandleCheckbox(this.value,this.checked)"  value="username" name="username_map" checked="checked" id="usernamechk"> UserName </label></div> 
+                                                            <label class="checkbox-inline"><input type="checkbox" onchange="HandleCheckbox(this.value,this.checked)"  value="username" name="username_map" checked="checked" id="usernamechk"> UserName </label></div>
                                                         <div class="col-sm-4">
-                                                            <label class="checkbox-inline"><input type="checkbox" onchange="HandleCheckbox(this.value,this.checked)"  value="password" name="password_map" id="passwordchk"> Password </label></div> 
+                                                            <label class="checkbox-inline"><input type="checkbox" onchange="HandleCheckbox(this.value,this.checked)"  value="password" name="password_map" id="passwordchk"> Password </label></div>
                                                         <div class="col-sm-3">
                                                             <label class="checkbox-inline"><input type="checkbox" onchange="HandleCheckbox(this.value,this.checked)" value="email" name="email_map" id="emailchk"> Email </label></div>
                                                      </div>

@@ -1,76 +1,131 @@
-        <link href="styles/bootstrap.min.css" rel="stylesheet">
-        <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
-        <link href="styles/animate.css" rel="stylesheet">
-        <link href="styles/style.css" rel="stylesheet">
-        <link href="styles/custom.css" rel="stylesheet">
-        <link href="styles/toastr.min.css" rel="stylesheet">
-        <link href="styles/plugins/steps/jquery.steps.css" rel="stylesheet">
-        <link href="styles/toastr.min.css" rel="stylesheet">
-        <link href="styles/plugins/chosen/chosen.css" rel="stylesheet">  
-        <link href="styles/plugins/summernote/summernote.css" rel="stylesheet">
-        <link href="styles/plugins/summernote/summernote-bs3.css" rel="stylesheet"> 
-         <link href="styles/plugins/cropper/cropper.min.css" rel="stylesheet"> 
-        <link href="styles/plugins/ionRangeSlider/ion.rangeSlider.css" rel="stylesheet">
-         <link href="styles/plugins/ionRangeSlider/ion.rangeSlider.skinFlat.css" rel="stylesheet">
-          <link href="styles/jquery.datetimepicker.css" rel="stylesheet">
-         
-        <script type="text/javascript" src="scripts/jquery-1.10.2.min.js"></script>     
-        <script src="scripts/bootstrap.min.js"></script>
-        <script src="scripts/jquery.metisMenu.js"></script>
-        <script src="scripts/bootbox.js"></script>       
-        <script src="scripts/bootstrap.min.js"></script>
-        <script src="scripts/jquery.metisMenu.js"></script>          
-         <script src="scripts/example.js"></script> 
-         <script src="scripts/bootbox.js"></script>
-         <!-- Custom and plugin javascript -->
-        <script src="scripts/inspinia.js"></script>
-        <script src="scripts/toastr.min.js"></script>
-        <link rel="stylesheet" href="jqwidgets/styles/jqx.base.css" type="text/css" />
-        <link rel="stylesheet" href="jqwidgets/styles/jqx.arctic.css" type="text/css" />
-        <script type="text/javascript" src="jqwidgets/jqxcore.js"></script>
-        <script type="text/javascript" src="jqwidgets/jqxbuttons.js"></script>
-        <script type="text/javascript" src="jqwidgets/jqxscrollbar.js"></script>
-        <script type="text/javascript" src="jqwidgets/jqxlistbox.js"></script>
-        <script type="text/javascript" src="jqwidgets/jqxdropdownlist.js"></script>
-        <script type="text/javascript" src="jqwidgets/jqxmenu.js"></script>
-        <script type="text/javascript" src="jqwidgets/jqxdata.js"></script>
-        <script type="text/javascript" src="jqwidgets/jqxgrid.js"></script>
-        <script type="text/javascript" src="jqwidgets/jqxgrid.edit.js"></script>
-        <script type="text/javascript" src="jqwidgets/jqxgrid.sort.js"></script>
-        <script type="text/javascript" src="jqwidgets/jqxgrid.selection.js"></script>
-        <script type="text/javascript" src="jqwidgets/jqxgrid.pager.js"></script>
-        <script type="text/javascript" src="jqwidgets/jqxgrid.filter.js"></script>
-        <script type="text/javascript" src="jqwidgets/jqxgrid.columnsreorder.js"></script>
-        <script type="text/javascript" src="jqwidgets/jqxgrid.columnsresize.js"></script>
-        <script type="text/javascript" src="jqwidgets/jqxdata.export.js"></script>
-        <script type="text/javascript" src="jqwidgets/jqxgrid.export.js"></script>
-        <script type="text/javascript" src="jqwidgets/jqxvalidator.js"></script>   
-        <script type="text/javascript" src="jqwidgets/jqxlistbox.js"></script>
-        <script type="text/javascript" src="jqwidgets/jqxcombobox.js"></script>
-        <script type="text/javascript" src="jqwidgets/jqxcheckbox.js"></script>
-        <script type="text/javascript" src="jqwidgets/jqxdraw.js"></script>
-        <script type="text/javascript" src="jqwidgets/jqxchart.core.js"></script>
-        <script type="text/javascript" src="jqwidgets/jqxnumberinput.js"></script>
-        <script type="text/javascript" src="jqwidgets/jqxinput.js"></script>
-        <link rel="stylesheet" href="styles/ladda-themeless.min.css">
-        <script src="scripts/jquery.form.min.js"></script>
-        <script src="scripts/spin.min.js"></script>
-        <script src="scripts/ladda.min.js"></script>
-        <link href="styles/plugins/iCheck/custom.css" rel="stylesheet">
-        <!-- Steps -->
-        <script src="scripts/plugins/staps/jquery.steps.min.js"></script>
-        <!-- Jquery Validate -->
-        <script src="scripts/plugins/validate/jquery.validate.min.js"></script>
-        <!-- iCheck -->
-        <script src="scripts/plugins/iCheck/icheck.min.js"></script>
-        <!-- Chosen -->
-        <script src="scripts/plugins/chosen/chosen.jquery.js"></script>
-        <script src="scripts/jquery.datetimepicker.js"></script> 
-       
-        <!-- SUMMERNOTE -->
-        <script src="scripts/plugins/summernote/summernote.min.js"></script>
-        <script src="scripts/plugins/cropper/cropper.min.js"></script>
-        <script>
+<!-- Jquery avascripts -->
+<script src="scripts/jquery-2.1.1.js"></script>
+
+<!-- Custom and plugin javascript -->
+<script src="scripts/inspinia.js"></script>
+<link href="styles/bootstrap.min.css" rel="stylesheet">
+<link href="styles/animate.css" rel="stylesheet">
+<link href="styles/style.css" rel="stylesheet">
+<link href="styles/custom.css" rel="stylesheet">
+<script src="scripts/plugins/pace/pace.min.js"></script>
+
+<!-- button ladda -->
+<link rel="stylesheet" href="styles/ladda-themeless.min.css">
+<script src="scripts/jquery.form.min.js"></script>
+<script src="scripts/spin.min.js"></script>
+<script src="scripts/ladda.min.js"></script>
+
+
+<!-- Steps -->
+<link href="styles/plugins/steps/jquery.steps.css" rel="stylesheet">
+<script src="scripts/plugins/staps/jquery.steps.min.js"></script>
+
+<!-- Jquery Validate -->
+<script src="scripts/plugins/validate/jquery.validate.min.js"></script>
+
+<!-- iCheck -->
+<link href="styles/plugins/iCheck/custom.css" rel="stylesheet">
+<script src="scripts/plugins/iCheck/icheck.min.js"></script>
+
+<!-- Chosen -->
+<link href="styles/plugins/chosen/chosen.css" rel="stylesheet">
+<script src="scripts/plugins/chosen/chosen.jquery.js"></script>
+
+<!-- datepicker-->
+<link href="styles/jquery.datetimepicker.css" rel="stylesheet">
+<script src="scripts/jquery.datetimepicker.js"></script>
+
+<!-- SUMMERNOTE -->
+<link href="styles/plugins/summernote/summernote.css" rel="stylesheet">
+<link href="styles/plugins/summernote/summernote-bs3.css" rel="stylesheet">
+<script src="scripts/plugins/summernote/summernote.min.js"></script>
+
+<!-- cropper -->
+<script src="scripts/plugins/cropper/cropper.min.js"></script>
+<link href="styles/plugins/cropper/cropper.min.css" rel="stylesheet">
+
+<!-- Mainly scripts -->
+<script src="scripts/plugins/metisMenu/jquery.metisMenu.js"></script>
+<script src="scripts/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+<script src="scripts/example.js"></script>
+
+<!--Bootstrap-->
+<script src="scripts/bootstrap.js"></script>
+<link href="styles/bootstrap.min.css" rel="stylesheet">
+<link href="styles/animate.css" rel="stylesheet">
+<link href="styles/style.css" rel="stylesheet">
+
+<!-- BootBOX-->
+<script src="scripts/bootbox.js"></script>
+
+<!-- Flot -->
+<script src="scripts/plugins/flot/jquery.flot.js"></script>
+<script src="scripts/plugins/flot/jquery.flot.tooltip.min.js"></script>
+<script src="scripts/plugins/flot/jquery.flot.spline.js"></script>
+<script src="scripts/plugins/flot/jquery.flot.resize.js"></script>
+<script src="scripts/plugins/flot/jquery.flot.pie.js"></script>
+
+<!-- Peity -->
+<script src="scripts/plugins/peity/jquery.peity.min.js"></script>
+<!--<script src="scripts/demo/peity-demo.js"></script>-->
+
+
+<!-- jQuery UI -->
+<script src="scripts/plugins/jquery-ui/jquery-ui.min.js"></script>
+
+<!-- GITTER -->
+<link href="scripts/plugins/gritter/jquery.gritter.css" rel="stylesheet">
+<script src="scripts/plugins/gritter/jquery.gritter.min.js"></script>
+
+<!-- Sparkline -->
+<script src="scripts/plugins/sparkline/jquery.sparkline.min.js"></script>
+
+<!-- Sparkline demo data  -->
+<!--<script src="scripts/demo/sparkline-demo.js"></script>-->
+
+<!-- ChartJS-->
+<script src="scripts/plugins/chartJs/Chart.min.js"></script>
+
+<!-- Toastr -->
+<link href="styles/plugins/toastr/toastr.min.css" rel="stylesheet">
+<script src="scripts/plugins/toastr/toastr.min.js"></script>
+
+<!-- IonRangeSlider -->
+<link href="styles/plugins/ionRangeSlider/ion.rangeSlider.css" rel="stylesheet">
+<link href="styles/plugins/ionRangeSlider/ion.rangeSlider.skinFlat.css" rel="stylesheet">
+
+<!-- Font Awesome -->
+<link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+<!-- JQX Widgets -->
+<link rel="stylesheet" href="jqwidgets/styles/jqx.base.css" type="text/css" />
+<link rel="stylesheet" href="jqwidgets/styles/jqx.arctic.css" type="text/css" />
+<script type="text/javascript" src="jqwidgets/jqxcore.js"></script>
+<script type="text/javascript" src="jqwidgets/jqxbuttons.js"></script>
+<script type="text/javascript" src="jqwidgets/jqxscrollbar.js"></script>
+<script type="text/javascript" src="jqwidgets/jqxlistbox.js"></script>
+<script type="text/javascript" src="jqwidgets/jqxdropdownlist.js"></script>
+<script type="text/javascript" src="jqwidgets/jqxmenu.js"></script>
+<script type="text/javascript" src="jqwidgets/jqxdata.js"></script>
+<script type="text/javascript" src="jqwidgets/jqxgrid.js"></script>
+<script type="text/javascript" src="jqwidgets/jqxgrid.edit.js"></script>
+<script type="text/javascript" src="jqwidgets/jqxgrid.sort.js"></script>
+<script type="text/javascript" src="jqwidgets/jqxgrid.selection.js"></script>
+<script type="text/javascript" src="jqwidgets/jqxgrid.pager.js"></script>
+<script type="text/javascript" src="jqwidgets/jqxgrid.filter.js"></script>
+<script type="text/javascript" src="jqwidgets/jqxgrid.columnsreorder.js"></script>
+<script type="text/javascript" src="jqwidgets/jqxgrid.columnsresize.js"></script>
+<script type="text/javascript" src="jqwidgets/jqxdata.export.js"></script>
+<script type="text/javascript" src="jqwidgets/jqxgrid.export.js"></script>
+<script type="text/javascript" src="jqwidgets/jqxvalidator.js"></script>
+<script type="text/javascript" src="jqwidgets/jqxlistbox.js"></script>
+<script type="text/javascript" src="jqwidgets/jqxcombobox.js"></script>
+<script type="text/javascript" src="jqwidgets/jqxcheckbox.js"></script>
+<script type="text/javascript" src="jqwidgets/jqxdraw.js"></script>
+<script type="text/javascript" src="jqwidgets/jqxchart.core.js"></script>
+<script type="text/javascript" src="jqwidgets/jqxnumberinput.js"></script>
+<script type="text/javascript" src="jqwidgets/jqxinput.js"></script>
+
+<script>
             $(function() {
                toastr.options = {
                       "closeButton": true,
@@ -87,7 +142,7 @@
                       "showMethod": "fadeIn",
                       "hideMethod": "fadeOut"
                       }
-                      
+
                       $.date = function(dateObject) {
                         var d = new Date(dateObject);
                         var day = d.getDate();
@@ -100,15 +155,15 @@
                             month = "0" + month;
                         }
                         var date = day + "/" + month + "/" + year;
-                       
-                        
+
+
                         var time = formatAMPM(d);
                         return date + " " + time;
                       };
-                      
-                      
+
+
             });
-            
+
             function formatAMPM(date) {
               var hours = date.getHours();
               var minutes = date.getMinutes();
@@ -121,14 +176,14 @@
             }
             function showResponseDiv(data,divClassName){
                 var obj = $.parseJSON(data);
-                var message = obj.message;              
-                $("#msgDiv").remove(); 
-                $("#errorDiv").remove(); 
+                var message = obj.message;
+                $("#msgDiv").remove();
+                $("#errorDiv").remove();
                 if(obj.success == 1){
                     var statusDiv = '<div id="msgDiv" class="alert alert-success alert-dismissable">';
                     statusDiv += '<button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>';
                     statusDiv += obj.message;
-                    statusDiv += '</div>';                    
+                    statusDiv += '</div>';
                     $("." + divClassName).append(statusDiv);
                 }else{
                     var errorDiv = '<div id="errorDiv" class="alert alert-danger alert-dismissable">';
@@ -136,14 +191,14 @@
                     errorDiv += obj.message;
                     errorDiv += '</div>';
                     $("." + divClassName).append(errorDiv);
-                }                                  
+                }
             }
-            
+
             function showResponseNotification(data,divClassName,formId){
                 var obj = $.parseJSON(data);
-                var message = obj.message;              
-                $("#msgDiv").remove(); 
-                $("#errorDiv").remove(); 
+                var message = obj.message;
+                $("#msgDiv").remove();
+                $("#errorDiv").remove();
                 if(obj.success == 1){
                     var statusDiv = getStatusDiv(message)
                     $("." + divClassName).append(statusDiv);
@@ -151,46 +206,46 @@
                 }else{
                     var errorDiv = getErrorDiv(message);
                     $("." + divClassName).append(errorDiv);
-                }                                  
+                }
             }
-            
-            
+
+
             function getErrorDiv(message){
                 var errorDiv = '<div id="errorDiv" class="alert alert-danger alert-dismissable">';
                     errorDiv += '<button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>';
                     errorDiv += message;
                     errorDiv += '</div>';
-                    return errorDiv;    
+                    return errorDiv;
             }
             function getStatusDiv(message){
                  var statusDiv = '<div id="msgDiv" class="alert alert-success alert-dismissable">';
                     statusDiv += '<button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>';
                     statusDiv += message;
                     statusDiv += '</div>';
-                    return statusDiv;    
+                    return statusDiv;
             }
             function showResponseToastr(data,modelId,formId,divClassName){
                 var obj = $.parseJSON(data);
-                $("#msgDiv").remove(); 
-                $("#errorDiv").remove(); 
-                var message = obj.message;                
+                $("#msgDiv").remove();
+                $("#errorDiv").remove();
+                var message = obj.message;
                 if(obj.success == 1){
                     if(modelId != null){
-                        $("#" + modelId).modal('hide');    
+                        $("#" + modelId).modal('hide');
                     }
                     if(formId != null){
-                        $("#" + formId)[0].reset();    
+                        $("#" + formId)[0].reset();
                     }
-                    toastr.success(message); 
+                    toastr.success(message);
                 }else{
                    var errorDiv = getErrorDiv(message);
                    $("." + divClassName).append(errorDiv);
-                }                                   
+                }
             }
             function isInArray(value, array) {
                 return array.indexOf(value) > -1;
             }
-            
+
             function deleteRows(gridId,deleteURL){
                 var selectedRowIndexes = $("#" + gridId).jqxGrid('selectedrowindexes');
                 if(selectedRowIndexes.length > 0){
@@ -206,20 +261,20 @@
                                     var obj = $.parseJSON(data);
                                     var message = obj.message;
                                     if(obj.success == 1){
-                                       
+
                                         toastr.success(message,'Success');
                                        //$.each(selectedRowIndexes, function(index , value){
                                           //  var id = $("#"  + gridId).jqxGrid('getrowid', value);
                                             var commit = $("#"  + gridId).jqxGrid('deleterow', ids);
-                                            $("#"+gridId).jqxGrid('clearselection');                                           
+                                            $("#"+gridId).jqxGrid('clearselection');
                                         //});
                                     }else{
                                         toastr.error(message,'Failed');
                                     }
                                 }
-                                 
+
                             });
-                           
+
                         }
                     });
                 }else{

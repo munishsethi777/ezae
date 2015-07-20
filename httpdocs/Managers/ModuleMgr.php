@@ -22,6 +22,7 @@ class ModuleMgr{
         }
         return json_encode($fullArr);
     }
+
     private static function getModuleDataArr($module){
         $moduleObj = new Module();
         $moduleObj = $module;
@@ -31,22 +32,24 @@ class ModuleMgr{
         $arr['description'] = $moduleObj->getDescription();
        // $arr['uploadedby'] = $moduleObj->getUploadedBy();
         $expiringDate = new DateTime($moduleObj->getDateOfDateOfExpiry());
-        //$arr['dateofexpiry'] =  $expiringDate->format('d M Y');         
+        //$arr['dateofexpiry'] =  $expiringDate->format('d M Y');
         $arr['maxscore'] = $moduleObj->getMaxScore();
         $arr['passpercent'] = $moduleObj->getPassPercent();
-        $arr["ispaid"] = $moduleObj->getIsPaid(); 
+        $arr["ispaid"] = $moduleObj->getIsPaid();
         $createdDate = new DateTime($moduleObj->getCreatedOn());
         $arr['createdon'] = $createdDate->format('d M Y');
         //$arr['companyseq'] = $moduleObj->getCompanySeq();
         //$arr['isenabled'] = $moduleObj->getIsEnabled();
         return $arr;
     }
+
     public function getModulesByCompany($companySeq){
         $moduleDataStore = ModuleDataStore::getInstance();
         $modules = $moduleDataStore->findByCompanySeq($companySeq);
         return $modules;
     }
-     /*JSON Methods for Grids*/
+
+    /*JSON Methods for Grids*/
     public function getModuleGridJSON($companySeq){
         $headerJSON = self::getHeadersJSON();
         $modules =  $this->getModulesByCompany($companySeq);
@@ -57,16 +60,14 @@ class ModuleMgr{
         $mainJsonArray["data"] = $moduleJson;
         return json_encode($mainJsonArray);
     }
-    
-     public function getModulesForGrid($companySeq){
+
+    public function getModulesForGrid($companySeq){
         $modules =  $this->getModulesByCompany($companySeq);
         $moduleJson = self::getModulesDataJson($modules);
         return $moduleJson;
      }
-     
-     public function getLearningPlanModulesForGrid($larnignPlanSeq){         
-        $moduleDataStore = ModuleDataStore::getInstance();
-        $arrList =  $moduleDataStore->findByLearningPlanSeq($larnignPlanSeq);
+
+    public function getLearningPlanModulesForGrid($larnignPlanSeq){
         $mainArr = array();
         foreach($arrList as $key=>$value){
             $arr = array();
@@ -74,18 +75,46 @@ class ModuleMgr{
             $arr['enableleaderboard'] = $value["isenableleaderboard"] == "1" ? true : false;
             $arr['title'] = $value["title"];
             $arr['description'] = $value["description"];
-            $arr['maxscore'] =  $value["maxscore"]; 
-            $arr['passpercent'] =  $value["passpercent"]; 
+            $arr['maxscore'] =  $value["maxscore"];
+            $arr['passpercent'] =  $value["passpercent"];
             $arr["ispaid"] =  $value["ispaid"] == "1" ? true : false;
-            array_push($mainArr,$arr); 
+            array_push($mainArr,$arr);
         }
         return json_encode($mainArr);
-     }
-     
-     private function getSelectedModuleForLearningPlan(){
+    }
+
+    /* Method used to display various modules on the training page for users*/
+    public function getModulesForUserTrainingGrid($userSeq){
         $moduleDataStore = ModuleDataStore::getInstance();
-        $modules = $moduleDataStore->findByCompanySeq($companySeq);      
-     } 
+        $arrList =  $moduleDataStore->findModulesForUserTrainingGrid($userSeq);
+        $mainArr = array();
+        foreach($arrList as $key=>$value){
+            $arr = array();
+            $arr['id'] = $value["moduleseq"];
+            $arr['status'] = '<span class="label label-primary">Active</span>';
+            $arr['moduleName'] = $value["moduletitle"];
+            $arr['learningPlanName'] = $value["learningplantitle"];
+            $arr['daysToComplete'] = 12;
+            $arr['completionPercent'] = '<small>Completion with: 48%</small>
+                                        <div class="progress progress-mini">
+                                            <div style="width: 48%;" class="progress-bar"></div>
+                                        </div>';
+            $arr['leaderboardRank'] =  0;
+            $arr["inactiveRemarks"] =  "No Remarks";
+            $arr["scores"] =  120;
+            $arr["action"] = '<a href="userTraining.php" class="btn btn-white btn-sm"><i class="fa fa-folder"></i> View </a>';
+            array_push($mainArr,$arr);
+        }
+        return json_encode($mainArr);
+
+
+    }
+
+    private function getSelectedModuleForLearningPlan(){
+        $moduleDataStore = ModuleDataStore::getInstance();
+        $modules = $moduleDataStore->findByCompanySeq($companySeq);
+     }
+
     public static function getHeadersJSON(){
         $fullArr = array();
         $arr = array();

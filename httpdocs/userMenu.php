@@ -1,71 +1,21 @@
 
-<!-- Mainly scripts -->
-
-<script src="scripts/bootstrap.min.js"></script>
-<script src="scripts/plugins/metisMenu/jquery.metisMenu.js"></script>
-<script src="scripts/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-<!-- Toastr style -->
-<link href="styles/plugins/toastr/toastr.min.css" rel="stylesheet">
-<!--Bootstrap-->
-<link href="styles/bootstrap.min.css" rel="stylesheet">
-<link href="font-awesome/css/font-awesome.css" rel="stylesheet">
-<link href="styles/animate.css" rel="stylesheet">
-<link href="styles/style.css" rel="stylesheet">
-
-<!-- Toastr style -->
-<link href="styles/plugins/toastr/toastr.min.css" rel="stylesheet">
-
-<!-- Gritter -->
-<link href="scripts/plugins/gritter/jquery.gritter.css" rel="stylesheet">
-
-<!-- Flot -->
-<script src="scripts/plugins/flot/jquery.flot.js"></script>
-<script src="scripts/plugins/flot/jquery.flot.tooltip.min.js"></script>
-<script src="scripts/plugins/flot/jquery.flot.spline.js"></script>
-<script src="scripts/plugins/flot/jquery.flot.resize.js"></script>
-<script src="scripts/plugins/flot/jquery.flot.pie.js"></script>
-
-<!-- Peity -->
-<script src="scripts/plugins/peity/jquery.peity.min.js"></script>
-<script src="scripts/demo/peity-demo.js"></script>
-
-<!-- Custom and plugin javascript -->
-<script src="scripts/inspinia.js"></script>
-<script src="scripts/plugins/pace/pace.min.js"></script>
-
-<!-- jQuery UI -->
-<script src="scripts/plugins/jquery-ui/jquery-ui.min.js"></script>
-
-<!-- GITTER -->
-<script src="scripts/plugins/gritter/jquery.gritter.min.js"></script>
-
-<!-- Sparkline -->
-<script src="scripts/plugins/sparkline/jquery.sparkline.min.js"></script>
-
-<!-- Sparkline demo data  -->
-<script src="scripts/demo/sparkline-demo.js"></script>
-
-<!-- ChartJS-->
-<script src="scripts/plugins/chartJs/Chart.min.js"></script>
-
-<!-- Toastr -->
-<script src="scripts/plugins/toastr/toastr.min.js"></script>
 <?php
-$action = "UserAction.php";  
+$action = "UserAction.php";
 $sessionUtil = SessionUtil::getInstance();
 $userSeq =  $sessionUtil->getUserLoggedInSeq();
 $userName =  $sessionUtil->getUserLoggedInName();
 $path = "images/UserImages/" . $userSeq . ".png";
 if(!file_exists ($path)){
-    $path = "images/dummy.jpg";    
+    $path = "images/dummy.jpg";
 }?>
-<?include "UpdateProfilePicture.php"?> 
+
+<?include "UpdateProfilePicture.php"?>
 
 <nav class="navbar-default navbar-static-side" role="navigation">
             <div class="sidebar-collapse">
                 <ul class="nav" id="side-menu">
                     <li class="nav-header">
-                        <div class="dropdown profile-element"> 
+                        <div class="dropdown profile-element">
                             <div id="profilePicDiv">
                                 <img alt="image" id="profilePicImg" class="img-circle" width="50px;" src="<?echo($path)?>"/>
                             </div>
@@ -87,20 +37,12 @@ if(!file_exists ($path)){
                     <li>
                         <a href="UserDashboard.php"><i class="fa fa-dashboard"></i> <span class="nav-label">Dashboard</span></a>
                     </li>
-                     
                     <li>
-                        <a href="layouts.html"><i class="fa fa-archive"></i> <span class="nav-label">Modules Management</span></a>
+                        <a href="userTrainings.php"><i class="fa fa-gift"></i> <span class="nav-label">Trainings</span></a>
                     </li>
-                    <li>
-                        <a href="layouts.html"><i class="fa fa-gift"></i> <span class="nav-label">Learning Plans</span></a>
-                        <ul class="nav nav-second-level">
-                            <li><a href="createLearningPlan.php">Create Learning Plan</a></li>
-                            <li><a href="ManageLearningPlan.php">View Learning Plans</a></li>
-                        </ul>
-                    </li>
-                    
-                    
-                   
+
+
+
                 </ul>
 
             </div>

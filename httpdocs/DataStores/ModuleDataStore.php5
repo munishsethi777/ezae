@@ -23,12 +23,25 @@ class ModuleDataStore extends BeanDataStore{
         $moduleList = $this->findAll();
         return $moduleList;
     }
-    
+
     public function findByLearningPlanSeq($learningPlanSeq){
         $colValuePair = array();
-        $list = $this->executeQuery("select lpc.isenableleaderboard,m.* from learningplans lp inner join learningplancourses lpc on " .
+        $list = $this->executeQuery("select lpc.isenableleaderboard,m.* from learningplans lp inner join learningplanmodules lpc on " .
                                             "lp.seq = lpc.learningplanseq inner join modules m on lpc.courseseq = m.seq where lp.seq = $learningPlanSeq ");
         return $list;
     }
-  }
+
+    //Method used to display modules on user trainings page
+    public function findModulesForUserTrainingGrid($userSeq){
+        $sql = "select modules.seq as moduleseq,modules.title as moduletitle,learningplans.title as learningplantitle from learningplanmodules
+left join modules on modules.seq = learningplanmodules.courseseq
+left join learningplans on learningplans.seq = learningplanmodules.learningplanseq
+left join learningplanprofiles on learningplanprofiles.learningplanseq = learningplans.seq
+left join learningprofiles on learningprofiles.seq = learningplanprofiles.learningprofileseq
+left join userlearningprofiles on userlearningprofiles.tagseq = learningplanprofiles.learningprofileseq
+where userlearningprofiles.userseq =  $userSeq";
+        $list = $this->executeQuery($sql);
+        return $list;
+    }
+}
 ?>
