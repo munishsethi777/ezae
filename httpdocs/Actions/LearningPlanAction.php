@@ -22,13 +22,15 @@ $adminSeq =  $sessionUtil->getAdminLoggedInSeq();
 if($call== "getLearnerPlansForGrid"){
     try{       
         $lpMgr = LearningPlanMgr::getInstance();
-        $data = $lpMgr->getLearningPlanForGrid($companySeq);
+        $isApplyFilter = true;
+        $data =  $lpMgr->getLearningPlanForGrid($isApplyFilter);
     }catch(Exception $e){
         $success = 0;
         $message  = $e->getMessage();
     }
     echo $data;  
-}  
+}
+  
 if($call == "saveLearningPlan"){
     try{       
         $id = $_POST["id"];

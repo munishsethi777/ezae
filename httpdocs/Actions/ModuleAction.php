@@ -2,6 +2,7 @@
 require_once('../IConstants.inc');  
 require_once($ConstantsArray['dbServerUrl'] ."Managers/ModuleMgr.php");
 require_once($ConstantsArray['dbServerUrl'] ."Utils/SessionUtil.php5");  
+
 $call = "";
 if(isset($_GET["call"])){
     $call = $_GET["call"];     
@@ -35,6 +36,19 @@ if($call == "getLearningPlanModulesForGrid"){
         $message  = $e->getMessage();
     }
     echo $data;  
-}    
+}
+if($call == "getModulesBySelectedLearningPlan"){
+    try{       
+        $moduleMgr = ModuleMgr::getInstance();
+        $ids =  $_GET["ids"];
+        if(isset($ids) && !empty($ids)){
+            $data = $moduleMgr->getModulesByLearningPlans($ids);    
+        }        
+    }catch(Exception $e){
+        $success = 0;
+        $message  = $e->getMessage();
+    }
+    echo $data;  
+}     
 ?>
  

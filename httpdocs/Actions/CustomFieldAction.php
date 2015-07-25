@@ -110,7 +110,8 @@
    if($call == "getCustomFields"){
         try{
             $customFieldMgr = CustomFieldMgr ::getInstance();
-            $customfields = $customFieldMgr->getCustomfieldsForGrid($companySeq);
+            $isApplyFilter = true;
+            $customfields = $customFieldMgr->getCustomfieldsForGrid($isApplyFilter);
         }catch(Exception $e){
             $success = 0;
             $message  = $e->getMessage();
