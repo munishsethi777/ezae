@@ -1,5 +1,9 @@
 <?php
     class LearningPlanProfile{
+        
+        public static $tableName = "learningplanprofiles";
+        public static $className = "LearningPlanProfile";
+      
         private $seq,$learningplanseq,$learningprofileseq;
 
         public function setSeq($seq_){
