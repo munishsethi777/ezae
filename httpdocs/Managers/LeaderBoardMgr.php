@@ -24,14 +24,16 @@
         $id = self::$dataStore->deleteByAttribute($colValuePair);
     }
     
-    public function FindAll(){
-        $leaderBoards= self::$dataStore->findAll();
+    public function FindAll($isApplyFilter = false){
+        $leaderBoards= self::$dataStore->findAll($isApplyFilter);
         return $leaderBoards;
     }
-    public function getLeaderBoardForGrid(){
-        $leaderBoards =  $this->FindAll();
+    public function getLeaderBoardForGrid($isApplyFilter){
+        $leaderBoards =  $this->FindAll($isApplyFilter);
         $leaderBoardJson = self::geLeaderBoardDataJson($leaderBoards);
-        return $leaderBoardJson;
+        $gridData["Rows"] = $leaderBoardJson;
+        $gridData["TotalRows"] = self::$dataStore->executeCountQuery(null,$isApplyFilter);
+        return json_encode($gridData);
     }
     public static function geLeaderBoardDataJson($leaderBoards){
         $fullArr = array();
@@ -39,7 +41,7 @@
             $arr = self::getLeaderBoardArry($leaderBoard);
             array_push($fullArr,$arr);
         }
-        return json_encode($fullArr);
+        return $fullArr;
     }
     
     private static function getLeaderBoardArry($leaderBoardObj){

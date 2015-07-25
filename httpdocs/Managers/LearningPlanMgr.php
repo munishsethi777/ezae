@@ -51,14 +51,16 @@
             return $id;     
         }
        
-        public function getLearningPlanByCompany($companySeq){
-            $learningPlans = self::$dataStore->findAllByCompany();
+        public function getLearningPlanByCompany($isApplyFilter = false){
+            $learningPlans = self::$dataStore->findAllByCompany($isApplyFilter);
             return $learningPlans;
         }
-        public function getLearningPlanForGrid($companySeq){
-            $modules =  $this->getLearningPlanByCompany($companySeq);
+        public function getLearningPlanForGrid($isApplyFilter){
+            $modules =  $this->getLearningPlanByCompany($isApplyFilter);
             $moduleJson = self::geLearningPlanDataJson($modules);
-            return $moduleJson;
+            $gridData["Rows"] = $moduleJson;
+            $gridData["TotalRows"] = self::$dataStore->executeCountQuery(null,$isApplyFilter);
+            return json_encode($gridData);
         }
         public static function geLearningPlanDataJson($learningPlans){
             $fullArr = array();
@@ -66,7 +68,7 @@
                 $arr = self::getLearningPlanArry($learningPlan);
                 array_push($fullArr,$arr);
             }
-            return json_encode($fullArr);
+            return $fullArr;
         }
         public static function getCoursesIdBylearnigPlanSeq($learningPlanSeq){
              $colValuePair["learningplanseq"] =  $learningPlanSeq;

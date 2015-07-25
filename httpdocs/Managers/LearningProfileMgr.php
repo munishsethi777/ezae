@@ -2,15 +2,18 @@
     require_once($ConstantsArray['dbServerUrl']. "DataStores/BeanDataStore.php5");
     require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/tag.php");
     require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/UserLearningProfile.php");
+     require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/LearningPlanProfile.php");
     class LearningProfileMgr{
         private static $learnerProfileMgr;
-        private static $dataStore;   
+        private static $dataStore; 
+        private static $learningPlanProfileDataStore;     
         public static function getInstance()
         {
             if (!self::$learnerProfileMgr)
             {
                 self::$learnerProfileMgr = new LearningProfileMgr();
                 self::$dataStore = new BeanDataStore("tag","learningprofiles");
+                self::$learningPlanProfileDataStore = new BeanDataStore(LearningPlanProfile::$className,LearningPlanProfile::$tableName);
                 return self::$learnerProfileMgr;
             }
             return self::$learnerProfileMgr;
@@ -85,6 +88,12 @@
                 array_push($rows,$this->toJson($profile));
             }
             return json_encode($rows);
+        }
+        
+        public function getLearningPlanProfile($learningPlanSeq){
+            $params["learningplanseq"] = $learningPlanSeq;
+            $profile = self::$learningPlanProfileDataStore->executeConditionQuery($params);
+            return $profile;
         }
     }
 ?>

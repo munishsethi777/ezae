@@ -81,6 +81,20 @@ class ModuleMgr{
         }
         return json_encode($mainArr);
      }
+     public function getModulesByLearningPlans($larnignPlanSeq){         
+        $moduleDataStore = ModuleDataStore::getInstance();
+        $arrList =  $moduleDataStore->findByLearningPlanSeq($larnignPlanSeq);
+        $mainArr = array();
+        foreach($arrList as $key=>$value){
+            $arr = array();
+            $arr['id'] = $value["seq"];            
+            $arr['title'] = $value["title"]; 
+            $arr['lptitle'] = $value["lptitle"];
+            $arr['lpseq'] = $value["lpseq"];         
+            array_push($mainArr,$arr); 
+        }
+        return json_encode($mainArr);
+     }
      
      private function getSelectedModuleForLearningPlan(){
         $moduleDataStore = ModuleDataStore::getInstance();

@@ -45,16 +45,18 @@ require_once($ConstantsArray['dbServerUrl']. "Utils/SessionUtil.php5");
         return $arr;     
     }
     
-    function getCustomfieldsForGrid($companySeq){
+    function getCustomfieldsForGrid($isApplyFilter){
         $fullArr = array();
         $dataStore  = UserCustomFieldsDataStore::getInstance();
-        $cFields = $dataStore->findAllByCompany();
+        $cFields = $dataStore->findAllByCompany($isApplyFilter);
         foreach($cFields as $customField){
             $arr = $this->getJson($customField);
             array_push($fullArr,$arr);
         }
-        return json_encode($fullArr);
-    }
+        $gridData["Rows"] = $fullArr;
+        $gridData["TotalRows"] = $dataStore->executeCountQuery(null,$isApplyFilter);
+        return json_encode($gridData);
+     }
 
     public function deleteCustomFields($ids){
         $dataStore = new BeanDataStore("UserCustomField",UserCustomField::$tableName);

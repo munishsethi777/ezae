@@ -82,38 +82,59 @@ class AdminMgr{
 
     }
     public function getLearnersWithCustomFieldsGridJSON($companySeq){
-        $userFieldsJSON = $this->getUserAllFieldsJsonByCompany($companySeq);
-        $userFieldsArr = json_decode($userFieldsJSON);
-        unset($userFieldsArr[2]);//removing password field
         $userMgr = UserMgr::getInstance();
         $usersDS = UserDataStore::getInstance();
-        $users = $usersDS->findByCompany($companySeq);
+        $users = $usersDS->findByCompany($companySeq,true);
         $fullArr = array();
-        foreach($users as $userObj){
-            $user = new User();
-            $user = $userObj;
+        $pagination = LearnerFilterUtil::getPagination();
+        $start = $pagination["start"];
+        $limit = $pagination["limit"];
+        $count = 0;
+        foreach($users as $user){
             $arr = array();
-            $arr['id'] = $user->getSeq();
-            $arr['username'] = $user->getUserName();
-            $arr['emailid'] = $user->getEmailId();
-            $profile = $userMgr->getUserLearningProfiles($user->getSeq());
-            $arr['profiles'] = $profile;
-            //$arr['password'] = $dataArr['password'];
-            $arrCustomFields = ActivityMgr::getCustomValuesArray($user->getCustomFieldValues());
+            $arr['id'] = $user["seq"];
+            $arr['username'] = $user["username"];
+            $arr['emailid'] = $user["emailid"];
+            $profile = $userMgr->getUserLearningProfiles($user["seq"]);
+            $arr['prof_profiles'] = $profile;
+            $arrCustomFields = ActivityMgr::getCustomValuesArray($user["customfieldvalues"]);
+            $cus_flag = LearnerFilterUtil::applyFilterOnCustomfield($arrCustomFields);
+            $prof_flag = LearnerFilterUtil::applyFilterOnCustomfield($arr,false);
+            if($cus_flag && $prof_flag){               
+            }else{
+                continue; 
+            }
             $arr = array_merge($arr,$arrCustomFields);
-            $arr["lastmodifiedon"] = $user->getLastModifiedOn();
+            $arr["lastmodifiedon"] = $user["lastmodifiedon"];
             array_push($fullArr,$arr);
+            $count++;
         }
-
+        $fullArr = LearnerFilterUtil::sortByCustomField($fullArr);
+        $fullArr = array_slice($fullArr, $start, $limit); 
         $mainJsonArray = array();
-        $mainJsonArray["columns"] = json_encode($userFieldsArr);
-        $mainJsonArray["data"] = json_encode($fullArr);
-        $dataFieldsArr = $this->getDataFieldsArr($userFieldsArr);//for column types
-        $mainJsonArray["datafields"] = json_encode($dataFieldsArr);;
-
-        return json_encode($mainJsonArray);
+        $mainJsonArray["Rows"] = $fullArr;
+        $mainJsonArray["TotalRows"] = $count; 
+        return json_encode($mainJsonArray);   
     }
 
+    public function getLearnerGridHeaders($companySeq){
+        $userFieldsJSON = $this->getUserAllFieldsJsonByCompany($companySeq);
+        $userFieldsArr = json_decode($userFieldsJSON);
+        unset($userFieldsArr[2]);// removing password field
+        $userMgr = UserMgr::getInstance();
+        $usersDS = UserDataStore::getInstance();
+        $isApplyFilter = true;
+        $users = $usersDS->findByCompany($companySeq,$isApplyFilter);
+        $mainJsonArray = array();
+        $mainJsonArray["columns"] = json_encode($userFieldsArr);
+        $dataFieldsArr = $this->getDataFieldsArr($userFieldsArr);
+        $mainJsonArray["datafields"] = json_encode($dataFieldsArr);
+        return json_encode($mainJsonArray);
+    }
+    
+   private function FilterUserGridData(){
+        
+   }
     //called from ajaxAdminMgr
     public function getActivitiesGridJSON($companySeq,$moduleSeq){
         $userFieldsJSON = $this->getUserAllFieldsJsonByCompany($companySeq);
@@ -268,6 +289,7 @@ class AdminMgr{
             $arr['datafield'] = "id";
             $arr['type'] = "integer";
             $arr['hidden'] = true;
+            
             array_push($fullArr,$arr);
             
             $arr = array(); 
@@ -290,7 +312,7 @@ class AdminMgr{
             
             $arr = array();
             $arr['text'] = "Profiles";
-            $arr['datafield'] = "profiles";
+            $arr['datafield'] = "prof_profiles";
             $arr['type'] = "string";
             array_push($fullArr,$arr);
             
@@ -305,6 +327,7 @@ class AdminMgr{
             $prefix = "cus_";
             $arr['datafield'] = $prefix . $field->getName();
             $arr['type'] = $field->getFieldType();
+            $arr['filtertype'] = "custom";
             if($field->getFieldType() == "date"){
                 $arr['cellsformat'] = "d";
                 //$arr['filtertype'] = "date";
@@ -315,7 +338,9 @@ class AdminMgr{
             $arr['text'] = "Modified On";
             $arr['datafield'] = "lastmodifiedon";
             $arr['type'] = "date";
+            $arr["filtertype"] = 'date';
             $arr['cellsformat'] = "MM-dd-yyyy hh:mm:ss tt";
+            
             array_push($fullArr,$arr);
         return json_encode($fullArr);
 
