@@ -4,6 +4,10 @@
 <?include "ScriptsInclude.php"?>
 <script type="text/javascript">
     $(document).ready(function(){
+       // var url = 'Actions/LeaderBoardAction.php?call=getLeaderBoardsForGrid';
+//        $.get(url, function(data){
+//                loadGrid();
+//        })
         loadGrid(); 
     })
 
@@ -27,6 +31,22 @@
                 { name: 'lastmodifiedon', type: 'date' }
             ],
             url: 'Actions/LeaderBoardAction.php?call=getLeaderBoardsForGrid',
+            root: 'Rows',
+            cache: false,
+            beforeprocessing: function(data)
+            {        
+                source.totalrecords = data.TotalRows;
+            },
+            filter: function()
+            {
+                // update the grid and send a request to the server.
+                $("#jqxgrid").jqxGrid('updatebounddata', 'filter');
+            },
+            sort: function()
+            {
+                    // update the grid and send a request to the server.
+                    $("#jqxgrid").jqxGrid('updatebounddata', 'sort');
+            },
             addrow: function (rowid, rowdata, position, commit) {
                 commit(true);
             },
@@ -42,8 +62,9 @@
         {
             width: '100%',
             source: dataAdapter,
-            filterable: true,
             sortable: true,
+            //showfilterrow: true,
+            filterable: true,
             autoshowfiltericon: true,
             columns: columns,
             pageable: true,
@@ -54,8 +75,15 @@
             columnsreorder: true,
             selectionmode: 'checkbox',
             showstatusbar: true,
+            pageable: true,
+            virtualmode: true,
+            rendergridrows: function()
+            {
+                  return dataAdapter.records;     
+            }
             
         });
+        
     }
     
 </script>

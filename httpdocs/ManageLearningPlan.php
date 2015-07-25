@@ -71,6 +71,15 @@
                 { name: 'lastmodifiedon', type: 'date' }
             ],
             url: 'Actions/LearningPlanAction.php?call=getLearnerPlansForGrid',
+                beforeprocessing: function(data)
+            {        
+                source.totalrecords = data.TotalRows;
+            },
+            filter: function()
+            {
+                // update the grid and send a request to the server.
+                $("#learningPlanGrid").jqxGrid('updatebounddata', 'filter');
+            },
             addrow: function (rowid, rowdata, position, commit) {
                 commit(true);
             },
@@ -98,6 +107,11 @@
             columnsreorder: true,
             selectionmode: 'checkbox',
             showstatusbar: true,
+            virtualmode: true,
+            rendergridrows: function()
+            {
+                  return dataAdapter.records;     
+            },
             renderstatusbar: function (statusbar) {
                 var container = $("<div style='overflow: hidden; position: relative; margin: 5px;height:30px'></div>");
                 var addButton = $("<div style='float: left; margin-left: 5px;'><i class='fa fa-plus-square'></i><span style='margin-left: 4px; position: relative;'>    Add</span></div>");

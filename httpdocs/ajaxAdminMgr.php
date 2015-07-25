@@ -21,6 +21,18 @@
     echo $gridJSON;
     return;
   }
+    if($call == "getLearnersGridHeaders"){
+        $onlyRows = false;
+        if(isset($_GET["onlyRows"])){
+            $onlyRows = true;    
+        }
+        $sessionUtil = SessionUtil::getInstance();
+        $companySeq = $sessionUtil->getAdminLoggedInCompanySeq();
+        $adminMgr = AdminMgr::getInstance();
+        $gridJSON = $adminMgr->getLearnerGridHeaders($companySeq);
+        echo $gridJSON;
+        return;
+  }
 
   if($call == "getLearnersCustomFieldForm"){
       $sessionUtil = SessionUtil::getInstance();

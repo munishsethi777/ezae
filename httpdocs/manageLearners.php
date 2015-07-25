@@ -11,7 +11,7 @@
         $(document).ready(function (){
             toggleForm(true);
             getMatchingRule();
-            var url = 'ajaxAdminMgr.php?call=getLearnersForGrid';
+            var url = 'ajaxAdminMgr.php?call=getLearnersGridHeaders';
             $.getJSON(url, function(data){
                 loadGrid(data);
             })
@@ -91,17 +91,32 @@
             var dataFields = Array();
             if(data != null){
                 columns = $.parseJSON(data.columns);
-                rows = $.parseJSON(data.data);
+                //rows = $.parseJSON(data.Rows);
                 dataFields = $.parseJSON(data.datafields);
             }
-
             var source =
             {
                 datatype: "json",
                 id: 'id',
-                pagesize: 10,
-                localData: rows,
-                datafields: dataFields
+                pagesize: 20,
+                datafields: dataFields,
+                url: 'ajaxAdminMgr.php?call=getLearnersForGrid',
+                root: 'Rows',
+                cache: false,
+                beforeprocessing: function(data)
+                {        
+                    source.totalrecords = data.TotalRows;
+                },                
+                filter: function()
+                {
+                    // update the grid and send a request to the server.
+                    $("#learnersGrid").jqxGrid('updatebounddata', 'filter');
+                },
+                sort: function()
+                {
+                        // update the grid and send a request to the server.
+                        $("#learnersGrid").jqxGrid('updatebounddata', 'sort');
+                }
             };
             var dataAdapter = new $.jqx.dataAdapter(source);
             // initialize jqxGrid
@@ -122,6 +137,11 @@
                 columnsreorder: true,
                 selectionmode: 'checkbox',
                 showstatusbar: true,
+                virtualmode: true,
+                rendergridrows: function()
+                {
+                      return dataAdapter.records;     
+                },
                 renderstatusbar: function (statusbar) {
                     // appends buttons to the status bar.
                     var container = $("<div style='overflow: hidden; position: relative; margin: 5px;height:30px'></div>");
@@ -207,6 +227,7 @@
                 }
             });
         }
+        
         function setProfile(e,btn){
             e.preventDefault();
             var l = Ladda.create(btn);

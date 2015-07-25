@@ -1,97 +1,108 @@
 <?include("sessioncheck.php");?>
 <html>
 <head>
+<link href="styles/plugins/iCheck/custom.css" rel="stylesheet">
 <?include "ScriptsInclude.php";
 $name = "";
-$active ="";
-$inActive ="";
-$future="";
-$activateDate = "";
-$id=0;
-$isDeactivate="";
-$isEnableLeaderBoard="";
-$moduleIds = "";
-$lockSequence = "";
+$subject ="";
+$messageText ="Enter Message Text";
+$lpSeqs="";
+$condition = "";
+$sendOnDate="";
+$percent="";
+$moduleSeqs = "";
+//Conditions Radios
+$onParticulerDate = "checked";
+$onEnrollment = "";
+$onCompletion = "";
+$onMarks = "";
+$selectCondition = "onParticulerDate";
 if(isset($_POST["id"])){
     $id = $_POST["id"];
 }
-if(isset($_POST["lpName"])){
-    $name = $_POST["lpName"];
-}
-$des = "";
-if(isset($_POST["lpDes"])){
-    $des = $_POST["lpDes"];
-}
-$isActive= "";
-if(isset($_POST["isActive"])){
-    $isActive = $_POST["isActive"];
-    if($isActive == "true"){
-        $active = "checked";
-    }else{
-        $inActive = "checked";
-    }
-} else{
-    $inActive = "checked";
+if(isset($_POST["name"])){
+    $name = $_POST["name"];
 }
 
-if(isset($_POST["activateDate"]) && $_POST["activateDate"] != ""){
-    $activateDate = $_POST["activateDate"];
+if(isset($_POST["subject"])){
+    $subject = $_POST["subject"];
+}
+if(isset($_POST["messageText"])){
+    $messageText = $_POST["messageText"];
+   // $messageText = nl2br($messageText);
+}
+if(isset($_POST["lpSeqs"])){
+    $lpSeqs = $_POST["lpSeqs"];
+}
+if(isset($_POST["messageCondition"])){
+    $condition = $_POST["messageCondition"];
+    if($condition == "onEnrollment"){
+        $onEnrollment = "checked" ; 
+        $selectCondition = "onEnrollment"; 
+    }else if($condition == "onParticulerDate"){
+        $onParticulerDate = "checked";
+        $selectCondition = "onParticulerDate"; 
+    }else if($condition == "onCompletion"){
+        $onCompletion = "checked";
+        $selectCondition = "onCompletion"; 
+    }else{
+        $onMarks = "checked";
+        $selectCondition = "onMarks";
+        
+    }
+}
+
+if(isset($_POST["percent"])){
+    $percent = $_POST["percent"];
+}
+
+if(isset($_POST["moduleSeqs"])){
+    $moduleSeqs = $_POST["moduleSeqs"];
+}
+if(isset($_POST["sendOnDate"]) && $_POST["sendOnDate"] != ""){
+    $sendOnDate = $_POST["sendOnDate"];
     $future = "checked";
 }
-$deactivateDate = "";
-if(isset($_POST["deactivateDate"]) && $_POST["deactivateDate"] != ""){
-    $deactivateDate = $_POST["deactivateDate"];
-}
-if(isset($_POST["isDeactivate"])){
-    $isDeactivate = $_POST["isDeactivate"]== "true" ? "checked" : "";
-}
-if(isset($_POST["isEnabledLeaderboard"])){
-    $isEnableLeaderBoard = $_POST["isEnabledLeaderboard"]== "true" ? "checked" : "";
-}
-if(isset($_POST["lockSequence"])){
-    $lockSequence = $_POST["lockSequence"]== "true" ? "checked" : "";
-}
-if(isset($_POST["moduleIds"])){
-    $moduleIds = $_POST["moduleIds"];
 
-}
 ?>
 </head>
-<body>
-    <div id="wrapper">
+<body class='default'>
+    <div id="wrapper wrapper-content animated fadeInRight">
         <?include("adminMenu.php");?>
         <div class="row">
             <div class="col-lg-12">
-                <div class="ibox float-e-margins ">
+                <div class="ibox float-e-margins">
                     <div class="ibox-title">
                         <h5>Create New Notification Message<small> for communication purposes.</small></h5>
                     </div>
                     <div class="ibox-content mainDiv">
-                            <form method="post" action="Actions/LearningPlanAction.php" id="createLearningPlanForm" class="form-horizontal">
-                                <input type="hidden" id="call" name="call" value="saveLearningPlan">
-                                 <input type="hidden" id="moduleIds" name="moduleIds">
-                                 <input type="hidden" id="isModuleLeaderboard" name="isModuleLeaderboard">
+                            <form method="post" action="Actions/MailMessageAction.php" id="createMessageForm" class="form-horizontal">
+                                 <input type="hidden" id="call" name="call" value="saveMailMessage">
+                                 <input type="hidden" id="messageText" name="messageText">
+                                 <input type="hidden" id="moduleSeqs" name="moduleSeqs[]">
+                                 <input type="hidden" id="lpSeqs" name="lpSeqs[]">
                                  <input type="hidden" id="id" name="id" value="<?echo $id?>">
                                 <div class="form-group"><label class="col-sm-2 control-label">Name</label>
                                     <div class="col-sm-10"><input type="text" name="name" value="<?echo $name?>" id="name" class="form-control"></div>
                                 </div>
                                 <div class="form-group"><label class="col-sm-2 control-label">Subject</label>
-                                    <div class="col-sm-10"><input type="text" name="name" value="<?echo $name?>" id="name" class="form-control"></div>
+                                    <div class="col-sm-10"><input type="text" name="subject" value="<?echo $subject?>" id="subject" class="form-control"></div>
                                 </div>
                                 <div class="form-group"><label class="col-sm-2 control-label">Message</label>
-                                    <div class="col-sm-10"><textarea cols="150" rows="4"></textarea></div>
+                                    <div class="col-sm-10">
+                                        <div id="editor">
+                                            <h1>Hello world!</h1>
+                                            <p>I'm an instance of <a href="http://ckeditor.com">CKEditor</a>.</p>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="form-group">
-									<label class="col-sm-2 control-label">Learning Plans</label>
+								    <label class="col-sm-2 control-label">Learning Plans</label>
 									<div class="row">
 										<div class="col-sm-3">
-											<select class="form-control" id="profiles1" name="profile1" style="font-family: 'FontAwesome', Helvetica;">
-												<option value="fa-medium">&#xf23a; Medium</option>
-												<option value="fa-sellsy">&#xf213; Sellsy</option>
-												<option value="fa-diamond">&#xf219; Diamond</option>
-												<option value="fa-user-secret">&#xf21b; Secret</option>
-												<option value="fa-venus">&#xf221; Venus</option></label>
+											<select class="form-control chosen-select" onchange="loadModule()" id="learningPlanDD" name="learningPlanDD[]" multiple>
 											</select>
+                                            <label class="jqx-validator-error-label" id="lpError"></label>
 										</div>
 									</div>
                                 </div>
@@ -103,63 +114,59 @@ if(isset($_POST["moduleIds"])){
 									<div class="col-sm-10">
 										<div class="row">
 											<div class="col-sm-2">
-												<input type="radio" checked="checked" value="active" name="actOption" id="actOption"> Particular Date
+												<input type="radio" <?echo $onParticulerDate?> value="onParticulerDate" name="actOption" id="actOption"> Particular Date
 											</div>
-											<div class="col-sm-4">
-												<input class="form-control col-sm-4" type="text" id="sendDate" name="sendDate">
-											</div>
-										</div>
-										
-										<div class="row">
-											<div class="col-sm-2">
-												<input type="radio" checked="checked" value="active" name="actOption" id="actOption"> Module Enrollment
+											<div class="col-sm-4" id="sendDateDiv">
+												<input class="form-control" placeholder="Select Date" value="<?echo $sendOnDate?>" type="text" id="sendDate" name="sendDate">
+                                                
 											</div>
 										</div>
 										
 										<div class="row">
 											<div class="col-sm-2">
-												<input type="radio" checked="checked" value="active" name="actOption" id="actOption"> Module Completion
+												<input type="radio" <?echo $onEnrollment?> value="onEnrollment" name="actOption" id="actOption"> Module Enrollment
 											</div>
 										</div>
 										
 										<div class="row">
 											<div class="col-sm-2">
-												<input type="radio" checked="checked" value="active" name="actOption" id="actOption"> Module Marks
-											</div>
-											<div class="col-sm-1">
-												<select class="form-control">
-													<option>></option>
-													<option><</option>
-													<option>=</option>
-												</select>
-												
-											</div>
-											<div class="col-sm-1">
-												<input class="form-control" type="text" id="sendDate" name="sendDate">
-											</div>
-											<div class="col-sm-1">
-												Percent
+												<input type="radio" <?echo $onCompletion?>  value="onCompletion" name="actOption" id="actOption"> Module Completion
 											</div>
 										</div>
-									</div>
-									
+										
+										<div class="row">
+											<div class="col-sm-2">
+												<input type="radio" <?echo $onMarks?> value="onMarks" name="actOption" id="actOption"> Module Marks
+											</div>
+                                            <div id="moduleMarksDiv">
+											    <div class="col-sm-2">
+												    <select  class="form-control" id="conditionOperator" name="conditionOperator">
+													    <option value="onMarksGreaterThan">></option>
+													    <option value="onMarksLessThan"><</option>
+													    <option value="onMarksEqualTo">=</option>
+												    </select>												
+											    </div>
+											    <div class="col-sm-1">
+												    <input class="form-control" value="<?echo $percent?>" type="text" id="percent" name="percent">
+											    </div>
+											    <div class="col-sm-1">
+												    Percent
+											    </div>
+                                            </div>
+										</div>
+									</div>									
 								</div>
 								
-								<div class="form-group">
+								<div class="form-group" id="moduleDiv">
                                     <label class="col-sm-2 control-label">Exam Module</label>
                                         <div class="row">
                                             <div class="col-sm-3">
-                                                 <select class="form-control" id="profiles2" name="profile2" style="font-family: 'FontAwesome', Helvetica;">
-                                                    <option value="fa-medium">&#xf23a; Medium</option>
-                                                    <option value="fa-sellsy">&#xf213; Sellsy</option>
-                                                    <option value="fa-diamond">&#xf219; Diamond</option>
-                                                    <option value="fa-user-secret">&#xf21b; Secret</option>
-                                                    <option value="fa-venus">&#xf221; Venus</option></label>
+                                                 <select class="form-control chosen-select1" id="moduleDD" name="moduleDD[]" multiple>
                                                  </select>
+                                                  <label class="jqx-validator-error-label" id="moduleError"></label>
                                             </div>
-
-                                 </div>
-                                
+                                        </div>
+                                </div>
                                 
 
                                   <div class="form-group">
@@ -181,125 +188,141 @@ if(isset($_POST["moduleIds"])){
     </div>
 </body>
 </html>
-<script src="scripts/FormValidators/CreateLearningPlanValidations.js"></script>
+<script src="scripts/FormValidators/CreateMessageValidations.js"></script> 
 <script type="text/javascript">
     $(document).ready(function(){
-        $('#activationDate').datetimepicker({step:5,format:"m/d/Y h:i A"});
-        $('#deactiveDate').datetimepicker({step:5,format:"m/d/Y h:i A"});
-        loadGrid();
-        loadSelectedGrid();
-        populateProfiles();
-        $("#saveBtn").click(function(e){
+        $(".chosen-select1").chosen({width:"100%"});
+        $("#conditionOperator").val('<?echo $condition?>');
+        var url = 'Actions/LearningPlanAction.php?call=getLearnerPlansForGrid';
+        $.getJSON(url, function(data){
+            populateDropdown(data);
+        })
+         CKEDITOR.replace( 'editor', {
+            extraPlugins: 'placeholder'
+        });
+         CKEDITOR.instances.editor.setData('test');
+        
+         $('#sendDate').datetimepicker({step:5,format:"m/d/Y h:i A"});
+         $( 'input[name="actOption"]:radio' ).change(function(){
+             showHideSendDate(this.value);
+        })
+        showHideSendDate('<?echo $selectCondition?>');
+         $("#saveBtn").click(function(e){
             ValidateAndSave(e,this);
         });
-
+        
         $("#saveNewBtn").click(function(e){
             ValidateAndSave(e,this);
         });
         $("#cancelBtn").click(function(e){
             location.href = "ManageLearningPlan.php";
         });
-        $("#addCourseBtn").click(function(e){
-            $("#addCourseModalForm").modal('show')
-        });
-        var selectedOption  = $("input[type='radio'][name='actOption']:checked");
-        showHideActivateDate(selectedOption.val());
-
-        $( 'input[name="actOption"]:radio' ).change(function(){
-            showHideActivateDate(this.value);
-        })
-         var isDeactivateChecked  = $("#deactivateChk").is(':checked')  ;
-         showHideDeactivateDate(isDeactivateChecked);
-
     });
-    function showHideActivateDate(value){
-        if(value == "futureActive"){
-            $("#activateDateDiv").show();
+    
+    function populateDropdown(profiles){
+        var options = ""; 
+        $.each(profiles, function(key, value){
+            options += "<option value='" + value.id + "'>" + value.title + "</option>";
+             
+        })
+        $("#learningPlanDD").html(options);
+        $(".chosen-select").chosen({width:"100%"});
+        var values = "<?echo $lpSeqs?>";
+        if(values.length > 0){
+            values = values.split(",")
+            $('.chosen-select').val(values).trigger("chosen:updated");
+            loadModule();    
+        }
+        
+       
+    }
+    
+    function showHideSendDate(value){
+        if(value == "onParticulerDate"){
+            $("#sendDateDiv").show();
+            $("#moduleDiv").hide();
+            
         }else{
-             $("#activateDateDiv").hide();
+             $("#sendDateDiv").hide();
+             $("#moduleDiv").show();
+        }
+        if(value == "onMarks"){
+            $("#moduleMarksDiv").show();
+        }else{
+            $("#moduleMarksDiv").hide();
         }
     }
-    function showHideDeactivateDate(isChecked){
+    function showHideModule(isChecked){
         if(isChecked){
             $("#deactivateDateDiv").show();
         }else{
             $("#deactivateDateDiv").hide();
         }
     }
+    
     function ValidateAndSave(e,btn){
         var validationResult = function (isValid){
-            if (isValid) {
-               saveLearningPlan(e,btn);
+           if (isValid) {
+               saveMailMessage(e,btn);
             }
         }
-        $('#createLearningPlanForm').jqxValidator('validate', validationResult);
+       $('#createMessageForm').jqxValidator('validate', validationResult);
     }
-    function getSelectedModules(){
-        var rows = $("#selectedModuleGrid").jqxGrid('getrows');
-        var selectedMIds = [];
-        $.each(rows, function(index , value){
-            selectedMIds.push(value.id);
-        });
-        return selectedMIds;
-    }
-    function addCourses(){
-        var selectedRowIndexes = $("#moduleGrid").jqxGrid('selectedrowindexes');
-        if(selectedRowIndexes.length == 0){
-            bootbox.alert("Please Select atleast one course for save learning plan.", function() {});
-            return;
-        }
-        var selectedMIds = getSelectedModules();
-        $.each(selectedRowIndexes, function(index , value){
-            var dataRow = $("#moduleGrid").jqxGrid('getrowdata', value);
-            if(!isInArray(dataRow.id,selectedMIds)) {
-                $("#selectedModuleGrid").jqxGrid('addrow', null, dataRow);
-            }
 
-        });
-        $("#addCourseModalForm").modal('hide')
-
-    }
-    function populateProfiles(){
-        var url = 'Actions/LearningProfileAction.php?call=getLearnerProfiles';
+    
+    function loadModule(){
+       var vals = [];
+        
+        $( '#learningPlanDD :selected' ).each( function( i, selected ) {
+            vals[i] = $( selected ).val();
+         });
+        var url = 'Actions/ModuleAction.php?call=getModulesBySelectedLearningPlan&ids=' + vals;
         $.getJSON(url, function(data){
             var options = "";
+            $("#moduleDD").html(options);
             $.each(data, function(index , value){
-                  options += "<option value='" + value.id + "'>" + value.awesomefontid  + " " + value.tag + "</option>";
+                  $('.chosen-select1').append("<option value='"+value.lpseq + "_" + value.id+"'>"+value.title+" ("+ value.lptitle +")</option>");
             });
-              $("#profiles").html(options);
+            $('.chosen-select1').trigger("chosen:updated");
+            var values = "<?echo $moduleSeqs?>";
+            if(values.length > 0){
+                values = values.split(",")
+                $('.chosen-select1').val(values).trigger("chosen:updated");    
+            }
         });
     }
-    function saveLearningPlan(e,btn){
+    function saveMailMessage(e,btn){
+        var editorData = CKEDITOR.instances.editor.getData();
+        alert(editorData);
+        $("#messageText").val(editorData);
         e.preventDefault();
+        var moduleseqs = [];
+        $( '#moduleDD :selected' ).each( function( i, selected ) {
+            moduleseqs[i] = $( selected ).val();
+        });
+        $("#moduleSeqs").val(moduleseqs);  
+        
+        var vals = [];
+        $( '#learningPlanDD :selected' ).each( function( i, selected ) {
+            vals[i] = $( selected ).val();
+         }); 
+        $("#lpSeqs").val(vals);
+        
         var l = Ladda.create(btn);
         l.start();
-        var rows = $("#selectedModuleGrid").jqxGrid('getrows');
-        var ids = [];
-        var isModuleLeaderboard = []
-        $.each(rows, function(index , value){
-            ids.push(value.id);
-            var val = value.id + "=" + true;
-            if(value.enableleaderboard == undefined || !value.enableleaderboard){
-                val =  value.id + "=" + false;
-            }
-            isModuleLeaderboard.push(val);
-        });
-        $("#moduleIds").val(ids);
-        $("#isModuleLeaderboard").val(isModuleLeaderboard);
-
-        $('#createLearningPlanForm').ajaxSubmit(function( data ){
+        $('#createMessageForm').ajaxSubmit(function( data ){
             l.stop();
             var obj = $.parseJSON(data);
             var dataRow = "";
-            if(btn.id == "saveBtn"){
-                showResponseToastr(data,null,"createLearningPlanForm","mainDiv");
+            if(btn.id == "saveBtn"){                              
+                showResponseToastr(data,null,"createMessageForm","mainDiv");
                 if(obj.success == 1){
-                     window.setTimeout(function(){window.location.href = "ManageLearningPlan.php"},500);
-                }
+                     window.setTimeout(function(){window.location.href = "manageMessages.php"},500);
+                }                  
             }else{
-                showResponseNotification(data,"mainDiv","createLearningPlanForm");
-            }
-
+                showResponseNotification(data,"mainDiv","createMessageForm");
+            } 
+                                      
         })
      }
 </script>

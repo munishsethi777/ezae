@@ -10,38 +10,62 @@
         var mathingRule = "";
 
         $(document).ready(function (){
-            var url = 'ajaxAdminMgr.php?call=getLearnersForGrid';
-            $.getJSON(url, function(data){
-                loadGrid(data);
-            })
+            //var url = 'Actions/MailMessageAction.php?call=getMailMessageForGrid';
+           // $.get(url, function(data){
+                loadGrid();
+            //})
         });
 
 
         function loadGrid(data){
             var columns = [
               { text: 'id', datafield: 'id' , hidden:true},
-              { text: 'Message Subject' , datafield: 'messageSubject', width: 250 },
-              { text: 'Dated', datafield: 'dated' },
+              { text: 'Message Subject' , datafield: 'subject', width: 250 },
               { text: 'Condition', datafield: 'condition' },
               { text: 'Status', datafield: 'status'},
               { text: 'Learning Plans', datafield: 'learningplans'}
             ]
-            var rows = Array();
-            var dataFields = Array();
-            if(data != null){
-                //columns = $.parseJSON(data.columns);
-                //rows = $.parseJSON(data.data);
-                //dataFields = $.parseJSON(data.datafields);
-            }
-
+           
             var source =
             {
                 datatype: "json",
                 id: 'id',
                 pagesize: 10,
-                localData: rows,
-                datafields: dataFields
+                datafields: [{ name: 'id', type: 'integer' },
+                            { name: 'name', type: 'string' },
+                            { name: 'subject', type: 'string' },
+                            { name: 'messageText', type: 'string' },
+                            { name: 'moduleNames', type: 'string' },
+                            { name: 'lpSeqs', type: 'string' },
+                            { name: 'moduleSeqs', type: 'string' },
+                            { name: 'dated', type: 'date' },
+                            { name: 'condition', type: 'string' },
+                            { name: 'status', type: 'string' },
+                            { name: 'percent', type: 'percent' },
+                            { name: 'learningplans', type: 'string'}],
+                url: 'Actions/MailMessageAction.php?call=getMailMessageForGrid',
+                root: 'Rows',
+                cache: false,
+                beforeprocessing: function(data)
+                {        
+                    source.totalrecords = data.TotalRows;
+                },
+                filter: function()
+                {
+                    // update the grid and send a request to the server.
+                    $("#messagesGrid").jqxGrid('updatebounddata', 'filter');
+                },
+                addrow: function (rowid, rowdata, position, commit) {
+                    commit(true);
+                },
+                deleterow: function (rowid, commit) {
+                    commit(true);
+                },
+                updaterow: function (rowid, newdata, commit) {
+                    commit(true);
+                }
             };
+            
             var dataAdapter = new $.jqx.dataAdapter(source);
             // initialize jqxGrid
             $("#messagesGrid").jqxGrid(
@@ -61,6 +85,11 @@
                 columnsreorder: true,
                 selectionmode: 'checkbox',
                 showstatusbar: true,
+                virtualmode: true,
+                rendergridrows: function()
+                {
+                      return dataAdapter.records;     
+                },
                 renderstatusbar: function (statusbar) {
                     // appends buttons to the status bar.
                     var container = $("<div style='overflow: hidden; position: relative; margin: 5px;height:30px'></div>");
@@ -84,41 +113,30 @@
                     // create new row.
                     addButton.click(function (event) {
                         $("#saveNewBtnDiv").show();
-                        $("#msgDiv").hide();
-                        $("#errorDiv").hide();
-                        $("#id").val("0");
-                        $("#customFieldForm")[0].reset();
-                        $('#changePasswordChkDiv').hide();
-                        $("#passwordDiv").show();
-                        $('#createNewModalForm').modal('show');
+                        location.href = ("createMessage.php");
                     });
-                    // delete selected row.
-                    deleteButton.click(function (event) {
-                        deleteRows("learnersGrid","Actions/LearnerAction.php?call=deleteLearners");
-                    });
-                    // edit grid data.
-                    editButton.click(function (event) {
-                        $("#saveNewBtnDiv").hide();
-                        $("#msgDiv").hide();
-                        $("#errorDiv").hide();
-                        $("#customFieldForm")[0].reset();
-                        var selectedrowindex = $("#learnersGrid").jqxGrid('selectedrowindexes');
+                    editButton.click(function (event){
+                        var selectedrowindex = $("#messagesGrid").jqxGrid('selectedrowindexes');
                         if(selectedrowindex.length != 1){
-                             bootbox.alert("Please Select single row for edit.", function() {});
-                             return;
+                            bootbox.alert("Please Select single row for edit.", function() {});
+                            return;    
                         }
-                        var row = $('#learnersGrid').jqxGrid('getrowdata', selectedrowindex);
+                        var row = $('#messagesGrid').jqxGrid('getrowdata', selectedrowindex);
                         $("#id").val(row.id);
-                        $.each(columns, function (key, value){
-                            $("#"+value.datafield).val(row[value.datafield]);
-                            if(value.type == "boolean" && row[value.datafield] == true){
-                                $('#'+value.datafield).iCheck('check');
-                            }
-                        });
-                        $('#changePasswordChkDiv').show();
-                        $("#passwordDiv").hide();
-                        $('#createNewModalForm').modal('show');
-                    });
+                        $("#name").val(row.name);
+                        $("#subject").val(row.subject);
+                        $("#messageText").val(row.messageText);
+                        $("#lpSeqs").val(row.lpSeqs);
+                        $("#messageCondition").val(row.condition);
+                        $("#moduleSeqs").val(row.moduleSeqs);
+                        $("#percent").val(row.percent);                       
+                        sendOnDate = row.dated;
+                        if(sendOnDate != "" && sendOnDate != null){
+                            sendOnDate = $.date(sendOnDate);
+                        }
+                        $("#sendOnDate").val(sendOnDate);                        
+                        $("#form1").submit();                   
+                     });
                     // reload grid data.
                     reloadButton.click(function (event) {
                         $("#learnersGrid").jqxGrid({ source: dataAdapter });
@@ -164,6 +182,16 @@
         </div>
     </div>
 
-
+    <form id="form1" name="form1" method="post" action="createMessage.php">
+        <input type="hidden" id="id" name="id"/>
+        <input type="hidden" id="name" name="name"/>
+        <input type="hidden" id="subject" name="subject"/>   
+        <input type="hidden" id="messageText" name="messageText"/> 
+        <input type="hidden" id="lpSeqs" name="lpSeqs"/>
+        <input type="hidden" id="messageCondition" name="messageCondition"/> 
+        <input type="hidden" id="sendOnDate" name="sendOnDate"/> 
+        <input type="hidden" id="moduleSeqs" name="moduleSeqs"/>
+        <input type="hidden" id="percent" name="percent"/> 
+    </form>
 </body>
 </html>

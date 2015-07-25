@@ -70,6 +70,9 @@
         <!-- SUMMERNOTE -->
         <script src="scripts/plugins/summernote/summernote.min.js"></script>
         <script src="scripts/plugins/cropper/cropper.min.js"></script>
+        
+        <script src="scripts/plugins/ckeditor/ckeditor.js"></script>
+        <!--Common Scripts-->
         <script>
             $(function() {
                toastr.options = {
