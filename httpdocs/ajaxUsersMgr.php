@@ -2,6 +2,7 @@
   require_once('IConstants.inc');
   require_once($ConstantsArray['dbServerUrl'] ."Managers/UserMgr.php");
   require_once($ConstantsArray['dbServerUrl'] ."Managers/ActivityMgr.php");
+  require_once($ConstantsArray['dbServerUrl'] ."Managers/ModuleMgr.php");
   require_once($ConstantsArray['dbServerUrl'] ."Utils/SessionUtil.php5");
   require_once($ConstantsArray['dbServerUrl'] ."Utils/MailerUtils.php");
 
@@ -34,14 +35,14 @@
       $score = $_GET["score"];
       $userSeq= $_GET["userSeq"];
       $activityMgr = ActivityMgr::getInstance();
-      try{     
+      try{
         $activityMgr->saveActivityData($moduleId, $progress, $score,$userSeq);
         echo "null";
       }catch(Exception $e){
         echo "error occured while saving progress (Detail: ". $e->getMessage() .")";
         return;
       }
-      
+
       return;
   }
 

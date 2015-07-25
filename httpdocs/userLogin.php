@@ -35,14 +35,14 @@
             function submitLogin(e,btn){
                 e.preventDefault();
                 var l = Ladda.create(btn);
-                l.start();            
+                l.start();
                 $('#userLoginForm').ajaxSubmit(function( data ){
                       l.stop();
                       var obj = $.parseJSON(data);
                       if(obj.success == 1){
-                            window.location = "UserDashboard.php";   
+                            window.location = "UserDashboard.php";
                       } else{
-                          showResponseNotification(data,"mainDiv","userLoginForm"); 
+                          showResponseNotification(data,"mainDiv","userLoginForm");
                       }
                 });
             }
@@ -55,19 +55,19 @@
                 <h1 class="font-bold">Welcome to EZAE</h1>
             </div>
         <div class="col-md-6">
-            <div class="ibox-content mainDiv">               
+            <div class="ibox-content mainDiv">
                 <form class="form-horizontal" action="Actions\UserAction.php" id="userLoginForm" method="POST" name="loginForm">
-                  <input type="hidden" name="call" id="call" value="loginUser"> 
+                  <input type="hidden" name="call" id="call" value="loginUser">
                   <div class="form-group">
                     <label for="inputEmail3" class="col-sm-3 control-label">Username</label>
                     <div class="col-sm-9">
-                      <input type="text" name="username" class="form-control input-lg" id="usernameInput">
+                      <input type="text" name="username" class="form-control input-lg" id="usernameInput" value="87035">
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="inputPassword3" class="col-sm-3 control-label">Password</label>
                     <div class="col-sm-9">
-                      <input type="password" name="password" class="form-control input-lg" id="passwordInput">
+                      <input type="password" name="password" class="form-control input-lg" id="passwordInput" value="2212005">
                     </div>
                   </div>
 
@@ -82,7 +82,7 @@
                 <a href="forgotPassword.php">Forgot Password</a><br/>
             </div>
         </div>
-         
+
     </div>
 </div>
 

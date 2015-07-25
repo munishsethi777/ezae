@@ -14,21 +14,21 @@
             {
                 self::$learningPlanMgr = new LearningPlanMgr();
                 self::$dataStore = new BeanDataStore(LearningPlan::$className,LearningPlan::$tableName);
-                self::$lpCoursedataStore = new BeanDataStore(LearningPlanCourse::$className,LearningPlanCourse::$tableName);                
-                self::$sessionUtil = SessionUtil::getInstance();   
-                self::$adminSeq = self::$sessionUtil->getAdminLoggedInSeq(); 
-                self::$companySeq = self::$sessionUtil->getAdminLoggedInCompanySeq();           
+                self::$lpCoursedataStore = new BeanDataStore(LearningPlanModule::$className,LearningPlanModule::$tableName);
+                self::$sessionUtil = SessionUtil::getInstance();
+                self::$adminSeq = self::$sessionUtil->getAdminLoggedInSeq();
+                self::$companySeq = self::$sessionUtil->getAdminLoggedInCompanySeq();
                 return self::$learningPlanMgr;
             }
             return self::$learningPlanMgr;
         }
-        
+
         public function deleteLeaeningPlanCourses($learningPlanSeq){
             $columnValue = array();
             $columnValue["learningplanseq"] = $learningPlanSeq;
             $id = self::$lpCoursedataStore->deleteByAttribute($columnValue);
         }
-        
+
         public function saveLearningPlan($learningPlanObj,$courseIds,$enableLeaderboardArr){
             $learningPlan = new LearningPlan();
             $learningPlan = $learningPlanObj;
@@ -40,16 +40,17 @@
                 $val = $enableLeaderboardArr[$value];
                 $enableLeaderboard = 0;
                 if($val == "true"){
-                    $enableLeaderboard = 1;    
-                }               
-                $lpCourse = new LearningPlanCourse();
+                    $enableLeaderboard = 1;
+                }
+                $lpCourse = new LearningPlanModule();
                 $lpCourse->setCourseSeq($value);
                 $lpCourse->setLearningPlanSeq($id);
                 $lpCourse->setIsEnableLeaderBoard($enableLeaderboard);
                 self::$lpCoursedataStore->save($lpCourse);
             }
-            return $id;     
+            return $id;
         }
+
        
         public function getLearningPlanByCompany($isApplyFilter = false){
             $learningPlans = self::$dataStore->findAllByCompany($isApplyFilter);
@@ -61,7 +62,8 @@
             $gridData["Rows"] = $moduleJson;
             $gridData["TotalRows"] = self::$dataStore->executeCountQuery(null,$isApplyFilter);
             return json_encode($gridData);
-        }
+
+
         public static function geLearningPlanDataJson($learningPlans){
             $fullArr = array();
             foreach($learningPlans as $learningPlan){
@@ -72,15 +74,15 @@
         }
         public static function getCoursesIdBylearnigPlanSeq($learningPlanSeq){
              $colValuePair["learningplanseq"] =  $learningPlanSeq;
-             $attributes[0] = "courseseq"; 
-             $learningPlanCourses = self::$lpCoursedataStore->executeAttributeQuery($attributes,$colValuePair);
+             $attributes[0] = "courseseq";
+             $learningPlanModules = self::$lpModuledataStore->executeAttributeQuery($attributes,$colValuePair);
              $ids = array();
-             foreach($learningPlanCourses as $key=>$value){
-                array_push($ids,$value[0]);    
+             foreach($learningPlanModules as $key=>$value){
+                array_push($ids,$value[0]);
              }
-             return implode(",",$ids);    
+             return implode(",",$ids);
         }
-        
+
         private static function getLearningPlanArry($learningPlanObj){
             $learningPlan = new LearningPlan();
             $learningPlan = $learningPlanObj;
@@ -90,17 +92,17 @@
             $lpArr["description"] = $learningPlan->getDescription();
             $lpArr["activateon"] = $learningPlan->getActivateOn();
             $lpArr["deactivateon"] = $learningPlan->getDeactivateOn();
-            $lpArr["isactive"] = $learningPlan->getIsActive(); 
+            $lpArr["isactive"] = $learningPlan->getIsActive();
             $lpArr["lastmodifiedon"] = $learningPlan->getLastModifiedOn();
             $lpArr["lockSequence"] = $learningPlan->getIsSequenceLocked() == 1 ? true : false;
             $lpArr["moduleIds"] = self::getCoursesIdBylearnigPlanSeq($learningPlan->getSeq());
             $isDeactivate = false;
             if($learningPlan->getDeactivateOn() != null && $learningPlan->getDeactivateOn() != ""){
-                $isDeactivate =  true;                
+                $isDeactivate =  true;
             }
-            $lpArr["isdeactivate"] = $isDeactivate;    
+            $lpArr["isdeactivate"] = $isDeactivate;
             $lpArr["isenableleaderboard"] = $learningPlan->getIsLeaderBoard();
-            return $lpArr;                        
+            return $lpArr;
         }
     }
-?> 
+?>

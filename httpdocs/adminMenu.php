@@ -1,59 +1,7 @@
-
-<!-- Mainly scripts -->
-
-<script src="scripts/bootstrap.min.js"></script>
-<script src="scripts/plugins/metisMenu/jquery.metisMenu.js"></script>
-<script src="scripts/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-<!-- Toastr style -->
-<link href="styles/plugins/toastr/toastr.min.css" rel="stylesheet">
-<!--Bootstrap-->
-<link href="styles/bootstrap.min.css" rel="stylesheet">
-<link href="font-awesome/css/font-awesome.css" rel="stylesheet">
-<link href="styles/animate.css" rel="stylesheet">
-<link href="styles/style.css" rel="stylesheet">
-
-<!-- Toastr style -->
-<link href="styles/plugins/toastr/toastr.min.css" rel="stylesheet">
-
-<!-- Gritter -->
-<link href="scripts/plugins/gritter/jquery.gritter.css" rel="stylesheet">
-
-<!-- Flot -->
-<script src="scripts/plugins/flot/jquery.flot.js"></script>
-<script src="scripts/plugins/flot/jquery.flot.tooltip.min.js"></script>
-<script src="scripts/plugins/flot/jquery.flot.spline.js"></script>
-<script src="scripts/plugins/flot/jquery.flot.resize.js"></script>
-<script src="scripts/plugins/flot/jquery.flot.pie.js"></script>
-
-<!-- Peity -->
-<script src="scripts/plugins/peity/jquery.peity.min.js"></script>
-<script src="scripts/demo/peity-demo.js"></script>
-
-<!-- Custom and plugin javascript -->
-<script src="scripts/inspinia.js"></script>
-<script src="scripts/plugins/pace/pace.min.js"></script>
-
-<!-- jQuery UI -->
-<script src="scripts/plugins/jquery-ui/jquery-ui.min.js"></script>
-
-<!-- GITTER -->
-<script src="scripts/plugins/gritter/jquery.gritter.min.js"></script>
-
-<!-- Sparkline -->
-<script src="scripts/plugins/sparkline/jquery.sparkline.min.js"></script>
-
-<!-- Sparkline demo data  -->
-<script src="scripts/demo/sparkline-demo.js"></script>
-
-<!-- ChartJS-->
-<script src="scripts/plugins/chartJs/Chart.min.js"></script>
-
-<!-- Toastr -->
-<script src="scripts/plugins/toastr/toastr.min.js"></script>
 <?php
 $action = "CompanyAction.php";
 $sessionUtil = SessionUtil::getInstance();
-$adminSeq =  $sessionUtil->getAdminLoggedInSeq();
+$adminSeq = $sessionUtil->getAdminLoggedInSeq();
 $path = "images/AdminImages/" . $adminSeq . ".png";
 if(!file_exists ($path)){
     $path = "images/dummy.jpg";
@@ -67,6 +15,8 @@ if(!file_exists ($path)){
         $customFields = "active";
     }elseif($page == "ManageLeaderBoard.php"){
         $manageLeaderBoard = "active";
+    }elseif($page == "adminModulesManagement.php"){
+        $adminModulesManagement = "active";
     }elseif($page == "createLearningPlan.php"){
         $learningPlans = "active";
         $createLearningPlan = "active";
@@ -142,8 +92,8 @@ if(!file_exists ($path)){
                     <li class="<?=$manageLeaderBoard?>">
                         <a href="ManageLeaderBoard.php"><i class="fa fa-angellist"></i> <span class="nav-label">LeaderBoards</span></a>
                     </li>
-                    <li>
-                        <a href="layouts.html"><i class="fa fa-archive"></i> <span class="nav-label">Modules Management</span></a>
+                    <li class="<?=$adminModulesManagement?>">
+                        <a href="adminModulesManagement.php"><i class="fa fa-archive"></i> <span class="nav-label">Modules Management</span></a>
                     </li>
                     <li class="<?=$learningPlans?>">
                         <a href="layouts.html"><i class="fa fa-gift"></i> <span class="nav-label">Learning Plans</span></a>

@@ -84,7 +84,7 @@
             </div>
         <div class="col-md-6">
             <div class="ibox-content">
-               
+
                 <form class="form-horizontal" id="loginForm" method="POST" name="loginForm">
                   <div class="form-group">
                     <label for="inputEmail3" class="col-sm-3 control-label">Username</label>
@@ -106,7 +106,7 @@
                   </div>
                 </form>
                 <a href="forgotPassword.php">Forgot Password</a><br/>
-                <a href="CompanySignUpForm.php">Singnup</a> 
+                <a href="CompanySignUpForm.php">Singnup</a>
             </div>
         </div>
     </div>
@@ -114,5 +114,6 @@
 
 </body>
 </html>
+
 
 

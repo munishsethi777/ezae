@@ -4,387 +4,389 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Administration - Easy Assessment Engine</title>
-<?include "ScriptsInclude.php"?> 
-<script type="text/javascript">
-		 var FIELD_NAME_MESSAGE = "Invalid Field Name in "
-		 var DUPLICATE_FIELD_NAME_MESSAGE = "Duplicate Field Name : - "
-		 var FIELD_GRID_ID = "#learnersFieldsGrid";
-		 var fieldNames = [];
-         var companyPrefix = "";
-         
-        $(document).ready(function (){
-           
-            $("#wform").steps({
-                bodyTag: "div",
-                transitionEffect: "slide",
-                onStepChanging: function (event, currentIndex, newIndex)
-                {
-                    // Always allow going backward even if the current step contains invalid fields!
-                      
-                    if(newIndex == 2){
-                        populatedFields();
-                        populatePrefix();   
-                     }
-                    if (currentIndex < newIndex && currentIndex == 1)
-					{
-                        return validateFieldNames();
-                    }else{
-						return true;
-					}
-                     
-                },
-                
-                onFinished: function (event, currentIndex)
-                {
-                     location.href= ("manageLearners.php")
-                }
-			}); 
-	   
-			$('.i-checks').iCheck({
-                checkboxClass: 'icheckbox_square-green',
-                radioClass: 'iradio_square-green',
-            });
-            showFirstRowContainChk();
-			
-            //Start----Import Learner button-------   
+<title>EZAE - Import Learners</title>
+<?include "ScriptsInclude.php"?>
 
-             $("#importButton").click(function(e){
-                var btn = this;
-                var validationResult = function (isValid){
-                   if (isValid) {
-                        importLearners(e,btn); 
-                    }
-                }
-                $('#importLearnerForm').jqxValidator('validate', validationResult);
-                    
-             });
-             
-             $('#importLearnerForm').jqxValidator({
-                hintType: 'label',
-                animationDuration: 0,
-                rules: [
-                 { input: '#fileUpload', message: 'Select file for import!', action: 'keyup, blur',rule: function (input, commit) {
-                        return validateFile(input);               
-                    } 
+<script type="text/javascript">
+
+     var FIELD_NAME_MESSAGE = "Invalid Field Name in "
+	 var DUPLICATE_FIELD_NAME_MESSAGE = "Duplicate Field Name : - "
+	 var FIELD_GRID_ID = "#learnersFieldsGrid";
+	 var fieldNames = [];
+     var companyPrefix = "";
+
+    $(document).ready(function (){
+
+        $("#wform").steps({
+            bodyTag: "div",
+            transitionEffect: "slide",
+            onStepChanging: function (event, currentIndex, newIndex)
+            {
+                // Always allow going backward even if the current step contains invalid fields!
+
+                if(newIndex == 2){
+                    populatedFields();
+                    populatePrefix();
                  }
-                ]
-             });
-             
-             function validateFile(input){
-                val = input[0].value;
-                if(val != ""){
+                if (currentIndex < newIndex && currentIndex == 1)
+				{
+                    return validateFieldNames();
+                }else{
+					return true;
+				}
+
+            },
+
+            onFinished: function (event, currentIndex)
+            {
+                 location.href= ("manageLearners.php")
+            }
+		});
+
+		$('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        });
+        showFirstRowContainChk();
+
+        //Start----Import Learner button-------
+
+         $("#importButton").click(function(e){
+            var btn = this;
+            var validationResult = function (isValid){
+               if (isValid) {
+                    importLearners(e,btn);
+                }
+            }
+            $('#importLearnerForm').jqxValidator('validate', validationResult);
+
+         });
+
+         $('#importLearnerForm').jqxValidator({
+            hintType: 'label',
+            animationDuration: 0,
+            rules: [
+             { input: '#fileUpload', message: 'Select file for import!', action: 'keyup, blur',rule: function (input, commit) {
+                    return validateFile(input);
+                }
+             }
+            ]
+         });
+
+         function validateFile(input){
+            val = input[0].value;
+            if(val != ""){
+                return true;
+            }
+            return false;
+         }
+         $('#matchingform').jqxValidator({
+            hintType: 'label',
+            animationDuration: 0,
+            rules: [
+             {
+             input: '#uSelect', message: 'User Name is required!', action: 'keyup, blur',
+                   rule: function (select){
+                            return validate("uSelect");
+                   }
+             },
+             {
+             input: '#pSelect', message: 'Password is required!', action: 'keyup, blur',
+                   rule: function (select){
+                            return validate("pSelect");
+                   }
+             },
+             {
+             input: '#userNamePrefix', message: 'Prefix is required!', action: 'keyup, blur', rule:'required'
+             }
+
+            ]
+         });
+
+
+
+         function validate(input){
+                index = document.getElementById(input).selectedIndex;
+                if(index > 0){
                     return true;
                 }
-                return false;
-             }
-             $('#matchingform').jqxValidator({
-                hintType: 'label',
-                animationDuration: 0,
-                rules: [
-                 { 
-                 input: '#uSelect', message: 'User Name is required!', action: 'keyup, blur', 
-                       rule: function (select){
-                                return validate("uSelect");
-                       }                  
-                 },
-                 { 
-                 input: '#pSelect', message: 'Password is required!', action: 'keyup, blur', 
-                       rule: function (select){
-                                return validate("pSelect");
-                       }                  
-                 },
-                 {
-                 input: '#userNamePrefix', message: 'Prefix is required!', action: 'keyup, blur', rule:'required'
-                 }
-                
-                ]
-             });
-             
-             
-             
-             function validate(input){
-                    index = document.getElementById(input).selectedIndex;
-                    if(index > 0){
-                        return true;
-                    }
-                   return false;
-             }
-            $("#saveButton").click(function(e){
-                var btn = this;
-                var validationResult = function (isValid){
-                   if (isValid) {
-                        saveImportedData(e,btn);
-                    }
+               return false;
+         }
+        $("#saveButton").click(function(e){
+            var btn = this;
+            var validationResult = function (isValid){
+               if (isValid) {
+                    saveImportedData(e,btn);
                 }
-               $('#matchingform').jqxValidator('validate', validationResult);
-       
-            });
-            
-            $("#matchingform").on('validationSuccess', function () {
-                $("#createCompanyForm-iframe").fadeIn('fast');
-            }); 
-             
-        });
-        
-        function showFirstRowContainChk(){
-            url = "Actions/CustomFieldAction.php?call=isCustomFieldsExists"
-            $.get(url,function(data){
-                 var result = $.parseJSON(data);
-                 if(result.isExist == 1){
-                    $("#firstRowChk").hide();    
-                 }else{
-                     $("#firstRowChk").show();   
-                 }                
-            });                  
-        } 
-        
-        function importLearners(e,btn){
-            $("#errorDiv").hide();
-            $("#msgDiv").hide();            
-            e.preventDefault();
-            var l = Ladda.create(btn);
-            l.start();            
-             $('#importLearnerForm').ajaxSubmit(function( data ){
-                  l.stop();
-                  var obj = $.parseJSON(data);
-                  var message = obj.message;
-                   if(obj.success == 1){
-                       var fieldGridData = $.parseJSON(obj.fieldGridData);
-                       createFieldsGrid(fieldGridData);
-                       var data = $.parseJSON(obj.data);
-                       createDataGrid(data);
-                       //populatedFields();
-                        //$("#wizard").steps("setStep", 2); 
-                       toastr.success(message);
-                   } else{
-                       toastr.error(message,"Import Failed");  
-                   }             
-                 
-             })             
-        }
-       
-        function createFieldsGrid(fieldGridData){
-            // prepare the data
-            // fieldNamesRow = fieldGridData.rows;
-			
-			
-             var data = {};           
-             data = fieldGridData.rows;
+            }
+           $('#matchingform').jqxValidator('validate', validationResult);
 
-            //fieldTypeRow = fieldGridData.fieldTypes;
-            //var row = fieldTypeRow;
+        });
+
+        $("#matchingform").on('validationSuccess', function () {
+            $("#createCompanyForm-iframe").fadeIn('fast');
+        });
+
+    });
+
+    function showFirstRowContainChk(){
+        url = "Actions/CustomFieldAction.php?call=isCustomFieldsExists"
+        $.get(url,function(data){
+             var result = $.parseJSON(data);
+             if(result.isExist == 1){
+                $("#firstRowChk").hide();
+             }else{
+                 $("#firstRowChk").show();
+             }
+        });
+    }
+
+    function importLearners(e,btn){
+        $("#errorDiv").hide();
+        $("#msgDiv").hide();
+        e.preventDefault();
+        var l = Ladda.create(btn);
+        l.start();
+         $('#importLearnerForm').ajaxSubmit(function( data ){
+              l.stop();
+              var obj = $.parseJSON(data);
+              var message = obj.message;
+               if(obj.success == 1){
+                   var fieldGridData = $.parseJSON(obj.fieldGridData);
+                   createFieldsGrid(fieldGridData);
+                   var data = $.parseJSON(obj.data);
+                   createDataGrid(data);
+                   //populatedFields();
+                    //$("#wizard").steps("setStep", 2);
+                   toastr.success(message);
+               } else{
+                   toastr.error(message,"Import Failed");
+               }
+
+         })
+    }
+
+    function createFieldsGrid(fieldGridData){
+        // prepare the data
+        // fieldNamesRow = fieldGridData.rows;
+
+
+         var data = {};
+         data = fieldGridData.rows;
+
+        //fieldTypeRow = fieldGridData.fieldTypes;
+        //var row = fieldTypeRow;
 //            data[1] = fieldTypeRow;
-            dataFields = fieldGridData.dataFields;   
-            var source =
-            {
-                localdata: data,
-                datatype: "json",                
-                datafields:dataFields,
-            };
-            var dataAdapter = new $.jqx.dataAdapter(source);
-            var createGridEditor = function(row, cellValue, editor, cellText, width, height)
-            {
-                if(row == 0){
-                    var inputElement = $("<input/>").prependTo(editor);
-                    inputElement.jqxInput({ width: width, height: height});
-                }else if (row == 1) {
-                    editor.jqxDropDownList({autoDropDownHeight: true,  width: width, height: height, source: ['Text', 'Numeric', 'Date', 'Yes/No']});
-                }
+        dataFields = fieldGridData.dataFields;
+        var source =
+        {
+            localdata: data,
+            datatype: "json",
+            datafields:dataFields,
+        };
+        var dataAdapter = new $.jqx.dataAdapter(source);
+        var createGridEditor = function(row, cellValue, editor, cellText, width, height)
+        {
+            if(row == 0){
+                var inputElement = $("<input/>").prependTo(editor);
+                inputElement.jqxInput({ width: width, height: height});
+            }else if (row == 1) {
+                editor.jqxDropDownList({autoDropDownHeight: true,  width: width, height: height, source: ['Text', 'Numeric', 'Date', 'Yes/No']});
             }
-			
-            var initGridEditor = function (row, cellvalue, editor, celltext, pressedkey) {
-                if(row == 0){
-                    var inputField = editor.find('input');
-                    if (pressedkey) {
-                        inputField.val(pressedkey);
-                        inputField.jqxInput('selectLast');
-                    }else {
-                        inputField.val(cellvalue);
-                        inputField.jqxInput('selectAll');
-                    }
-                }else if (row == 1) {
-                    editor.jqxDropDownList('selectItem', cellvalue);
-                }
-            }
-            var gridEditorValue = function (row, cellValue, editor) {
-                if(row == 0){
-                    return editor.find('input').val();
-                }else{
-                    return editor.val();
-                }
-            }
-            // initialize jqxGrid
-            $("#learnersFieldsGrid").jqxGrid(
-            {
-                width: '100%',
-                height: 100,
-                source: dataAdapter,
-                showtoolbar: false,
-                showheader:true,
-                editable: true,
-                selectionmode: 'singlecell',
-                columns: fieldGridData.columns,
-                ready: function () {
-                    $("body").mousemove(function () {
-                        var scrolling = $("#learnersFieldsGrid").jqxGrid("scrolling");
-                        if (scrolling.horizontal == true) {
-                            $("#log").append("scrolling <br />");
-                            var position = $('#learnersFieldsGrid').jqxGrid('scrollposition');
-                            $('#learnersDataGrid').jqxGrid('scrollposition');
-                            $('#learnersDataGrid').jqxGrid('scrolloffset', position.top,position.left);
-							
-                        };
-                    });	
-					populateFieldDropDown();					
-                 }
-            });
         }
-		
-        function populateFieldDropDown(){
-			var columns = $("#learnersFieldsGrid").jqxGrid("columns").records;			
-			var createEditor = function(row, cellValue, editor, cellText, width, height)
-            {
-              	url = "Actions/CustomFieldAction.php?call=getCustomFieldNames";
-				$.get(url,function(data){
-					var obj = $.parseJSON(data);
-					if(obj.names.length > 0){
-                        fieldNames = obj.names;
-						editor.jqxDropDownList({autoDropDownHeight: true,width: width, height: height, source: obj.names});
-					}else{
-						editor.find('input').val("");
-					}					
-				});
-            }
-			$.each(columns, function(key, value){
-				$('#learnersFieldsGrid').jqxGrid('setcolumnproperty', value.datafield, 'createeditor', createEditor);
-			});
-			
-		}
-		
-        function createDataGrid(gridData){
-            // prepare the data
-            
-            var data = {};
-            data = gridData.rows
-            var source =
-            {
-                localdata: data,
-                datatype: "json",
-                datafields: gridData.dataFields,
-                pagesize: 6
-            };
-            var dataAdapter = new $.jqx.dataAdapter(source);
-            // initialize jqxGrid
-            $("#learnersDataGrid").jqxGrid(
-            {
-                width: '100%',
-                height: 220,
-                pageable: true,
-                source: dataAdapter,
-                showtoolbar: false,
-                showheader:false,
-                columns: gridData.columns 
-                ,ready: function () {
-                    $("body").mousemove(function () {
-                        var scrolling = $("#learnersDataGrid").jqxGrid("scrolling");
-                        if (scrolling.horizontal == true) {
-                            var position = $('#learnersDataGrid').jqxGrid('scrollposition');
-                            $('#learnersFieldsGrid').jqxGrid('scrollposition');
-                            $('#learnersFieldsGrid').jqxGrid('scrolloffset', position.top,position.left);
-                        };
-                    });
+
+        var initGridEditor = function (row, cellvalue, editor, celltext, pressedkey) {
+            if(row == 0){
+                var inputField = editor.find('input');
+                if (pressedkey) {
+                    inputField.val(pressedkey);
+                    inputField.jqxInput('selectLast');
+                }else {
+                    inputField.val(cellvalue);
+                    inputField.jqxInput('selectAll');
                 }
-            });
-            
-        }
-        function populatedFields(){            
-            var options = "<option value=''>Select Field</option>";
-            if(fieldNames.length == 0){
-                 fieldNames = $('#learnersFieldsGrid').jqxGrid('getrowdata', 0);      
-            } 
-            $.each(fieldNames, function(key, value){
-                if(value != 0){ 
-                    options += "<option value='" + value + "'>" + value + "</option>";
-                }
-               $("#uSelect").html(options);
-               $("#pSelect").html(options);
-               $("#eSelect").html(options);    
-           })            
-        }
-        
-        function populatePrefix(){
-            if(companyPrefix == ""){
-                $.get("Actions/CompanyAction.php?call=getPrefix",function(data){
-                    companyPrefix = data;
-                    $("#userNamePrefix").val(companyPrefix); 
-                     populatePrefixUserName();  
-                });        
+            }else if (row == 1) {
+                editor.jqxDropDownList('selectItem', cellvalue);
             }
-            
         }
-        
-        function saveImportedData(e,btn){
-            e.preventDefault();
-            var l = Ladda.create(btn);
-            l.start();          
-           
-            var fieldRows = $("#learnersFieldsGrid").jqxGrid('getrows');
-            var fieldData = JSON.stringify(fieldRows);
-            var dataRows = $("#learnersDataGrid").jqxGrid('getrows');   
-            var data = JSON.stringify(dataRows);
-            $("#fieldData").val(fieldData);
-            $("#data").val(data);
-            $matchingFormData = $("#matchingform").serializeArray();                
-            var url = "Actions/CustomFieldAction.php?call=saveImportedFields";
-            $.get(url,$matchingFormData,function( data ){
-                showResponseDiv(data,"mainDiv");
-                l.stop();                                  
-            }); 
-        }
-        function validateFieldNames(){
-            var row = $('#learnersFieldsGrid').jqxGrid('getrowdata', 0);
-			var flag = true;
-			var temp = [];
-			var hasDup = [];
-			delete row['uid'];
-            var cellclass = function (row, columnfield, value) {
-                return 'red';
+        var gridEditorValue = function (row, cellValue, editor) {
+            if(row == 0){
+                return editor.find('input').val();
+            }else{
+                return editor.val();
             }
-            $.each(row, function(key, value){
-				if(value == "" || value == "{FieldName}" || value == "Select Field"){
-					flag = false;
-					toastr.error(FIELD_NAME_MESSAGE + key + ".","Field Name Error");
-                    $('#learnersFieldsGrid').jqxGrid('setcolumnproperty', key, 'cellclassname', cellclass);
-					return false;
+        }
+        // initialize jqxGrid
+        $("#learnersFieldsGrid").jqxGrid(
+        {
+            width: '100%',
+            height: 100,
+            source: dataAdapter,
+            showtoolbar: false,
+            showheader:true,
+            editable: true,
+            selectionmode: 'singlecell',
+            columns: fieldGridData.columns,
+            ready: function () {
+                $("body").mousemove(function () {
+                    var scrolling = $("#learnersFieldsGrid").jqxGrid("scrolling");
+                    if (scrolling.horizontal == true) {
+                        $("#log").append("scrolling <br />");
+                        var position = $('#learnersFieldsGrid').jqxGrid('scrollposition');
+                        $('#learnersDataGrid').jqxGrid('scrollposition');
+                        $('#learnersDataGrid').jqxGrid('scrolloffset', position.top,position.left);
+
+                    };
+                });
+				populateFieldDropDown();
+             }
+        });
+    }
+
+    function populateFieldDropDown(){
+		var columns = $("#learnersFieldsGrid").jqxGrid("columns").records;
+		var createEditor = function(row, cellValue, editor, cellText, width, height)
+        {
+            url = "Actions/CustomFieldAction.php?call=getCustomFieldNames";
+			$.get(url,function(data){
+				var obj = $.parseJSON(data);
+				if(obj.names.length > 0){
+                    fieldNames = obj.names;
+					editor.jqxDropDownList({autoDropDownHeight: true,width: width, height: height, source: obj.names});
 				}else{
-					if($.inArray(value, temp) === -1) {
-				        temp.push(value);
-				    }else{
-						
-						hasDup.push(value);
-				    }
+					editor.find('input').val("");
 				}
 			});
-			if(hasDup.length > 0){
+        }
+		$.each(columns, function(key, value){
+			$('#learnersFieldsGrid').jqxGrid('setcolumnproperty', value.datafield, 'createeditor', createEditor);
+		});
+
+	}
+
+    function createDataGrid(gridData){
+        // prepare the data
+
+        var data = {};
+        data = gridData.rows
+        var source =
+        {
+            localdata: data,
+            datatype: "json",
+            datafields: gridData.dataFields,
+            pagesize: 6
+        };
+        var dataAdapter = new $.jqx.dataAdapter(source);
+        // initialize jqxGrid
+        $("#learnersDataGrid").jqxGrid(
+        {
+            width: '100%',
+            height: 220,
+            pageable: true,
+            source: dataAdapter,
+            showtoolbar: false,
+            showheader:false,
+            columns: gridData.columns
+            ,ready: function () {
+                $("body").mousemove(function () {
+                    var scrolling = $("#learnersDataGrid").jqxGrid("scrolling");
+                    if (scrolling.horizontal == true) {
+                        var position = $('#learnersDataGrid').jqxGrid('scrollposition');
+                        $('#learnersFieldsGrid').jqxGrid('scrollposition');
+                        $('#learnersFieldsGrid').jqxGrid('scrolloffset', position.top,position.left);
+                    };
+                });
+            }
+        });
+
+    }
+    function populatedFields(){
+        var options = "<option value=''>Select Field</option>";
+        if(fieldNames.length == 0){
+             fieldNames = $('#learnersFieldsGrid').jqxGrid('getrowdata', 0);
+        }
+        $.each(fieldNames, function(key, value){
+            if(value != 0){
+                options += "<option value='" + value + "'>" + value + "</option>";
+            }
+           $("#uSelect").html(options);
+           $("#pSelect").html(options);
+           $("#eSelect").html(options);
+       })
+    }
+
+    function populatePrefix(){
+        if(companyPrefix == ""){
+            $.get("Actions/CompanyAction.php?call=getPrefix",function(data){
+                companyPrefix = data;
+                $("#userNamePrefix").val(companyPrefix);
+                 populatePrefixUserName();
+            });
+        }
+
+    }
+
+    function saveImportedData(e,btn){
+        e.preventDefault();
+        var l = Ladda.create(btn);
+        l.start();
+
+        var fieldRows = $("#learnersFieldsGrid").jqxGrid('getrows');
+        var fieldData = JSON.stringify(fieldRows);
+        var dataRows = $("#learnersDataGrid").jqxGrid('getrows');
+        var data = JSON.stringify(dataRows);
+        $("#fieldData").val(fieldData);
+        $("#data").val(data);
+        $matchingFormData = $("#matchingform").serializeArray();
+        var url = "Actions/CustomFieldAction.php?call=saveImportedFields";
+        $.get(url,$matchingFormData,function( data ){
+            showResponseDiv(data,"mainDiv");
+            l.stop();
+        });
+    }
+    function validateFieldNames(){
+        var row = $('#learnersFieldsGrid').jqxGrid('getrowdata', 0);
+		var flag = true;
+		var temp = [];
+		var hasDup = [];
+		delete row['uid'];
+        var cellclass = function (row, columnfield, value) {
+            return 'red';
+        }
+        $.each(row, function(key, value){
+			if(value == "" || value == "{FieldName}" || value == "Select Field"){
 				flag = false;
-				toastr.error(DUPLICATE_FIELD_NAME_MESSAGE + hasDup,"Field Name Error");
+				toastr.error(FIELD_NAME_MESSAGE + key + ".","Field Name Error");
+                $('#learnersFieldsGrid').jqxGrid('setcolumnproperty', key, 'cellclassname', cellclass);
+				return false;
+			}else{
+				if($.inArray(value, temp) === -1) {
+				    temp.push(value);
+				}else{
+
+					hasDup.push(value);
+				}
 			}
-			return flag;
+		});
+		if(hasDup.length > 0){
+			flag = false;
+			toastr.error(DUPLICATE_FIELD_NAME_MESSAGE + hasDup,"Field Name Error");
+		}
+		return flag;
+    }
+    function populatePrefixUserName(){
+        fieldName = $("#uSelect").val();
+        var fieldValue = $("#learnersDataGrid").jqxGrid('getcellvalue', 0, fieldName)
+        var prefix = $("#userNamePrefix").val();
+        if(fieldValue == "" || fieldValue == undefined){
+            fieldValue = "UserName";
         }
-        function populatePrefixUserName(){
-            fieldName = $("#uSelect").val();
-            var fieldValue = $("#learnersDataGrid").jqxGrid('getcellvalue', 0, fieldName)
-            var prefix = $("#userNamePrefix").val();
-            if(fieldValue == "" || fieldValue == undefined){
-                fieldValue = "UserName";
-            }
-            if(prefix == ""){
-                prefix = "prefix_"
-            }
-            var userName = prefix + fieldValue;
-            $("#prefixExample").html("Example " +  userName);
+        if(prefix == ""){
+            prefix = "prefix_"
         }
+        var userName = prefix + fieldValue;
+        $("#prefixExample").html("Example " +  userName);
+    }
 </script>
 <style type="text/css">
 #wForm .content{
@@ -412,27 +414,12 @@
 </style>
 <div class="wrapper wrapper-content animated fadeInRight">
     <?include("adminMenu.php");?>
-    <div class="row wrapper border-bottom white-bg page-heading">
-        <div class="col-lg-10">
-            <h2>Import learners</h2>
-            <ol class="breadcrumb">
-                <li>
-                    <a href="index.html">Home</a>
-                </li>
-                <li>
-                    <a>Learners</a>
-                </li>
-                <li class="active">
-                    <strong>Import Learners</strong>
-                </li>
-            </ol>
-        </div>
-    </div>
+
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h5>Create Learners Database</h5>
+                    <h5>Create New learners</h5>  importing xls file.
                 </div>
                 <div class="ibox-content">
                     <div id="wform" action="#" class="wizard-big">
@@ -456,7 +443,7 @@
                                     <div class="col-sm-8">
                                         <div class="checkbox i-checks">
                                             <label style="padding-left:0px">
-                                                <input type="checkbox" id="isfirstRowField" name="isfirstRowField"><i></i> First row contains field names 
+                                                <input type="checkbox" id="isfirstRowField" name="isfirstRowField"><i></i> First row contains field names
                                             </label>
                                         </div>
                                     </div>
@@ -482,7 +469,7 @@
                             <p>Please set Field names, Type and if is required. Also have a look at imported data from file.</p>
                             <div class="row">
                              <form id="gridForm" action="#" class="wizard-big">
-                                <fieldset>  
+                                <fieldset>
                                     <div id="learnersFieldsGrid"></div>
                                     <div id="learnersDataGrid"></div>
                                 </fieldset>
@@ -495,9 +482,9 @@
                             <h2>Match Basic fields</h2>
                             <p>From the imported data, what fields would you like to treat as username, password and email ids of learners.</p>
                             <div class="row">
-                                <form id="matchingform" class="form-horizontal wizard-big"> 
-                                    <input id="fieldData" name="fieldData" type="hidden">  
-                                    <input id="data" name="data" type="hidden">     
+                                <form id="matchingform" class="form-horizontal wizard-big">
+                                    <input id="fieldData" name="fieldData" type="hidden">
+                                    <input id="data" name="data" type="hidden">
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">Username</label>
                                         <div class="col-sm-4">
@@ -515,7 +502,7 @@
                                         <label class="col-sm-2 control-label">Password</label>
                                         <div class="col-sm-4">
                                             <select class="form-control m-b" name="password" id="pSelect">
-                                               
+
                                             </select>
                                         </div>
 
@@ -531,7 +518,7 @@
                                         <div class="col-sm-4">
                                             <div class="checkbox i-checks">
                                                  <select class="form-control m-b" name="emailId" id="eSelect">
-                                                    
+
                                                 </select>
                                             </div>
                                         </div>
@@ -540,12 +527,12 @@
                                     <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveButton" type="button">
                                         <span class="ladda-label">Save Imported Data</span>
                                     </button>
-                                    </div>                                     
+                                    </div>
                                 </form>
-                            </div> 
-                                                         
+                            </div>
+
                         </div>
-                       
+
                     </div>
 
                 </div>

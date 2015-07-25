@@ -27,7 +27,7 @@
                 </ol>
             </div>
         </div>
-        <div class="ibox-content no-padding"> 
+        <div class="ibox-content no-padding">
             <div class="summernote">
                 <h3>Enter text for Singnup form header</h3>
             </div>
@@ -36,16 +36,16 @@
             <p>You may drag and drop various field sections to maintain the sequance of registration form fields.</p>
             <form role="form"  method="post" action="Actions/SignupFormAction.php" id="SignupFieldForm" class="form-horizontal">
                 <input type="hidden" name="headerText" id="headerText"/>
-                <input type="hidden" value="saveSignupFormFields" name="call"> 
+                <input type="hidden" value="saveSignupFormFields" name="call">
                 <div class="col-lg-12" id="customFieldsBlock">
-                    
+
                 </div>
-                <div class="form-group">
-                    <div class="col-sm-offset-3 col-sm-9">
+                <div class="row">
+                    <div class="col-sm-12">
                         <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveBtn" type="button">
                         <span class="ladda-label">Save</span></button>
                         <button class="btn btn-primary ladda-button" data-style="expand-right" id="showSampleFormBtn" type="button">
-                        <span class="ladda-label">Show Sample Form</span></button>    
+                        <span class="ladda-label">Show Sample Form</span></button>
                     </div>
                 </div>
             </form>
@@ -58,13 +58,13 @@
                           </div>
                           <div class="modal-body">
                               <div class="row" >
-                                  
+
                                   <div class="col-sm-12">
                                     <div id="formHeader"></div>
                                     <form role="form" method="post" id="showSampleForm" class="form-horizontal">
-                                        <div id="showSampleBlock">                     
+                                        <div id="showSampleBlock">
                                         </div>
-                                        <div class="modal-footer">                                   
+                                        <div class="modal-footer">
                                             <button class="btn btn-primary ladda-button" data-style="expand-right" id="showSampleSaveBtn" type="button">
                                                 <span class="ladda-label">Save</span>
                                             </button>
@@ -80,29 +80,32 @@
         </div>
 </body>
 </html>
+<script src="scripts/plugins/pace/pace.min.js"></script>
+
 <script type="text/javascript">
     $(document).ready(function(){
-      
+
         loadFieldBlocks();
         $("#saveBtn").click(function(e){
             saveSignupfields(e,this);
         })
         $("#showSampleFormBtn").click(function(e){
             showSampleForm(e,this);
-        })        
+        })
         $('.summernote').summernote();
 
         $("#showSampleSaveBtn").click(function(e){
             var validationResult = function (isValid){
                 if (isValid) {
-                    alert("Success");    
+                    alert("Success");
                 }
             }
-            $('#showSampleForm').jqxValidator('validate', validationResult); 
+            $('#showSampleForm').jqxValidator('validate', validationResult);
         });
-        
-        
-          
+        //enable draggable components
+        WinMove();
+
+
     })
     var edit = function() {
             $('.click2edit').summernote({focus: true});
@@ -122,20 +125,20 @@
             })
         });
     }
-    
+
     function saveSignupfields(e,btn){
         e.preventDefault();
         $("#headerText").val($('.summernote').code());
         var l = Ladda.create(btn);
-        l.start();            
+        l.start();
         $('#SignupFieldForm').ajaxSubmit(function( data ){
             l.stop();
             showResponseNotification(data,"mainDiv","#SignupFieldForm");
-        })             
+        })
     }
-    
+
     function showSampleForm(e,btn){
-        var divs = $("#customFieldsBlock").find("div.ibox:not(div.ibox div.ibox)")        
+        var divs = $("#customFieldsBlock").find("div.ibox:not(div.ibox div.ibox)")
         var formHtml = "";
         var validationRules = [];
         $.each(divs, function(key,value){
@@ -144,7 +147,7 @@
             var show = inputs[4].checked;
             if(show){
                 var name = inputs[1].value;
-                var type = inputs[2].value; 
+                var type = inputs[2].value;
                 var required = inputs[3].checked;
                 var input =  '<div class="form-group">';
                     input += '<label class="col-sm-3 control-label">' + name + '</label>';
@@ -157,11 +160,11 @@
                formHtml += input;
                if(required){
                 var rule = { input: '#' + name, message: name + ' is required!', action: 'keyup, blur', rule: 'required'};
-                validationRules.push(rule);    
+                validationRules.push(rule);
                }
-                     
-            } 
-           
+
+            }
+
         });
         $("#formHeader").html($('.summernote').code());
         $("#showSampleBlock").html(formHtml);
@@ -170,11 +173,11 @@
             hintType: 'label',
             animationDuration: 0,
             rules:validationRules
-        }); 
-        
+        });
+
         $("#showSampleForm").on('validationSuccess', function () {
             $("#showSampleForm-iframe").fadeIn('fast');
-        }); 
+        });
     }
 
 </script>

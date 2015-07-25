@@ -1,0 +1,3 @@
+ALTER TABLE mailmessagesent RENAME TO mailmessagemails ;
+	
+	ALTER TABLE mailmessagemails ADD COLUMN `savedon` DATETIME NULL  AFTER `adminseq` , ADD COLUMN `senton` DATETIME NULL  AFTER `savedon` , ADD COLUMN `failurecounter` INT NULL  AFTER `userseq` , ADD COLUMN `failureerror` VARCHAR(1000) NULL  AFTER `failurecounter` , CHANGE COLUMN `seq` `seq` BIGINT(20) NOT NULL AUTO_INCREMENT  FIRST , CHANGE COLUMN `datetime` `adminseq` BIGINT NULL DEFAULT NULL  AFTER `userseq` , CHANGE COLUMN `messageactionid` `messageactionseq` BIGINT(20) NULL DEFAULT NULL  , CHANGE COLUMN `status` `userseq` BIGINT NULL DEFAULT NULL  ;

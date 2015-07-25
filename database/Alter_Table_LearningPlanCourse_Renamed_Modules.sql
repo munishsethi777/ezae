@@ -1,0 +1,1 @@
+ALTER TABLE learningplancourses RENAME TO  learningplanmodules ;

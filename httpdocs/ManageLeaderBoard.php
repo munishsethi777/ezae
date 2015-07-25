@@ -4,17 +4,13 @@
 <?include "ScriptsInclude.php"?>
 <script type="text/javascript">
     $(document).ready(function(){
-       // var url = 'Actions/LeaderBoardAction.php?call=getLeaderBoardsForGrid';
-//        $.get(url, function(data){
-//                loadGrid();
-//        })
-        loadGrid(); 
+        loadGrid();
     })
 
     function loadGrid(){
         var columns = [
           { text: 'id', datafield: 'id' , hidden:true},
-          { text: 'Name' , datafield: 'name', width: 250 },
+          { text: 'Name' , datafield: 'name', width: 500 },
           { text: 'Type', datafield: 'type' },
           { text: 'Modified On', datafield: 'lastmodifiedon' ,cellsformat: 'MM-dd-yyyy hh:mm:ss tt'}
         ]
@@ -61,6 +57,7 @@
         $("#jqxgrid").jqxGrid(
         {
             width: '100%',
+            height: '75%',
             source: dataAdapter,
             sortable: true,
             //showfilterrow: true,
@@ -68,7 +65,6 @@
             autoshowfiltericon: true,
             columns: columns,
             pageable: true,
-            autoheight: true,
             altrows: true,
             enabletooltips: true,
             columnsresize: true,
@@ -81,11 +77,11 @@
             {
                   return dataAdapter.records;     
             }
-            
+
         });
         
     }
-    
+
 </script>
 </head>
 <body class='default'>
@@ -96,7 +92,7 @@
             <div class="col-lg-12" >
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>Manage Learner's Profiles</h5>
+                        <h5>Manage LeaderBoards</h5>
                     </div>
                     <div class="ibox-content">
                         <div  id="jqxgrid"></div>

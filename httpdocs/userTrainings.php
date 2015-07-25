@@ -6,23 +6,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Administration - Easy Assessment Engine</title>
 <?include "ScriptsInclude.php"?>
+<style>
+.jqx-widget .jqx-grid-cell, .jqx-widget .jqx-grid-column-header, .jqx-widget .jqx-grid-group-cell{
+    border-top:none !important;
+    border-left:none !important;
+    border-right:none !important;
 
+}
+#contenttablejqxgrid > div{
+    height:50px !important;
+    line-height:20px;
+}
+.jqx-grid-header{
+    height:50px !important;
+    font-weight:500;
+
+}
+#columntablejqxgrid > div{
+    background:#F9F9F9;
+    line-height:30px;
+}
+</style>
 </head>
-
-
 <body class='default'>
-
 <div id="wrapper">
         <?include("userMenu.php");?>
         <div class="row wrapper border-bottom white-bg page-heading">
             <div class="col-sm-4">
-                <h2>Training Details</h2>
+                <h2>Trainings List</h2>
                 <ol class="breadcrumb">
                     <li>
                         <a href="index.html">Home</a>
                     </li>
                     <li class="active">
-                        <strong>Training Modules</strong>
+                        <strong>Trainings</strong>
                     </li>
                 </ol>
             </div>
@@ -34,10 +51,9 @@
                     <div class="ibox">
                         <div class="ibox-title">
                             <h5>All trainings assigned to munish</h5>
-
                         </div>
                         <div class="ibox-content">
-                            <div class="row m-b-sm m-t-sm">
+                            <!--<div class="row m-b-sm m-t-sm">
                                 <div class="col-md-1">
                                     <button type="button" id="loading-example-btn" class="btn btn-white btn-sm" ><i class="fa fa-refresh"></i> Refresh</button>
                                 </div>
@@ -45,9 +61,9 @@
                                     <div class="input-group"><input type="text" placeholder="Search" class="input-sm form-control"> <span class="input-group-btn">
                                         <button type="button" class="btn btn-sm btn-primary"> Go!</button> </span></div>
                                 </div>
-                            </div>
+                            </div> -->
 
-                            <div class="project-list">
+                            <!--<div class="project-list">
 
                                 <table class="table table-hover">
                                     <tbody>
@@ -77,7 +93,7 @@
                                             <a href=""><img alt="image" class="img-circle" src="images/modules/8.jpg"></a>
                                         </td>
                                         <td class="project-actions">
-                                            <a href="#" class="btn btn-white btn-sm"><i class="fa fa-folder"></i> View </a>
+                                            <a href="userTraining.php" class="btn btn-white btn-sm"><i class="fa fa-folder"></i> View </a>
 
                                         </td>
                                     </tr>
@@ -240,14 +256,70 @@
 
                                     </tbody>
                                 </table>
-                            </div>
+                            </div> -->
+                            <div id="jqxgrid"></div>
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-
 </div>
 </body>
 </html>
+<script>
+$(document).ready(function(){
+    loadGrid();
+})
+function loadGrid(){
+        var columns = [
+          { text: 'id', datafield: 'id' , hidden:true},
+          { text: 'Status' , datafield: 'status', width: '5%'},
+
+          { text: 'Module' , datafield: 'moduleName', width: '20%'},
+          { text: 'Learning Plan', datafield: 'learningPlanName', width: '20%'},
+          { text: 'Completing In', datafield: 'daysToComplete', width: '10%'},
+          { text: 'Scores', datafield: 'scores' },
+          { text: 'Percent', datafield: 'completionPercent' },
+          { text: 'Rank', datafield: 'leaderboardRank' },
+          { text: 'Remarks', datafield: 'inactiveRemarks' },
+          { text: 'Action', datafield: 'action' }
+        ]
+        var source =
+        {
+            datatype: "json",
+            id: 'id',
+            pagesize: 20,
+            //localData: rows,
+            datafields: [
+                { name: 'id', type: 'integer' },
+                { name: 'status', type: 'string' },
+                { name: 'moduleName', type: 'string' },
+                { name: 'learningPlanName', type: 'string' },
+                { name: 'daysToComplete', type: 'integer' },
+                { name: 'scores', type: 'string' },
+                { name: 'completionPercent', type: 'integer' },
+                { name: 'leaderboardRank', type: 'integer' },
+                { name: 'inactiveRemarks', type: 'string' },
+                { name: 'action', type: 'string' }
+            ],
+            url: 'Actions/ModuleAction.php?call=getModulesForUserTrainingGrid'
+        };
+        var dataAdapter = new $.jqx.dataAdapter(source);
+        $("#jqxgrid").jqxGrid(
+        {
+            width: '100%',
+            height: '400px',
+            source: dataAdapter,
+            filterable: true,
+            sortable: true,
+            autoshowfiltericon: true,
+            columns: columns,
+            pageable: true,
+            enabletooltips: true,
+            columnsresize: true,
+            columnsreorder: true
+        });
+    }
+
+</script>

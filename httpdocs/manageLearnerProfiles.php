@@ -67,9 +67,9 @@
     function loadGrid(){
         var columns = [
           { text: 'id', datafield: 'id' , hidden:true},
-          { text: 'Profile Name' , datafield: 'tag', width: 250 },
-          { text: 'Description', datafield: 'description' },
-          { text: 'Icon', datafield: 'awesomefontid' },
+          { text: 'Profile Name' , datafield: 'tag', width: '20%'},
+          { text: 'Description', datafield: 'description', width: '40%'},
+          { text: 'Icon', datafield: 'awesomefontid', width: '10%'},
           { text: 'Modified On', datafield: 'lastmodifiedon' ,cellsformat: 'MM-dd-yyyy hh:mm:ss tt' }
         ]
        // var rows = Array();
@@ -105,13 +105,13 @@
         $("#jqxgrid").jqxGrid(
         {
             width: '100%',
+            height: '75%',
             source: dataAdapter,
             filterable: true,
             sortable: true,
             autoshowfiltericon: true,
             columns: columns,
             pageable: true,
-            autoheight: true,
             altrows: true,
             enabletooltips: true,
             columnsresize: true,
@@ -181,22 +181,6 @@
 <body class='default'>
     <div id="wrapper">
         <?include("adminMenu.php");?>
-        <div class="row wrapper border-bottom white-bg page-heading">
-            <div class="col-lg-10">
-                <h2>Manage Learner's Profiles</h2>
-                <ol class="breadcrumb">
-                    <li>
-                        <a href="index.html">Home</a>
-                    </li>
-                    <li>
-                        <a>Learners</a>
-                    </li>
-                    <li class="active">
-                        <strong>Manage Learner's Profile</strong>
-                    </li>
-                </ol>
-            </div>
-        </div>
         <div class="adminSingup animated fadeInRight">
         <div class="row">
             <div class="col-lg-12" >

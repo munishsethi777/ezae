@@ -24,7 +24,7 @@
             $("#saveBtn").click(function(e){
                 ValidateAndSave(e,this);
             });
-            
+
             $("#setProfileBtn").click(function(e){
                 var btn = this
                 var validationResult = function (isValid) {
@@ -34,32 +34,32 @@
                 }
                 $('#setProfileForm').jqxValidator('validate', validationResult);
             });
-             
+
             $("#saveNewBtn").click(function(e){
-                ValidateAndSave(e,this); 
+                ValidateAndSave(e,this);
             });
             $("#isMakeChange").change(function(e){
                 var isChecked = this.checked;
                 if(isChecked){
-                    toggleForm(false);     
+                    toggleForm(false);
                 }else{
-                    toggleForm(true); 
-                } 
+                    toggleForm(true);
+                }
             });
             //$('input[type="checkbox"][name="isChangePassword"]').on('ifChecked', function(event){
 //                alert(event.type + ' callback');
 //            });
         });
-        
+
         function populateDropdown(profiles){
-            var options = ""; 
+            var options = "";
             $.each(profiles, function(key, value){
                 options += "<option value='" + value.id + "'>" + value.tag + "</option>";
-                $("#profileSelect").html(options);  
+                $("#profileSelect").html(options);
             })
             $(".chosen-select").chosen({width:"100%"});
         }
-        
+
         function ValidateAndSave(e,btn){
             var validationResult = function (isValid) {
                 if (isValid) {
@@ -68,13 +68,13 @@
             }
             $('#customFieldForm').jqxValidator('validate', validationResult);
         }
-        
+
         function toggleForm(disabled){
             $('#username').prop('readonly',disabled);
             $('#password').prop('readonly',disabled);
             $('#emailid').prop('readonly',disabled);
         }
-        
+
         function loadFormFields(){
             var url = 'ajaxAdminMgr.php?call=getLearnersCustomFieldForm';
             $.get(url, function(data){
@@ -84,7 +84,7 @@
                 });
             });
         }
-        
+
         function loadGrid(data){
             var columns = Array();
             var rows = Array();
@@ -123,14 +123,13 @@
             $("#learnersGrid").jqxGrid(
             {
                 width: '100%',
-                height: 400,
+                height: '75%',
                 source: dataAdapter,
                 filterable: true,
                 sortable: true,
                 autoshowfiltericon: true,
                 columns: columns,
                 pageable: true,
-                autoheight: true,
                 altrows: true,
                 enabletooltips: true,
                 columnsresize: true,
@@ -155,7 +154,7 @@
                     container.append(addButton);
                     container.append(editButton);
                     container.append(deleteButton);
-                    container.append(setProfile);   
+                    container.append(setProfile);
                     container.append(exportButton);
                     container.append(reloadButton);
                     statusbar.append(container);
@@ -170,7 +169,7 @@
                         $("#saveNewBtnDiv").show();
                         $("#msgDiv").hide();
                         $("#errorDiv").hide();
-                        $("#id").val("0");  
+                        $("#id").val("0");
                         $("#customFieldForm")[0].reset();
                         $('#changePasswordChkDiv').hide();
                         $("#passwordDiv").show();
@@ -185,7 +184,7 @@
                             var dataRow = $("#learnersGrid").jqxGrid('getrowdata', value);
                             names.push(dataRow.username);
                         });
-                        $("#learnerNamesDiv").html(names.join()); 
+                        $("#learnerNamesDiv").html(names.join());
                         $('#setProfileModelForm').modal('show');
                     });
                     // delete selected row.
@@ -194,18 +193,18 @@
 //                        var rowscount = $("#learnersGrid").jqxGrid('getdatainformation').rowscount;
 //                        var id = $("#learnersGrid").jqxGrid('getrowid', selectedrowindex);
 //                        $("#learnersGrid").jqxGrid('deleterow', id);
-                        deleteRows("learnersGrid","Actions/LearnerAction.php?call=deleteLearners");     
+                        deleteRows("learnersGrid","Actions/LearnerAction.php?call=deleteLearners");
                     });
                     // edit grid data.
                     editButton.click(function (event) {
                         $("#saveNewBtnDiv").hide();
                         $("#msgDiv").hide();
                         $("#errorDiv").hide();
-                        $("#customFieldForm")[0].reset();  
+                        $("#customFieldForm")[0].reset();
                         var selectedrowindex = $("#learnersGrid").jqxGrid('selectedrowindexes');
                         if(selectedrowindex.length != 1){
                              bootbox.alert("Please Select single row for edit.", function() {});
-                             return;    
+                             return;
                         }
                         var row = $('#learnersGrid').jqxGrid('getrowdata', selectedrowindex);
                         $("#id").val(row.id);
@@ -216,7 +215,7 @@
                             }
                         });
                         $('#changePasswordChkDiv').show();
-                        $("#passwordDiv").hide();  
+                        $("#passwordDiv").hide();
                         $('#createNewModalForm').modal('show');
                     });
                     // reload grid data.
@@ -233,15 +232,15 @@
             var l = Ladda.create(btn);
             l.start();
             var ids = [];
-            //alert($("#profileSelect option:selected").text()); 
+            //alert($("#profileSelect option:selected").text());
            var selctedValues =  $.map($("#profileSelect_chosen").find(".search-choice span"), function (option) {
                                     return $(option).text()
                                     });
             var selectedIndexes  = $("#learnersGrid").jqxGrid('selectedrowindexes');
             $.each(selectedIndexes,function(key,value) {
-                ids.push($("#learnersGrid").jqxGrid('getrowid',value)); 
+                ids.push($("#learnersGrid").jqxGrid('getrowid',value));
             })
-            $("#ids").val(ids);          
+            $("#ids").val(ids);
             $('#setProfileForm').ajaxSubmit(function( data ){
                    l.stop();
                    var obj = $.parseJSON(data);
@@ -255,17 +254,17 @@
                                 if(profile != ""){
                                     profile += "," + selctedValues;
                                     val = profile;
-                                }    
-                            } 
-                            $("#learnersGrid").jqxGrid('setcellvalue', value, "profiles", val); 
-                        });        
-                    }             
-             })             
+                                }
+                            }
+                            $("#learnersGrid").jqxGrid('setcellvalue', value, "profiles", val);
+                        });
+                    }
+             })
         }
         function saveLearners(e,btn){
             e.preventDefault();
             var l = Ladda.create(btn);
-            l.start();            
+            l.start();
              $('#customFieldForm').ajaxSubmit(function( data ){
                   l.stop();
                   var obj = $.parseJSON(data);
@@ -279,14 +278,14 @@
                      $("#learnersGrid").jqxGrid('addrow', null, dataRow);
                    }
                   if(btn.id == "saveBtn"){
-                     showResponseToastr(data,"createNewModalForm","customFieldForm","mainDiv"); 
+                     showResponseToastr(data,"createNewModalForm","customFieldForm","mainDiv");
                   }else{
                      showResponseNotification(data,"mainDiv","customFieldForm");
                   }
-                 $("#learnersGrid").jqxGrid('clearselection');              
-             })             
+                 $("#learnersGrid").jqxGrid('clearselection');
+             })
         }
-        
+
         function fillFormData(input){
             if(mathingRule != ""){
                var name = input.name;
@@ -294,25 +293,25 @@
                prefix = "cus_";
                var userNameField = prefix + mathingRule.usernamefield;
                var emailField = prefix + mathingRule.emailfield;
-               var passwordField = prefix + mathingRule.passwordfield;    
+               var passwordField = prefix + mathingRule.passwordfield;
                if(userNameField.trim() ==  name){
-                    $("#username").val(value);         
-               }             
+                    $("#username").val(value);
+               }
                if(emailField.trim() ==  name){
-                    $("#emailid").val(value);         
+                    $("#emailid").val(value);
                }
                if(passwordField.trim() ==  name){
-                    $("#password").val(value);         
-               }         
+                    $("#password").val(value);
+               }
             }
         }
-        
+
         function getMatchingRule(){
             $.getJSON("Actions/CustomFieldAction.php?call=getMatchingRule", function(data){
                 if(data != ""){
-                    mathingRule = $.parseJSON(data);                    
+                    mathingRule = $.parseJSON(data);
                 }
-            }) 
+            })
         }
 </script>
 
@@ -320,22 +319,7 @@
 <body class='default'>
 <div class="wrapper wrapper-content animated fadeInRight">
     <?include("adminMenu.php");?>
-    <div class="row wrapper border-bottom white-bg page-heading">
-        <div class="col-lg-10">
-            <h2>Manage learners</h2>
-            <ol class="breadcrumb">
-                <li>
-                    <a href="index.html">Home</a>
-                </li>
-                <li>
-                    <a>Learners</a>
-                </li>
-                <li class="active">
-                    <strong>Manage Learners</strong>
-                </li>
-            </ol>
-        </div>
-    </div>
+
     <div class="wrapper wrapper-content">
         <div class="row">
             <div class="col-lg-12">
@@ -364,40 +348,40 @@
                         <div class="col-sm-12">
                             <form role="form" method="post" action="Actions/LearnerAction.php" id="customFieldForm" class="form-horizontal">
                                 <input type="hidden" value="saveLearners" name="call">
-                                <input type="hidden" value="createdDate" name="createdDate">  
+                                <input type="hidden" value="createdDate" name="createdDate">
                                 <input type="hidden" id="id" name="id" value="0">
                                 <div id="msgDiv" class="alert alert-success alert-dismissable" style="display:none;"></div>
                                 <div id="errorDiv" class="alert alert-danger alert-dismissable" style="display:none;"></div>
-                               
+
                                 <h4 class="modal-title">Learner Details</h4>
                                 <div id="formFieldsDiv"></div>
-                                
+
                                  <div class="hr-line-dashed"></div>
                                 <div class="form-group">
                                     <label> <input name="isMakeChange" id="isMakeChange" type="checkbox"> Make Change </label>
-                                </div>                                    
+                                </div>
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">User Name</label>
                                     <div class="col-sm-9">
                                         <input type="text" id="username" name="username" placeholder="User Name" class="form-control">
                                     </div>
                                 </div>
-                                
+
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Password</label>
                                     <div class="col-sm-9">
                                         <input type="text" id="password" name="password" Placeholder="Password"  class="form-control">
                                     </div>
                                 </div>
-                               
-                                
+
+
                                  <div class="form-group">
                                     <label class="col-sm-3 control-label">Email</label>
                                     <div class="col-sm-9">
                                         <input type="text" id="emailid" name="emailid" Placeholder="example@mail.com"  class="form-control">
                                     </div>
                                 </div>
-                                <div class="modal-footer">                                   
+                                <div class="modal-footer">
                                      <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveBtn" type="button">
                                         <span class="ladda-label">Save</span>
                                     </button>
@@ -416,4 +400,4 @@
 </div>
 </body>
 </html>
- <script src="scripts/FormValidators/ManageLearnersValidations.js"></script> 
+ <script src="scripts/FormValidators/ManageLearnersValidations.js"></script>
