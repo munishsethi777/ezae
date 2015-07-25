@@ -1,6 +1,7 @@
 <?php
 require_once("MainDB.php5");
 require_once($ConstantsArray['dbServerUrl'] ."log4php/Logger.php");
+require_once($ConstantsArray['dbServerUrl'] ."Utils/FilterUtil.php");
 Logger::configure($ConstantsArray['dbServerUrl'] ."log4php/log4php.xml");
 class BeanDataStore {
 
@@ -83,20 +84,28 @@ class BeanDataStore {
         return $id;
     }
 
-    function findAll(){
+    function findAll($isApplyFilter = false){
        $db = MainDB::getInstance();
        $conn = $db->getConnection();
-       $STH = $conn->prepare("select * from " . $this->tableName);
+       $sql = "select * from " . $this->tableName;
+       if($isApplyFilter){
+          $sql = FilterUtil::applyFilter($sql);    
+       }       
+       $STH = $conn->prepare($sql);
        $STH->execute();
        $objList = $STH->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $this->className);
        $this->throwException($STH->errorInfo());
        return $objList ;
     }
-
-    function findAllByCompany(){
+    
+    function findAllByCompany($isApplyFilter = false){
+        $sql  = "select * from " . $this->tableName ." where companyseq =". $this->companySeq;
+        if($isApplyFilter){
+            $sql = FilterUtil::applyFilter($sql);    
+        }
         $db = MainDB::getInstance();
-        $conn = $db->getConnection();
-        $STH = $conn->prepare("select * from " . $this->tableName ." where companyseq =". $this->companySeq);
+        $conn = $db->getConnection();        
+        $STH = $conn->prepare($sql);
         $STH->execute();
         $objList = $STH->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $this->className);
         $this->throwException($STH->errorInfo());
@@ -141,16 +150,19 @@ class BeanDataStore {
         $STH->execute();
         $this->throwException($STH->errorInfo());
     }
-    public function executeConditionQuery($colValuePair){
+    public function executeConditionQuery($colValuePair,$isApplyFilter = false){
         $query_array = array();
         foreach ($colValuePair as $key => $value){
             $query_array[] = $key.' = '. "'" . $value . "'";
         }
         $query = "SELECT * FROM " .  $this->tableName;
+        
         if(count($query_array) > 0){
             $query .= " WHERE " .implode(" AND ", $query_array);
         }
-
+        if($isApplyFilter){
+           $query = FilterUtil::applyFilter($query);
+        }
         $db = MainDB::getInstance();
         $conn = $db->getConnection();
         $STH = $conn->prepare($query);
@@ -193,14 +205,17 @@ class BeanDataStore {
         $this->throwException($STH->errorInfo());
     }
     
-    public function executeCountQuery($colValuePair = null){
-        foreach ($colValuePair as $key => $value){
-            $query_array[] = $key.' = '. "'" . $value . "'";
-        }
+    public function executeCountQuery($colValuePair = null,$isApplyFilter = false){
         $query = "SELECT count(*) FROM " .  $this->tableName;
         if($colValuePair != null){
+            foreach ($colValuePair as $key => $value){
+                $query_array[] = $key.' = '. "'" . $value . "'";
+            }
             $query .= " WHERE " .implode(" AND ", $query_array);
         }
+        if($isApplyFilter){
+            $query = FilterUtil::applyFilter($query,false);    
+        }        
         $db = MainDB::getInstance();
         $conn = $db->getConnection();
         $STH = $conn->prepare($query);
@@ -211,10 +226,13 @@ class BeanDataStore {
         return $count;
     }
 
-    public function executeQuery($query){
+    public function executeQuery($query,$isApplyFilter = false){
         $db = MainDB::getInstance();
         $conn = $db->getConnection();
         $sth = $conn->prepare($query);
+        if($isApplyFilter){
+            $query = FilterUtil::applyFilter($query);    
+        } 
         $sth->execute();
         $this->throwException($sth->errorInfo());
          //$objList = $sth->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $this->className);
@@ -222,14 +240,17 @@ class BeanDataStore {
          return $objList;
     }
 
-    public function executeAttributeQuery($attributes,$colValuePair){
+    public function executeAttributeQuery($attributes,$colValuePair,$isApplyFilter = false){
        foreach ($colValuePair as $key => $value)
        {
         if ($value != '')
         { $query_array[] = $key.' = '. "'" . $value . "'";}
         }
-      $columns = implode(", " , $attributes);
-      $query = "SELECT " . $columns . " FROM " .  $this->tableName . " WHERE " .implode(" AND ", $query_array);
+       $columns = implode(", " , $attributes);
+       $query = "SELECT " . $columns . " FROM " .  $this->tableName . " WHERE " .implode(" AND ", $query_array);
+       if($isApplyFilter){
+            $query = FilterUtil::applyFilter($query,false);    
+       } 
       $db = MainDB::getInstance();
       $conn = $db->getConnection();
       $sth = $conn->prepare($query);

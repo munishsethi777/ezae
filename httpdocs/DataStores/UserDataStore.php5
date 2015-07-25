@@ -1,6 +1,7 @@
 <?php
  require_once("BeanDataStore.php5");
  require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/User.php");
+ require_once($ConstantsArray['dbServerUrl']. "Utils/LearnerFilterUtil.php");
 
  class UserDataStore extends BeanDataStore{
 
@@ -25,11 +26,13 @@
         return null;
     }
 
-     public function findByCompany($companySeq){
+     public function findByCompany($companySeq,$isApplyFilter){
         $colValuePair = array();
         /*'companyseq' is columnName*/
         $colValuePair["companyseq"] = $companySeq;
-        $userList = self::executeConditionQuery($colValuePair);
+        $sql = "select * from users where companyseq = $companySeq";
+        $sql = LearnerFilterUtil::applyFilter($sql,false);
+        $userList = self::executeQuery($sql);
         return $userList;
     }
 
