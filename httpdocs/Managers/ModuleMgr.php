@@ -119,7 +119,7 @@ class ModuleMgr{
             $arr['leaderboardRank'] =  0;
             $arr["inactiveRemarks"] =  "No Remarks";
             $arr["scores"] =  120;
-            $arr["action"] = '<a href="userTraining.php" class="btn btn-white btn-sm"><i class="fa fa-folder"></i> View </a>';
+            $arr["action"] = '<a href="userTraining.php?id='.$arr['id'].'&lpid='. $value['learningplanseq'] .'" class="btn btn-white btn-sm"><i class="fa fa-folder"></i> View </a>';
             array_push($mainArr,$arr);
         }
         return json_encode($mainArr);

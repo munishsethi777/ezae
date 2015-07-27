@@ -33,13 +33,14 @@ class ActivityDataStore extends BeanDataStore{
     }
 
     public function saveActivityData(Activity $activity){
-        $sql = "INSERT INTO activities (moduleseq,userseq,iscompleted,progress,score,dateofplay) VALUES (";
+        $sql = "INSERT INTO activities (moduleseq,userseq,iscompleted,progress,score,dateofplay,learningplanseq) VALUES (";
         $sql .= $activity->getModuleSeq() .",";
         $sql .= $activity->getUserSeq() .",";
         $sql .= $activity->getIsCompleted() .",";
         $sql .= $activity->getProgress() .",";
         $sql .= $activity->getScore() .",'";
-        $sql .= $activity->getDateOfPlay()->format('Y-m-d H:i:s') ."')";
+        $sql .= $activity->getDateOfPlay()->format('Y-m-d H:i:s') ."',";
+        $sql .= $activity->getLearningPlanSeq() .")";
         $sql .= " ON DUPLICATE KEY UPDATE progress=".$activity->getProgress();
         $sql .= ", score=".$activity->getScore();
         $sql .= ", iscompleted=".$activity->getIsCompleted();

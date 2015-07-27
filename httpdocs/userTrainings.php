@@ -311,14 +311,14 @@ function loadGrid(){
             width: '100%',
             height: '400px',
             source: dataAdapter,
-            filterable: true,
-            sortable: true,
-            autoshowfiltericon: true,
+            //filterable: true,
+            //sortable: true,
+            //autoshowfiltericon: true,
             columns: columns,
             pageable: true,
-            enabletooltips: true,
+            //enabletooltips: true,
             columnsresize: true,
-            columnsreorder: true
+            //columnsreorder: true
         });
     }
 

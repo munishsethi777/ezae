@@ -61,13 +61,13 @@
                   <div class="form-group">
                     <label for="inputEmail3" class="col-sm-3 control-label">Username</label>
                     <div class="col-sm-9">
-                      <input type="text" name="username" class="form-control input-lg" id="usernameInput" value="87035">
+                      <input type="text" name="username" class="form-control input-lg" id="usernameInput" value="munish">
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="inputPassword3" class="col-sm-3 control-label">Password</label>
                     <div class="col-sm-9">
-                      <input type="password" name="password" class="form-control input-lg" id="passwordInput" value="2212005">
+                      <input type="password" name="password" class="form-control input-lg" id="passwordInput" value="a">
                     </div>
                   </div>
 

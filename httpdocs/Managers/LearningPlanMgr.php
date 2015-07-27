@@ -51,7 +51,7 @@
             return $id;
         }
 
-       
+
         public function getLearningPlanByCompany($isApplyFilter = false){
             $learningPlans = self::$dataStore->findAllByCompany($isApplyFilter);
             return $learningPlans;
@@ -63,7 +63,7 @@
             $gridData["TotalRows"] = self::$dataStore->executeCountQuery(null,$isApplyFilter);
             return json_encode($gridData);
 
-
+        }
         public static function geLearningPlanDataJson($learningPlans){
             $fullArr = array();
             foreach($learningPlans as $learningPlan){
