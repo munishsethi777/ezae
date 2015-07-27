@@ -37,15 +37,20 @@ if($call == "getLearningPlanModulesForGrid"){
         $success = 0;
         $message  = $e->getMessage();
     }
-    echo $data;  
+    echo $data;
 }
+
 if($call == "getModulesBySelectedLearningPlan"){
-    try{       
+    try{
         $moduleMgr = ModuleMgr::getInstance();
         $ids =  $_GET["ids"];
         if(isset($ids) && !empty($ids)){
-            $data = $moduleMgr->getModulesByLearningPlans($ids);    
+            $data = $moduleMgr->getModulesByLearningPlans($ids);
         }
+    }catch(Exception $e){
+        $success = 0;
+        $message  = $e->getMessage();
+    }
     echo $data;
 }
 
@@ -62,7 +67,7 @@ if($call == "getModulesForUserTrainingGrid"){
         $success = 0;
         $message  = $e->getMessage();
     }
-    echo $data;  
+    echo $data;
 }
 ?>
 
