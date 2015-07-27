@@ -6,7 +6,7 @@
         private static $adminSeq;
         private static $companySeq;
         private static $sessionUtil;
-
+        
 
         public static function getInstance()
         {
@@ -75,7 +75,7 @@
         public static function getCoursesIdBylearnigPlanSeq($learningPlanSeq){
              $colValuePair["learningplanseq"] =  $learningPlanSeq;
              $attributes[0] = "courseseq";
-             $learningPlanModules = self::$lpModuledataStore->executeAttributeQuery($attributes,$colValuePair);
+             $learningPlanModules = self::$lpCoursedataStore->executeAttributeQuery($attributes,$colValuePair);
              $ids = array();
              foreach($learningPlanModules as $key=>$value){
                 array_push($ids,$value[0]);

@@ -32,6 +32,67 @@ class ActivityMgr{
         }
         $ads->saveActivityData($activity);
     }
+    
+    
+     public function getCompletionCounts($moduleId){
+       $ads = ActivityDataStore::getInstance();
+       return $ads->getCompletionCounts($moduleId);
+    }
+    public function getUserPerformance($userSeq){
+        $ads = ActivityDataStore::getInstance();
+       return $ads->findByUser($userSeq);
+    }
+    //called for main chart on performance UI
+    public function getPerformanceData($moduleId,$maxScore){
+        $ads = ActivityDataStore::getInstance();
+        $arr = $ads->getScorePercentage($moduleId);
+        return $arr;
+    }
+
+    //returns customFieldsValues Array from csv data
+    public static function getCustomValuesArray($lines){
+        $mainLineArray = explode(';', $lines);
+        $mainArray = array();
+        $prefix = "cus_";
+        foreach($mainLineArray as $line){
+            if($line != "") {
+                $nameValueArray = explode(':', $line);
+                $val = $nameValueArray[1];
+                $mainArray[trim("cus_".$nameValueArray[0])] =  $val;    
+            }
+            
+        }
+        return $mainArray;
+
+    }
+
+    //called from AdminMgr for performance page table MMM
+    public static function getMeanMedianModePassPercentForPerformance($moduleSeq){
+        $ads = ActivityDataStore::getInstance();
+        $data = $ads->getScorePercentage($moduleSeq);
+        $arr = array();
+        foreach($data as $item){
+            array_push($arr, $item[0]);
+        }
+        $mainArray = array();
+        $count = count($arr);
+        $sum = array_sum($arr);
+        $avg = $sum / $count;
+        $avg = round($avg);
+
+        rsort($arr);
+        $middle = round($count/2);
+        $median = $arr[$middle-1];
+
+        $v = array_count_values($arr);
+        arsort($v);
+        foreach($v as $k => $v){$mode = $k; break;}
+
+        $mainArray['mean'] = round($avg,2);
+        $mainArray['median'] = round($median,2);
+        $mainArray['mode'] = round($mode,2);
+        return json_encode($mainArray);
+    }
 
 }
 ?>
