@@ -92,9 +92,9 @@
         if ($filterscount > 0)
         {
             if (strpos(strtolower ($query),'where') !== false) {
-                $where = " AND (";
+                $where = " AND ";
             }else{
-                 $where = " WHERE (";    
+                 $where = " WHERE ";    
             }
             $tmpdatafield = "";
             $tmpfilteroperator = "";
@@ -120,7 +120,7 @@
                 }
                 else if ($tmpdatafield <> $filterdatafield)
                 {
-                    $where .= ")AND(";
+                    $where .= "AND";
                 }
                 else if ($tmpdatafield == $filterdatafield)
                 {
@@ -192,10 +192,10 @@
                         break;
                 }
                                 
-                if ($i == $filterscount - 1)
-                {
-                    $where .= ")";
-                }
+//                if ($i == $filterscount - 1)
+//                {
+//                    $where .= ")";
+//                }
                 
                 $tmpfilteroperator = $filteroperator;
                 $tmpdatafield = $filterdatafield;            
