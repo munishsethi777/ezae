@@ -6,7 +6,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Administration - Easy Assessment Engine</title>
 <?include "ScriptsInclude.php"?>
-
+<?
+    $learningPlanSeq = $_GET['lpid'];
+?>
+<script language="javascript">
+    var learningPlanSeq = "<?echo $learningPlanSeq;?>";;
+</script>
 </head>
 
 

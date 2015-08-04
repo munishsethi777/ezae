@@ -55,6 +55,9 @@ if(!file_exists ($path)){
         $createMessage = "active";
     }elseif($page == "notifications.php"){
         $notificaitons = "active";
+    }elseif($page == "adminManagers.php"){
+        $company = "active";
+        $adminManagers = "active";
     }
 
 ?>
@@ -130,12 +133,12 @@ if(!file_exists ($path)){
                     <li class="<?=$notifications?>">
                         <a href="widgets.html"><i class="fa fa-bell-o"></i> <span class="nav-label">Notifications</span> </a>
                     </li>
-                    <li class="<?=$notifications?>">
+                    <li class="<?=$company?>">
                         <a href="#"><i class="fa fa-life-ring"></i> <span class="nav-label">Company</span><span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <li><a href="form_basic.html">Company Profile</a></li>
                             <li><a href="form_advanced.html">Administrators</a></li>
-                            <li><a href="form_wizard.html">Managers</a></li>
+                            <li class="<?=$adminManagers?>"><a href="adminManagers.php">Managers</a></li>
                         </ul>
                     </li>
                 </ul>
