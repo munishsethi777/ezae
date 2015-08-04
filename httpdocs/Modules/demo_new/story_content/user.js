@@ -14,7 +14,8 @@ function Script1()
     var moduleId= "1";
     var progress= player.GetVar("Progress");
     var score=player.GetVar("Score");
-    saveScores(moduleId, progress, score, 1);
+    var learningPlan = parent.learningPlanSeq;
+    saveScores(moduleId, progress, score, learningPlan);
 }
 function saveScores(moduleId, progress, score,learningPlanSeq){
     var url = "http://localhost:8080/Actions/ActivityAction.php?call=saveActivityData&moduleId="+moduleId+"&progress="+progress+"&score="+score +"&lpid="+learningPlanSeq;
