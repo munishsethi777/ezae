@@ -207,7 +207,8 @@ if(isset($_POST["sendOnDate"]) && $_POST["sendOnDate"] != ""){
          CKEDITOR.replace( 'editor', {
             extraPlugins: 'placeholder'
         });
-         CKEDITOR.instances.editor.setData('test');
+         <?$messageText = str_replace("\r\n", "\\r\\n",$messageText)?>
+         CKEDITOR.instances.editor.setData("<?echo $messageText?>")
           var dateToday = new Date();
          $('#sendDate').datetimepicker({step:5,format:"m/d/Y h:i A",minDate: 0});
          $( 'input[name="actOption"]:radio' ).change(function(){
