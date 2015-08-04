@@ -26,13 +26,14 @@
                         </div>
                         <div class="ibox-content">
                            <?
-                                $moduleSeq = $_POST['id'];
-                                $learningPlanSeq = $_POST['lpid'];
-                                $userSeq = $session->getUserLoggedInSeq();
+                                $learningPlanSeq = 0;
+                                if(isset($_POST['lpid'])){
+                                    $learningPlanSeq = $_POST['lpid'];    
+                                }
+                                
                             ?>
                             <script language="javascript">
                                 $(function() {
-                                    var userSeq = "<?echo $userSeq;?>";
                                     var learningPlanSeq = "<?echo $learningPlanSeq;?>";
                                     var loc = window.location.toString(),
                                     params = loc.split('?')[1],
