@@ -25,17 +25,28 @@ $('#createMessageForm').jqxValidator({
 $("#createMessageForm").on('validationSuccess', function () {
     $("#createMessageForm-iframe").fadeIn('fast');
 });
+
 function requiredLearningPlan(input){
     if(input[0].selectedOptions.length > 0){
         $("#lpError").text("");
         $(".hilight").removeClass("hilight");
         $("#lpError").text("");
         return true;           
-    }    
-    $("#learningPlanDD_chosen").addClass("hilight");
-    $("#lpError").text("Select atleast one learning plan!");
-    return false;
+    }  
+    var val = $("input:radio[name='actOption']:checked").val();
+    if(val != "onEnrollment"){
+        $("#learningPlanDD_chosen").addClass("hilight");
+        $("#lpError").text("Select atleast one learning plan!");
+        return false;    
+    }else{
+         $("#lpError").text("");
+        $(".hilight").removeClass("hilight");
+        $("#lpError").text("");
+         return true;
+    }
+   
 }
+
 function requiredModule(input){
     var val = $("input:radio[name='actOption']:checked").val();
     if(val != "onParticulerDate"){
@@ -46,7 +57,7 @@ function requiredModule(input){
             return true;           
         }    
         $("#moduleDD_chosen").addClass("hilight");
-        $("#moduleError").text("Select atleast one learning plan!");
+        $("#moduleError").text("Select atleast one Module!");
         return false;
     }
     return true;
