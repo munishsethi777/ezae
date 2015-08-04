@@ -191,6 +191,18 @@ class UserMgr{
         $profiles = implode(", " ,$profiles);
         return $profiles;
     }
+    public function getUserLearningProfileByProfileSeq($profileSeqs){
+        $userLearningProfileDataStore = new BeanDataStore("UserLearningProfile","userlearningprofiles");
+        $params["tagseq"] = $profileSeqs;
+        $profile = $userLearningProfileDataStore->executeConditionQuery($params);
+        return $profile;
+    }
+    
+    public function getUserLearningProfileByLearningPlan($learningPlanSeq){
+        $userDataStore = UserDataStore::getInstance();
+        $profilesArr = $userDataStore->getUserLearningProfilesByLearnigPlan($learningPlanSeq);
+        return $profilesArr;
+    }
     
     public function isPasswordExist($password){
         $userDataStore = UserDataStore::getInstance();
@@ -217,6 +229,12 @@ class UserMgr{
         $userDataStore = UserDataStore::getInstance();
         $customFieldString = $userDataStore->findCustomfield($seq);
         return $customFieldString; 
+    }
+    
+     public function findBySeq($seq){
+        $userDataStore = UserDataStore::getInstance();
+        $user = $userDataStore->findBySeq($seq);
+        return $user; 
     }
 }
 

@@ -1,16 +1,18 @@
 <?php
 require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/Activity.php");
 require_once($ConstantsArray['dbServerUrl']. "DataStores/ActivityDataStore.php5");
+require_once($ConstantsArray['dbServerUrl']. "Utils/MailMessageUtil.php");
 
 class ActivityMgr{
 
     private static $activityMgr;
-
+    private static $mailMessageMgr;
     public static function getInstance()
     {
         if (!self::$activityMgr)
         {
             self::$activityMgr = new ActivityMgr();
+            self::$mailMessageMgr = new MailMessageMgr();
             return self::$activityMgr;
         }
         return self::$activityMgr;
@@ -20,19 +22,22 @@ class ActivityMgr{
         $ads = ActivityDataStore::getInstance();
         $activity = new Activity();
         $activity->setDateOfPlay(new DateTime());
-        $activity->setModuleSeq($moduleId);
+        $activity->setModuleSeq($learningPlanSeq);
         $activity->setProgress($progres);
         $activity->setScore($score);
         $activity->setUserSeq($userSeq);
         $activity->setIsCompleted(0);
         $activity->setLearningPlanSeq($learningPlanSeq);
-
         if($progres == 100 || $progres == "100"){
             $activity->setIsCompleted(1);
+            $mailMessageMailUtils = MailMessageUtil::getInstance();
+            $mailMessageMailUtils->checkForModuleOnMarksNotification($learningPlanSeq,$moduleId,$score,$userSeq);
+            $mailMessageMailUtils->checkForModuleCompletedNotification($learningPlanSeq,$moduleId,$score,$userSeq);
         }
         $ads->saveActivityData($activity);
+        
     }
-    
+     
     
      public function getCompletionCounts($moduleId){
        $ads = ActivityDataStore::getInstance();

@@ -60,6 +60,11 @@ class ModuleMgr{
         $mainJsonArray["data"] = $moduleJson;
         return json_encode($mainJsonArray);
     }
+    public function getModulesJSON($companySeq){
+        $modules =  $this->getModulesByCompany($companySeq);
+        $moduleJson = self::getModulesDataJson($modules);
+        return $moduleJson;
+    }
 
     public function getModulesForGrid($companySeq){
         $modules =  $this->getModulesByCompany($companySeq);
@@ -173,7 +178,18 @@ class ModuleMgr{
         $module = $moduleDataStore->findBySeq($moduleSeq);
         return $module;
     }
-
+    
+    public function getMaxScore($moduleSeq){
+        $attributes[0] = "maxscore";
+        $colValuearr["seq"] = $moduleSeq;
+        $moduleDataStore = ModuleDataStore::getInstance();
+        $maxScore = $moduleDataStore->executeAttributeQuery($attributes,$colValuearr);
+        if(is_array($maxScore) && count($maxScore) > 0){
+            $maxScore = $maxScore[0][0];            
+        }
+        return $maxScore;
+    }
+    
     //API for users login to display modules with user's performance
     public function getModulesForLoggedInUserWithPerformance(){
         $sessionUtil = SessionUtil::getInstance();

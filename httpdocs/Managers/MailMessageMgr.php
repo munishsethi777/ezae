@@ -1,4 +1,8 @@
 <?php
+    require_once($ConstantsArray['dbServerUrl'] ."DataStores/MailMessageDataStore.php");
+     require_once($ConstantsArray['dbServerUrl'] ."DataStores/MailMessageActionDataStore.php");
+      require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/MailMessageLearningProfile.php");
+
   class MailMessageMgr{
     private static $mailMessageMgr;
     private static $dataStore;
@@ -14,7 +18,7 @@
         {
             self::$mailMessageMgr = new MailMessageMgr();
             self::$dataStore = new MailMessageDataStore(MailMessage::$className,MailMessage::$tableName);
-            self::$mailMessageActionDataStore  = new BeanDataStore(MailAction::$className,MailAction::$tableName);
+            self::$mailMessageActionDataStore  = new MailMessageActionDataStore(MailAction::$className,MailAction::$tableName);
             self::$mailMessageLearningProfileDataStore = new BeanDataStore(MailMessageLearningProfile::$className,MailMessageLearningProfile::$tableName);
             self::$sessionUtil = SessionUtil::getInstance();   
             self::$adminSeq = self::$sessionUtil->getAdminLoggedInSeq(); 
@@ -23,7 +27,9 @@
         }
         return self::$mailMessageMgr;
      }
-     
+     public function deleteByIds($ids){
+        self::$dataStore->deleteInList($ids);
+    }
      public function getMailMessageForGrid(){
         $isApplyFilter = true; 
         $mailMessages =  self::$dataStore->getMailMessagesForGrid($isApplyFilter);
@@ -31,7 +37,10 @@
         foreach($mailMessages as $mailMessage){
             $seq = $mailMessage["seq"];
             $lpSeqs = $mailMessage["lpseq"];
-            $moduleSeqs = $lpSeqs . "_" . $mailMessage["moduleseq"];
+            $moduleSeqs = $mailMessage["moduleseq"];
+            if(isset($lpSeqs)){
+                 $moduleSeqs = $lpSeqs . "_" . $mailMessage["moduleseq"];    
+            }           
             $moduleNames = $mailMessage["modulename"];      
             if(array_key_exists ($seq, $fullArr)){
                 $mmArr =  $fullArr[$seq];
@@ -67,7 +76,7 @@
             //array_push($fullArr,$mmArr);
         }
         $gridData["Rows"] = array_values($fullArr);
-        $gridData["TotalRows"] = self::$dataStore->executeCountQuery(null,$isApplyFilter);
+        $gridData["TotalRows"] = count($fullArr);
         return json_encode($gridData);
      }
      private function getCondition($mailMessage,$mmArr){
@@ -101,8 +110,8 @@
          $colValue["messageid"] = $messageId;
          self::$mailMessageActionDataStore->deleteByAttribute($colValue);
      }
-     public function saveMailMessageAction($mailAction){        
-        $id = self::$mailMessageActionDataStore->save($mailAction);
+     public function saveMailMessageAction($mailAction){
+        $id = self::$mailMessageActionDataStore->save($mailAction); 
         return $id;  
      }
      public function deleteMailMessageLearningProfiles($messageId){
@@ -112,6 +121,9 @@
      public function saveMailMessageLearningProfile($mailMessageId,$lpseq){
         $learningProfileMgr = LearningProfileMgr::getInstance();
         $learningProfile = $learningProfileMgr->getLearningPlanProfile($lpseq);
+        if($learningProfile == null){
+            return;
+        }
         $mmlp = new MailMessageLearningProfile();
         $mmlp->setMessageId($mailMessageId);
         $mmlp->setLearningProfileId($learningProfile[0]->getLearningProfileSeq());
@@ -119,5 +131,27 @@
         return $id;  
      }
      
+     public function getMailMessageForOnMarksCondition($learningPlanSeq,$moduleSeq){
+        $mailMessage = self::$mailMessageActionDataStore->getMailMessageForOnMarksCondition($learningPlanSeq,$moduleSeq);
+        return $mailMessage;        
+     }
+     public function getMailMessageForOnModuleCompletion($learningPlanSeq,$moduleSeq){
+        $mailMessage = self::$mailMessageActionDataStore->getMailMessageForOnModuleCompletion($learningPlanSeq,$moduleSeq);
+        return $mailMessage;        
+     }
+     public function getMailMessageForModuleEnrollment($moduleSeq){
+        $mailMessage = self::$mailMessageActionDataStore->getMailMessageForModuleEnrollment($moduleSeq);
+        return $mailMessage;
+     }
+     
+     public function getMailMessageForOnParticulerDate($learningPlanSeq){
+        $mailMessage = self::$mailMessageActionDataStore->getMailMessageForOnParticulerDate($learningPlanSeq);
+        return $mailMessage;
+     }
+     //calling from Utils/MailerUtils.php for send notfication emails
+     public function findByMailMessageActionSeq($mailMessageActionSeq){
+         $mailMessage = self::$dataStore->getMailMessagesByMailMessageAction($mailMessageActionSeq);
+         return $mailMessage;
+     }
   }
 ?>
