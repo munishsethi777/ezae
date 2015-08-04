@@ -17,6 +17,7 @@ $onEnrollment = "";
 $onCompletion = "";
 $onMarks = "";
 $selectCondition = "onParticulerDate";
+$operatorCondition = "onMarksEqualTo";
 if(isset($_POST["id"])){
     $id = $_POST["id"];
 }
@@ -34,21 +35,27 @@ if(isset($_POST["messageText"])){
 if(isset($_POST["lpSeqs"])){
     $lpSeqs = $_POST["lpSeqs"];
 }
+
 if(isset($_POST["messageCondition"])){
     $condition = $_POST["messageCondition"];
-    if($condition == "onEnrollment"){
+    if(strpos($condition, 'Enrollment') !== false){
         $onEnrollment = "checked" ; 
         $selectCondition = "onEnrollment"; 
-    }else if($condition == "onParticulerDate"){
-        $onParticulerDate = "checked";
-        $selectCondition = "onParticulerDate"; 
-    }else if($condition == "onCompletion"){
+    }else if(strpos($condition, 'Scoring') !== false){
+        $onMarks = "checked";
+        $selectCondition = "onMarks"; 
+    }else if(strpos($condition, 'Completion') !== false){
         $onCompletion = "checked";
         $selectCondition = "onCompletion"; 
-    }else{
-        $onMarks = "checked";
-        $selectCondition = "onMarks";
-        
+    }else{        
+        $onParticulerDate = "checked";
+        $selectCondition = "onParticulerDate";        
+    }
+    
+    if(strpos($condition, 'Scoring less') !== false){
+        $operatorCondition = "onMarksLessThan"; 
+    }else if(strpos($condition, 'Scoring more') !== false){
+        $operatorCondition = "onMarksGreaterThan";
     }
 }
 
@@ -96,16 +103,7 @@ if(isset($_POST["sendOnDate"]) && $_POST["sendOnDate"] != ""){
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group">
-								    <label class="col-sm-2 control-label">Learning Plans</label>
-									<div class="row">
-										<div class="col-sm-3">
-											<select class="form-control chosen-select" onchange="loadModule()" id="learningPlanDD" name="learningPlanDD[]" multiple>
-											</select>
-                                            <label class="jqx-validator-error-label" id="lpError"></label>
-										</div>
-									</div>
-                                </div>
+                               
 								
 								<p></p><p></p>
 								<div class="form-group">
@@ -156,7 +154,16 @@ if(isset($_POST["sendOnDate"]) && $_POST["sendOnDate"] != ""){
 										</div>
 									</div>									
 								</div>
-								
+								 <div class="form-group" id="learningPlanDiv">
+                                    <label class="col-sm-2 control-label">Learning Plans</label>
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <select class="form-control chosen-select" onchange="loadModule(false)" id="learningPlanDD" name="learningPlanDD[]" multiple>
+                                            </select>
+                                            <label class="jqx-validator-error-label" id="lpError"></label>
+                                        </div>
+                                    </div>
+                                </div>
 								<div class="form-group" id="moduleDiv">
                                     <label class="col-sm-2 control-label">Exam Module</label>
                                         <div class="row">
@@ -192,17 +199,17 @@ if(isset($_POST["sendOnDate"]) && $_POST["sendOnDate"] != ""){
 <script type="text/javascript">
     $(document).ready(function(){
         $(".chosen-select1").chosen({width:"100%"});
-        $("#conditionOperator").val('<?echo $condition?>');
+        $("#conditionOperator").val('<?echo $operatorCondition?>');
         var url = 'Actions/LearningPlanAction.php?call=getLearnerPlansForGrid';
         $.getJSON(url, function(data){
-            populateDropdown(data);
+            populateDropdown(data.Rows);
         })
          CKEDITOR.replace( 'editor', {
             extraPlugins: 'placeholder'
         });
          CKEDITOR.instances.editor.setData('test');
-        
-         $('#sendDate').datetimepicker({step:5,format:"m/d/Y h:i A"});
+          var dateToday = new Date();
+         $('#sendDate').datetimepicker({step:5,format:"m/d/Y h:i A",minDate: 0});
          $( 'input[name="actOption"]:radio' ).change(function(){
              showHideSendDate(this.value);
         })
@@ -231,7 +238,7 @@ if(isset($_POST["sendOnDate"]) && $_POST["sendOnDate"] != ""){
         if(values.length > 0){
             values = values.split(",")
             $('.chosen-select').val(values).trigger("chosen:updated");
-            loadModule();    
+            loadModule(false);    
         }
         
        
@@ -246,12 +253,19 @@ if(isset($_POST["sendOnDate"]) && $_POST["sendOnDate"] != ""){
              $("#sendDateDiv").hide();
              $("#moduleDiv").show();
         }
+        if(value == "onEnrollment"){
+            $("#learningPlanDiv").hide();    
+        }else{
+             $("#learningPlanDiv").show();    
+        }
         if(value == "onMarks"){
             $("#moduleMarksDiv").show();
         }else{
             $("#moduleMarksDiv").hide();
         }
+        loadModule(true);
     }
+    
     function showHideModule(isChecked){
         if(isChecked){
             $("#deactivateDateDiv").show();
@@ -270,18 +284,27 @@ if(isset($_POST["sendOnDate"]) && $_POST["sendOnDate"] != ""){
     }
 
     
-    function loadModule(){
-       var vals = [];
-        
-        $( '#learningPlanDD :selected' ).each( function( i, selected ) {
-            vals[i] = $( selected ).val();
-         });
-        var url = 'Actions/ModuleAction.php?call=getModulesBySelectedLearningPlan&ids=' + vals;
+    function loadModule(flag){
+        var vals = []; 
+        var url = "";
+        if(flag){
+            url = 'Actions/ModuleAction.php?call=getModulesBySelectedLearningPlan';
+        }else{
+            $( '#learningPlanDD :selected' ).each( function( i, selected ) {
+                vals[i] = $( selected ).val();
+            });
+            url = 'Actions/ModuleAction.php?call=getModulesBySelectedLearningPlan&ids=' + vals;    
+        }  
         $.getJSON(url, function(data){
             var options = "";
             $("#moduleDD").html(options);
             $.each(data, function(index , value){
-                  $('.chosen-select1').append("<option value='"+value.lpseq + "_" + value.id+"'>"+value.title+" ("+ value.lptitle +")</option>");
+                 if(value.lptitle != undefined){
+                    $('.chosen-select1').append("<option value='"+value.lpseq + "_" + value.id+"'>"+value.title+" ("+ value.lptitle +")</option>");    
+                 }else{
+                    $('.chosen-select1').append("<option value='" + value.id+"'>"+value.title + "</option>");     
+                 }
+                  
             });
             $('.chosen-select1').trigger("chosen:updated");
             var values = "<?echo $moduleSeqs?>";
@@ -291,6 +314,7 @@ if(isset($_POST["sendOnDate"]) && $_POST["sendOnDate"] != ""){
             }
         });
     }
+    
     function saveMailMessage(e,btn){
         var editorData = CKEDITOR.instances.editor.getData();
         alert(editorData);
