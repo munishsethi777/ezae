@@ -1,0 +1,1 @@
+ALTER TABLE mailmessageaction ADD UNIQUE unique_index(messagecondition, moduleseq, learningplanseq) 
