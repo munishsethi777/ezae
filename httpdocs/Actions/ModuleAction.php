@@ -30,6 +30,7 @@ if($call == "getLearningPlanModulesForGrid"){
     try{
         $moduleMgr = ModuleMgr::getInstance();
         $id =  intval($_GET["id"]);
+        $data = "";
         if($id > 0){
             $data = $moduleMgr->getLearningPlanModulesForGrid($id);
         }
@@ -43,9 +44,12 @@ if($call == "getLearningPlanModulesForGrid"){
 if($call == "getModulesBySelectedLearningPlan"){
     try{
         $moduleMgr = ModuleMgr::getInstance();
-        $ids =  $_GET["ids"];
-        if(isset($ids) && !empty($ids)){
+      
+        if(isset($_GET["ids"]) && !empty($_GET["ids"])){
+            $ids =  $_GET["ids"];
             $data = $moduleMgr->getModulesByLearningPlans($ids);
+        }else{
+            $data = $moduleMgr->getModulesJSON($companySeq);
         }
     }catch(Exception $e){
         $success = 0;

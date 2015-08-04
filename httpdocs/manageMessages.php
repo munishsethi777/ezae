@@ -30,7 +30,7 @@
             {
                 datatype: "json",
                 id: 'id',
-                pagesize: 10,
+                pagesize: 20,
                 datafields: [{ name: 'id', type: 'integer' },
                             { name: 'name', type: 'string' },
                             { name: 'subject', type: 'string' },
@@ -70,26 +70,27 @@
             // initialize jqxGrid
             $("#messagesGrid").jqxGrid(
             {
-                width: '100%',
-                height: 400,
-                source: dataAdapter,
-                filterable: true,
-                sortable: true,
-                autoshowfiltericon: true,
-                columns: columns,
-                pageable: true,
-                autoheight: true,
-                altrows: true,
-                enabletooltips: true,
-                columnsresize: true,
-                columnsreorder: true,
-                selectionmode: 'checkbox',
-                showstatusbar: true,
-                virtualmode: true,
-                rendergridrows: function()
-                {
-                      return dataAdapter.records;     
-                },
+            width: '100%',
+            height: 400,
+            source: dataAdapter,
+            sortable: true,
+            //showfilterrow: true,
+            filterable: true,
+            autoshowfiltericon: true,
+            columns: columns,
+            pageable: true,
+            altrows: true,
+            enabletooltips: true,
+            columnsresize: true,
+            columnsreorder: true,
+            selectionmode: 'checkbox',
+            showstatusbar: true,
+            pageable: true,
+            virtualmode: true,
+            rendergridrows: function()
+            {
+                  return dataAdapter.records;     
+            },
                 renderstatusbar: function (statusbar) {
                     // appends buttons to the status bar.
                     var container = $("<div style='overflow: hidden; position: relative; margin: 5px;height:30px'></div>");
@@ -137,9 +138,12 @@
                         $("#sendOnDate").val(sendOnDate);                        
                         $("#form1").submit();                   
                      });
+                     deleteButton.click(function (event) {
+                        deleteRows("messagesGrid","Actions/MailMessageAction.php?call=deleteMessages");
+                    });
                     // reload grid data.
                     reloadButton.click(function (event) {
-                        $("#learnersGrid").jqxGrid({ source: dataAdapter });
+                        $("#messagesGrid").jqxGrid({ source: dataAdapter });
                     });
 
                 }

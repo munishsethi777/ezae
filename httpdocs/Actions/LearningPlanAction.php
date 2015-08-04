@@ -8,6 +8,7 @@ require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/LeaderBoard.php");
 require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/LearningPlanModule.php");
 require_once($ConstantsArray['dbServerUrl'] ."DataStores/BeanDataStore.php5");
 require_once($ConstantsArray['dbServerUrl'] ."Utils/SessionUtil.php5");
+require_once($ConstantsArray['dbServerUrl'] ."Utils/MailMessageUtil.php");
 $call = "";
 if(isset($_GET["call"])){
     $call = $_GET["call"];
@@ -39,6 +40,7 @@ if($call == "saveLearningPlan"){
         $enableModuleLeaderboard = $_POST["isModuleLeaderboard"];
         $name = $_POST["name"];
         $des = $_POST["description"];
+        $profile = $_POST["profile"];
         $actOption = $_POST["actOption"];
         $activateOn = null;
         if($actOption == "futureActive"){
@@ -56,6 +58,7 @@ if($call == "saveLearningPlan"){
         if(isset($_POST["locksequence"])){
           $isLockSequence =  isset($_POST["locksequence"]) == "on" ? 1 : 0;
         }
+        $profileSeq = $_POST["profile"];
         $learningPlan = new LearningPlan();
         $learningPlan->setSeq($id);
         $learningPlan->setActivateOn($activateOn);
@@ -80,8 +83,10 @@ if($call == "saveLearningPlan"){
         if($learningPlan->getIsLeaderBoard() == 1){
             SaveLeaderBoard($id);
         }
-        saveLearningPlanProfile($id);
+        $profileId = saveLearningPlanProfile($id);
         $message = "Learning Plan saved successfully.";
+        $mailMessageUtil = MailMessageUtil::getInstance();
+        $mailMessageUtil->checkForModuleEnrolementNotification($moduleIdArr,$profileSeq);
     }catch(Exception $e){
         $success = 0;
         $message  = $e->getMessage();
@@ -108,7 +113,8 @@ function saveLearningPlanProfile($id){
     $learningPlanProfile->setLearningPlanSeq($id);
     $learningPlanProfile->setLearningProfileSeq($profile);
     $dataStore = new BeanDataStore("LearningPlanProfile","learningplanprofiles");
-    $dataStore->save($learningPlanProfile);
+    $id = $dataStore->save($learningPlanProfile);
+    return $id;
 }
 
 function SaveLeaderBoard($id){
