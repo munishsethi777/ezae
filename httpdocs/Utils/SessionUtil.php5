@@ -36,6 +36,7 @@ class SessionUtil{
         $arr[0] = $user->getSeq();
         $arr[1] = $user->getUserName();
         $arr[2] = $user->getCompanySeq();
+        $arr[3] = $user->getAdminSeq();
 
         $_SESSION[self::$USER_LOGGED_IN] = $arr;
         $_SESSION[self::$LOGIN_MODE] = 'user';
@@ -84,6 +85,14 @@ class SessionUtil{
             $_SESSION[self::$USER_LOGGED_IN] != null){
                 $arr = $_SESSION[self::$USER_LOGGED_IN];
                 return $arr[2];
+        }
+        return null;
+    }
+    public function getUserLoggedInAdminSeq(){
+      if($_SESSION[self::$LOGIN_MODE] == "user" &&
+            $_SESSION[self::$USER_LOGGED_IN] != null){
+                $arr = $_SESSION[self::$USER_LOGGED_IN];
+                return $arr[3];
         }
         return null;
     }
