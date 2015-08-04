@@ -171,6 +171,23 @@ class BeanDataStore {
         $objList = $STH->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $this->className);
         return $objList;
     }
+    public function executeInListQuery($values,$isApplyFilter = false){
+        $colName = $values;
+        if(is_array($values)){
+            $colName = key($values);    
+        }        
+        $query = "SELECT * FROM " .  $this->tableName ."where $colName inlist($values[$colName])";
+        if($isApplyFilter){
+           $query = FilterUtil::applyFilter($query);
+        }
+        $db = MainDB::getInstance();
+        $conn = $db->getConnection();
+        $STH = $conn->prepare($query);
+        $STH->execute();
+        $this->throwException($STH->errorInfo());
+        $objList = $STH->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $this->className);
+        return $objList;
+    }
     
     public function deleteByAttribute($colValuePair = null){
         foreach ($colValuePair as $key => $value){
@@ -239,7 +256,18 @@ class BeanDataStore {
          $objList = $sth->fetchAll();
          return $objList;
     }
-
+    public function executeObjectQuery($query,$isApplyFilter = false){
+        $db = MainDB::getInstance();
+        $conn = $db->getConnection();
+        $sth = $conn->prepare($query);
+        if($isApplyFilter){
+            $query = FilterUtil::applyFilter($query);    
+        } 
+        $sth->execute();
+        $this->throwException($sth->errorInfo());
+        $objList = $sth->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $this->className);
+         return $objList;
+    }
     public function executeAttributeQuery($attributes,$colValuePair,$isApplyFilter = false){
        foreach ($colValuePair as $key => $value)
        {

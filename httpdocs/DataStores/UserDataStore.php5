@@ -91,6 +91,19 @@
         }
         return $arr;
     }
+    public function getUserLearningProfilesByLearnigPlan($learningPlan){
+        $query = "select * from userlearningprofiles ulp inner join learningplanprofiles lpp on ulp.tagseq  = lpp.learningprofileseq where lpp.learningplanseq = $learningPlan";
+        $learningProfileList = self::executeQuery($query);
+        $arr = array();
+        
+        foreach($learningProfileList as $k=>$v){
+           $userLp = new UserLearningProfile();
+           $userLp->setSeq($v[0]);
+           $userLp->setUserSeq($v[1]);
+           array_push($arr,$userLp);
+        }
+        return $arr;
+    }
 
 
  }
