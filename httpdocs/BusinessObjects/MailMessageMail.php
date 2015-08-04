@@ -1,7 +1,7 @@
 <?php
   class MailMessageMail{
 
-    private $seq, $userseq, $mailmessageactionseq, $adminseq, $savedon, $senton, $status, $failurecounter, $failureerror;
+    private $seq, $userseq, $messageactionseq, $adminseq, $savedon, $senton, $status, $failurecounter,$sendon, $failureerror;
 
     public static $tableName = "mailmessagemails";
     public static $className = "MailMessageMail";
@@ -20,11 +20,11 @@
     return $this->userseq;
     }
 
-    public function setMailMessageActionSeq($mailMessageActionSeq_){
-    $this->mailmessageactionseq = $mailMessageActionSeq_;
+    public function setMessageActionSeq($mailMessageActionSeq_){
+        $this->messageactionseq = $mailMessageActionSeq_;
     }
-    public function getMailMessageActionSeq(){
-    return $this->mailmessageactionseq;
+    public function getMessageActionSeq(){
+        return $this->messageactionseq;
     }
 
     public function setAdminSeq($adminSeq_){
@@ -67,6 +67,14 @@
     }
     public function getFailureError(){
         return $this->failureerror;
+    }
+    
+    public function setSendOn($sendOn_){
+        $this->sendon = $sendOn_;
+    }
+    
+    public function getSendOn(){
+        return $this->sendon;
     }
 
   }
