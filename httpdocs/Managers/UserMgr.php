@@ -230,6 +230,11 @@ class UserMgr{
         $customFieldString = $userDataStore->findCustomfield($seq);
         return $customFieldString; 
     }
+    public function getCustomFieldsByAdmin($adminseq){
+        $userDataStore = UserDataStore::getInstance();
+        $customFields = $userDataStore->findCustomfieldsByAdmin($adminseq);
+        return $customFields; 
+    }
     
      public function findBySeq($seq){
         $userDataStore = UserDataStore::getInstance();

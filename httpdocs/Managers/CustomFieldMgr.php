@@ -3,6 +3,7 @@ require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/UserCustomField.ph
 require_once($ConstantsArray['dbServerUrl'] ."DataStores/BeanDataStore.php5");
 require_once($ConstantsArray['dbServerUrl'] ."DataStores/UserCustomFieldsDataStore.php5");
 require_once($ConstantsArray['dbServerUrl']. "Utils/SessionUtil.php5");
+require_once($ConstantsArray['dbServerUrl']. "Utils/CustomFieldsFormGenerator.php");
   class CustomFieldMgr{
   private static $customFieldMgr;
     public static function getInstance()
@@ -84,6 +85,22 @@ require_once($ConstantsArray['dbServerUrl']. "Utils/SessionUtil.php5");
             array_push($titleArr,$arr[0]);
         }
         return $titleArr;
+    }
+    //Calling From CustomFieldAction For show the values on adminManagers.php
+    public function getCustomFieldValuesByName($customFieldName,$adminSeq){
+        $userMgr = UserMgr::getInstance();
+        $customfieldFormGenreator = CustomFieldsFormGenerator::getInstance();
+        $customFields = $userMgr->getCustomFieldsByAdmin($adminSeq);
+        $customFieldValueArr = array();
+        foreach($customFields as $customField){
+            $customFieldArr = $customfieldFormGenreator->getCustomFieldsArray($customField[0]);
+            $value = $customFieldArr[$customFieldName];
+            if(!in_array($value,$customFieldValueArr)){
+                array_push($customFieldValueArr,$value);
+            }
+               
+        }
+        return $customFieldValueArr;
     }
   }
 ?>

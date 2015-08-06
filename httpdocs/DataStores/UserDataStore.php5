@@ -45,6 +45,13 @@
             return $colList[0]["customfieldValues"];
         }
       }
+      public function findCustomfieldsByAdmin($adminseq){
+        $attributes = array("customfieldValues");
+        $colValuePair = array();
+        $colValuePair["adminseq"] = $adminseq;
+        $colList = $this->executeAttributeQuery($attributes,$colValuePair);
+        return $colList;
+      }
       public function saveUser($userObj,$isChangePassword){
         $user = new User();
         $user = $userObj;

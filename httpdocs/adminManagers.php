@@ -14,77 +14,74 @@
                         <h5>Create New Manager<small> for reporting based on criteria.</small></h5>
                     </div>
                     <div class="ibox-content mainDiv">
-                            <form method="post" action="Actions/MailMessageAction.php" id="createMessageForm" class="form-horizontal">
-                                <input type="hidden" id="id" name="id" value="<?echo $id?>">
+                            <form method="post" action="Actions/ManagerAction.php" id="createManagerForm" class="form-horizontal">
+                                <input type="hidden" id="id" name="id" >
+                                <input type="hidden" id="call" name="call" value="saveAdminMgr">
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">UserName</label>
-                                    <div class="col-sm-4"><input type="text" name="name" id="name" class="form-control"></div>
+                                    <div class="col-sm-4"><input type="text" name="username" id="username" class="form-control"></div>
 
                                     <label class="col-sm-2 control-label">Password</label>
                                     <div class="col-sm-4"><input type="text" name="password" id="password" class="form-control"></div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">Full Name</label>
-                                    <div class="col-sm-4"><input type="text" name="name" id="name" class="form-control"></div>
+                                    <div class="col-sm-4"><input type="text" name="name" id="fullname" class="form-control"></div>
 
                                     <label class="col-sm-2 control-label">Email</label>
-                                    <div class="col-sm-4"><input type="text" name="password" id="password" class="form-control"></div>
+                                    <div class="col-sm-4"><input type="text" name="email" id="email" class="form-control"></div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">Mobile</label>
-                                    <div class="col-sm-4"><input type="text" name="name" id="name" class="form-control"></div>
-
-                                    <label class="col-sm-2 control-label">Address</label>
-                                    <div class="col-sm-4"><input type="text" name="password" id="password" class="form-control"></div>
+                                    <div class="col-sm-4"><input type="text" name="mobile" id="mobile" class="form-control"></div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label">Details</label>
-                                    <div class="col-sm-10"><input type="text" name="name" id="name" class="form-control"></div>
-                                </div>
-
                                <div class="form-group">
                                     <label class="col-sm-2 control-label">Managing Criteria</label>
-									<div class="col-sm-10">
+									<div class="col-sm-9">
 										<div class="row">
-											<div class="col-sm-2">
-												<input type="radio" value="onParticulerDate" name="actOption" id="actOption"> Learning Plans
+											<div class="col-sm-3">
+												<input type="radio" value="learningPlan" checked="checked"  name="actOption" id="actOption"> Learning Plans
 											</div>
-                                            <div class="col-sm-2">
-                                                <input type="radio" value="onParticulerDate" name="actOption" id="actOption"> Learning Profiles
+                                            <div class="col-sm-3">
+                                                <input type="radio" value="learningProfile" name="actOption" id="actOption"> Learning Profiles
                                             </div>
-                                            <div class="col-sm-2">
-                                                <input type="radio" value="onParticulerDate" name="actOption" id="actOption"> Custom Fields
+                                            <div class="col-sm-3">
+                                                <input type="radio" value="customField" name="actOption" id="actOption"> Custom Fields
                                             </div>
 										</div>
 									</div>
 								</div>
 
-                                <div class="form-group">
+                                <div class="form-group" id="learningPlanDiv">
                                     <label class="col-sm-2 control-label">Learning Plans</label>
                                     <div class="row">
                                         <div class="col-sm-3">
-                                            <select class="form-control chosen-select" id="learningPlanDD" multiple></select>
-                                            <label class="jqx-validator-error-label" id="lpError"></label>
+                                            <select class="form-control chosen-select1" name="learningPlans[]" id="learningPlanDD" multiple></select>
+                                            <label class="jqx-validator-error-label" id="lPlanError"></label>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group" id="learningProfileDiv">
                                     <label class="col-sm-2 control-label">Learning Profiles</label>
                                     <div class="row">
                                         <div class="col-sm-3">
-                                            <select class="form-control chosen-select" id="learningPlanDD" multiple></select>
-                                            <label class="jqx-validator-error-label" id="lpError"></label>
+                                            <select class="form-control chosen-select" name="learningProfiles[]" id="profilesDD" multiple></select>
+                                            <label class="jqx-validator-error-label" id="lprofileError"></label>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group" id="customFieldDiv">
                                     <label class="col-sm-2 control-label">CustomField Name</label>
-                                    <div class="col-sm-4"><input type="text" name="name" id="name" class="form-control"></div>
-
-                                    <label class="col-sm-2 control-label">Custom Field Value</label>
-                                    <div class="col-sm-4"><input type="text" name="password" id="password" class="form-control"></div>
+                                    <div class="col-sm-4">
+                                    <select class="form-control" onchange="loadCustomfieldValues(this.value,'cusFieldValue-chosen')" name="customFieldNames[]" id="cusFieldNameDD"></select></div>
+                                    <label class="col-sm-2 control-label">CustomField Value</label>
+                                    <div class="col-sm-4">
+                                        <select class="form-control cusFieldValue-chosen" id="cusFieldValueDD" name="customFieldValues[]" multiple></select>
+                                        <label class="jqx-validator-error-label" id="lPlanError"></label></div>
                                 </div>
-
+                                <div class="form-group" id="addButtonDiv">
+                                    <button type="button" class="btn btn-white" id="addCusFieldRow" data-dismiss="modal">Add</button>    
+                                </div>
                                 <div class="form-group">
                                     <div class="col-sm-4 col-sm-offset-9">
                                        <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveBtn" type="button">
@@ -104,70 +101,104 @@
     </div>
 </body>
 </html>
-<script src="scripts/FormValidators/CreateMessageValidations.js"></script>
+<!--<script src="scripts/FormValidators/CreateMessageValidations.js"></script> -->
 <script type="text/javascript">
+    var $customFieldSelectHtml = "";
+    var counter = 1;
     $(document).ready(function(){
-        $(".chosen-select1").chosen({width:"100%"});
-        $("#conditionOperator").val('<?echo $condition?>');
+        $(".cusFieldValue-chosen").chosen({width:"100%"});
         var url = 'Actions/LearningPlanAction.php?call=getLearnerPlansForGrid';
         $.getJSON(url, function(data){
-            populateDropdown(data);
+            populateLearningPlans(data);
         })
-         CKEDITOR.replace( 'editor', {
-            extraPlugins: 'placeholder'
-        });
-         CKEDITOR.instances.editor.setData('test');
-
-         $('#sendDate').datetimepicker({step:5,format:"m/d/Y h:i A"});
-         $( 'input[name="actOption"]:radio' ).change(function(){
-             showHideSendDate(this.value);
+        populateProfiles();
+        populateCustomFieldNames();
+     
+        $( 'input[name="actOption"]:radio' ).change(function(){
+             showHideDiv(this.value + "Div");
         })
-        showHideSendDate('<?echo $selectCondition?>');
-         $("#saveBtn").click(function(e){
+        showHideDiv("learningPlanDiv");
+        $("#saveBtn").click(function(e){
             ValidateAndSave(e,this);
         });
 
         $("#saveNewBtn").click(function(e){
             ValidateAndSave(e,this);
         });
-        $("#cancelBtn").click(function(e){
-            location.href = "ManageLearningPlan.php";
+        $("#addCusFieldRow").click(function(e){
+           var cusValueClass = 'cusFieldValue-chosen' + counter;
+           var html =  '<label class="col-sm-2 control-label">CustomField Name</label>';   
+               html += '<div class="col-sm-4">';
+               html += "<select class='form-control' onchange='loadCustomfieldValues(this.value, \"" +  cusValueClass + "\")' name='customFieldNames[]' id='cusFieldNameDD" + counter + "'>"
+               html += '</select></div>';
+               html += '<label class="col-sm-2 control-label">CustomField Value</label>';
+               html += '<div class="col-sm-4">';
+               html += '<select class="form-control '+ cusValueClass + '" id="cusFieldValueDD'+ counter + '" name="customFieldValues[]" multiple>';
+               html += '</select>';
+               html += '<label class="jqx-validator-error-label" id="lPlanError"></label></div>';
+               $("#customFieldDiv").append(html);
+               $("." + cusValueClass).chosen({width:"100%"}); 
+               $('#cusFieldNameDD'+ counter).html($customFieldSelectHtml); 
+               $('.' + cusValueClass).trigger("chosen:updated");                 
+               counter = counter + 1;
         });
     });
 
-    function populateDropdown(profiles){
+    function populateLearningPlans(learningPlans){
         var options = "";
-        $.each(profiles, function(key, value){
+        $.each(learningPlans.Rows, function(key, value){
             options += "<option value='" + value.id + "'>" + value.title + "</option>";
 
         })
         $("#learningPlanDD").html(options);
-        $(".chosen-select").chosen({width:"100%"});
-        var values = "<?echo $lpSeqs?>";
-        if(values.length > 0){
-            values = values.split(",")
-            $('.chosen-select').val(values).trigger("chosen:updated");
-            loadModule();
-        }
-
-
+        $(".chosen-select1").chosen({width:"100%"});
     }
-
-    function showHideSendDate(value){
-        if(value == "onParticulerDate"){
-            $("#sendDateDiv").show();
-            $("#moduleDiv").hide();
-
-        }else{
-             $("#sendDateDiv").hide();
-             $("#moduleDiv").show();
-        }
-        if(value == "onMarks"){
-            $("#moduleMarksDiv").show();
-        }else{
-            $("#moduleMarksDiv").hide();
-        }
+    function loadCustomfieldValues(cusFieldName,divClassName){
+        var url = 'Actions/CustomFieldAction.php?call=getCustomFieldValuesByName&cusFieldName=' + cusFieldName;
+        $.getJSON(url, function(data){
+            var options = "";
+            data = data.values;
+            $.each(data, function(index , value){
+                  options += "<option value='" + value + "'>" + value + "</option>";
+            });
+            $("." + divClassName).html(options);           
+            $("." + divClassName).trigger("chosen:updated");
+        });    
     }
+    function populateProfiles(){
+        var url = 'Actions/LearningProfileAction.php?call=getLearnerProfiles';
+        $.getJSON(url, function(data){
+            var options = "";
+            $.each(data, function(index , value){
+                  options += "<option value='" + value.id + "'>" + value.awesomefontid  + " " + value.tag + "</option>";
+            });
+            $("#profilesDD").html(options);
+            $(".chosen-select").chosen({width:"100%"});
+        });
+    }
+    function populateCustomFieldNames(){
+        var url = 'Actions/CustomFieldAction.php?call=getCustomFieldNames';
+        $.getJSON(url, function(data){
+            var values = data.names
+            var options = "";
+            $.each(values, function(index , value){
+                  options += "<option value='" + value + "'>" + value + "</option>";
+            });
+            $("#cusFieldNameDD").html(options);
+            $customFieldSelectHtml = options;
+        });
+    }
+    function showHideDiv(divId){
+        $("#learningPlanDiv").hide();
+        $("#learningProfileDiv").hide();
+        $("#customFieldDiv").hide();
+        $("#addButtonDiv").hide();
+        if(divId == "customFieldDiv"){
+            $("#addButtonDiv").show();    
+        }        
+        $("#" + divId).show();
+    }
+    
     function showHideModule(isChecked){
         if(isChecked){
             $("#deactivateDateDiv").show();
@@ -177,66 +208,30 @@
     }
 
     function ValidateAndSave(e,btn){
-        var validationResult = function (isValid){
-           if (isValid) {
-               saveMailMessage(e,btn);
-            }
-        }
-       $('#createMessageForm').jqxValidator('validate', validationResult);
+        //var validationResult = function (isValid){
+           //if (isValid) {
+               saveManager(e,btn);
+            //}
+        //}
+      // $('#createMessageForm').jqxValidator('validate', validationResult);
     }
 
 
-    function loadModule(){
-       var vals = [];
-
-        $( '#learningPlanDD :selected' ).each( function( i, selected ) {
-            vals[i] = $( selected ).val();
-         });
-        var url = 'Actions/ModuleAction.php?call=getModulesBySelectedLearningPlan&ids=' + vals;
-        $.getJSON(url, function(data){
-            var options = "";
-            $("#moduleDD").html(options);
-            $.each(data, function(index , value){
-                  $('.chosen-select1').append("<option value='"+value.lpseq + "_" + value.id+"'>"+value.title+" ("+ value.lptitle +")</option>");
-            });
-            $('.chosen-select1').trigger("chosen:updated");
-            var values = "<?echo $moduleSeqs?>";
-            if(values.length > 0){
-                values = values.split(",")
-                $('.chosen-select1').val(values).trigger("chosen:updated");
-            }
-        });
-    }
-    function saveMailMessage(e,btn){
-        var editorData = CKEDITOR.instances.editor.getData();
-        alert(editorData);
-        $("#messageText").val(editorData);
-        e.preventDefault();
-        var moduleseqs = [];
-        $( '#moduleDD :selected' ).each( function( i, selected ) {
-            moduleseqs[i] = $( selected ).val();
-        });
-        $("#moduleSeqs").val(moduleseqs);
-
-        var vals = [];
-        $( '#learningPlanDD :selected' ).each( function( i, selected ) {
-            vals[i] = $( selected ).val();
-         });
-        $("#lpSeqs").val(vals);
-
+    
+    function saveManager(e,btn){
         var l = Ladda.create(btn);
         l.start();
-        $('#createMessageForm').ajaxSubmit(function( data ){
+        $('#createManagerForm').ajaxSubmit(function( data ){
             l.stop();
             var obj = $.parseJSON(data);
             var dataRow = "";
             if(btn.id == "saveBtn"){
-                showResponseToastr(data,null,"createMessageForm","mainDiv");
+                showResponseToastr(data,null,"createManagerForm","mainDiv");
                 if(obj.success == 1){
-                     window.setTimeout(function(){window.location.href = "manageMessages.php"},500);
+                     window.setTimeout(function(){window.location.href = "manageManagers.php"},500);
                 }
             }else{
-                showResponseNotification(data,"mainDiv","createMessageForm");
+                showResponseNotification(data,"mainDiv","createManagerForm");
             }
 
         })

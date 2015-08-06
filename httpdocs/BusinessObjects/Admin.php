@@ -1,7 +1,7 @@
 <?php
   class Admin{
       public static $tableName = "admins";
-      private $seq,$username,$password,$emailid,$companyseq,$name,$createdon,$isenabled,$lastmodifiedon,$mobileno,$issuper,$signupformheader;
+      private $seq,$username,$password,$emailid,$companyseq,$name,$createdon,$isenabled,$lastmodifiedon,$mobileno,$issuper,$signupformheader,$ismanager,$parentadminseq;
 
       public function setSeq($seq_){
         $this->seq = $seq_;
@@ -9,7 +9,19 @@
       public function getSeq(){
         return $this->seq;
       }
-
+      
+      public function setParentAdminSeq($parentAdminSeq_){
+        $this->parentadminseq = $parentAdminSeq_;
+      }
+      public function getParentAdminSeq(){
+        return $this->parentadminseq;
+      }
+      public function setIsManager($isManager_){
+        $this->ismanager = $isManager_;
+      }
+      public function getIsManager(){
+        return $this->ismanager;
+      }
       public function setUserName($username_){
         $this->username = $username_;
       }

@@ -164,11 +164,27 @@
     $response["names"]  = $titles;
     echo json_encode($response);
     }
+    
+    
+    if($call == "getCustomFieldValuesByName"){
+        try{
+            $customFieldMgr = CustomFieldMgr ::getInstance();
+            $customFieldName = $_GET["cusFieldName"];
+            $values = $customFieldMgr->getCustomFieldValuesByName($customFieldName,$adminSeq);
+        }catch(Exception $e){
+            $success = 0;
+            $message  = $e->getMessage();
+        }
+        $response = new ArrayObject();
+        $response["values"]  = $values;
+        echo json_encode($response);
+    }
+    
     function getResponse($success,$message){
-    $response = new ArrayObject();
-    $response["success"]  = $success;
-    $response["message"]  = $message;
-    return $response;
+        $response = new ArrayObject();
+        $response["success"]  = $success;
+        $response["message"]  = $message;
+        return $response;
     }
     
     

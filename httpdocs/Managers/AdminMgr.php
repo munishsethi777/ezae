@@ -1,5 +1,6 @@
 <?php
 require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/Module.php");
+require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/ManagerCriteria.php"); 
 require_once($ConstantsArray['dbServerUrl']. "DataStores/AdminDataStore.php5");
 require_once($ConstantsArray['dbServerUrl']. "DataStores/ModuleDataStore.php5");
 require_once($ConstantsArray['dbServerUrl']. "DataStores/ActivityDataStore.php5");
@@ -13,7 +14,7 @@ class AdminMgr{
     private static $adminDataStore;
     private static $adminSeq;
     private static $sessionUtil;
-
+    private static $managerCriteriaDataStore;
 
     public static function getInstance()
     {
@@ -21,6 +22,7 @@ class AdminMgr{
         {
             self::$adminMgr = new AdminMgr();
             self::$adminDataStore = AdminDataStore::getInstance();
+            self::$managerCriteriaDataStore = new BeanDataStore(ManagerCriteria::$className,ManagerCriteria::$tableName);
             self::$sessionUtil = SessionUtil::getInstance();   
             self::$adminSeq = self::$sessionUtil->getAdminLoggedInSeq();            
             return self::$adminMgr;
@@ -393,7 +395,11 @@ class AdminMgr{
                 $sessionUtil = SessionUtil::getInstance();
                 $sessionUtil->createAdminSession($admin);
             }
-
+    }
+    public function saveAdminManager($admin){
+        $ADS = AdminDataStore::getInstance();
+        $id = $ADS->save($admin);
+        return $id;
     }
     public function ChangePassword($password){
         $adminDataStore = AdminDataStore::getInstance();
@@ -409,6 +415,10 @@ class AdminMgr{
         $adminObj = $adminDataStore->findBySeq($seq);
         return $adminObj;
     }
-
+    //Calling form adminManagers->ManagerAction.php for save manager criteria
+    public function SaveManagerCriteria($managerCriteria){
+        $id = self::$managerCriteriaDataStore->save($managerCriteria);
+        return $id;
+    }
 }
 ?>
