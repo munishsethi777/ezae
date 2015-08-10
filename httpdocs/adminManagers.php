@@ -73,11 +73,12 @@
                                 <div class="form-group" id="customFieldDiv">
                                     <label class="col-sm-2 control-label">CustomField Name</label>
                                     <div class="col-sm-4">
-                                    <select class="form-control" onchange="loadCustomfieldValues(this.value,'cusFieldValue-chosen')" name="customFieldNames[]" id="cusFieldNameDD"></select></div>
+                                    <select class="form-control" onchange="loadCustomfieldValues(this.value,'cusFieldValue-chosen')" name="customFieldNames[]" id="cusFieldNameDD"></select>
+                                    </div>
                                     <label class="col-sm-2 control-label">CustomField Value</label>
                                     <div class="col-sm-4">
                                         <select class="form-control cusFieldValue-chosen" id="cusFieldValueDD" name="customFieldValues[]" multiple></select>
-                                        <label class="jqx-validator-error-label" id="lPlanError"></label></div>
+                                        <label class="jqx-validator-error-label" id="cusFieldValueError"></label></div> 
                                 </div>
                                 <div class="form-group" id="addButtonDiv">
                                     <button type="button" class="btn btn-white" id="addCusFieldRow" data-dismiss="modal">Add</button>    
@@ -101,7 +102,7 @@
     </div>
 </body>
 </html>
-<!--<script src="scripts/FormValidators/CreateMessageValidations.js"></script> -->
+<script src="scripts/FormValidators/CreateManagerValidations.js"></script>
 <script type="text/javascript">
     var $customFieldSelectHtml = "";
     var counter = 1;
@@ -126,8 +127,11 @@
             ValidateAndSave(e,this);
         });
         $("#addCusFieldRow").click(function(e){
+           rules = $("#createManagerForm").jqxValidator('rules');
            var cusValueClass = 'cusFieldValue-chosen' + counter;
-           var html =  '<label class="col-sm-2 control-label">CustomField Name</label>';   
+           var cusDiv =   "cusDiv" + counter;
+           var html = '<div id="'+ cusDiv + '">';
+               html +=  '<label class="col-sm-2 control-label">CustomField Name</label>';   
                html += '<div class="col-sm-4">';
                html += "<select class='form-control' onchange='loadCustomfieldValues(this.value, \"" +  cusValueClass + "\")' name='customFieldNames[]' id='cusFieldNameDD" + counter + "'>"
                html += '</select></div>';
@@ -135,15 +139,37 @@
                html += '<div class="col-sm-4">';
                html += '<select class="form-control '+ cusValueClass + '" id="cusFieldValueDD'+ counter + '" name="customFieldValues[]" multiple>';
                html += '</select>';
-               html += '<label class="jqx-validator-error-label" id="lPlanError"></label></div>';
+               html += '<label class="jqx-validator-error-label" id="cusFieldValueError'+ counter + '"></label></div>'; 
+               html += "<button type='button' onclick='removeCusFieldRow(\"" + cusDiv + "\"," + counter + ")' class='btn btn-white'>Remove</button>";
+               index = counter;
                $("#customFieldDiv").append(html);
+               rules.push(
+                { input: '#cusFieldNameDD' + counter , message: 'Select CustomField Name !', action: 'keyup, blur', rule: function (input, commit) {
+                    return requiredCustomField(input);}
+                }                
+                );
+               rules.push(
+                { input: '#cusFieldValueDD' + counter , message: 'Select CustomField Value !', action: 'keyup, blur', rule: function (input, commit) {
+                    return requiredCustomFieldValue(input,index);}
+                }                
+                );
+               //Update jqxValidator's rules
+                $('#createManagerForm').jqxValidator('rules', rules);
                $("." + cusValueClass).chosen({width:"100%"}); 
                $('#cusFieldNameDD'+ counter).html($customFieldSelectHtml); 
                $('.' + cusValueClass).trigger("chosen:updated");                 
                counter = counter + 1;
         });
     });
-
+    function removeCusFieldRow(divId,counter){
+        $('#' + divId).remove();
+        rules = $("#createManagerForm").jqxValidator('rules'); 
+        var rulesToDelete = ["#cusFieldNameDD" + counter, "#cusFieldValueDD" + counter];
+        rules = rules.filter(function(obj) {
+            return rulesToDelete.indexOf(obj.input) === -1;
+        });
+        $('#createManagerForm').jqxValidator('rules', rules);         
+    }
     function populateLearningPlans(learningPlans){
         var options = "";
         $.each(learningPlans.Rows, function(key, value){
@@ -159,7 +185,7 @@
             var options = "";
             data = data.values;
             $.each(data, function(index , value){
-                  options += "<option value='" + value + "'>" + value + "</option>";
+                  options += "<option value='" + index + "'>" + value + "</option>";
             });
             $("." + divClassName).html(options);           
             $("." + divClassName).trigger("chosen:updated");
@@ -180,7 +206,7 @@
         var url = 'Actions/CustomFieldAction.php?call=getCustomFieldNames';
         $.getJSON(url, function(data){
             var values = data.names
-            var options = "";
+            var options = "<option value='0'>Select Option</option>";
             $.each(values, function(index , value){
                   options += "<option value='" + value + "'>" + value + "</option>";
             });
@@ -208,16 +234,13 @@
     }
 
     function ValidateAndSave(e,btn){
-        //var validationResult = function (isValid){
-           //if (isValid) {
+        var validationResult = function (isValid){
+           if (isValid) {
                saveManager(e,btn);
-            //}
-        //}
-      // $('#createMessageForm').jqxValidator('validate', validationResult);
+           }
+        }
+        $('#createManagerForm').jqxValidator('validate', validationResult);
     }
-
-
-    
     function saveManager(e,btn){
         var l = Ladda.create(btn);
         l.start();

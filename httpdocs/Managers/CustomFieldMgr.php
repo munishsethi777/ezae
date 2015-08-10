@@ -96,7 +96,7 @@ require_once($ConstantsArray['dbServerUrl']. "Utils/CustomFieldsFormGenerator.ph
             $customFieldArr = $customfieldFormGenreator->getCustomFieldsArray($customField[0]);
             $value = $customFieldArr[$customFieldName];
             if(!in_array($value,$customFieldValueArr)){
-                array_push($customFieldValueArr,$value);
+                $customFieldValueArr[$customFieldName ."_" . $value] =  $value;
             }
                
         }
