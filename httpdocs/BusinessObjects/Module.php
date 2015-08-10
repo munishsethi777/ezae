@@ -2,19 +2,15 @@
 
   class Module{
       public static $tableName = "modules";
-      private $seq,$dateofexpiry,$title,$description,$uploadedby,$createdon,$isenabled,$ispaid,$maxscore,$price,$passpercent,$lastmodifiedon,$companyseq;
+      private $seq, $title, $description, $createdon, $isenabled, $ispaid, $price, $lastmodifiedon, $maxscore, $passpercent,
+      $companyseq, $timeallowed, $tagline, $imagepath, $synopsis, $author, $moduletype, $tags, $prerequisties, $prework, $videourl;
+
 
       public function setSeq($seq_){
         $this->seq = $seq_;
       }
       public function getSeq(){
         return $this->seq;
-      }
-      public function setDateOfExpiry($dateOfExpiry_){
-        $this->dateofexpiry = $dateOfExpiry_;
-      }
-      public function getDateOfDateOfExpiry(){
-        return $this->dateofexpiry;
       }
 
       public function setTitle($title_){
@@ -31,13 +27,6 @@
         return $this->description;
       }
 
-      public function setUploladedBy($uploadedBy_){
-          $this->uploadedby = $uploadedBy_;
-      }
-      public function getUploadedBy(){
-          return $this->uploadedby;
-      }
-
       public function setCreatedOn($dateOfCreation_){
         $this->createdon = $dateOfCreation_;
       }
@@ -51,12 +40,28 @@
       public function getIsEnabled(){
         return $this->isenabled;
       }
+
       public function setIsPaid($paid_){
         $this->ispaid = $paid_;
       }
       public function getIsPaid(){
         return $this->ispaid;
       }
+
+      public function setPrice($price_){
+        $this->price = $price_;
+      }
+      public function getPrice(){
+        return $this->$price_;
+      }
+
+      public function setLastModifiedOn($lastModifiedOn_){
+        $this->lastmodifiedon = $lastModifiedOn_;
+      }
+      public function getLastModifiedOn(){
+        return $this->lastmodifiedon;
+      }
+
       public function setMaxScore($maxScore_){
         $this->maxscore = $maxScore_;
       }
@@ -70,18 +75,84 @@
       public function getPassPercent(){
         return $this->passpercent;
       }
-      public function setLastModifiedOn($lastModifiedOn_){
-        $this->lastmodifiedon = $lastModifiedOn_;
-      }
-      public function getLastModifiedOn(){
-        return $this->lastmodifiedon;
-      }
+
       public function setCompanySeq($companySeq_){
             $this->companyseq = $companySeq_;
-        }
-        public function getCompanySeq(){
+      }
+      public function getCompanySeq(){
             return $this->companyseq;
-        }
+      }
+
+      public function setTimeAllowed($timeallowed_){
+            $this->timeallowed = $timeallowed_;
+      }
+      public function getTimeAllowed(){
+            return $this->timeallowed;
+      }
+
+      public function setTagLine($tagLine){
+            $this->tagline = $tagLine;
+      }
+      public function getTagLine(){
+            return $this->tagline;
+      }
+
+      public function setImagePath($val){
+            $this->imagepath = $val;
+      }
+      public function getImagePath(){
+            return $this->imagepath;
+      }
+
+      public function setSynopsis($val){
+            $this->synopsis = $val;
+      }
+      public function getSynopsis(){
+            return $this->synopsis;
+      }
+
+      public function setAuthor($val){
+            $this->author = $val;
+      }
+      public function getAuthor(){
+            return $this->author;
+      }
+
+      public function setModuleType($val){
+            $this->moduletype = $val;
+      }
+      public function getModuleType(){
+            return $this->moduletype;
+      }
+
+      public function setTags($val){
+            $this->tags = $val;
+      }
+      public function getTags(){
+            return $this->tags;
+      }
+
+      public function setPrerequisties($val){
+            $this->prerequisties = $val;
+      }
+      public function getPrerequisties(){
+            return $this->prerequisties;
+      }
+
+      public function setPrework($val){
+            $this->prework = $val;
+      }
+      public function getPrework(){
+            return $this->prework;
+      }
+
+      public function setVideoUrl($val){
+            $this->videourl = $val;
+      }
+      public function getVideoUrl(){
+            return $this->videourl;
+      }
+
   }
 
 ?>

@@ -1,31 +1,7 @@
 <?include("sessioncheck.php");?>
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Administration - Easy Assessment Engine</title>
-<script src="scripts/jquery-2.1.1.js"></script>
-
-<link rel="stylesheet" href="jqwidgets/styles/jqx.base.css" type="text/css" />
-<link rel="stylesheet" href="jqwidgets/styles/jqx.arctic.css" type="text/css" />
-<script type="text/javascript" src="jqwidgets/jqxcore.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxbuttons.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxscrollbar.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxlistbox.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxdropdownlist.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxmenu.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxdata.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxgrid.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxgrid.sort.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxgrid.selection.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxgrid.pager.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxgrid.filter.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxlistbox.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxcombobox.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxdraw.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxchart.core.js"></script>
-<link type="text/css" href="styles/bootstrap.css" rel="stylesheet" />
+<?include "ScriptsInclude.php"?>
 
     <script type="text/javascript">
 
@@ -71,7 +47,7 @@
                 { name: 'datafield'},
                 { name: 'text'}
                 ],
-                url: 'ajaxAdminMgr.php?call=getCustomFieldsJson',
+                url: 'Actions/ActivityAction.php?call=getCustomFieldsJson',
                 async: false
             };
 
@@ -96,7 +72,7 @@
                 { name: 'id'},
                 { name: 'title'}
                 ],
-                url: 'ajaxAdminMgr.php?call=getModulesJson',
+                url: 'Actions/ModuleAction.php?call=getModulesForGrid',
                 async: false
             };
 
@@ -140,7 +116,7 @@
 
         function loadGraphChart(moduleSeq,moduleLabel,fieldName,criteria){
              // prepare chart data
-            var hitUrl =  'ajaxAdminMgr.php?call=getModuleComparativeData&moduleSeq='+moduleSeq;
+            var hitUrl =  'Actions/ActivityAction.php?call=getModuleComparativeData&moduleSeq='+moduleSeq;
             hitUrl += '&fieldName=' + fieldName;
             hitUrl += '&criteria=' + criteria;
             var source =

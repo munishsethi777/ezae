@@ -17,13 +17,11 @@ class ModuleDataStore extends BeanDataStore{
 
     public function findByCompanySeq($companySeq){
         $colValuePair = array();
-       /*'companyseq' is columnName*/
-        $colValuePair["companyseq"] = $companySeq;
-        //$moduleList = $this->executeConditionQuery($colValuePair);
-        $moduleList = $this->findAll();
-        return $moduleList;
+        $list = $this->executeQuery("select * from modules left join companymodules on modules.seq = companymodules.moduleseq
+        where companymodules.companyseq = $companySeq;");
+        return $list;
     }
-    
+
     public function findByLearningPlanSeq($learningPlanSeqs){
         $colValuePair = array();
         $list = $this->executeQuery("select lp.seq as lpseq, lp.`title` as lptitle,lpc.isenableleaderboard,m.* from learningplans lp inner join learningplanmodules lpc on lp.seq = lpc.learningplanseq inner join modules m on lpc.courseseq = m.seq where lp.seq in ($learningPlanSeqs) ");

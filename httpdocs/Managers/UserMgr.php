@@ -1,15 +1,15 @@
 <?php
-set_include_path(get_include_path() . PATH_SEPARATOR . '../../../Classes/');    
+set_include_path(get_include_path() . PATH_SEPARATOR . '../../../Classes/');
 require_once($ConstantsArray['dbServerUrl']. "DataStores/UserDataStore.php5");
-require_once($ConstantsArray['dbServerUrl']. "Managers/ActivityMgr.php"); 
+require_once($ConstantsArray['dbServerUrl']. "Managers/ActivityMgr.php");
 require_once($ConstantsArray['dbServerUrl']. "DataStores/UserCustomFieldsDataStore.php5");
-require_once($ConstantsArray['dbServerUrl']. "Utils/StringUtil.php");         
+require_once($ConstantsArray['dbServerUrl']. "Utils/StringUtil.php");
 include $ConstantsArray['dbServerUrl'] . '//PHPExcel/IOFactory.php';
 
 class UserMgr{
 
     private static $userMgr;
-   
+
     public static function getInstance()
     {
         if (!self::$userMgr)
@@ -32,7 +32,7 @@ class UserMgr{
         }
         return null;
     }
-    
+
     //Import Learners
     public function importLearners($file){
         //$inputFileName = 'sampleData/Users.xlsx';
@@ -43,14 +43,14 @@ class UserMgr{
         $sheetData = $objPHPExcel->getActiveSheet()->toArray(null,true,true,true);
         return $sheetData;
     }
-    
+
     public function getLearnersFieldGridData($sheetData,$isFirstRowContainsFields,$isCustomfieldsExists){
         $firstRow = $sheetData[1];
-        $i = 1;        
+        $i = 1;
         $dataFieldArr = array();
         $columnsArr = array();
         $fieldNameRow = array();
-        $fieldTypeRow = array(); 
+        $fieldTypeRow = array();
         $rows = array();
         foreach ($firstRow as $key => $value) {
             //if(!StringUtil::IsNullOrEmptyString($value)){
@@ -58,22 +58,22 @@ class UserMgr{
                 $dataFields = array();
                 $dataFields['name'] = $fieldName;
                 $dataFields['type'] = "string";
-                array_push($dataFieldArr,$dataFields);            
-                
+                array_push($dataFieldArr,$dataFields);
+
                 $col = array();
                 $col['text'] = "Field " . $i;
                 $col['datafield'] = $fieldName;
                 $col['width'] = 250;
-                $col['columntype'] = "template";        
+                $col['columntype'] = "template";
                 //$col['createeditor'] = '%createGridEditor%';
-               // $col['initeditor'] = "initGridEditor"; 
+               // $col['initeditor'] = "initGridEditor";
               // $col['geteditorvalue'] = "gridEditorValue";
                 //$col = $this->replaceQuotes($col);
                 array_push($columnsArr,$col);
                 if($isFirstRowContainsFields){
-                    $fieldNameRow[$fieldName] =  $value;                
+                    $fieldNameRow[$fieldName] =  $value;
                 }else if($isCustomfieldsExists){
-                    $fieldNameRow[$fieldName] =  "Select Field";      
+                    $fieldNameRow[$fieldName] =  "Select Field";
                 }
                 else{
                     $fieldNameRow[$fieldName] =  "{FieldName}";
@@ -81,11 +81,11 @@ class UserMgr{
                 $fieldTypeRow[$fieldName] =   "Text";
             //}
             $i++;
-            
+
         }
         array_push($rows,$fieldNameRow);
         if(!$isCustomfieldsExists){
-            array_push($rows,$fieldTypeRow);    
+            array_push($rows,$fieldTypeRow);
         }
         $mainJsonArray = array();
         $mainJsonArray["columns"] = $columnsArr;
@@ -96,9 +96,9 @@ class UserMgr{
         $json = json_encode($mainJsonArray);
         //$replace_keys[] = '"' . "%createGridEditor%" . '"';
         //$value_arr[] = "createGridEditor";
-        //$jsonStr = str_replace($replace_keys, $value_arr, $json); 
+        //$jsonStr = str_replace($replace_keys, $value_arr, $json);
         return $json;
-    } 
+    }
     private function getDataFieldsAndColumns($row){
         $fullArr = array();
         $colArr = array();
@@ -109,57 +109,57 @@ class UserMgr{
                 $dataFields['name'] = $value;
                 $dataFields['type'] = "string";
                 array_push($dataFieldArr,$dataFields);
-                
+
                 $col = array();
                 $col['text'] = $value;
                 $col['datafield'] = $value;
                 $col['width'] = 250;
                 array_push($colArr,$col);
-            //}  
+            //}
         }
         array_push($fullArr,$dataFieldArr);
         array_push($fullArr,$colArr);
         return $fullArr;
-    } 
+    }
     public function getLearnersDataForGrid($sheetData,$isFirstRowContainsFields){
-        $rows = array();                
+        $rows = array();
         $learnersArr =  $sheetData;
-        $fieldRow = $learnersArr[1]; 
+        $fieldRow = $learnersArr[1];
         $dataFieldAndColArr = $this->getDataFieldsAndColumns($fieldRow);
         $dataFields = $dataFieldAndColArr[0];
         $columns = $dataFieldAndColArr[1];
         if($isFirstRowContainsFields){
-            unset($learnersArr[1]);    
+            unset($learnersArr[1]);
         }
           //Remove fields Row
         foreach($learnersArr as $row){
-            $i = 0;            
-            $col = array();            
-            foreach ($row as $key => $value){ 
-             //if(!StringUtil::IsNullOrEmptyString($value)){               
+            $i = 0;
+            $col = array();
+            foreach ($row as $key => $value){
+             //if(!StringUtil::IsNullOrEmptyString($value)){
                 $rowData[$dataFields[$i]['name']] = $value;
              ///}
-                $i++;                
+                $i++;
             }
             array_push($rows,$rowData);
         }
         $mainJsonArray = array();
-        $mainJsonArray["dataFields"] = $dataFields;       
+        $mainJsonArray["dataFields"] = $dataFields;
         $mainJsonArray["columns"] = $columns;
         $mainJsonArray["rows"] = $rows;
         return json_encode($mainJsonArray);
     }
-     
+
     public function deleteUsersByIds($ids){
         $dataStore = UserDataStore::getInstance();
         $dataStore->deleteInList($ids);
     }
     public function Save($user,$isAjaxCall = false,$isChangePassword = false){
         $dataStore = UserDataStore::getInstance();
-        $id = $dataStore->saveUser($user,$isChangePassword);        
+        $id = $dataStore->saveUser($user,$isChangePassword);
         if($isAjaxCall){
             $user->setSeq($id);
-            return $this->getSavedRowArray($user);    
+            return $this->getSavedRowArray($user);
         }
         return $id;
     }
@@ -175,15 +175,15 @@ class UserMgr{
         $activityMgr = ActivityMgr::getInstance();
         $customfieldArry = $activityMgr->getCustomValuesArray($userCustomFields);
         $row["lastmodifiedon"] = $userObj->getLastModifiedOn()->format("m-d-Y h:m:s A");
-        $row = array_merge($row,$customfieldArry);        
+        $row = array_merge($row,$customfieldArry);
         return json_encode($row);
     }
-    
+
     public function getUserLearningProfileArray($userSeq){
         $userDataStore = UserDataStore::getInstance();
         $profiles = $userDataStore->getUserLearningProfiles();
         return $profiles;
-    } 
+    }
 
     public function getUserLearningProfiles($userSeq){
         $userDataStore = UserDataStore::getInstance();
@@ -197,13 +197,13 @@ class UserMgr{
         $profile = $userLearningProfileDataStore->executeConditionQuery($params);
         return $profile;
     }
-    
+
     public function getUserLearningProfileByLearningPlan($learningPlanSeq){
         $userDataStore = UserDataStore::getInstance();
         $profilesArr = $userDataStore->getUserLearningProfilesByLearnigPlan($learningPlanSeq);
         return $profilesArr;
     }
-    
+
     public function isPasswordExist($password){
         $userDataStore = UserDataStore::getInstance();
         $sessionUtil = SessionUtil::getInstance();
@@ -213,7 +213,7 @@ class UserMgr{
         $count = $userDataStore->executeCountQuery($params);
         return $count > 0;
     }
-    
+
     public function ChangePassword($password){
         $userDataStore = UserDataStore::getInstance();
         $sessionUtil = SessionUtil::getInstance();
@@ -224,22 +224,22 @@ class UserMgr{
         $condition["seq"] = $userSeq ;
         $userDataStore->updateByAttributes($colVal,$condition);
     }
-    
+
     public function getCustomFields($seq){
         $userDataStore = UserDataStore::getInstance();
         $customFieldString = $userDataStore->findCustomfield($seq);
-        return $customFieldString; 
+        return $customFieldString;
     }
     public function getCustomFieldsByAdmin($adminseq){
         $userDataStore = UserDataStore::getInstance();
         $customFields = $userDataStore->findCustomfieldsByAdmin($adminseq);
-        return $customFields; 
+        return $customFields;
     }
-    
+
      public function findBySeq($seq){
         $userDataStore = UserDataStore::getInstance();
         $user = $userDataStore->findBySeq($seq);
-        return $user; 
+        return $user;
     }
 }
 

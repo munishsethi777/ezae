@@ -1,4 +1,4 @@
-  <?include("sessioncheck.php");?>
+<?include("sessioncheck.php");?>
 <html>
 <head>
 <?include "ScriptsInclude.php"?>
@@ -11,8 +11,9 @@
         var columns = [
           { text: 'id', datafield: 'id' , hidden:true},
           { text: 'Name' , datafield: 'name', width: 500 },
-          { text: 'Type', datafield: 'type' },
-          { text: 'Modified On', datafield: 'lastmodifiedon' ,cellsformat: 'MM-dd-yyyy hh:mm:ss tt'}
+          { text: 'Based on', datafield: 'type' },
+          { text: 'Modified On', datafield: 'lastmodifiedon' ,cellsformat: 'MM-dd-yyyy hh:mm:ss tt'},
+          { text: 'Action', datafield: 'action'}
         ]
         var source =
         {
@@ -24,13 +25,14 @@
                 { name: 'id', type: 'integer' },
                 { name: 'name', type: 'string' },
                 { name: 'type', type: 'string' },
-                { name: 'lastmodifiedon', type: 'date' }
+                { name: 'lastmodifiedon', type: 'date' },
+                { name: 'action', type: 'string' }
             ],
             url: 'Actions/LeaderBoardAction.php?call=getLeaderBoardsForGrid',
             root: 'Rows',
             cache: false,
             beforeprocessing: function(data)
-            {        
+            {
                 source.totalrecords = data.TotalRows;
             },
             filter: function()
@@ -75,13 +77,56 @@
             virtualmode: true,
             rendergridrows: function()
             {
-                  return dataAdapter.records;     
+                  return dataAdapter.records;
             }
 
         });
-        
     }
 
+    function showLeaderboard(leaderBoardSeq){
+        $.getJSON( "Actions/LeaderBoardAction.php?call=getLeaderBoardDataForAdminGridPopup&seq="+ leaderBoardSeq, function( data ){
+            $str = "<h4>Top 3 Scorers</h4>";
+            $i = 1;
+            $.each(data, function(key,val){
+                $(".leaderBoardName").html(val.leaderboardName);
+                if($i < 4){
+                    $str += "<p>"+ $i++ +". "+ val.username +" (Score: "+ val.score +")</p>";
+                }
+            });
+            loadLeaderBoardActivityGrid(data);
+            $(".subDiv").html($str);
+            $("#leaderBoardDetailsModal").modal('show')
+        });
+    }
+    function loadLeaderBoardActivityGrid(data){
+        var source =
+            {
+                localdata: data,
+                datatype: "array",
+                datafields:
+                [
+                    { name: 'username', type: 'string' },
+                    { name: 'progress', type: 'string' },
+                    { name: 'score', type: 'string' },
+                    { name: 'dateofplay', type: 'string' }
+                ]
+            };
+            var dataAdapter = new $.jqx.dataAdapter(source);
+
+            $("#jqxgridLB").jqxGrid(
+            {
+                width: 500,
+                height:100,
+                source: dataAdapter,
+                sortable: true,
+                columns: [
+                  { text: 'UserName', datafield: 'username', width: '20%' },
+                  { text: 'Progress', datafield: 'progress', width: '20%', cellsalign: 'right' },
+                  { text: 'Score', datafield: 'score', width: '20%', cellsalign: 'right' },
+                  { text: 'Date Of Play', datafield: 'dateofplay', width: '40%' }
+                ]
+            });
+    }
 </script>
 </head>
 <body class='default'>
@@ -101,6 +146,27 @@
             </div>
         </div>
     </div>
+
+    <div id="leaderBoardDetailsModal" style="width:1000px;" class="modal fade" aria-hidden="true">
+        <div class="modal-dialog" >
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">LeaderBoard - <label class="leaderBoardName"></label></h4>
+                </div>
+                <div class="modal-body mainDiv">
+                      <div class="subDiv"></div>
+                     <div id="jqxgridLB"></div>
+                </div>
+                <div class="modal-footer">
+                     <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
 </body>
 </html>
 

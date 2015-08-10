@@ -24,19 +24,15 @@ class ModuleMgr{
     }
 
     private static function getModuleDataArr($module){
-        $moduleObj = new Module();
-        $moduleObj = $module;
         $arr = array();
-        $arr['id'] = $moduleObj->getSeq();
-        $arr['title'] = $moduleObj->getTitle();
-        $arr['description'] = $moduleObj->getDescription();
-       // $arr['uploadedby'] = $moduleObj->getUploadedBy();
-        $expiringDate = new DateTime($moduleObj->getDateOfDateOfExpiry());
-        //$arr['dateofexpiry'] =  $expiringDate->format('d M Y');
-        $arr['maxscore'] = $moduleObj->getMaxScore();
-        $arr['passpercent'] = $moduleObj->getPassPercent();
-        $arr["ispaid"] = $moduleObj->getIsPaid();
-        $createdDate = new DateTime($moduleObj->getCreatedOn());
+        $arr['id'] = $module['seq']; //$moduleObj->getSeq();
+        $arr['title'] = $module['title']; //$moduleObj->getTitle();
+        $arr['description'] = $module['description']; //$moduleObj->getDescription();
+        //$expiringDate = new DateTime($module['seq']); // new DateTime($moduleObj->getDateOfDateOfExpiry());
+        $arr['maxscore'] = $module['maxscore'];//$moduleObj->getMaxScore();
+        $arr['passpercent'] = $module['passpercent'];//$moduleObj->getPassPercent();
+        $arr["ispaid"] = $module['ispaid'];//$moduleObj->getIsPaid();
+        $createdDate = new DateTime($module['createdon']); //new DateTime($moduleObj->getCreatedOn());
         $arr['createdon'] = $createdDate->format('d M Y');
         //$arr['companyseq'] = $moduleObj->getCompanySeq();
         //$arr['isenabled'] = $moduleObj->getIsEnabled();
@@ -89,17 +85,17 @@ class ModuleMgr{
         }
         return json_encode($mainArr);
      }
-     public function getModulesByLearningPlans($larnignPlanSeq){         
+     public function getModulesByLearningPlans($larnignPlanSeq){
         $moduleDataStore = ModuleDataStore::getInstance();
         $arrList =  $moduleDataStore->findByLearningPlanSeq($larnignPlanSeq);
         $mainArr = array();
         foreach($arrList as $key=>$value){
             $arr = array();
-            $arr['id'] = $value["seq"];            
-            $arr['title'] = $value["title"]; 
+            $arr['id'] = $value["seq"];
+            $arr['title'] = $value["title"];
             $arr['lptitle'] = $value["lptitle"];
-            $arr['lpseq'] = $value["lpseq"];         
-            array_push($mainArr,$arr); 
+            $arr['lpseq'] = $value["lpseq"];
+            array_push($mainArr,$arr);
         }
         return json_encode($mainArr);
      }
@@ -178,18 +174,18 @@ class ModuleMgr{
         $module = $moduleDataStore->findBySeq($moduleSeq);
         return $module;
     }
-    
+
     public function getMaxScore($moduleSeq){
         $attributes[0] = "maxscore";
         $colValuearr["seq"] = $moduleSeq;
         $moduleDataStore = ModuleDataStore::getInstance();
         $maxScore = $moduleDataStore->executeAttributeQuery($attributes,$colValuearr);
         if(is_array($maxScore) && count($maxScore) > 0){
-            $maxScore = $maxScore[0][0];            
+            $maxScore = $maxScore[0][0];
         }
         return $maxScore;
     }
-    
+
     //API for users login to display modules with user's performance
     public function getModulesForLoggedInUserWithPerformance(){
         $sessionUtil = SessionUtil::getInstance();

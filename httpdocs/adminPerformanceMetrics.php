@@ -1,30 +1,7 @@
 <?include("sessioncheck.php");?>
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Administration - Easy Assessment Engine</title>
-<script src="scripts/jquery-2.1.1.js"></script>
-<link rel="stylesheet" href="jqwidgets/styles/jqx.base.css" type="text/css" />
-<link rel="stylesheet" href="jqwidgets/styles/jqx.arctic.css" type="text/css" />
-<script type="text/javascript" src="jqwidgets/jqxcore.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxbuttons.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxscrollbar.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxlistbox.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxdropdownlist.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxmenu.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxdata.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxgrid.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxgrid.sort.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxgrid.selection.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxgrid.pager.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxgrid.filter.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxlistbox.js"></script>
-<script type="text/javascript" src="jqwidgets/jqxcombobox.js"></script>
-
-    <script type="text/javascript" src="jqwidgets/jqxdraw.js"></script>
-    <script type="text/javascript" src="jqwidgets/jqxchart.core.js"></script>
+<?include "ScriptsInclude.php"?>
     <script type="text/javascript">
 
         $(document).ready(function (){
@@ -35,7 +12,6 @@
                 var item = $("#combobox").jqxComboBox('getSelectedItem');
                 var moduleSeq = item.value;
                 var moduleLabel = item.label;
-
                 var passPercent = $("#percentages").jqxComboBox('getSelectedItem');
                 loadGraphChart(moduleSeq,moduleLabel);
                 loadPassPie(moduleSeq, moduleLabel, passPercent.value);
@@ -76,7 +52,7 @@
                 { name: 'id'},
                 { name: 'title'}
                 ],
-                url: 'ajaxAdminMgr.php?call=getModulesJson',
+                url: 'Actions/ModuleAction.php?call=getModulesForGrid',
                 async: false
             };
 
@@ -103,7 +79,7 @@
                     { name: 'Score' },
                     { name: 'Participants' }
                 ],
-                url: 'ajaxAdminMgr.php?call=getModulePerformanceData&moduleSeq='+moduleSeq
+                url: 'Actions/ActivityAction.php?call=getModulePerformanceData&moduleSeq='+moduleSeq
             };
             var dataAdapter = new $.jqx.dataAdapter(source, { async: false, autoBind: true, loadError: function (xhr, status, error) { alert('Error loading "' + source.url + '" : ' + error);} });
 
@@ -159,7 +135,7 @@
                     { name: 'Status' },
                     { name: 'Share' }
                 ],
-                url: 'ajaxAdminMgr.php?call=getModulePassPercentageChartData&moduleSeq='+ moduleSeq +'&percentage='+ percent
+                url: 'Actions/ActivityAction.php?call=getModulePassPercentageChartData&moduleSeq='+ moduleSeq +'&percentage='+ percent
             };
             var dataAdapter = new $.jqx.dataAdapter(source, {
                 async: false,
@@ -204,7 +180,7 @@
         }
 
         function loadPerformanceTablesStats(moduleSeq){
-            var url = 'ajaxAdminMgr.php?call=getModuleMeanMediamModePercent&moduleSeq='+ moduleSeq;
+            var url = 'Actions/ActivityAction.php?call=getModuleMeanMediamModePercent&moduleSeq='+ moduleSeq;
             $.getJSON(url, function(data){
                 $(".meanCount").html(data.mean);
                 $(".medianCount").html(data.median);

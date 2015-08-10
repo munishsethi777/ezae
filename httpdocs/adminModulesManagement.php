@@ -1,4 +1,4 @@
-  <?include("sessioncheck.php");?>
+<?include("sessioncheck.php");?>
 <html>
 <head>
 <?include "ScriptsInclude.php"?>
@@ -8,7 +8,12 @@
             $("#moduleDetailsModal").modal('show')
         });
     })
-
+ <?
+    require_once('IConstants.inc');
+    require_once($ConstantsArray['dbServerUrl'] ."Managers/ModuleMgr.php");
+    $moduleMgr = ModuleMgr::getInstance();
+    $modules = $moduleMgr->getModulesByCompany(1);
+ ?>
 
 
 
@@ -25,35 +30,34 @@
                         <h5>Manage Learning Modules</h5>
                     </div>
                     <div class="ibox-content">
-
+                        <?
+                        foreach ($modules as $module){?>
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="ibox">
                                     <div class="ibox-content product-box">
                                         <div class="product-imitation">
-                                            <img src="images/modules/1.jpg" alt="" style="">
+                                            <img height="200px" src="images/modules/<?echo $module['seq']?>.jpg" alt="" style="">
                                         </div>
                                         <div class="product-desc">
                                             <span class="product-price">$10</span>
-                                            <a href="#" class="product-name"> CHEEZE CHALLENGE</a>
+                                            <a href="#" class="product-name"> <?echo $module['title']?></a>
                                             <small class="text-muted">
                                                 Added on <b>2nd July 2015</b> used in <b>4</b> Learning Plans
                                             </small>
                                             <div class="small m-t-xs">
-                                                Many desktop publishing packages and web page editors now.
+                                                <?echo $module['description']?>
                                             </div>
                                             <div class="m-t text-righ">
                                                 <a href="#" class="btn btn-xs btn-outline btn-primary moduleDetailsButton">
                                                     Info <i class="fa fa-long-arrow-right"></i>
                                                 </a>
-                                                <button class="btn btn-danger btn-circle" type="button" style="float: right;">
-                                                    <i class="fa fa-times"></i>
-                                                </button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            <?}?>
                             <div id="moduleDetailsModal" style="width: auto;" class="modal fade" aria-hidden="true">
                                 <div class="modal-dialog" >
                                     <div class="modal-content">
@@ -115,98 +119,6 @@
 
 
 
-
-                            <div class="col-md-3">
-                                <div class="ibox">
-                                    <div class="ibox-content product-box">
-
-                                        <div class="product-imitation">
-                                            <img src="images/modules/2.jpg" alt="" style="">
-                                        </div>
-                                        <div class="product-desc">
-                                            <span class="product-price">
-                                                $10
-                                            </span>
-                                            <small class="text-muted">Category</small>
-                                            <a href="#" class="product-name"> Product</a>
-
-
-
-                                            <div class="small m-t-xs">
-                                                Many desktop publishing packages and web page editors now.
-                                            </div>
-                                            <div class="m-t text-righ">
-
-                                                <a href="#" class="btn btn-xs btn-outline btn-primary">Info <i class="fa fa-long-arrow-right"></i> </a>
-                                                <button class="btn btn-danger btn-circle" type="button" style="float: right;">
-                                                    <i class="fa fa-times"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="ibox">
-                                    <div class="ibox-content product-box active">
-
-                                        <div class="product-imitation">
-                                            <img src="images/modules/3.jpg" alt="" style="">
-                                        </div>
-                                        <div class="product-desc">
-                                            <span class="product-price">
-                                                $10
-                                            </span>
-                                            <small class="text-muted">Category</small>
-                                            <a href="#" class="product-name"> Product</a>
-
-
-
-                                            <div class="small m-t-xs">
-                                                Many desktop publishing packages and web page editors now.
-                                            </div>
-                                            <div class="m-t text-righ">
-
-                                                <a href="#" class="btn btn-xs btn-outline btn-primary">Info <i class="fa fa-long-arrow-right"></i> </a>
-                                                <button class="btn btn-danger btn-circle" type="button" style="float: right;">
-                                                    <i class="fa fa-times"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="ibox">
-                                    <div class="ibox-content product-box">
-
-                                        <div class="product-imitation">
-                                            <img src="images/modules/4.jpg" alt="" style="">
-                                        </div>
-                                        <div class="product-desc">
-                                            <span class="product-price">
-                                                $10
-                                            </span>
-                                            <small class="text-muted">Category</small>
-                                            <a href="#" class="product-name"> Product</a>
-
-
-
-                                            <div class="small m-t-xs">
-                                                Many desktop publishing packages and web page editors now.
-                                            </div>
-                                            <div class="m-t text-righ">
-
-                                                <a href="#" class="btn btn-xs btn-outline btn-primary">Info <i class="fa fa-long-arrow-right"></i> </a>
-                                                <button class="btn btn-danger btn-circle" type="button" style="float: right;">
-                                                    <i class="fa fa-times"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
 
 
