@@ -14,7 +14,7 @@
    $sessionUtil = SessionUtil::getInstance();
    $companySeq = $sessionUtil->getAdminLoggedInCompanySeq();
    $adminSeq =  $sessionUtil->getAdminLoggedInSeq();   
-    if($call == "saveCompany"){
+   if($call == "saveCompany"){
         try{       
             $companyMgr = CompanyMgr::getInstance();
             $companyMgr->SignUpCompany();

@@ -79,4 +79,5 @@ function requiredCustomField(input){
         }
         return false;
     }
+    return true
 } 

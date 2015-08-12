@@ -1,4 +1,31 @@
 <?include("sessioncheck.php");?>
+<?
+$id = "";
+$userName = "";
+$password = "";
+$fullName = "";
+$email = "";
+$mobile = "";
+if(isset($_POST["id"])){
+    $id = $_POST["id"];
+}
+if(isset($_POST["username"])){
+    $userName = $_POST["username"];
+}
+if(isset($_POST["password"])){
+    $password = $_POST["password"];
+}
+if(isset($_POST["fullname"])){
+    $fullName = $_POST["fullname"];
+}
+if(isset($_POST["email"])){
+    $email = $_POST["email"];
+}
+if(isset($_POST["mobile"])){
+    $mobile = $_POST["mobile"];
+}
+
+?>
 <html>
 <head>
 <link href="styles/plugins/iCheck/custom.css" rel="stylesheet">
@@ -15,25 +42,25 @@
                     </div>
                     <div class="ibox-content mainDiv">
                             <form method="post" action="Actions/ManagerAction.php" id="createManagerForm" class="form-horizontal">
-                                <input type="hidden" id="id" name="id" >
+                                <input type="hidden" id="id" name="id" value="<?echo $id?>" >
                                 <input type="hidden" id="call" name="call" value="saveAdminMgr">
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">UserName</label>
-                                    <div class="col-sm-4"><input type="text" name="username" id="username" class="form-control"></div>
+                                    <div class="col-sm-4"><input type="text" name="username" value="<?echo $userName?>" id="username" class="form-control"></div>
 
                                     <label class="col-sm-2 control-label">Password</label>
-                                    <div class="col-sm-4"><input type="text" name="password" id="password" class="form-control"></div>
+                                    <div class="col-sm-4"><input type="text" name="password" value="<?echo $password?>" id="password" class="form-control"></div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">Full Name</label>
-                                    <div class="col-sm-4"><input type="text" name="name" id="fullname" class="form-control"></div>
+                                    <div class="col-sm-4"><input type="text" name="name" value="<?echo $fullName?>" id="fullname" class="form-control"></div>
 
                                     <label class="col-sm-2 control-label">Email</label>
-                                    <div class="col-sm-4"><input type="text" name="email" id="email" class="form-control"></div>
+                                    <div class="col-sm-4"><input type="text" name="email" value="<?echo $email?>" id="email" class="form-control"></div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">Mobile</label>
-                                    <div class="col-sm-4"><input type="text" name="mobile" id="mobile" class="form-control"></div>
+                                    <div class="col-sm-4"><input type="text" name="mobile" value="<?echo $mobile?>" id="mobile" class="form-control"></div>
                                 </div>
                                <div class="form-group">
                                     <label class="col-sm-2 control-label">Managing Criteria</label>
@@ -106,15 +133,17 @@
 <script type="text/javascript">
     var $customFieldSelectHtml = "";
     var counter = 1;
+    var selectedValues = [];
     $(document).ready(function(){
+        
         $(".cusFieldValue-chosen").chosen({width:"100%"});
+        
         var url = 'Actions/LearningPlanAction.php?call=getLearnerPlansForGrid';
         $.getJSON(url, function(data){
             populateLearningPlans(data);
-        })
-        populateProfiles();
+        }); 
         populateCustomFieldNames();
-     
+        populateProfiles(); 
         $( 'input[name="actOption"]:radio' ).change(function(){
              showHideDiv(this.value + "Div");
         })
@@ -127,7 +156,12 @@
             ValidateAndSave(e,this);
         });
         $("#addCusFieldRow").click(function(e){
-           rules = $("#createManagerForm").jqxValidator('rules');
+            addCustomFieldRow();   
+        });
+    });
+    
+    function addCustomFieldRow(){
+        rules = $("#createManagerForm").jqxValidator('rules');
            var cusValueClass = 'cusFieldValue-chosen' + counter;
            var cusDiv =   "cusDiv" + counter;
            var html = '<div id="'+ cusDiv + '">';
@@ -159,8 +193,8 @@
                $('#cusFieldNameDD'+ counter).html($customFieldSelectHtml); 
                $('.' + cusValueClass).trigger("chosen:updated");                 
                counter = counter + 1;
-        });
-    });
+    }
+    
     function removeCusFieldRow(divId,counter){
         $('#' + divId).remove();
         rules = $("#createManagerForm").jqxValidator('rules'); 
@@ -179,18 +213,28 @@
         $("#learningPlanDD").html(options);
         $(".chosen-select1").chosen({width:"100%"});
     }
+    
     function loadCustomfieldValues(cusFieldName,divClassName){
         var url = 'Actions/CustomFieldAction.php?call=getCustomFieldValuesByName&cusFieldName=' + cusFieldName;
-        $.getJSON(url, function(data){
-            var options = "";
-            data = data.values;
-            $.each(data, function(index , value){
-                  options += "<option value='" + index + "'>" + value + "</option>";
-            });
-            $("." + divClassName).html(options);           
-            $("." + divClassName).trigger("chosen:updated");
-        });    
+        $.ajax({
+          url: url,
+          dataType: 'json',
+          async: false,
+          success: function(data) {
+                var options = "";
+                data = data.values;
+                $.each(data, function(index , value){
+                      options += "<option value='" + index + "'>" + value + "</option>";
+                });
+                $("." + divClassName).html(options);           
+                $("." + divClassName).trigger("chosen:updated");
+                if(selectedValues.length > 0){ 
+                    $("." + divClassName).val(selectedValues).trigger("chosen:updated");
+                }
+          }
+        });
     }
+    
     function populateProfiles(){
         var url = 'Actions/LearningProfileAction.php?call=getLearnerProfiles';
         $.getJSON(url, function(data){
@@ -212,6 +256,10 @@
             });
             $("#cusFieldNameDD").html(options);
             $customFieldSelectHtml = options;
+            <?if(!empty($id)){?>
+                populateCriteriaDetail();    
+            <?}?>
+              
         });
     }
     function showHideDiv(divId){
@@ -241,6 +289,42 @@
         }
         $('#createManagerForm').jqxValidator('validate', validationResult);
     }
+
+   function populateCriteriaDetail(){
+        var fieldDiv = "#cusFieldNameDD";
+        var valueClass = ".cusFieldValue-chosen";
+        var divId = "learningPlanDD";
+        var url = "Actions/ManagerAction.php?call=getCriteriaDetail&id=<?echo $id?>";
+        $.getJSON(url, function(data){
+            var criteriaType = data.criteriatype;
+            $("input[name=actOption][value=" + criteriaType + "]").attr('checked', 'checked').change();
+            var criteriaValues = data.criteriavalue;
+            i = 0;
+            if(criteriaType == "customField"){
+                $.each(criteriaValues, function(key , value){
+                    var values = [];
+                    $.each(value, function(k , v){
+                        values.push(key + "_" + decodeURIComponent(v));
+                    });
+                    if(i > 0){
+                        addCustomFieldRow();
+                        fieldDiv += i;                 
+                        valueClass += i;
+                    }
+                    selectedValues = values;                
+                    $(fieldDiv).val(key).change();
+                    i++;
+                });    
+            }else{ 
+                if(criteriaType == "learningProfile"){
+                    divId = "profilesDD"
+                }
+                 var vals = criteriaValues.split(",")
+                    $("#" + divId).val(vals).trigger("chosen:updated");
+                 }
+        })
+    }
+    
     function saveManager(e,btn){
         var l = Ladda.create(btn);
         l.start();
@@ -251,7 +335,7 @@
             if(btn.id == "saveBtn"){
                 showResponseToastr(data,null,"createManagerForm","mainDiv");
                 if(obj.success == 1){
-                     window.setTimeout(function(){window.location.href = "manageManagers.php"},500);
+                     window.setTimeout(function(){window.location.href = "manageAdminManagers.php"},500);
                 }
             }else{
                 showResponseNotification(data,"mainDiv","createManagerForm");

@@ -15,7 +15,41 @@
     $sessionUtil = SessionUtil::getInstance();
     $companySeq = $sessionUtil->getAdminLoggedInCompanySeq();
     $adminSeq =  $sessionUtil->getAdminLoggedInSeq();
-    $adminMgr = AdminMgr::getInstance(); 
+    $adminMgr = AdminMgr::getInstance();
+    if($call == "getManagersForGrid"){
+        try{ 
+            $data = $adminMgr->getManagersForGrid();
+        }catch(Exception $e){
+            $success = 0;
+            $message  = $e->getMessage();
+        }
+        echo $data;  
+    }
+    if($call == "deleteManager"){
+         $ids = $_GET["ids"];
+         try{
+            $adminMgr->deleteManager($ids);
+            $message = "Record Deleted successfully";
+        }catch(Exception $e){
+            $success = 0;
+            $message  = $e->getMessage();
+        }
+        $response = new ArrayObject(); 
+        $response["success"]  = $success;
+        $response["message"]  = $message;
+        echo json_encode($response);  
+    } 
+    if($call == "getCriteriaDetail"){
+        try{
+            $id = $_GET["id"];
+            $data = $adminMgr->getManagerCriteriaDetail($id);
+        }catch(Exception $e){
+            $success = 0;
+            $message  = $e->getMessage();
+        }
+        echo $data;  
+    }
+ 
     if($call == "saveAdminMgr"){
         try{
             validateCriteria();
@@ -38,6 +72,11 @@
             $admin->setIsEnabled(true);
             $admin->setLastModifiedOn(new DateTime());
             $admin->setCreatedOn(new DateTime());
+            $id = 0;
+            if(isset($_POST["id"])){
+                $id = intval($_POST["id"]);
+                $admin->setSeq($id);     
+            }
             $id = $adminMgr->saveAdminManager($admin); 
             if($id > 0){
                 saveManagerCriteria($id);
@@ -63,11 +102,15 @@
     }
     
     function saveManagerCriteria($managerId){
+        global $adminMgr;     
+        $adminMgr->deleteManagerCriteria($managerId);
         $criteriaType = $_POST["actOption"];
         if($criteriaType == ManagerCriteriaType::LEARNING_PLAN){
-             $criteriavalues = $_POST["learningPlans"];    
+             $criteriavalues = $_POST["learningPlans"]; 
+             $criteriavalues = implode(",",$criteriavalues);                 
         }else if($criteriaType == ManagerCriteriaType::LEARNING_PROFILE){
-             $criteriavalues = $_POST["learningProfiles"]; 
+             $criteriavalues = $_POST["learningProfiles"];
+             $criteriavalues = implode(",",$criteriavalues); 
         }else if($criteriaType == ManagerCriteriaType::CUSTOM_FIELD){
               $customFieldStr = ""; 
               $customFieldNames = $_POST["customFieldNames"];
@@ -92,16 +135,17 @@
                     $customFieldStr .= ";" . $name. ":" .$values[$name];
                 }
               }
-              $criteriavalues[0] =  $customFieldStr;  
+              $criteriavalues =  $customFieldStr;  
         }
-        global $adminMgr;
-        foreach($criteriavalues as $value){
+        
+        //foreach($criteriavalues as $value){
             $managerCriteria = new ManagerCriteria();
             $managerCriteria->setCriteriaType($criteriaType);
-            $managerCriteria->setCriteriaValue($value);
+            $managerCriteria->setCriteriaValue($criteriavalues);
             $managerCriteria->setManagerSeq($managerId);
-            $id = $adminMgr->SaveManagerCriteria($managerCriteria);  
-        }
+            $id = $adminMgr->SaveManagerCriteria($managerCriteria);
+              
+        //}
        
     }
 ?>

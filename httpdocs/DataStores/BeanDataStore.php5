@@ -136,6 +136,20 @@ class BeanDataStore {
         $STH->execute();
         $this->throwException($STH->errorInfo());
     }
+    public function deleteByAttribute($colValuePair = null){
+        foreach ($colValuePair as $key => $value){
+            $query_array[] = " $key in ('$value') ";
+        }
+        $query = "delete FROM " .  $this->tableName;
+        if($colValuePair != null){
+            $query .= " WHERE " .implode(" AND ", $query_array);
+        }
+        $db = MainDB::getInstance();
+        $conn = $db->getConnection();
+        $STH = $conn->prepare($query);
+        $STH->execute();
+        $this->throwException($STH->errorInfo());
+    }
     public function deleteAll(){
         $db = MainDB::getInstance();
         $conn = $db->getConnection();
@@ -189,20 +203,7 @@ class BeanDataStore {
         return $objList;
     }
     
-    public function deleteByAttribute($colValuePair = null){
-        foreach ($colValuePair as $key => $value){
-            $query_array[] = $key.' = '. "'" . $value . "'";
-        }
-        $query = "delete FROM " .  $this->tableName;
-        if($colValuePair != null){
-            $query .= " WHERE " .implode(" AND ", $query_array);
-        }
-        $db = MainDB::getInstance();
-        $conn = $db->getConnection();
-        $STH = $conn->prepare($query);
-        $STH->execute();
-        $this->throwException($STH->errorInfo());
-    }
+   
     
      public function updateByAttributes($colValuePair,$condiationPair = null){
         foreach ($condiationPair as $key => $value){

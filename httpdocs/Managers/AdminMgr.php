@@ -396,6 +396,7 @@ class AdminMgr{
                 $sessionUtil->createAdminSession($admin);
             }
     }
+    //calling from manager action for save manager
     public function saveAdminManager($admin){
         $ADS = AdminDataStore::getInstance();
         $id = $ADS->save($admin);
@@ -419,6 +420,83 @@ class AdminMgr{
     public function SaveManagerCriteria($managerCriteria){
         $id = self::$managerCriteriaDataStore->save($managerCriteria);
         return $id;
+    }
+    //calling from manager action for delete managers from grid
+    public function deleteManager($managerIds){
+        self::$adminDataStore->deleteInList($managerIds);
+        $this->deleteManagerCriteria($managerIds);
+    }
+    
+    //calling from manager action
+    public function deleteManagerCriteria($managerIds){
+        $colValue["managerseq"] = $managerIds;
+        self::$managerCriteriaDataStore->deleteByAttribute($colValue);
+    }
+    
+    
+    
+    //calling from manager action for show the managers on grid
+    private function FindManagers($isApplyFilter = false){
+        $parentAdminSeq = self::$sessionUtil->getAdminLoggedInSeq();
+        $colValue["ismanager"] = true;
+        $colValue["parentadminseq"] =  $parentAdminSeq;
+        $managerList = self::$adminDataStore->executeConditionQuery($colValue,$isApplyFilter);
+        return $managerList; 
+    }
+    //Calling from ManagerAction for show the managers on grid
+    public function getManagersForGrid(){
+        $isApplyFilter  = true;
+        $managers = $this->FindManagers($isApplyFilter);
+        $mainArr["Rows"] = $this->toJsonArray($managers);        
+        $mainArr["TotalRows"] =  $this->getManagerCount();
+        $jsonString = json_encode($mainArr);
+        return $jsonString;
+    }
+    
+    private function getManagerCount(){
+        $colValue["ismanager"] = true; 
+        return self::$adminDataStore->executeCountQuery($colValue,true);
+    }
+    
+    //calling from adminManagers.php with ajax call for show the data in edit case
+    public function getManagerCriteriaDetail($id){
+        $colValue["managerseq"] = $id;
+        $attributes[0] = "criteriatype";
+        $attributes[1] = "criteriavalue";
+        $managers = self::$managerCriteriaDataStore->executeAttributeQuery($attributes,$colValue);
+        $manager = $managers[0];
+        $criteriaType = $manager["criteriatype"];
+        $criteriaValue = $manager["criteriavalue"];
+        if($criteriaType == ManagerCriteriaType::CUSTOM_FIELD){
+            $lines = explode(";",$criteriaValue);
+            foreach($lines as $line)
+            {
+                list($key, $value) = explode(":", $line);
+                $array[$key] = explode(",", $value);   
+            }
+            $criteriaValue = $array;                                                                                  
+        }
+        $mainArr["criteriatype"] = $criteriaType;
+        $mainArr["criteriavalue"] = $criteriaValue;
+        $json = json_encode($mainArr);
+        return $json;
+    }
+    
+    private static function toJsonArray($managers){
+        $fullArr = array();
+        foreach($managers as $manager){
+            $adminObj = new Admin();
+            $adminObj = $manager;
+            $arr = array();
+            $arr['id'] = $adminObj->getSeq();
+            $arr['username'] = $adminObj->getUserName();
+            $arr['name'] = $adminObj->getName();
+            $arr['password'] = $adminObj->getPassword();
+            $arr['emailid'] = $adminObj->getEmailId();
+            $arr['mobile'] = $adminObj->getMobileNo();
+            array_push($fullArr,$arr);
+        }
+        return $fullArr;
     }
 }
 ?>
