@@ -6,18 +6,78 @@
 
         $(document).ready(function (){
             loadPercentages();
-            loadTrainingsCombo();
+            loadLearningPlansCombo();
             $('#showReportButton').jqxButton({ width: 100, height: 25, theme:'arctic' });
             $("#showReportButton").click(function () {
-                var item = $("#combobox").jqxComboBox('getSelectedItem');
-                var moduleSeq = item.value;
-                var moduleLabel = item.label;
+                var learningPlanItem = $("#learningPlanComboBox").jqxComboBox('getSelectedItem');
+                var moduleItem = $("#moduleComboBox").jqxComboBox('getSelectedItem');
+
+                var learningPlanSeq = learningPlanItem.value;
+                var moduleSeq = moduleItem.value;
+                var moduleLabel = moduleItem.label;
                 var passPercent = $("#percentages").jqxComboBox('getSelectedItem');
-                loadGraphChart(moduleSeq,moduleLabel);
-                loadPassPie(moduleSeq, moduleLabel, passPercent.value);
-                loadPerformanceTablesStats(moduleSeq);
+                loadGraphChart(learningPlanSeq,moduleSeq,moduleLabel);
+                loadPassPie(learningPlanSeq,moduleSeq, moduleLabel, passPercent.value);
+                loadPerformanceTablesStats(learningPlanSeq,moduleSeq);
             });
         });
+        function loadLearningPlansCombo(){
+            var source =
+            {
+                datatype: "json",
+                datafields: [
+                { name: 'id'},
+                { name: 'title'}
+                ],
+                url: 'Actions/LearningPlanAction.php?call=getLearnerPlansForReporting',
+                async: true
+            };
+
+            var dataAdapter = new $.jqx.dataAdapter(source);
+
+            $("#learningPlanComboBox").jqxComboBox({
+                source: dataAdapter,
+                width: '300',
+                height: 25,
+                selectedIndex: 0,
+                displayMember: 'title',
+                valueMember: 'id',
+                theme: 'arctic'
+            });
+            $('#learningPlanComboBox').on('change', function (event){
+                var args = event.args;
+                if (args) {
+                   var item = args.item;
+                   loadModulesCombo(item.value);
+                }
+            });
+
+        }
+        function loadModulesCombo(learningPlanSeq){
+            var source1 =
+            {
+                datatype: "json",
+                datafields: [
+                { name: 'id'},
+                { name: 'title'}
+                ],
+                url: 'Actions/ModuleAction.php?call=getModulesByLearningPlanForReporting&learningPlanSeq='+learningPlanSeq,
+                async: true
+            };
+
+            var dataAdapter1 = new $.jqx.dataAdapter(source1);
+
+            $("#moduleComboBox").jqxComboBox({
+                source: dataAdapter1,
+                width: '300',
+                height: 25,
+                selectedIndex: 0,
+                displayMember: 'title',
+                valueMember: 'id',
+                theme: 'arctic'
+            });
+        }
+
         function loadPercentages(){
             var source = [
                 {value: "20", label: "20"},
@@ -44,45 +104,18 @@
             });
 
         }
-        function loadTrainingsCombo(){
-            var source =
-            {
-                datatype: "json",
-                datafields: [
-                { name: 'id'},
-                { name: 'title'}
-                ],
-                url: 'Actions/ModuleAction.php?call=getModulesForGrid',
-                async: false
-            };
 
-            var dataAdapter = new $.jqx.dataAdapter(source);
+        function loadGraphChart(learningPlanSeq,moduleSeq,moduleLabel){
 
-            $("#combobox").jqxComboBox(
-            {
-                source: dataAdapter,
-                width: 300,
-                height: 25,
-                selectedIndex: 0,
-                displayMember: 'title',
-                valueMember: 'id',
-                theme: 'arctic'
-            });
-        }
-
-        function loadGraphChart(moduleSeq,moduleLabel){
-
-            var source =
-            {
+            var source = {
                 datatype: "json",
                 datafields: [
                     { name: 'Score' },
                     { name: 'Participants' }
                 ],
-                url: 'Actions/ActivityAction.php?call=getModulePerformanceData&moduleSeq='+moduleSeq
+                url: 'Actions/ActivityAction.php?call=getModulePerformanceData&moduleSeq='+moduleSeq +'&learningPlanSeq='+learningPlanSeq
             };
             var dataAdapter = new $.jqx.dataAdapter(source, { async: false, autoBind: true, loadError: function (xhr, status, error) { alert('Error loading "' + source.url + '" : ' + error);} });
-
             // prepare jqxChart settings
             var settings = {
                 title: "Performance Metrics",
@@ -98,7 +131,7 @@
                         showGridLines: true,
                         flip: false
                     },
-                colorScheme: 'scheme06',
+                colorScheme: 'scheme17',
                 seriesGroups:
                     [
                         {
@@ -110,11 +143,7 @@
                             {
                                 flip: true,
                                 unitInterval: 10,
-                                //displayValueAxis: true,
                                 description: '',
-                                //formatFunction: function (value) {
-                                    //return parseInt(value / 1000000);
-                                //}
                             },
                             series: [
                                     { dataField: 'Participants', displayText: 'Number of Participants' }
@@ -126,7 +155,7 @@
             $('#chartContainer').jqxChart(settings);
         }
 
-        function loadPassPie(moduleSeq,moduleLabel,percent){
+        function loadPassPie(learningPlanSeq,moduleSeq,moduleLabel,percent){
              // prepare chart data as an array
             var source =
             {
@@ -135,7 +164,7 @@
                     { name: 'Status' },
                     { name: 'Share' }
                 ],
-                url: 'Actions/ActivityAction.php?call=getModulePassPercentageChartData&moduleSeq='+ moduleSeq +'&percentage='+ percent
+                url: 'Actions/ActivityAction.php?call=getModulePassPercentageChartData&moduleSeq='+ moduleSeq +'&percentage='+ percent +'&learningPlanSeq='+learningPlanSeq
             };
             var dataAdapter = new $.jqx.dataAdapter(source, {
                 async: false,
@@ -150,7 +179,7 @@
                 showBorderLine: false,
                 legendLayout : { left: 400, top: 0, width: 200, height: 100, flow: 'vertical' },
                 source: dataAdapter,
-                colorScheme: 'scheme06',
+                colorScheme: 'scheme17',
                 seriesGroups:
                     [
                         {
@@ -179,8 +208,8 @@
             $('#passPercentageChartDiv').jqxChart(settings);
         }
 
-        function loadPerformanceTablesStats(moduleSeq){
-            var url = 'Actions/ActivityAction.php?call=getModuleMeanMediamModePercent&moduleSeq='+ moduleSeq;
+        function loadPerformanceTablesStats(learningPlanSeq,moduleSeq){
+            var url = 'Actions/ActivityAction.php?call=getModuleMeanMediamModePercent&moduleSeq='+ moduleSeq +'&learningPlanSeq='+learningPlanSeq;
             $.getJSON(url, function(data){
                 $(".meanCount").html(data.mean);
                 $(".medianCount").html(data.median);
@@ -192,8 +221,10 @@
 <body class='default'>
 <div id="wrapper">
         <?include("adminMenu.php");?>
-        <div style="float:left;margin-top:5px;margin-right:6px;">Select Module : </div>
-        <div style="float:left" id="combobox"></div>
+        <div style="float:left;margin-top:5px;margin-right:6px;">Learning Plan : </div>
+        <div style="float:left" id="learningPlanComboBox"></div>
+        <div style="float:left;margin-top:5px;margin-right:6px;">Module : </div>
+        <div style="float:left" id="moduleComboBox"></div>
         <input style="margin-left:10px;" type="button" value="Show Report" id="showReportButton" />
         <hr>
 

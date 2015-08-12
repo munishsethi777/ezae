@@ -158,10 +158,10 @@ class ChartsUtil{
     }
 
     //called from AdminMgr for Performance Metrics - pass percentage chart
-    public function getPassPercentData($moduleSeq, $percent){
+    public function getPassPercentData($learningPlanSeq,$moduleSeq, $percent){
         $ads = ActivityDataStore::getInstance();
-        $passCount =  $ads->getPassCountGreaterThanPercentage($moduleSeq,$percent);
-        $allCountArr =  $ads->getCompletionCounts($moduleSeq);
+        $passCount =  $ads->getPassCountGreaterThanPercentage($learningPlanSeq,$moduleSeq,$percent);
+        $allCountArr =  $ads->getCompletionCounts($learningPlanSeq,$moduleSeq);
         $totalCount = $allCountArr[0][0];
         $passPercent = $passCount/$totalCount * 100;
 

@@ -220,16 +220,16 @@ class AdminMgr{
     }
 
     //called from ajaxAdminMgr for performance data
-    public function getModulePercentagePerformanceForChart($moduleSeq,$percentage){
+    public function getModulePercentagePerformanceForChart($learningPlanSeq,$moduleSeq,$percentage){
         $chartsUtil = ChartsUtil::getInstance();
-        $data = $chartsUtil->getPassPercentData($moduleSeq,$percentage);
+        $data = $chartsUtil->getPassPercentData($learningPlanSeq,$moduleSeq,$percentage);
         return $data;
     }
 
     //called from ajaxAdminMgr for performance page table MMM
-    public function getMeanMedianModeOfPassPercent($moduleSeq){
+    public function getMeanMedianModeOfPassPercent($learningPlanSeq,$moduleSeq){
         $activityMgr = ActivityMgr::getInstance();
-        $data = $activityMgr->getMeanMedianModePassPercentForPerformance($moduleSeq);
+        $data = $activityMgr->getMeanMedianModePassPercentForPerformance($learningPlanSeq,$moduleSeq);
         return $data;
     }
 

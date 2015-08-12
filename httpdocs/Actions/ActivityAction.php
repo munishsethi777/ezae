@@ -56,18 +56,20 @@
 
     //called for performance Metrics Mean Mediam Mode table
     if($call == "getModuleMeanMediamModePercent"){
+        $learningPlanSeq = $_GET["learningPlanSeq"];
         $moduleId = $_GET["moduleSeq"];
         $adminMgr = AdminMgr::getInstance();
-        echo $adminMgr->getMeanMedianModeOfPassPercent($moduleId);
+        echo $adminMgr->getMeanMedianModeOfPassPercent($learningPlanSeq,$moduleId);
         return;
     }
 
     if($call == "getModulePerformanceData"){
+        $learningPlanSeq = $_GET["learningPlanSeq"];
         $moduleId = $_GET["moduleSeq"];
         $moduleMgr = ModuleMgr::getInstance();
         $module = $moduleMgr->getModule($moduleId);
         $activityMgr = ActivityMgr::getInstance();
-        $dataArr = $activityMgr->getPerformanceData($moduleId,$module->getMaxScore());
+        $dataArr = $activityMgr->getPerformanceData($learningPlanSeq,$moduleId,$module->getMaxScore());
         $scoresArr = array();
         $scoresArr['86PLUS'] = 0;
         $scoresArr['66TO85'] = 0;
@@ -108,10 +110,11 @@
     }
 
     if($call == "getModulePassPercentageChartData"){
+      $learningPlanSeq = $_GET["learningPlanSeq"];
       $moduleId = $_GET["moduleSeq"];
       $percentage = $_GET["percentage"];
       $adminMgr = AdminMgr::getInstance();
-      echo $adminMgr->getModulePercentagePerformanceForChart($moduleId,$percentage);
+      echo $adminMgr->getModulePercentagePerformanceForChart($learningPlanSeq,$moduleId,$percentage);
       return;
     }
 

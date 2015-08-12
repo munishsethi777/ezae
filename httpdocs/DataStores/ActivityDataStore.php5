@@ -71,16 +71,16 @@ class ActivityDataStore extends BeanDataStore{
         return $list;
     }
 
-    public function getPassCountGreaterThanPercentage($moduleId, $percent){
+    public function getPassCountGreaterThanPercentage($learningPlanSeq,$moduleId, $percent){
         $sql = "select count(a.score) as totalCount from activities as a left join modules on a.moduleseq = modules.seq";
-        $sql .= " where (a.score/modules.maxscore) * 100 > $percent and modules.seq = $moduleId";
+        $sql .= " where (a.score/modules.maxscore) * 100 > $percent and modules.seq = $moduleId and a.learningplanseq = $learningPlanSeq";
         $list = $this->executeQuery($sql);
         return $list[0][0];
     }
 
-    public function getScorePercentage($moduleId){
+    public function getScorePercentage($learningPlanSeq,$moduleId){
         $sql = "select a.score/modules.maxscore * 100 from activities a left join modules on a.moduleseq = modules.seq";
-        $sql .= " where modules.seq = $moduleId";
+        $sql .= " where modules.seq = $moduleId and a.learningplanseq = $learningPlanSeq";
         $list = $this->executeQuery($sql);
         return $list;
     }

@@ -35,10 +35,10 @@ class ActivityMgr{
             $mailMessageMailUtils->checkForModuleCompletedNotification($learningPlanSeq,$moduleId,$score,$userSeq);
         }
         $ads->saveActivityData($activity);
-        
+
     }
-     
-    
+
+
      public function getCompletionCounts($moduleId){
        $ads = ActivityDataStore::getInstance();
        return $ads->getCompletionCounts($moduleId);
@@ -48,9 +48,9 @@ class ActivityMgr{
        return $ads->findByUser($userSeq);
     }
     //called for main chart on performance UI
-    public function getPerformanceData($moduleId,$maxScore){
+    public function getPerformanceData($learningPlanSeq,$moduleId,$maxScore){
         $ads = ActivityDataStore::getInstance();
-        $arr = $ads->getScorePercentage($moduleId);
+        $arr = $ads->getScorePercentage($learningPlanSeq,$moduleId);
         return $arr;
     }
 
@@ -63,18 +63,18 @@ class ActivityMgr{
             if($line != "") {
                 $nameValueArray = explode(':', $line);
                 $val = $nameValueArray[1];
-                $mainArray[trim("cus_".$nameValueArray[0])] =  $val;    
+                $mainArray[trim("cus_".$nameValueArray[0])] =  $val;
             }
-            
+
         }
         return $mainArray;
 
     }
 
     //called from AdminMgr for performance page table MMM
-    public static function getMeanMedianModePassPercentForPerformance($moduleSeq){
+    public static function getMeanMedianModePassPercentForPerformance($learningPlanSeq,$moduleSeq){
         $ads = ActivityDataStore::getInstance();
-        $data = $ads->getScorePercentage($moduleSeq);
+        $data = $ads->getScorePercentage($learningPlanSeq,$moduleSeq);
         $arr = array();
         foreach($data as $item){
             array_push($arr, $item[0]);
