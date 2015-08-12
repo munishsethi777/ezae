@@ -51,12 +51,14 @@ class ActivityDataStore extends BeanDataStore{
         }
     }
 
-    public function getUsersAndActivity($moduleSeq,$companySeq){
+    public function getUsersAndActivity($moduleSeq,$companySeq,$isApplyFilter = false){
         //$sql= "select * from users left join activities on users.seq = activities.userseq and activities.moduleseq = ".$moduleSeq;
 		$sql= "select users.*,activities.*, users.seq from users left join activities on activities.userseq = users.seq and activities.moduleseq = ".$moduleSeq ." where users.companyseq=".$companySeq;
 		//select users.*,activities.progress,activities.score from users left join activities on users.seq = activities.userseq and activities.moduleseq = 2 where users.companyseq = 2
         //$sql .= " WHERE users.seq =3200";
-
+        if($isApplyFilter){
+            $sql = LearnerFilterUtil::applyFilter($sql,false);    
+        }          
         $list = $this->executeQuery($sql);
         return $list;
     }

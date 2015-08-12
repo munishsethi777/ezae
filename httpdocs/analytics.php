@@ -6,8 +6,14 @@
 <script type="text/javascript">
     $(document).ready(function (){
         theme = "arctic";
-        loadGrid(null);
         loadModulesCombo();
+        var value = $("#trainingsCombo").val();
+        var url = 'Actions/ActivityAction.php?call=getActivityHeadersForGrid&moduleSeq='+ value;
+        $.getJSON(url, function(data){
+            loadGrid(data,value);
+            loadColsList(data.columns);
+        });
+        
         var exportInfo;
         $("#excelExport").jqxButton({ theme: theme, width:200 });
         $("#csvExport").jqxButton({ theme: theme , width:200});
@@ -23,13 +29,12 @@
         });
 
     });
-    function loadGrid(data){
+    function loadGrid(data,value){
         var columns = Array();
         var rows = Array();
         var dataFields = Array();
         if(data != null){
             columns = $.parseJSON(data.columns);
-            rows = $.parseJSON(data.data);
             dataFields = $.parseJSON(data.datafields);
         }
         var source =
@@ -37,8 +42,24 @@
             datatype: "json",
             id: 'id',
             pagesize: 20,
-            localData: rows,
-            datafields: dataFields
+            datafields: dataFields,
+            url : 'Actions/ActivityAction.php?call=getActivityDataForGrid&moduleSeq='+ value,
+            root: 'Rows',
+            cache: false,
+            beforeprocessing: function(data)
+            {
+                source.totalrecords = data.TotalRows;
+            },
+            filter: function()
+            {
+                // update the grid and send a request to the server.
+                $("#jqxgrid").jqxGrid('updatebounddata', 'filter');
+            },
+            sort: function()
+            {
+                    // update the grid and send a request to the server.
+                $("#jqxgrid").jqxGrid('updatebounddata', 'sort');
+            },
         };
         var dataAdapter = new $.jqx.dataAdapter(source);
         $("#jqxgrid").jqxGrid(
@@ -55,7 +76,12 @@
             altrows: true,
             enabletooltips: true,
             columnsresize: true,
-            columnsreorder: true
+            columnsreorder: true ,
+            virtualmode: true,
+            rendergridrows: function()
+            {
+                  return dataAdapter.records;
+            }
         });
     }
 
@@ -109,9 +135,9 @@
             var args = event.args;
             if (args) {
                 var value = args.item.value;
-                var url = 'Actions/ActivityAction.php?call=getActivityDataForGrid&moduleSeq='+ value;
+                var url = 'Actions/ActivityAction.php?call=getActivityHeadersForGrid&moduleSeq='+ value;
                 $.getJSON(url, function(data){
-                    loadGrid(data);
+                    loadGrid(data,value);
                     loadColsList(data.columns);
                 });
 

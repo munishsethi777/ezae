@@ -138,7 +138,7 @@ class AdminMgr{
 
    }
     //called from ajaxAdminMgr
-    public function getActivitiesGridJSON($companySeq,$moduleSeq){
+    public function getActivitiesGridHeardersJSON($companySeq,$moduleSeq){
         $userFieldsJSON = $this->getUserAllFieldsJsonByCompany($companySeq);
         $userFieldsArr = json_decode($userFieldsJSON);
         unset($userFieldsArr[1]);//removing password field
@@ -153,29 +153,48 @@ class AdminMgr{
         $arr['datafield'] = "score";
         $arr['type'] = "number";
         array_push($userFieldsArr,$arr);
+        $mainJsonArray = array();
+        $mainJsonArray["columns"] = json_encode($userFieldsArr);
+        $dataFieldsArr = $this->getDataFieldsArr($userFieldsArr);//for column types
+        $mainJsonArray["datafields"] = json_encode($dataFieldsArr);;
 
+        return json_encode($mainJsonArray);
+    }
+    
+    public function getActivitiesGridJSON($companySeq,$moduleSeq){
         $activityDS = ActivityDataStore::getInstance();
-        $data = $activityDS->getUsersAndActivity($moduleSeq,$companySeq);
+        $data = $activityDS->getUsersAndActivity($moduleSeq,$companySeq,true);
         $fullArr = array();
+        $pagination = LearnerFilterUtil::getPagination();
+        $start = $pagination["start"];
+        $limit = $pagination["limit"];
+        $count = 0;
+        $userMgr = UserMgr::getInstance();
         foreach($data as $dataArr){
-
             $arr = array();
-            $arr['id'] = $dataArr['useq'];
+            $arr['id'] = $dataArr['seq'];
             $arr['username'] = $dataArr['username'];
             //$arr['password'] = $dataArr['password'];
+            $profile = $userMgr->getUserLearningProfiles($dataArr['seq']);
+            $arr['prof_profiles'] = $profile;
             $arrCustomFields = ActivityMgr::getCustomValuesArray($dataArr['customfieldvalues']);
+            $cus_flag = LearnerFilterUtil::applyFilterOnCustomfield($arrCustomFields);
+            $prof_flag = LearnerFilterUtil::applyFilterOnCustomfield($arr,false);   
+            if($cus_flag && $prof_flag){
+            }else{
+                continue;
+            }
             $arr = array_merge($arr,$arrCustomFields);
             $arr['score'] = $dataArr['score'];
             $arr['progress'] = $dataArr['progress'];
             array_push($fullArr,$arr);
+            $count++;
         }
-
+        $fullArr = LearnerFilterUtil::sortByCustomField($fullArr);
+        $fullArr = array_slice($fullArr, $start, $limit);
         $mainJsonArray = array();
-        $mainJsonArray["columns"] = json_encode($userFieldsArr);
-        $mainJsonArray["data"] = json_encode($fullArr);
-        $dataFieldsArr = $this->getDataFieldsArr($userFieldsArr);//for column types
-        $mainJsonArray["datafields"] = json_encode($dataFieldsArr);;
-
+        $mainJsonArray["Rows"] = $fullArr;
+        $mainJsonArray["TotalRows"] = $count;
         return json_encode($mainJsonArray);
     }
 

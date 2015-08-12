@@ -33,6 +33,16 @@
         $response["message"]  = $message;
         echo json_encode($response);
     }
+   if($call == "getActivityHeadersForGrid"){
+        $sessionUtil = SessionUtil::getInstance();
+        $companySeq = $sessionUtil->getAdminLoggedInCompanySeq();
+        $moduleSeq = $_GET['moduleSeq'];
+        $adminMgr = AdminMgr::getInstance();
+        $activityGridJSON = $adminMgr->getActivitiesGridHeardersJSON($companySeq,$moduleSeq);
+        echo $activityGridJSON;
+        return;
+   }
+   
    if($call == "getActivityDataForGrid"){
         $sessionUtil = SessionUtil::getInstance();
         $companySeq = $sessionUtil->getAdminLoggedInCompanySeq();
