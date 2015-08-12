@@ -44,7 +44,7 @@ if($call == "getLearningPlanModulesForGrid"){
 if($call == "getModulesBySelectedLearningPlan"){
     try{
         $moduleMgr = ModuleMgr::getInstance();
-      
+
         if(isset($_GET["ids"]) && !empty($_GET["ids"])){
             $ids =  $_GET["ids"];
             $data = $moduleMgr->getModulesByLearningPlans($ids);
@@ -73,5 +73,22 @@ if($call == "getModulesForUserTrainingGrid"){
     }
     echo $data;
 }
+
+//* REPORTING METHODS STARTS HERE //*
+//Completion Metrics Reporting page, load modules by learningplan
+if($call == "getModulesByLearningPlanForReporting"){
+    try{
+        $moduleMgr = ModuleMgr::getInstance();
+        if(isset($_GET["learningPlanSeq"]) && !empty($_GET["learningPlanSeq"])){
+            $id =  $_GET["learningPlanSeq"];
+            $data = $moduleMgr->getModulesByLearningPlans($id);
+        }
+    }catch(Exception $e){
+        $success = 0;
+        $message  = $e->getMessage();
+    }
+    echo $data;
+}
+//* REPORTING METHODS ENDS HERE //*
 ?>
 

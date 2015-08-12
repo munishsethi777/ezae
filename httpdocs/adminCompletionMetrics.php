@@ -6,20 +6,22 @@
     <script type="text/javascript">
 
         $(document).ready(function (){
-            loadCombo();
+            loadLearningPlansCombo();
             $('#showReportButton').jqxButton({ width: 100, height: 25, theme:'arctic' });
             $("#showReportButton").click(function () {
                 $(".list-group").fadeOut();
-                var item = $("#combobox").jqxComboBox('getSelectedItem');
-                var moduleSeq = item.value;
-                var moduleLabel = item.label;
-                loadPie(moduleSeq,moduleLabel,"attemptedNotAttempted");
-                loadPie(moduleSeq,moduleLabel,"completedNotCompleted");
-                loadPie(moduleSeq,moduleLabel,"completedNotCompletedNotAttempted");
-                loadTablesStats(moduleSeq);
+                var learningPlanItem = $("#learningPlanComboBox").jqxComboBox('getSelectedItem');
+                var moduleItem = $("#moduleComboBox").jqxComboBox('getSelectedItem');
+                var learningPlanSeq = learningPlanItem.value;
+                var moduleSeq = moduleItem.value;
+                var moduleLabel = moduleItem.label;
+                loadPie(learningPlanSeq,moduleSeq,moduleLabel,"attemptedNotAttempted");
+                loadPie(learningPlanSeq,moduleSeq,moduleLabel,"completedNotCompleted");
+                loadPie(learningPlanSeq,moduleSeq,moduleLabel,"completedNotCompletedNotAttempted");
+                loadTablesStats(learningPlanSeq,moduleSeq);
             });
         });
-        function loadCombo(){
+        function loadLearningPlansCombo(){
             var source =
             {
                 datatype: "json",
@@ -27,15 +29,46 @@
                 { name: 'id'},
                 { name: 'title'}
                 ],
-                url: 'Actions/ModuleAction.php?call=getModulesForGrid',
-                async: false
+                url: 'Actions/LearningPlanAction.php?call=getLearnerPlansForReporting',
+                async: true
             };
 
             var dataAdapter = new $.jqx.dataAdapter(source);
 
-            $("#combobox").jqxComboBox(
-            {
+            $("#learningPlanComboBox").jqxComboBox({
                 source: dataAdapter,
+                width: '300',
+                height: 25,
+                selectedIndex: 0,
+                displayMember: 'title',
+                valueMember: 'id',
+                theme: 'arctic'
+            });
+            $('#learningPlanComboBox').on('change', function (event){
+                var args = event.args;
+                if (args) {
+                   var item = args.item;
+                   loadModulesCombo(item.value);
+                }
+            });
+
+        }
+        function loadModulesCombo(learningPlanSeq){
+            var source1 =
+            {
+                datatype: "json",
+                datafields: [
+                { name: 'id'},
+                { name: 'title'}
+                ],
+                url: 'Actions/ModuleAction.php?call=getModulesByLearningPlanForReporting&learningPlanSeq='+learningPlanSeq,
+                async: true
+            };
+
+            var dataAdapter1 = new $.jqx.dataAdapter(source1);
+
+            $("#moduleComboBox").jqxComboBox({
+                source: dataAdapter1,
                 width: '300',
                 height: 25,
                 selectedIndex: 0,
@@ -45,7 +78,7 @@
             });
         }
 
-        function loadPie(moduleSeq,moduleLabel,mode){
+        function loadPie(learningPlanSeq,moduleSeq,moduleLabel,mode){
              // prepare chart data as an array
             var source =
             {
@@ -54,7 +87,7 @@
                     { name: 'Status' },
                     { name: 'Share' }
                 ],
-                url: 'Actions/ActivityAction.php?call=getModuleCompletionData&moduleSeq='+ moduleSeq +'&mode='+mode
+                url: 'Actions/ActivityAction.php?call=getModuleCompletionData&moduleSeq='+ moduleSeq +'&mode='+mode +'&learningPlanSeq='+learningPlanSeq
             };
             var dataAdapter = new $.jqx.dataAdapter(source, {
                 async: false,
@@ -69,7 +102,7 @@
                 showBorderLine: false,
                 titlePadding: { left: 0, top: 20, right: 0, bottom: 10 },
                 source: dataAdapter,
-                colorScheme: 'scheme06',
+                colorScheme: 'scheme17',
                 seriesGroups:
                     [
                         {
@@ -99,8 +132,8 @@
             $('#'+ mode).jqxChart(settings);
         }
 
-        function loadTablesStats(moduleSeq){
-            var url = 'Actions/ActivityAction.php?call=getModuleCompletionData&moduleSeq='+ moduleSeq +'&mode=getOverAllInfo';
+        function loadTablesStats(learningPlanSeq,moduleSeq){
+            var url = 'Actions/ActivityAction.php?call=getModuleCompletionData&moduleSeq='+ moduleSeq +'&mode=getOverAllInfo&learningPlanSeq='+learningPlanSeq;;
             $.getJSON(url, function(data){
                 $(".list-group").slideDown("slow");
                 data = data[0];
@@ -123,8 +156,10 @@
 <body class='default'>
 <div id="wrapper">
         <?include("adminMenu.php");?>
-        <div style="float:left;margin-top:5px;margin-right:6px;">Select Module : </div>
-        <div style="float:left" id="combobox"></div>
+        <div style="float:left;margin-top:5px;margin-right:6px;">Learning Plan : </div>
+        <div style="float:left" id="learningPlanComboBox"></div>
+        <div style="float:left;margin-top:5px;margin-right:6px;">Module : </div>
+        <div style="float:left" id="moduleComboBox"></div>
         <input style="margin-left:10px;" type="button" value="Show Report" id="showReportButton" />
 
         <hr>

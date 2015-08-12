@@ -23,8 +23,9 @@ if($call== "getLeaderBoardsForGrid"){
 }
 else if ($call = "getLeaderBoardDataForAdminGridPopup"){
     $id = $_GET['seq'];
+    $type = $_GET['type'];
     $lbMgr = LeaderBoardMgr::getInstance();
-    $leaderBoardData = $lbMgr->getLeaderBoardData($id);
+    $leaderBoardData = $lbMgr->getLeaderBoardData($id,$type);
     echo $leaderBoardData;
 }
 

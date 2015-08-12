@@ -10,8 +10,8 @@
     function loadGrid(){
         var columns = [
           { text: 'id', datafield: 'id' , hidden:true},
-          { text: 'Name' , datafield: 'name', width: 500 },
-          { text: 'Based on', datafield: 'type' },
+          { text: 'Name' , datafield: 'name'},
+          { text: 'Based on', datafield: 'basedOn' },
           { text: 'Modified On', datafield: 'lastmodifiedon' ,cellsformat: 'MM-dd-yyyy hh:mm:ss tt'},
           { text: 'Action', datafield: 'action'}
         ]
@@ -24,7 +24,7 @@
             datafields: [
                 { name: 'id', type: 'integer' },
                 { name: 'name', type: 'string' },
-                { name: 'type', type: 'string' },
+                { name: 'basedOn', type: 'string' },
                 { name: 'lastmodifiedon', type: 'date' },
                 { name: 'action', type: 'string' }
             ],
@@ -68,7 +68,6 @@
             columns: columns,
             pageable: true,
             altrows: true,
-            enabletooltips: true,
             columnsresize: true,
             columnsreorder: true,
             selectionmode: 'checkbox',
@@ -83,8 +82,8 @@
         });
     }
 
-    function showLeaderboard(leaderBoardSeq){
-        $.getJSON( "Actions/LeaderBoardAction.php?call=getLeaderBoardDataForAdminGridPopup&seq="+ leaderBoardSeq, function( data ){
+    function showLeaderboard(leaderBoardSeq,type){
+        $.getJSON( "Actions/LeaderBoardAction.php?call=getLeaderBoardDataForAdminGridPopup&seq="+ leaderBoardSeq +"&type="+type, function( data ){
             $str = "<h4>Top 3 Scorers</h4>";
             $i = 1;
             $.each(data, function(key,val){

@@ -30,8 +30,24 @@ if($call== "getLearnerPlansForGrid"){
         $success = 0;
         $message  = $e->getMessage();
     }
-    echo $data;  
+    echo $data;
 }
+
+//* REPORTING METHODS STARTS HERE //*
+//Completion Metrics Reporting load plans method
+if($call== "getLearnerPlansForReporting"){
+    try{
+        $lpMgr = LearningPlanMgr::getInstance();
+        $isApplyFilter = true;
+        $data =  $lpMgr->getLearningPlanForGrid($isApplyFilter);
+    }catch(Exception $e){
+        $success = 0;
+        $message  = $e->getMessage();
+    }
+    echo $data;
+}
+//* REPORTING METHODS ENDS HERE //*
+
 
 if($call == "saveLearningPlan"){
     try{
@@ -68,7 +84,7 @@ if($call == "saveLearningPlan"){
         $learningPlan->setDeactivateOn($deactivateOn);
         $learningPlan->setDescription($des);
         $learningPlan->setIsActive($actOption == "active" ? 1 : 0);
-        $learningPlan->setIsLeaderBoard($isEnableLeaderboard) ;
+        $learningPlan->setIsLeaderBoard($isEnableLeaderboard);
         $learningPlan->setTitle($name);
         $learningPlan->setCreatedOn(new DateTime());
         $learningPlan->setLastModifiedOn(new DateTime());
@@ -98,6 +114,7 @@ if($call == "saveLearningPlan"){
     echo json_encode($response);
 }
 
+//To be moved to mgr class
 function getArray($string){
     $a = explode(',', $string);
     foreach ($a as $result) {

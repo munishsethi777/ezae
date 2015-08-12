@@ -27,7 +27,7 @@
                 { name: 'id'},
                 { name: 'title'}
                 ],
-                url: 'ajaxAdminMgr.php?call=getModulesJson',
+                url: 'Actions/ModuleAction.php?call=getModulesForGrid',
                 async: false
             };
 

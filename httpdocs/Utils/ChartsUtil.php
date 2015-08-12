@@ -104,9 +104,9 @@ class ChartsUtil{
     }
 
     //called from AdminMgr for Completion Metrics
-    public function getCompletionData($moduleSeq, $mode){
+    public function getCompletionData($learningPlanSeq,$moduleSeq, $mode){
         $ads = ActivityDataStore::getInstance();
-        $countArr =  $ads->getCompletionCounts($moduleSeq);
+        $countArr =  $ads->getCompletionCounts($learningPlanSeq,$moduleSeq);
 
         $mainArr = array();
         $arr = array();

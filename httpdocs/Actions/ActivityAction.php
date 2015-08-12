@@ -42,35 +42,38 @@
         echo $activityGridJSON;
         return;
    }
-   //Analytics Module Completion
-   if($call == "getModuleCompletionData"){
+
+    /* ---------------------REPORTING ACTIONS STARTS HERE---------------------*/
+    //Analytics Module Completion
+    if($call == "getModuleCompletionData"){
+        $learningPlanSeq = $_GET["learningPlanSeq"];
         $moduleId = $_GET["moduleSeq"];
         $mode = $_GET['mode'];
         $adminMgr = AdminMgr::getInstance();
-        echo $adminMgr->getModuleCompletionForChart($moduleId, $mode);
+        echo $adminMgr->getModuleCompletionForChart($learningPlanSeq,$moduleId, $mode);
         return;
-   }
+    }
 
     //called for performance Metrics Mean Mediam Mode table
     if($call == "getModuleMeanMediamModePercent"){
-      $moduleId = $_GET["moduleSeq"];
-      $adminMgr = AdminMgr::getInstance();
-      echo $adminMgr->getMeanMedianModeOfPassPercent($moduleId);
-      return;
+        $moduleId = $_GET["moduleSeq"];
+        $adminMgr = AdminMgr::getInstance();
+        echo $adminMgr->getMeanMedianModeOfPassPercent($moduleId);
+        return;
     }
 
-  if($call == "getModulePerformanceData"){
-      $moduleId = $_GET["moduleSeq"];
-      $moduleMgr = ModuleMgr::getInstance();
-      $module = $moduleMgr->getModule($moduleId);
-      $activityMgr = ActivityMgr::getInstance();
-      $dataArr = $activityMgr->getPerformanceData($moduleId,$module->getMaxScore());
-      $scoresArr = array();
-      $scoresArr['86PLUS'] = 0;
-      $scoresArr['66TO85'] = 0;
-      $scoresArr['46TO65'] = 0;
-      $scoresArr['0TO45'] = 0;
-      foreach($dataArr as $data){
+    if($call == "getModulePerformanceData"){
+        $moduleId = $_GET["moduleSeq"];
+        $moduleMgr = ModuleMgr::getInstance();
+        $module = $moduleMgr->getModule($moduleId);
+        $activityMgr = ActivityMgr::getInstance();
+        $dataArr = $activityMgr->getPerformanceData($moduleId,$module->getMaxScore());
+        $scoresArr = array();
+        $scoresArr['86PLUS'] = 0;
+        $scoresArr['66TO85'] = 0;
+        $scoresArr['46TO65'] = 0;
+        $scoresArr['0TO45'] = 0;
+        foreach($dataArr as $data){
         $val = intval($data[0]);
         if($val>=86){
             $scoresArr['86PLUS']++;
@@ -82,53 +85,58 @@
             $scoresArr['0TO45']++;
         }
 
-      }
-      $mainArr = array();
-      $arr = array();
-      $arr['Score'] = '>85%';
-      $arr['Participants'] = $scoresArr['86PLUS'];
-      array_push($mainArr,$arr);
+        }
+        $mainArr = array();
+        $arr = array();
+        $arr['Score'] = '>85%';
+        $arr['Participants'] = $scoresArr['86PLUS'];
+        array_push($mainArr,$arr);
 
-      $arr['Score'] = '65%-85%';
-      $arr['Participants'] = $scoresArr['66TO85'];
-      array_push($mainArr,$arr);
+        $arr['Score'] = '65%-85%';
+        $arr['Participants'] = $scoresArr['66TO85'];
+        array_push($mainArr,$arr);
 
-      $arr['Score'] = '45%-65%';
-      $arr['Participants'] = $scoresArr['46TO65'];
-      array_push($mainArr,$arr);
+        $arr['Score'] = '45%-65%';
+        $arr['Participants'] = $scoresArr['46TO65'];
+        array_push($mainArr,$arr);
 
-      $arr['Score'] = '0%-45%';
-      $arr['Participants'] = $scoresArr['0TO45'];
-      array_push($mainArr,$arr);
+        $arr['Score'] = '0%-45%';
+        $arr['Participants'] = $scoresArr['0TO45'];
+        array_push($mainArr,$arr);
 
-      echo json_encode($mainArr);
-  }
-  if($call == "getModulePassPercentageChartData"){
+        echo json_encode($mainArr);
+    }
+
+    if($call == "getModulePassPercentageChartData"){
       $moduleId = $_GET["moduleSeq"];
       $percentage = $_GET["percentage"];
       $adminMgr = AdminMgr::getInstance();
       echo $adminMgr->getModulePercentagePerformanceForChart($moduleId,$percentage);
       return;
-  }
+    }
 
-  //called from comparative analytics page
-  if($call == "getCustomFieldsJson"){
-    $sessionUtil = SessionUtil::getInstance();
-    $companySeq = $sessionUtil->getAdminLoggedInCompanySeq();
-    $adminMgr = AdminMgr::getInstance();
-    $customFieldsJSON =  $adminMgr->getCustomFieldsJSON($companySeq);
-    echo $customFieldsJSON;
-    return;
-  }
-  if($call == "getModuleComparativeData"){
-      $moduleSeq = $_GET["moduleSeq"];
-      $fieldName = $_GET["fieldName"];
-      $criteria = $_GET["criteria"];
-      $adminMgr = AdminMgr::getInstance();
-      $json = $adminMgr->getModuleComparativeForChart($moduleSeq, $fieldName, $criteria);
-      echo $json;
-      return;
-  }
+    //called from comparative analytics page
+    if($call == "getCustomFieldsJson"){
+        $sessionUtil = SessionUtil::getInstance();
+        $companySeq = $sessionUtil->getAdminLoggedInCompanySeq();
+        $adminMgr = AdminMgr::getInstance();
+        $customFieldsJSON =  $adminMgr->getCustomFieldsJSON($companySeq);
+        echo $customFieldsJSON;
+        return;
+    }
+    if($call == "getModuleComparativeData"){
+        $sessionUtil = SessionUtil::getInstance();
+        $companySeq = $sessionUtil->getAdminLoggedInCompanySeq();
+
+        $moduleSeq = $_GET["moduleSeq"];
+        $fieldName = $_GET["fieldName"];
+        $criteria = $_GET["criteria"];
+        $adminMgr = AdminMgr::getInstance();
+        $json = $adminMgr->getModuleComparativeForChart($moduleSeq, $fieldName, $criteria,$companySeq);
+        echo $json;
+        return;
+    }
+    /* ---------------------REPORTING ACTIONS ENDS HERE---------------------*/
 
 
    //To be moved to Admin action file

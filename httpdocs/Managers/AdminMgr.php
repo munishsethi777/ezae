@@ -1,13 +1,13 @@
 <?php
 require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/Module.php");
-require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/ManagerCriteria.php"); 
+require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/ManagerCriteria.php");
 require_once($ConstantsArray['dbServerUrl']. "DataStores/AdminDataStore.php5");
 require_once($ConstantsArray['dbServerUrl']. "DataStores/ModuleDataStore.php5");
 require_once($ConstantsArray['dbServerUrl']. "DataStores/ActivityDataStore.php5");
 require_once($ConstantsArray['dbServerUrl']. "Utils/ChartsUtil.php");
 require_once($ConstantsArray['dbServerUrl']. "Utils/SessionUtil.php5");
 require_once($ConstantsArray['dbServerUrl']. "Managers/UserMgr.php");
-require_once($ConstantsArray['dbServerUrl']. "Managers/SignupFormMgr.php");  
+require_once($ConstantsArray['dbServerUrl']. "Managers/SignupFormMgr.php");
 class AdminMgr{
 
     private static $adminMgr;
@@ -23,8 +23,8 @@ class AdminMgr{
             self::$adminMgr = new AdminMgr();
             self::$adminDataStore = AdminDataStore::getInstance();
             self::$managerCriteriaDataStore = new BeanDataStore(ManagerCriteria::$className,ManagerCriteria::$tableName);
-            self::$sessionUtil = SessionUtil::getInstance();   
-            self::$adminSeq = self::$sessionUtil->getAdminLoggedInSeq();            
+            self::$sessionUtil = SessionUtil::getInstance();
+            self::$adminSeq = self::$sessionUtil->getAdminLoggedInSeq();
             return self::$adminMgr;
         }
         return self::$adminMgr;
@@ -41,7 +41,7 @@ class AdminMgr{
         $attributes[0] = "signupformheader";
         $text = self::$adminDataStore->executeAttributeQuery($attributes,$params);
         if(count($text) > 0){
-           return $text[0][0]; 
+           return $text[0][0];
         }
         return null;
     }
@@ -102,9 +102,9 @@ class AdminMgr{
             $arrCustomFields = ActivityMgr::getCustomValuesArray($user["customfieldvalues"]);
             $cus_flag = LearnerFilterUtil::applyFilterOnCustomfield($arrCustomFields);
             $prof_flag = LearnerFilterUtil::applyFilterOnCustomfield($arr,false);
-            if($cus_flag && $prof_flag){               
+            if($cus_flag && $prof_flag){
             }else{
-                continue; 
+                continue;
             }
             $arr = array_merge($arr,$arrCustomFields);
             $arr["lastmodifiedon"] = $user["lastmodifiedon"];
@@ -112,11 +112,11 @@ class AdminMgr{
             $count++;
         }
         $fullArr = LearnerFilterUtil::sortByCustomField($fullArr);
-        $fullArr = array_slice($fullArr, $start, $limit); 
+        $fullArr = array_slice($fullArr, $start, $limit);
         $mainJsonArray = array();
         $mainJsonArray["Rows"] = $fullArr;
-        $mainJsonArray["TotalRows"] = $count; 
-        return json_encode($mainJsonArray);   
+        $mainJsonArray["TotalRows"] = $count;
+        return json_encode($mainJsonArray);
     }
 
     public function getLearnerGridHeaders($companySeq){
@@ -133,9 +133,9 @@ class AdminMgr{
         $mainJsonArray["datafields"] = json_encode($dataFieldsArr);
         return json_encode($mainJsonArray);
     }
-    
+
    private function FilterUserGridData(){
-        
+
    }
     //called from ajaxAdminMgr
     public function getActivitiesGridJSON($companySeq,$moduleSeq){
@@ -194,8 +194,8 @@ class AdminMgr{
         $customFields = $signupFieldMgr->getSignupFormFields($companySeq);
         $isExists =  count($customFields) > 0;
         if(!$isExists){
-            $customFields =  $this->getCustomFieldsByCompany($companySeq);    
-        }                      
+            $customFields =  $this->getCustomFieldsByCompany($companySeq);
+        }
         $html = $customFieldsFormGenerator->getDivsForFormSettings($customFields,$isExists);
         $adminMgr = AdminMgr::getInstance();
         $headerText = $adminMgr->getSignupFormHeaderText();
@@ -204,7 +204,7 @@ class AdminMgr{
         $response["headerText"] = $headerText;
         return json_encode($response);
     }
-    
+
     //called from ajaxAdminMgr for compartive data
     public function getModuleComparativeForChart($moduleSeq, $customFieldName, $criteria,$companySeq){
         $chartsUtil = ChartsUtil::getInstance();
@@ -213,9 +213,9 @@ class AdminMgr{
     }
 
     //called from ajaxAdminMgr for completion data
-    public function getModuleCompletionForChart($moduleSeq, $mode){
+    public function getModuleCompletionForChart($learningPlanSeq,$moduleSeq, $mode){
         $chartsUtil = ChartsUtil::getInstance();
-        $data = $chartsUtil->getCompletionData($moduleSeq, $mode);
+        $data = $chartsUtil->getCompletionData($learningPlanSeq,$moduleSeq, $mode);
         return $data;
     }
 
@@ -258,7 +258,7 @@ class AdminMgr{
         $userFieldsJSON = self::getUserFieldsGridHeadersJSON($customFields);
         return $userFieldsJSON;
     }
-    
+
     public function updateHeaderText($headerText,$adminSeq){
         $adminDataStore = AdminDataStore::getInstance();
         $adminDataStore->updateHeaderText($headerText,$adminSeq);
@@ -291,10 +291,10 @@ class AdminMgr{
             $arr['datafield'] = "id";
             $arr['type'] = "integer";
             $arr['hidden'] = true;
-            
+
             array_push($fullArr,$arr);
-            
-            $arr = array(); 
+
+            $arr = array();
             $arr['text'] = "User name";
             $arr['datafield'] = "username";
             $arr['type'] = "string";
@@ -311,14 +311,14 @@ class AdminMgr{
             $arr['datafield'] = "emailid";
             $arr['type'] = "string";
             array_push($fullArr,$arr);
-            
+
             $arr = array();
             $arr['text'] = "Profiles";
             $arr['datafield'] = "prof_profiles";
             $arr['type'] = "string";
             array_push($fullArr,$arr);
-            
-            
+
+
         }
 
         foreach($customFields as $customField){
@@ -342,7 +342,7 @@ class AdminMgr{
             $arr['type'] = "date";
             $arr["filtertype"] = 'date';
             $arr['cellsformat'] = "MM-dd-yyyy hh:mm:ss tt";
-            
+
             array_push($fullArr,$arr);
         return json_encode($fullArr);
 
@@ -387,7 +387,7 @@ class AdminMgr{
             if($isUpdate == "true"){
                 $sessionUtil = SessionUtil::getInstance();
                 $seq = $sessionUtil->getAdminLoggedInSeq();
-                $admin->setSeq($seq);   
+                $admin->setSeq($seq);
             }
             $ADS = AdminDataStore::getInstance();
             $id = $ADS->save($admin);
@@ -408,7 +408,7 @@ class AdminMgr{
         $companySeq = $sessionUtil->getAdminLoggedInCompanySeq();
         $adminDataStore->ChangePassword($password,$adminSeq);
     }
-    
+
      public function FindBySeq($seq){
         $adminDataStore = AdminDataStore::getInstance();
         $adminObj =  new Admin();

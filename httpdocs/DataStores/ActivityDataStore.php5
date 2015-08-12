@@ -61,10 +61,10 @@ class ActivityDataStore extends BeanDataStore{
         return $list;
     }
 
-    public function getCompletionCounts($moduleId){
+    public function getCompletionCounts($learningPlanSeq,$moduleId){
         $sql = "select count(u.seq) as totalUsers , count(attemptedTable.seq) as attemtedCount, ";
         $sql .= "count(completedTable.seq) as completedCount from users u ";
-        $sql .= "left join activities attemptedTable on u.seq = attemptedTable.userseq and attemptedTable.moduleseq = ".$moduleId;
+        $sql .= "left join activities attemptedTable on u.seq = attemptedTable.userseq and attemptedTable.moduleseq = ".$moduleId ." and attemptedTable.learningplanseq = ".$learningPlanSeq;
         $sql .= " left join activities completedTable on u.seq = completedTable.userseq ";
         $sql .= "and completedTable.iscompleted = 1  and completedTable.moduleseq = ".$moduleId;
         $list = $this->executeQuery($sql);
