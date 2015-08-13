@@ -14,7 +14,7 @@ if(isset($_GET["call"])){
 if($call== "getLeaderBoardsForGrid"){
     try{
         $lbMgr = LeaderBoardMgr::getInstance();
-        $data = $lbMgr->getLeaderBoardForGrid(true);
+        $data = $lbMgr->getLeaderBoardForGrid();
     }catch(Exception $e){
         $success = 0;
         $message  = $e->getMessage();

@@ -1,4 +1,5 @@
 <?php
+require_once($ConstantsArray['dbServerUrl']. "DataStores/LeaderBoardDataStore.php"); 
   class LeaderBoardMgr{
     private static $leaderBoardMgr;
     private static $dataStore;
@@ -8,7 +9,7 @@
         if (!self::$leaderBoardMgr)
         {
             self::$leaderBoardMgr = new LeaderBoardMgr();
-            self::$dataStore = new BeanDataStore(LeaderBoard::$className,LeaderBoard::$tableName);
+            self::$dataStore = new LeaderBoardDataStore(LeaderBoard::$className,LeaderBoard::$tableName);
             return self::$leaderBoardMgr;
         }
         return self::$leaderBoardMgr;
@@ -30,16 +31,10 @@
     }
 
     //under admin login for grid
-    public function getLeaderBoardForGrid($isApplyFilter){
+    public function getLeaderBoardForGrid(){
         $sessionUtil = SessionUtil::getInstance();
         $companySeq = $sessionUtil->getAdminLoggedInCompanySeq();
-        $sql = "select leaderboard.*,modules.title as moduleName,learningplans.title as learningPlanName from leaderboard
-left join learningplans on learningplans.seq = leaderboard.learningplanseq
-left join modules on modules.seq = leaderboard.moduleseq
-where learningplans.companyseq = $companySeq";
-        $leaderBoards = self::$dataStore->executeQuery($sql);
-        //$leaderBoards =  $this->FindAll($isApplyFilter);
-        //$leaderBoardJson = self::geLeaderBoardDataJson($leaderBoards);
+        $leaderBoards = self::$dataStore->findLeaderBoard($companySeq,true);
         for($i=0;$i<count($leaderBoards);$i++){
             $id = $leaderBoards[$i]['seq'];
             $type =  $leaderBoards[$i]['leaderboardtype'];
@@ -53,30 +48,17 @@ where learningplans.companyseq = $companySeq";
 
         }
         $gridData["Rows"] = $leaderBoards;
-        $gridData["TotalRows"] = self::$dataStore->executeCountQuery(null,$isApplyFilter);
+        $count =  self::$dataStore->getTotalCouts($companySeq,true);
+        $gridData["TotalRows"] = $count;
         return json_encode($gridData);
     }
 
     //under admin login for grid popup details
     public function getLeaderBoardData($seq,$type){
-        if($type == "Module"){
-            $sql = "select activities.*,leaderboard.seq as lseq,leaderboard.name as leaderboardName,users.username from activities
-    left join leaderboard on  leaderboard.moduleseq = activities.moduleseq
-    left join users on users.seq = activities.userseq
-    where leaderboard.learningplanseq = activities.learningplanseq
-    and leaderboard.seq = $seq order by score DESC LIMIT 10";
-            $leaderBoardData = self::$dataStore->executeQuery($sql);
-            return json_encode($leaderBoardData);
-        }else{
-           $sql = "select users.username,leaderboard.name leaderboardName,avg(progress) progress, avg(score) score from activities
-left join leaderboard on  leaderboard.learningplanseq = activities.learningplanseq
-left join users on users.seq = activities.userseq
-where leaderboard.learningplanseq = activities.learningplanseq
-and leaderboard.seq = $seq group by userseq order by userseq DESC LIMIT 10";
-            $leaderBoardData = self::$dataStore->executeQuery($sql);
-            return json_encode($leaderBoardData);
-        }
+        $leaderBoardData = self::$dataStore->getLeaderBoardData($seq,$type);
+        return json_encode($leaderBoardData);
     }
+  
 
 
     //private functions used within this class

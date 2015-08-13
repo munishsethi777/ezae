@@ -246,11 +246,11 @@ class BeanDataStore {
 
     public function executeQuery($query,$isApplyFilter = false){
         $db = MainDB::getInstance();
-        $conn = $db->getConnection();
-        $sth = $conn->prepare($query);
+        $conn = $db->getConnection();       
         if($isApplyFilter){
             $query = FilterUtil::applyFilter($query);    
         } 
+        $sth = $conn->prepare($query);
         $sth->execute();
         $this->throwException($sth->errorInfo());
          //$objList = $sth->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $this->className);
