@@ -19,7 +19,9 @@ class ChartsUtil{
     //called from AdminMgr for Comparative Metrics
     public function getComparativeData($learningPlanSeq,$moduleSeq, $customField, $criteria,$companySeq){
         $activityDS = ActivityDataStore::getInstance();
-        $dataArr = $activityDS->getUsersAndActivity($learningPlanSeq,$moduleSeq,$companySeq);
+        $activityMgr = ActivityMgr::getInstance();
+        $userSeqs = $activityMgr->getUserSeqsByCustomFieldCriteria();
+        $dataArr = $activityDS->getUsersAndActivity($learningPlanSeq,$moduleSeq,$companySeq,$userSeqs);
         $fullArr = array();
         foreach($dataArr as $data ){
             $arr = array();

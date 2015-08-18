@@ -51,10 +51,13 @@ class ActivityDataStore extends BeanDataStore{
         }
     }
 
-    public function getUsersAndActivity($moduleSeq,$companySeq,$isApplyFilter = false){
+    public function getUsersAndActivity($learningPlanSeq,$moduleSeq,$companySeq,$userSeqs,$isApplyFilter = false){
         //$sql= "select * from users left join activities on users.seq = activities.userseq and activities.moduleseq = ".$moduleSeq;
 		$sql= "select users.*,activities.*, users.seq from users left join activities on activities.userseq = users.seq
-        and activities.moduleseq = ".$moduleSeq ." where users.companyseq=".$companySeq;
+        and activities.moduleseq = ".$moduleSeq ." where users.companyseq=".$companySeq . " and activities.learningplanseq = $learningPlanSeq" ;
+        if(count($userSeqs) > 0){
+            $sql .= " and users.seq  in (". implode(",",$userSeqs) .")";
+        }
 		//select users.*,activities.progress,activities.score from users left join activities on users.seq = activities.userseq and activities.moduleseq = 2 where users.companyseq = 2
         //$sql .= " WHERE users.seq =3200";
         if($isApplyFilter){

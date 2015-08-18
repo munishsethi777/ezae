@@ -45,8 +45,7 @@ class ActivityMgr{
 
     }
 
-
-    public function getCompletionCounts($learningPlanSeq,$moduleSeq){
+    public function getUserSeqsByCustomFieldCriteria(){
         $userSeqs = array();
         $role = self::$sessionUtil->getLoggedInRole();
             if($role == RoleType::MANAGER){ 
@@ -60,9 +59,11 @@ class ActivityMgr{
                     $userMgr = UserMgr::getInstance();
                     $userSeqs = $userMgr->getUserSeqsByCustomfield($customfieldArr);                        
                 }
-            }else{
-                
-            }                    
+            }
+        return $userSeqs;
+    }
+    public function getCompletionCounts($learningPlanSeq,$moduleSeq){
+       $userSeqs = $this->getUserSeqsByCustomFieldCriteria(); 
        $ads = ActivityDataStore::getInstance();
        return $ads->getCompletionCounts($learningPlanSeq,$moduleSeq,$userSeqs);
     }
