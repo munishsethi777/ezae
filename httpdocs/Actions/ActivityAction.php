@@ -140,12 +140,12 @@
     if($call == "getModuleComparativeData"){
         $sessionUtil = SessionUtil::getInstance();
         $companySeq = $sessionUtil->getAdminLoggedInCompanySeq();
-
+        $learningPlanSeq = $_GET["learningPlanSeq"];
         $moduleSeq = $_GET["moduleSeq"];
         $fieldName = $_GET["fieldName"];
         $criteria = $_GET["criteria"];
         $adminMgr = AdminMgr::getInstance();
-        $json = $adminMgr->getModuleComparativeForChart($moduleSeq, $fieldName, $criteria,$companySeq);
+        $json = $adminMgr->getModuleComparativeForChart($learningPlanSeq,$moduleSeq, $fieldName, $criteria,$companySeq);
         echo $json;
         return;
     }

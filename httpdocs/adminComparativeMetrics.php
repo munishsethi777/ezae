@@ -6,11 +6,15 @@
     <script type="text/javascript">
 
         $(document).ready(function (){
-            loadModulesCombo();
+            loadLearningPlansCombo();
+            //loadModulesCombo();
             loadCustomFieldsCombo();
             loadPerformanceCriterias();
             $('#showReportButton').jqxButton({ width: 100, height: 25, theme:'arctic' });
             $("#showReportButton").click(function () {
+                var lpSelectedItem = $("#learningPlanComboBox").jqxComboBox('getSelectedItem');
+                var learningPlanSeq = lpSelectedItem.value;
+
                 var moduleSelectedItem = $("#trainingsCombo").jqxComboBox('getSelectedItem');
                 var moduleSeq = moduleSelectedItem.value;
 
@@ -22,19 +26,15 @@
 
                 var moduleLabel = moduleSelectedItem.label;
                 //loadPie(moduleSeq,moduleLabel);
-                loadGraphChart(moduleSeq,moduleLabel,fieldName,criteria);
+                loadGraphChart(learningPlanSeq,moduleSeq,moduleLabel,fieldName,criteria);
             });
 
             $("#jpegButton").jqxButton({theme:'arctic', width:200});
             $("#pngButton").jqxButton({theme:'arctic', width:200});
             $("#jpegButton").click(function () {
-                // call the export server to create a JPEG image
-                //$('#chartContainer').jqxChart('saveAsJPEG', 'myChart.jpeg', getExportServer());
                 $('#chartContainer').jqxChart('saveAsJPEG', 'MyChart.jpeg','save-file.php');
             });
             $("#pngButton").click(function () {
-                // call the export server to create a PNG image
-                //$('#chartContainer').jqxChart('saveAsPNG', 'myChart.png', getExportServer());
                 $('#chartContainer').jqxChart('saveAsPNG', 'MyChart.png','save-file.php');
             });
         });
@@ -64,7 +64,7 @@
                 theme: 'arctic'
             });
         }
-        function loadModulesCombo(){
+        function loadLearningPlansCombo(){
             var source =
             {
                 datatype: "json",
@@ -72,16 +72,47 @@
                 { name: 'id'},
                 { name: 'title'}
                 ],
-                url: 'Actions/ModuleAction.php?call=getModulesForGrid',
-                async: false
+                url: 'Actions/LearningPlanAction.php?call=getLearnerPlansForReporting',
+                async: true
             };
 
             var dataAdapter = new $.jqx.dataAdapter(source);
 
-            $("#trainingsCombo").jqxComboBox(
-            {
+            $("#learningPlanComboBox").jqxComboBox({
                 source: dataAdapter,
-                width: 300,
+                width: '180',
+                height: 25,
+                selectedIndex: 0,
+                displayMember: 'title',
+                valueMember: 'id',
+                theme: 'arctic'
+            });
+            $('#learningPlanComboBox').on('change', function (event){
+                var args = event.args;
+                if (args) {
+                   var item = args.item;
+                   loadModulesCombo(item.value);
+                }
+            });
+
+        }
+        function loadModulesCombo(learningPlanSeq){
+            var source1 =
+            {
+                datatype: "json",
+                datafields: [
+                { name: 'id'},
+                { name: 'title'}
+                ],
+                url: 'Actions/ModuleAction.php?call=getModulesByLearningPlanForReporting&learningPlanSeq='+learningPlanSeq,
+                async: true
+            };
+
+            var dataAdapter1 = new $.jqx.dataAdapter(source1);
+
+            $("#trainingsCombo").jqxComboBox({
+                source: dataAdapter1,
+                width: '180',
                 height: 25,
                 selectedIndex: 0,
                 displayMember: 'title',
@@ -89,6 +120,8 @@
                 theme: 'arctic'
             });
         }
+
+
         function loadPerformanceCriterias(){
             var criterias =
                 [
@@ -113,10 +146,10 @@
                 $("#criteriaCombo").jqxComboBox({ selectedIndex: 0, source: dataAdapter,
                     displayMember: "Label", valueMember: "name", width: 170, height: 25});
         }
-
-        function loadGraphChart(moduleSeq,moduleLabel,fieldName,criteria){
+        function loadGraphChart(learningPlanSeq,moduleSeq,moduleLabel,fieldName,criteria){
              // prepare chart data
             var hitUrl =  'Actions/ActivityAction.php?call=getModuleComparativeData&moduleSeq='+moduleSeq;
+            hitUrl += '&learningPlanSeq=' + learningPlanSeq;
             hitUrl += '&fieldName=' + fieldName;
             hitUrl += '&criteria=' + criteria;
             var source =
@@ -144,7 +177,7 @@
                         flip: false,
                         textRotationAngle: 90,
                     },
-                colorScheme: 'scheme06',
+                colorScheme: 'scheme17',
                 seriesGroups:
                     [
                         {
@@ -166,15 +199,15 @@
             $('#chartContainer').jqxChart(settings);
 
         }
-        function getExportServer() {
-            return 'http://www.jqwidgets.com/export_server/export.php';
-        }
+
     </script>
 </head>
 <body class='default'>
 <div id="wrapper">
         <?include("adminMenu.php");?>
-        <div style="float:left;margin-top:5px;margin-right:6px;">Select Module : </div>
+        <div style="float:left;margin-top:5px;margin-right:6px;">LearningPlan</div>
+        <div style="float:left" id="learningPlanComboBox"></div>
+        <div style="float:left;margin-top:5px;margin-right:6px;">Module</div>
         <div style="float:left" id="trainingsCombo"></div>
         <div style="float:left;margin-top:5px;margin:6px;">Select Field : </div>
         <div style="float:left" id="customFieldCombo"></div>

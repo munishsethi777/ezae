@@ -225,9 +225,9 @@ class AdminMgr{
     }
 
     //called from ajaxAdminMgr for compartive data
-    public function getModuleComparativeForChart($moduleSeq, $customFieldName, $criteria,$companySeq){
+    public function getModuleComparativeForChart($learningPlanSeq,$moduleSeq, $customFieldName, $criteria,$companySeq){
         $chartsUtil = ChartsUtil::getInstance();
-        $data = $chartsUtil->getComparativeData($moduleSeq, $customFieldName, $criteria,$companySeq);
+        $data = $chartsUtil->getComparativeData($learningPlanSeq,$moduleSeq, $customFieldName, $criteria,$companySeq);
         return $data;
     }
 
@@ -445,38 +445,38 @@ class AdminMgr{
         self::$adminDataStore->deleteInList($managerIds);
         $this->deleteManagerCriteria($managerIds);
     }
-    
+
     //calling from manager action
     public function deleteManagerCriteria($managerIds){
         $colValue["managerseq"] = $managerIds;
         self::$managerCriteriaDataStore->deleteByAttribute($colValue);
     }
-    
-    
-    
+
+
+
     //calling from manager action for show the managers on grid
     private function FindManagers($isApplyFilter = false){
         $parentAdminSeq = self::$sessionUtil->getAdminLoggedInSeq();
         $colValue["ismanager"] = true;
         $colValue["parentadminseq"] =  $parentAdminSeq;
         $managerList = self::$adminDataStore->executeConditionQuery($colValue,$isApplyFilter);
-        return $managerList; 
+        return $managerList;
     }
     //Calling from ManagerAction for show the managers on grid
     public function getManagersForGrid(){
         $isApplyFilter  = true;
         $managers = $this->FindManagers($isApplyFilter);
-        $mainArr["Rows"] = $this->toJsonArray($managers);        
+        $mainArr["Rows"] = $this->toJsonArray($managers);
         $mainArr["TotalRows"] =  $this->getManagerCount();
         $jsonString = json_encode($mainArr);
         return $jsonString;
     }
-    
+
     private function getManagerCount(){
-        $colValue["ismanager"] = true; 
+        $colValue["ismanager"] = true;
         return self::$adminDataStore->executeCountQuery($colValue,true);
     }
-    
+
     //calling from adminManagers.php with ajax call for show the data in edit case
     public function getManagerCriteriaDetail($id){
         $colValue["managerseq"] = $id;
@@ -491,16 +491,16 @@ class AdminMgr{
             foreach($lines as $line)
             {
                 list($key, $value) = explode(":", $line);
-                $array[$key] = explode(",", $value);   
+                $array[$key] = explode(",", $value);
             }
-            $criteriaValue = $array;                                                                                  
+            $criteriaValue = $array;
         }
         $mainArr["criteriatype"] = $criteriaType;
         $mainArr["criteriavalue"] = $criteriaValue;
         $json = json_encode($mainArr);
         return $json;
     }
-    
+
     private static function toJsonArray($managers){
         $fullArr = array();
         foreach($managers as $manager){
