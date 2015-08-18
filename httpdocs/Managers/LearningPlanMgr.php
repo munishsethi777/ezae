@@ -1,4 +1,7 @@
 <?php
+require_once($ConstantsArray['dbServerUrl'] ."Managers/AdminMgr.php");
+require_once($ConstantsArray['dbServerUrl'] ."Enums/RoleType.php");
+require_once($ConstantsArray['dbServerUrl'] ."Enums/ManagerCriteriaType.php");
     class LearningPlanMgr{
         private static $learningPlanMgr;
         private static $dataStore;
@@ -13,7 +16,7 @@
             if (!self::$learningPlanMgr)
             {
                 self::$learningPlanMgr = new LearningPlanMgr();
-                self::$dataStore = new BeanDataStore(LearningPlan::$className,LearningPlan::$tableName);
+                self::$dataStore = LearningPlanDataStore::getInstance();
                 self::$lpCoursedataStore = new BeanDataStore(LearningPlanModule::$className,LearningPlanModule::$tableName);
                 self::$sessionUtil = SessionUtil::getInstance();
                 self::$adminSeq = self::$sessionUtil->getAdminLoggedInSeq();
@@ -51,15 +54,40 @@
             return $id;
         }
 
-
+        
         public function getLearningPlanByCompany($isApplyFilter = false){
-            $learningPlans = self::$dataStore->findAllByCompany($isApplyFilter);
+            $role = self::$sessionUtil->getLoggedInRole();
+            if($role == RoleType::MANAGER){ 
+                $adminMgr = AdminMgr::getInstance();
+                $adminSeq = self::$sessionUtil->getAdminLoggedInSeq();
+                $managerCriteria = $adminMgr->findLoggedinManagerCriteria($adminSeq);
+                $criteriaVals = $managerCriteria->getCriteriaValue();
+                if($managerCriteria->getCriteriaType() == ManagerCriteriaType::LEARNING_PLAN){                    
+                    $learningPlans = $this->getLearningPlansBySeqs($criteriaVals);
+                    return $learningPlans;            
+                }else if($managerCriteria->getCriteriaType() == ManagerCriteriaType::LEARNING_PROFILE){
+                    $learningPlans = $this->getLearningPlansByProfiles($criteriaVals);
+                    return $learningPlans;              
+                }   
+            }
+            $learningPlans = self::$dataStore->findAllByCompany($isApplyFilter);    
             return $learningPlans;
         }
+        private function getLearningPlansBySeqs($seqs){
+            $colvalue["seq"] = $seqs;
+            $learningPlans = self::$dataStore->executeInListQuery($colvalue);
+            return $learningPlans;    
+        }
+        
+        private function getLearningPlansByProfiles($profileSeqs){
+            $learningPlans = self::$dataStore->getLearningPlansByProfiles($profileSeqs);
+            return $learningPlans;
+        }
+        
         public function getLearningPlanForGrid($isApplyFilter){
-            $modules =  $this->getLearningPlanByCompany($isApplyFilter);
-            $moduleJson = self::geLearningPlanDataJson($modules);
-            $gridData["Rows"] = $moduleJson;
+            $learningPlans =  $this->getLearningPlanByCompany($isApplyFilter);
+            $lpJson = self::geLearningPlanDataJson($learningPlans);
+            $gridData["Rows"] = $lpJson;
             $gridData["TotalRows"] = self::$dataStore->executeCountQuery(null,$isApplyFilter);
             return json_encode($gridData);
 
@@ -82,7 +110,7 @@
              }
              return implode(",",$ids);
         }
-
+        
         private static function getLearningPlanArry($learningPlanObj){
             $learningPlan = new LearningPlan();
             $learningPlan = $learningPlanObj;
@@ -104,5 +132,7 @@
             $lpArr["isenableleaderboard"] = $learningPlan->getIsLeaderBoard();
             return $lpArr;
         }
+        
+        
     }
 ?>

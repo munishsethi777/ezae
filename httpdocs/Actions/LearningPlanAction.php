@@ -6,7 +6,7 @@ require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/LearningPlan.php")
 require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/LearningPlanProfile.php");
 require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/LeaderBoard.php");
 require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/LearningPlanModule.php");
-require_once($ConstantsArray['dbServerUrl'] ."DataStores/BeanDataStore.php5");
+require_once($ConstantsArray['dbServerUrl'] ."DataStores/LearningPlanDataStore.php");
 require_once($ConstantsArray['dbServerUrl'] ."Utils/SessionUtil.php5");
 require_once($ConstantsArray['dbServerUrl'] ."Utils/MailMessageUtil.php");
 $call = "";

@@ -477,6 +477,18 @@ class AdminMgr{
         return self::$adminDataStore->executeCountQuery($colValue,true);
     }
 
+    
+    //Calling from learningPlanMgr show the learningPlan in reporting section
+    public function findLoggedinManagerCriteria(){
+        $managerId = self::$sessionUtil->getAdminLoggedInSeq();
+        $colValue["managerseq"] = $managerId;
+        $managerCriteria = self::$managerCriteriaDataStore->executeConditionQuery($colValue);
+        if(!empty($managerCriteria)){
+            return $managerCriteria[0];    
+        } 
+        return null ;
+    }
+
     //calling from adminManagers.php with ajax call for show the data in edit case
     public function getManagerCriteriaDetail($id){
         $colValue["managerseq"] = $id;

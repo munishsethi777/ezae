@@ -1,4 +1,5 @@
 <?php
+require_once($ConstantsArray['dbServerUrl']. "Managers/ActivityMgr.php");
 class ChartsUtil{
     private static $ATTEMPTED_NOTATTEMPTED = "attemptedNotAttempted";
     private static $COMPLETED_NOTCOMPLETED = "completedNotCompleted";
@@ -58,7 +59,7 @@ class ChartsUtil{
                 if($val == null){
                     $val = 0;
                 }
-                if($array[$field] == null){
+                if(!isset($array[$field])){
                     $array[$field] = array();
                 }
                 array_push($array[$field],$val);
@@ -105,14 +106,13 @@ class ChartsUtil{
 
     //called from AdminMgr for Completion Metrics
     public function getCompletionData($learningPlanSeq,$moduleSeq, $mode){
-        $ads = ActivityDataStore::getInstance();
-        $countArr =  $ads->getCompletionCounts($learningPlanSeq,$moduleSeq);
-
+        $activityMgr = ActivityMgr::getInstance();
+        $countArr =  $activityMgr->getCompletionCounts($learningPlanSeq,$moduleSeq);
         $mainArr = array();
         $arr = array();
         $total = intval($countArr[0][0]);
-        $attempted = intval($countArr[0][1]);
-        $completed = intval($countArr[0][2]);
+        $attempted = intval($countArr[0][2]);
+        $completed = intval($countArr[0][3]);
         $uncompleted = $attempted -$completed;
         $unAttempted = $total - $attempted;
         $completedPercent = round(($completed * 100)/$total);
@@ -161,7 +161,8 @@ class ChartsUtil{
     public function getPassPercentData($learningPlanSeq,$moduleSeq, $percent){
         $ads = ActivityDataStore::getInstance();
         $passCount =  $ads->getPassCountGreaterThanPercentage($learningPlanSeq,$moduleSeq,$percent);
-        $allCountArr =  $ads->getCompletionCounts($learningPlanSeq,$moduleSeq);
+        $activityMgr = ActivityMgr::getInstance();
+        $allCountArr = $activityMgr->getCompletionCounts($learningPlanSeq,$moduleSeq);
         $totalCount = $allCountArr[0][0];
         $passPercent = $passCount/$totalCount * 100;
 

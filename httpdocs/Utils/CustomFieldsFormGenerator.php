@@ -52,9 +52,12 @@
            return $customFieldForm;
         }
         
-        public function getCustomFieldsArray($customFields){           
+        public function getCustomFieldsArray($customFields,$removeLast = true){           
             $fields = explode(";", $customFields);
-            unset($fields[count($fields)-1]);
+            if($removeLast){
+                unset($fields[count($fields)-1]);    
+            }
+            
             // Output array
             $customFieldArray = array();
             

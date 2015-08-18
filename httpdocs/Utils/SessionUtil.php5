@@ -11,6 +11,7 @@ class SessionUtil{
     private static $USER_USERNAME = "userUserName";
     private static $USER_LOGGED_IN = "userLoggedIn";
     private static $USER_COMPANY_SEQ = "userCompanyseq";
+    private static $ROLE = "role";
 
 	private static $sessionUtil;
 	public static function getInstance(){       
@@ -27,10 +28,14 @@ class SessionUtil{
         $arr[0] = $admin->getSeq();
         $arr[1] = $admin->getName();
         $arr[2] = $admin->getCompanySeq();
-
+        
         $_SESSION[self::$ADMIN_LOGGED_IN] = $arr;
         $_SESSION[self::$LOGIN_MODE] = 'admin';
-     }
+        $_SESSION[self::$ROLE] = RoleType::ADMIN; 
+        if($admin->getIsManager()){
+            $_SESSION[self::$ROLE] = RoleType::MANAGER;     
+        }        
+    }
     public function createUserSession(User $user){
         $arr = new ArrayObject();
         $arr[0] = $user->getSeq();
@@ -40,6 +45,7 @@ class SessionUtil{
 
         $_SESSION[self::$USER_LOGGED_IN] = $arr;
         $_SESSION[self::$LOGIN_MODE] = 'user';
+        $_SESSION[self::$ROLE] = RoleType::ADMIN; 
     }
 
     public function isSessionAdmin(){
@@ -112,7 +118,11 @@ class SessionUtil{
                 return $arr[0];
         }
     }
-
+    
+    public function getLoggedInRole(){
+        return $_SESSION[self::$ROLE];    
+    }
+    
     public function destroySession(){
         $boolAdmin = self::isSessionAdmin();
         $boolUser = self::isSessionUser();

@@ -1,8 +1,10 @@
 <?php
+require_once($ConstantsArray['dbServerUrl'] ."Enums/RoleType.php");
 $action = "CompanyAction.php";
 $sessionUtil = SessionUtil::getInstance();
 $adminSeq = $sessionUtil->getAdminLoggedInSeq();
 $path = "images/AdminImages/" . $adminSeq . ".png";
+$role = $sessionUtil->getLoggedInRole();
 if(!file_exists ($path)){
     $path = "images/dummy.jpg";
 }?>
@@ -86,25 +88,27 @@ if(!file_exists ($path)){
                             EZAE
                         </div>
                     </li>
-                    <li class="<?=$dashboard?>">
-                        <a href="dashboard.php"><i class="fa fa-dashboard"></i> <span class="nav-label">Dashboard</span></a>
-                    </li>
-                    <li class="<?=$customFields?>">
-                        <a href="CustomFields.php"><i class="fa fa-th-large"></i> <span class="nav-label">CustomFields</span></a>
-                    </li>
-                    <li class="<?=$manageLeaderBoard?>">
-                        <a href="ManageLeaderBoard.php"><i class="fa fa-angellist"></i> <span class="nav-label">LeaderBoards</span></a>
-                    </li>
-                    <li class="<?=$adminModulesManagement?>">
-                        <a href="adminModulesManagement.php"><i class="fa fa-archive"></i> <span class="nav-label">Modules Management</span></a>
-                    </li>
-                    <li class="<?=$learningPlans?>">
-                        <a href="layouts.html"><i class="fa fa-gift"></i> <span class="nav-label">Learning Plans</span></a>
-                        <ul class="nav nav-second-level">
-                            <li class="<?=$createLearningPlan?>"><a href="createLearningPlan.php">Create Learning Plan</a></li>
-                            <li class="<?=$manageLearningPlan?>"><a href="ManageLearningPlan.php">View Learning Plans</a></li>
-                        </ul>
-                    </li>
+                    <?if($role == RoleType::ADMIN){?>
+                        <li class="<?=$dashboard?>">
+                            <a href="dashboard.php"><i class="fa fa-dashboard"></i> <span class="nav-label">Dashboard</span></a>
+                        </li>
+                        <li class="<?=$customFields?>">
+                            <a href="CustomFields.php"><i class="fa fa-th-large"></i> <span class="nav-label">CustomFields</span></a>
+                        </li>
+                        <li class="<?=$manageLeaderBoard?>">
+                            <a href="ManageLeaderBoard.php"><i class="fa fa-angellist"></i> <span class="nav-label">LeaderBoards</span></a>
+                        </li>
+                        <li class="<?=$adminModulesManagement?>">
+                            <a href="adminModulesManagement.php"><i class="fa fa-archive"></i> <span class="nav-label">Modules Management</span></a>
+                        </li>
+                        <li class="<?=$learningPlans?>">
+                            <a href="layouts.html"><i class="fa fa-gift"></i> <span class="nav-label">Learning Plans</span></a>
+                            <ul class="nav nav-second-level">
+                                <li class="<?=$createLearningPlan?>"><a href="createLearningPlan.php">Create Learning Plan</a></li>
+                                <li class="<?=$manageLearningPlan?>"><a href="ManageLearningPlan.php">View Learning Plans</a></li>
+                            </ul>
+                        </li>
+                    <?}?>
                     <li class="<?=$reporting?>">
                         <a href="#"><i class="fa fa-bar-chart-o"></i> <span class="nav-label">Reporting</span><span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
@@ -114,33 +118,35 @@ if(!file_exists ($path)){
                             <li class="<?=$analytics?>"><a href="analytics.php">Progress Analytics</a></li>
                         </ul>
                     </li>
-                    <li class="<?=$learners?>">
-                        <a href="mailbox.html"><i class="fa fa-group"></i> <span class="nav-label">Learners </span><span class="label label-warning pull-right">1024</span></a>
-                        <ul class="nav nav-second-level">
-                            <li class="<?=$importLearners?>"><a href="importLearners.php">Import</a></li>
-                            <li class="<?=$manageLearners?>"><a href="manageLearners.php">Manage learners</a></li>
-                            <li class="<?=$manageRegistrationForm?>"><a href="manageRegistrationForm.php">Registration Form</a></li>
-                            <li class="<?=$manageLearnerProfiles?>"><a href="manageLearnerProfiles.php">Learner's Profiles</a></li>
-                        </ul>
-                    </li>
-                    <li class="<?=$communications?>">
-                        <a href="manageMessages.php"><i class="fa fa-send"></i> <span class="nav-label">Communications</span><span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-                            <li class="<?=$manageMessages?>"><a href="manageMessages.php">Manage Messages</a></li>
-                            <li class="<?=$createMessage?>"><a href="createMessage.php">Create Message</a></li>
-                        </ul>
-                    </li>
-                    <li class="<?=$notifications?>">
-                        <a href="widgets.html"><i class="fa fa-bell-o"></i> <span class="nav-label">Notifications</span> </a>
-                    </li>
-                    <li class="<?=$company?>">
-                        <a href="#"><i class="fa fa-life-ring"></i> <span class="nav-label">Company</span><span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-                            <li><a href="form_basic.html">Company Profile</a></li>
-                            <!--<li><a href="form_advanced.html">Administrators</a></li>-->
-                            <li class="<?=$adminManagers?>"><a href="adminManagers.php">Managers</a></li>
-                        </ul>
-                    </li>
+                    <?if($role == RoleType::ADMIN){?>
+                        <li class="<?=$learners?>">
+                            <a href="mailbox.html"><i class="fa fa-group"></i> <span class="nav-label">Learners </span><span class="label label-warning pull-right">1024</span></a>
+                            <ul class="nav nav-second-level">
+                                <li class="<?=$importLearners?>"><a href="importLearners.php">Import</a></li>
+                                <li class="<?=$manageLearners?>"><a href="manageLearners.php">Manage learners</a></li>
+                                <li class="<?=$manageRegistrationForm?>"><a href="manageRegistrationForm.php">Registration Form</a></li>
+                                <li class="<?=$manageLearnerProfiles?>"><a href="manageLearnerProfiles.php">Learner's Profiles</a></li>
+                            </ul>
+                        </li>
+                        <li class="<?=$communications?>">
+                            <a href="manageMessages.php"><i class="fa fa-send"></i> <span class="nav-label">Communications</span><span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li class="<?=$manageMessages?>"><a href="manageMessages.php">Manage Messages</a></li>
+                                <li class="<?=$createMessage?>"><a href="createMessage.php">Create Message</a></li>
+                            </ul>
+                        </li>
+                        <li class="<?=$notifications?>">
+                            <a href="widgets.html"><i class="fa fa-bell-o"></i> <span class="nav-label">Notifications</span> </a>
+                        </li>
+                        <li class="<?=$company?>">
+                            <a href="#"><i class="fa fa-life-ring"></i> <span class="nav-label">Company</span><span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li><a href="form_basic.html">Company Profile</a></li>
+                                <!--<li><a href="form_advanced.html">Administrators</a></li>-->
+                                <li class="<?=$adminManagers?>"><a href="adminManagers.php">Managers</a></li>
+                            </ul>
+                        </li>
+                    <?}?>
                 </ul>
 
             </div>

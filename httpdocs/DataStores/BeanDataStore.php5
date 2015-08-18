@@ -185,12 +185,12 @@ class BeanDataStore {
         $objList = $STH->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $this->className);
         return $objList;
     }
-    public function executeInListQuery($values,$isApplyFilter = false){
-        $colName = $values;
-        if(is_array($values)){
-            $colName = key($values);    
+    public function executeInListQuery($colValues,$isApplyFilter = false){
+        $colName = $colValues;
+        if(is_array($colValues)){
+            $colName = key($colValues);    
         }        
-        $query = "SELECT * FROM " .  $this->tableName ."where $colName inlist($values[$colName])";
+        $query = "SELECT * FROM " .  $this->tableName ." where $colName in($colValues[$colName])";
         if($isApplyFilter){
            $query = FilterUtil::applyFilter($query);
         }

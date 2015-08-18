@@ -2,17 +2,24 @@
 require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/Activity.php");
 require_once($ConstantsArray['dbServerUrl']. "DataStores/ActivityDataStore.php5");
 require_once($ConstantsArray['dbServerUrl']. "Utils/MailMessageUtil.php");
+require_once($ConstantsArray['dbServerUrl']. "Utils/SessionUtil.php5");
+require_once($ConstantsArray['dbServerUrl']. "Utils/CustomFieldsFormGenerator.php");
+require_once($ConstantsArray['dbServerUrl']. "Enums/RoleType.php");
+require_once($ConstantsArray['dbServerUrl']. "Enums/ManagerCriteriaType.php");
+
 
 class ActivityMgr{
 
     private static $activityMgr;
     private static $mailMessageMgr;
+    private static $sessionUtil;
     public static function getInstance()
     {
         if (!self::$activityMgr)
         {
             self::$activityMgr = new ActivityMgr();
             self::$mailMessageMgr = new MailMessageMgr();
+            self::$sessionUtil = new SessionUtil();
             return self::$activityMgr;
         }
         return self::$activityMgr;
@@ -39,10 +46,27 @@ class ActivityMgr{
     }
 
 
-     public function getCompletionCounts($moduleId){
+    public function getCompletionCounts($learningPlanSeq,$moduleSeq){
+        $userSeqs = array();
+        $role = self::$sessionUtil->getLoggedInRole();
+            if($role == RoleType::MANAGER){ 
+                $adminMgr = AdminMgr::getInstance();
+                $adminSeq = self::$sessionUtil->getAdminLoggedInSeq();
+                $managerCriteria = $adminMgr->findLoggedinManagerCriteria($adminSeq);
+                $criteriaVals = $managerCriteria->getCriteriaValue();
+                if($managerCriteria->getCriteriaType() == ManagerCriteriaType::CUSTOM_FIELD){
+                    $customFieldGenerator = CustomFieldsFormGenerator::getInstance();
+                    $customfieldArr = $customFieldGenerator->getCustomFieldsArray($criteriaVals,false);
+                    $userMgr = UserMgr::getInstance();
+                    $userSeqs = $userMgr->getUserSeqsByCustomfield($customfieldArr);                        
+                }
+            }else{
+                
+            }                    
        $ads = ActivityDataStore::getInstance();
-       return $ads->getCompletionCounts($moduleId);
+       return $ads->getCompletionCounts($learningPlanSeq,$moduleSeq,$userSeqs);
     }
+   
     public function getUserPerformance($userSeq){
         $ads = ActivityDataStore::getInstance();
        return $ads->findByUser($userSeq);

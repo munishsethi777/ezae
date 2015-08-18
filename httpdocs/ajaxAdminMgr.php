@@ -1,6 +1,7 @@
 <?php
   require_once('IConstants.inc');
   require_once($ConstantsArray['dbServerUrl'] ."Managers/UserMgr.php");
+  require_once($ConstantsArray['dbServerUrl'] ."Enums/RoleType.php");
   require_once($ConstantsArray['dbServerUrl'] ."Managers/AdminMgr.php");
   require_once($ConstantsArray['dbServerUrl'] ."Managers/ActivityMgr.php");
   require_once($ConstantsArray['dbServerUrl'] ."Managers/ModuleMgr.php");

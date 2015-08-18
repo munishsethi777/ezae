@@ -1,6 +1,7 @@
 <?php
 set_include_path(get_include_path() . PATH_SEPARATOR . '../../../Classes/');
 require_once($ConstantsArray['dbServerUrl']. "DataStores/UserDataStore.php5");
+require_once($ConstantsArray['dbServerUrl']. "Utils/CustomFieldsFormGenerator.php");
 require_once($ConstantsArray['dbServerUrl']. "Managers/ActivityMgr.php");
 require_once($ConstantsArray['dbServerUrl']. "DataStores/UserCustomFieldsDataStore.php5");
 require_once($ConstantsArray['dbServerUrl']. "Utils/StringUtil.php");
@@ -240,6 +241,35 @@ class UserMgr{
         $userDataStore = UserDataStore::getInstance();
         $user = $userDataStore->findBySeq($seq);
         return $user;
+    }
+    
+    public function getUserSeqsByCustomfield($expectedCustomFieldsArr){
+        $userDataStore = UserDataStore::getInstance();
+        $users = $userDataStore->findAllByCompany();
+        $userArr = array();
+        $customFieldsFormGenerator = CustomFieldsFormGenerator::getInstance();
+        foreach($users as $user){
+            $userObj = new User();
+            $userObj = $user;
+            $custFieldsArr = $customFieldsFormGenerator->getCustomFieldsArray($userObj->getCustomFieldValues());
+            $flag = false;
+            foreach($expectedCustomFieldsArr as $key=>$fieldValue ){
+                $values[$key] = explode(",",$fieldValue);   
+                foreach($values[$key] as $col=>$value){
+                    if($custFieldsArr[$key] == urldecode($value)){
+                        $flag = true;    
+                    }
+                }
+                if(!$flag){
+                    break;
+                }
+            }
+            if($flag){
+                 array_push($userArr,$userObj->getSeq());    
+            }
+           
+        }
+        return $userArr;
     }
 }
 
