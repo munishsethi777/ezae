@@ -104,19 +104,23 @@ class SessionUtil{
     }
 
     public function getAdminLoggedInCompanySeq(){
-      if($_SESSION[self::$LOGIN_MODE] == "admin" &&
-            $_SESSION[self::$ADMIN_LOGGED_IN] != null){
-                $arr = $_SESSION[self::$ADMIN_LOGGED_IN];
-                return $arr[2];
+        if((count($_SESSION) > 0)){
+          if($_SESSION[self::$LOGIN_MODE] == "admin" &&
+                $_SESSION[self::$ADMIN_LOGGED_IN] != null){
+                    $arr = $_SESSION[self::$ADMIN_LOGGED_IN];
+                    return $arr[2];
+            }
         }
     }
     
     public function getAdminLoggedInSeq(){
-      if($_SESSION[self::$LOGIN_MODE] == "admin" &&
-            $_SESSION[self::$ADMIN_LOGGED_IN] != null){
-                $arr = $_SESSION[self::$ADMIN_LOGGED_IN];
-                return $arr[0];
-        }
+        if((count($_SESSION) > 0)){
+            if($_SESSION[self::$LOGIN_MODE] == "admin" &&
+                $_SESSION[self::$ADMIN_LOGGED_IN] != null){
+                    $arr = $_SESSION[self::$ADMIN_LOGGED_IN];
+                    return $arr[0];
+            }    
+        }      
     }
     
     public function getLoggedInRole(){

@@ -317,8 +317,8 @@
 
     function populatePrefix(){
         if(companyPrefix == ""){
-            $.get("Actions/CompanyAction.php?call=getPrefix",function(data){
-                companyPrefix = data;
+            $.getJSON("Actions/CompanyAction.php?call=getPrefix",function(data){
+                companyPrefix = data.prefix;
                 $("#userNamePrefix").val(companyPrefix);
                  populatePrefixUserName();
             });
@@ -339,10 +339,14 @@
         $("#data").val(data);
         $matchingFormData = $("#matchingform").serializeArray();
         var url = "Actions/CustomFieldAction.php?call=saveImportedFields";
-        $.get(url,$matchingFormData,function( data ){
-            showResponseDiv(data,"mainDiv");
-            l.stop();
-        });
+//        $.get(url,$matchingFormData,function( data ){
+//            showResponseDiv(data,"mainDiv");
+//            l.stop();
+//        });
+         $('#matchingform').ajaxSubmit(function( data ){
+             showResponseDiv(data,"mainDiv");
+             l.stop();
+         });
     }
     function validateFieldNames(){
         var row = $('#learnersFieldsGrid').jqxGrid('getrowdata', 0);
@@ -482,7 +486,8 @@
                             <h2>Match Basic fields</h2>
                             <p>From the imported data, what fields would you like to treat as username, password and email ids of learners.</p>
                             <div class="row">
-                                <form id="matchingform" class="form-horizontal wizard-big">
+                                <form id="matchingform" action="Actions/CustomFieldAction.php" class="form-horizontal wizard-big">
+                                    <input type="hidden" id="call" name="call" value="saveImportedFields">
                                     <input id="fieldData" name="fieldData" type="hidden">
                                     <input id="data" name="data" type="hidden">
                                     <div class="form-group">

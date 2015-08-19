@@ -83,19 +83,19 @@ $(document).ready(function(){
 
     $("#saveUpdateProfileBtn").click(function(e){
         var btn = this;
+        var l = Ladda.create(btn);
+        l.start();
         var url = $image.cropper("getDataURL");
         var base64image = $('#profilePic').attr('src');
         $("#imgSrcOrg").val(base64image);
         $("#imgSrc").val(url);
         e.preventDefault();
-            var l = Ladda.create(btn);
-            l.start();
-             $('#UpdateProfilePic').ajaxSubmit(function( data ){
-                   l.stop();
-                   showResponseToastr(data,"updateProfilePicModelForm","UpdateProfilePic","mainDiv");
-                   var url = $('#profilePicImg').attr('src');
-                   $("#profilePicImg").attr("src", url + "?" + new Date().getTime());
-
+         $('#UpdateProfilePic').ajaxSubmit(function( data ){
+               var jsonObj = $.parseJSON(data);                
+               showResponseToastr(data,"updateProfilePicModelForm","UpdateProfilePic","mainDiv");
+               var url = jsonObj.imagepath;//$('#profilePicImg').attr('src');
+               $("#profilePicImg").attr("src", url + "?" + new Date().getTime());
+               l.stop();
          })
     })
 });

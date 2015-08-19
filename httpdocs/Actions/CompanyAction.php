@@ -87,7 +87,9 @@
             $success = 0;
             $message  = $e->getMessage();    
         }
-        echo $refix;
+        $response = new ArrayObject(); 
+        $response["prefix"]  = $refix;
+        echo json_encode($response);
     }
     
     if($call == "updateProfilePicture"){
@@ -104,6 +106,7 @@
         $response = new ArrayObject(); 
         $response["success"]  = $success;
         $response["message"]  = $message;
+        $response["imagepath"] = "images/AdminImages/$adminSeq.png";
         echo json_encode($response);      
     }
     

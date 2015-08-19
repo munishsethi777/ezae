@@ -388,14 +388,18 @@ class AdminMgr{
 
     public function saveAdmin($companySeq){
             $name = $_GET["adminName"];
+            $username = $_GET["adminUserName"];
             $password = $_GET["adminPassword"];
             $email = $_GET["adminEmail"];
             $mobile = $_GET["adminMobile"];
-            $isUpdate = $_GET["isUpdate"];
+            $isUpdate = "";
+            if(isset($_GET["isUpdate"])){
+               $isUpdate = $_GET["isUpdate"];    
+            }
             $admin = new Admin();
             $admin->setCompanySeq($companySeq);
             $admin->setName($name);
-            $admin->setUserName($name);
+            $admin->setUserName($username);
             $admin->setPassword($password); //TODO -- save encrypted password --
             $admin->setEmailId($email);
             $admin->setMobileNo($mobile);

@@ -4,8 +4,8 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Administration - Easy Assessment Engine</title>
-
-        <link href="styles/bootstrap.min.css" rel="stylesheet">
+        <?include "ScriptsInclude.php"?>
+        <!-- <link href="styles/bootstrap.min.css" rel="stylesheet">
         <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
         <link href="styles/animate.css" rel="stylesheet">
         <link href="styles/style.css" rel="stylesheet">
@@ -23,7 +23,7 @@
         <script type="text/javascript" src="jqwidgets/jqxcalendar.js"></script>
         <script type="text/javascript" src="jqwidgets/jqxdatetimeinput.js"></script>
         <script type="text/javascript" src="jqwidgets/jqxmaskedinput.js"></script>
-        <script type="text/javascript" src="jqwidgets/jqxinput.js"></script>
+        <script type="text/javascript" src="jqwidgets/jqxinput.js"></script>-->
 
         <script type="text/javascript">
             $(document).ready(function () {
@@ -38,24 +38,44 @@
                            ]
                 });
                 //$('#loginButton').jqxButton({ width: 100, height: 25 });
-                $("#loginButton").click(function () {
-                    var validationResult = function (isValid) {
-                        if (isValid) {
-                            submitLogin();
-                        }
-                    }
-                    $('#loginForm').jqxValidator('validate', validationResult);
+                $("#loginButton").click(function (e) {
+                    validateAndSave(e,this);    
                 });
                 $("#loginForm").on('validationSuccess', function () {
                     $("#loginForm-iframe").fadeIn('fast');
                 });
+                $('#usernameInput').keypress(function (e) { 
+                    btn = $("#loginButton")[0];
+                    if (e.which == 13) { 
+                        validateAndSave(e,btn);
+                        return false; 
+                    }
+                })
+                $('#passwordInput').keypress(function (e) { 
+                    btn = $("#loginButton")[0];
+                    if (e.which == 13) { 
+                        validateAndSave(e,btn);
+                        return false; 
+                    }
+                })
             });
-
-            function submitLogin(){
+            
+            function validateAndSave(e,btn){
+                var validationResult = function (isValid) {
+                    if (isValid) {
+                        submitLogin(e,btn);
+                    }
+                }
+                $('#loginForm').jqxValidator('validate', validationResult);    
+            }
+            function submitLogin(e,btn){
+                var l = Ladda.create(btn);
+                l.start();
                 $formData = $("#loginForm").serializeArray();
                 $.get( "ajaxAdminMgr.php?call=loginAdmin", $formData,function( data ){
+                    l.stop();
                     if(data == 0){
-                        alert("Invaid username or Password");
+                        toastr.error("Invaid username or Password",'Login Failed');
                     }else{
                         window.location = "dashboard.php";
                     }
@@ -101,7 +121,9 @@
 
                   <div class="form-group">
                     <div class="col-sm-offset-3 col-sm-9">
-                        <input type="button" id = "loginButton" class="btn btn-primary block full-width m-b" value="Login"/>
+                        <button class="btn btn-primary block full-width m-b ladda-button" data-style="expand-right" id="loginButton" type="button">
+                            <span class="ladda-label">Login</span>
+                        </button>
                     </div>
                   </div>
                 </form>

@@ -23,7 +23,10 @@ class CompanyMgr{
         $contactPerson = $_GET["contactperson"];
         $address = $_GET["address"];
         $phone =   $_GET["phone"];
-        $isUpdate = $_GET["isUpdate"];
+        $isUpdate = "";
+        if(isset($_GET["isUpdate"])){
+             $isUpdate = $_GET["isUpdate"];    
+        }       
         $company = new Company();
         $company->setName($name);
         $company->setDescription($description);

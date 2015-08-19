@@ -71,6 +71,7 @@
                                     <input type="text" name="name" id="name" placeholder="Company Name" class="form-control">
                                 </div>
                             </div>
+                            
                             <div class="form-group">
                                 <label class="col-lg-2 control-label">Description</label>
                                 <div class="col-lg-10">
@@ -118,6 +119,12 @@
 
                                 <div class="col-lg-10">
                                     <input type="text" name="adminName"  id="adminName" placeholder="Name" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label">User Name</label>  
+                                <div class="col-lg-10">
+                                    <input type="text" name="adminUserName" id="name" placeholder="User Name" class="form-control">
                                 </div>
                             </div>
                             <div class="form-group">
