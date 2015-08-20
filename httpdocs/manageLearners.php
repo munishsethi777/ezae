@@ -232,10 +232,11 @@
             var l = Ladda.create(btn);
             l.start();
             var ids = [];
-            //alert($("#profileSelect option:selected").text());
-           var selctedValues =  $.map($("#profileSelect_chosen").find(".search-choice span"), function (option) {
-                                    return $(option).text()
-                                    });
+
+            var selctedValues = [];
+            $( '#profileSelect :selected' ).each( function( i, selected ) {
+                selctedValues[i] = $( selected ).text();
+            });
             var selectedIndexes  = $("#learnersGrid").jqxGrid('selectedrowindexes');
             $.each(selectedIndexes,function(key,value) {
                 ids.push($("#learnersGrid").jqxGrid('getrowid',value));
@@ -256,7 +257,8 @@
                                     val = profile;
                                 }
                             }
-                            $("#learnersGrid").jqxGrid('setcellvalue', value, "profiles", val);
+                            //$("#learnersGrid").jqxGrid('setcellvalue', value, "profiles", val.join());
+                           $("#learnersGrid").jqxGrid('updatebounddata');
                         });
                     }
              })

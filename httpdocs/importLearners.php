@@ -337,16 +337,13 @@
         var data = JSON.stringify(dataRows);
         $("#fieldData").val(fieldData);
         $("#data").val(data);
-        $matchingFormData = $("#matchingform").serializeArray();
+        matchingFormData = $("#matchingform").serializeArray();
         var url = "Actions/CustomFieldAction.php?call=saveImportedFields";
-//        $.get(url,$matchingFormData,function( data ){
-//            showResponseDiv(data,"mainDiv");
-//            l.stop();
-//        });
-         $('#matchingform').ajaxSubmit(function( data ){
-             showResponseDiv(data,"mainDiv");
-             l.stop();
-         });
+        $.post(url,matchingFormData,function( data ){
+            showResponseDiv(data,"mainDiv");
+            l.stop();
+        });
+
     }
     function validateFieldNames(){
         var row = $('#learnersFieldsGrid').jqxGrid('getrowdata', 0);

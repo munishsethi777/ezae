@@ -18,20 +18,20 @@
    $adminSeq =  $sessionUtil->getAdminLoggedInSeq();
 
    if($call == "saveImportedFields"){
-        $data = $_GET["data"];
+        $data = $_POST["data"];
         $data = str_replace('\\', '', $data);
         $rows = json_decode($data,true);
-        $userNameField = $_GET["userName"];
-        $passwordField = $_GET["password"];
-        $emailField = $_GET["emailId"];
-        $prefix = $_GET["userNamePrefix"];
+        $userNameField = $_POST["userName"];
+        $passwordField = $_POST["password"];
+        $emailField = $_POST["emailId"];
+        $prefix = $_POST["userNamePrefix"];
         $randomPassword = "off";
-        if(isset($_GET["randomPassword"])){
-           $randomPassword =$_GET["randomPassword"];
+        if(isset($_POST["randomPassword"])){
+           $randomPassword =$_POST["randomPassword"];
         }
 
         $isRandomPassword = $randomPassword == "on";
-        $fieldData = $_GET["fieldData"];
+        $fieldData = $_POST["fieldData"];
         $fieldData = str_replace('\\', '', $fieldData);
         $fieldRows = json_decode($fieldData,true);
 
@@ -258,9 +258,9 @@
              if(StringUtil::IsNullOrEmptyString($password)){
                 $msg["password"] = "Value is null for selected password field for Row no." . $rowNo;
              }
-             if(StringUtil::IsNullOrEmptyString($emailField)){
+             if(!StringUtil::IsNullOrEmptyString($emailField)){
                $email = $value[$emailField];
-               if(StringUtil::IsNullOrEmptyString($userName)){
+               if(StringUtil::IsNullOrEmptyString($email)){
                     $msg["email"] = "Value is null for selected email field for Row no." . $rowNo;
                }
              }
@@ -300,8 +300,11 @@
      function saveUserRowsData($data,$userNameField,$passwordField,$emailId,$prefix,$isRandom,$companySeq,$adminSeq){
         $userMgr = UserMgr::getInstance();
         foreach($data as  $key => $value){
-            $userName = $prefix . $value[$userNameField];
-            $email = $value[$emailId];
+            $userName = $prefix . $value[$userNameField];            
+            $email = null;
+            if(!empty($emailId)){
+                $email = $value[$emailId];    
+            }            
             $password = "";
             if(!$isRandom){
                 $password = $value[$passwordField];

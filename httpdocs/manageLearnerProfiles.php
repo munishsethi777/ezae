@@ -138,8 +138,7 @@
                 // create new row.
                 addButton.click(function (event) {
                     $("#saveNewBtnDiv").show();
-                    $("#msgDiv").remove();
-                    $("#errorDiv").remove();
+                    $(".alert").remove();
                     $("#id").val("0");
                     $("#learningProfileForm")[0].reset();
                     $('#createNewModalForm').modal('show');
@@ -147,8 +146,7 @@
                 // update row.
                 editButton.click(function (event){
                     $("#saveNewBtnDiv").hide();
-                    $("#msgDiv").remove();
-                    $("#errorDiv").remove();
+                    $(".alert").remove();   
                     $("#learningProfileForm")[0].reset();
                     var selectedrowindex = $("#jqxgrid").jqxGrid('selectedrowindexes');
                     if(selectedrowindex.length != 1){
