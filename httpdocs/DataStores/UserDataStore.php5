@@ -90,12 +90,16 @@
 
       
       public function getUserLearningProfiles($userSeq){
-        $query = "select lp.tag from userlearningprofiles ulp inner join learningprofiles lp on ulp.tagseq  = lp.seq where ulp.userseq = $userSeq";
+        $query = "select lp.seq, lp.tag from userlearningprofiles ulp inner join learningprofiles lp on ulp.tagseq  = lp.seq where ulp.userseq = $userSeq";
         $learningProfileList = self::executeQuery($query);
-        $arr = array();
-        foreach($learningProfileList as $k=>$v){
-           array_push($arr,$v[0]);     
+        $tagArr = array();
+        $seqArr = array();
+        foreach($learningProfileList as $learningProfile){
+          array_push($seqArr,$learningProfile["seq"]);
+          array_push($tagArr,$learningProfile["tag"]);
         }
+        $arr[0] = $seqArr;
+        $arr[1] = $tagArr;
         return $arr;
     }
     public function getUserLearningProfilesByLearnigPlan($learningPlan){

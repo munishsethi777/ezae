@@ -189,7 +189,6 @@ class UserMgr{
     public function getUserLearningProfiles($userSeq){
         $userDataStore = UserDataStore::getInstance();
         $profiles = $userDataStore->getUserLearningProfiles($userSeq);
-        $profiles = implode(", " ,$profiles);
         return $profiles;
     }
     public function getUserLearningProfileByProfileSeq($profileSeqs){

@@ -97,8 +97,9 @@ class AdminMgr{
             $arr['id'] = $user["seq"];
             $arr['username'] = $user["username"];
             $arr['emailid'] = $user["emailid"];
-            $profile = $userMgr->getUserLearningProfiles($user["seq"]);
-            $arr['prof_profiles'] = $profile;
+            $profile = $userMgr->getUserLearningProfiles($user["seq"]);            
+            $arr['prof_profiles'] = implode("," , $profile[1]);
+            $arr['profileseqs'] = implode("," , $profile[0]);
             $arrCustomFields = ActivityMgr::getCustomValuesArray($user["customfieldvalues"]);
             $cus_flag = LearnerFilterUtil::applyFilterOnCustomfield($arrCustomFields);
             $prof_flag = LearnerFilterUtil::applyFilterOnCustomfield($arr,false);
@@ -289,11 +290,12 @@ class AdminMgr{
             $userObj = new User();
             $userObj = $user;
             $arr = array();
-            $arr['id'] = $userObj->getSeq();
+            $arr['id'] = $userObj->getSeq();            
             $arr['username'] = $userObj->getUserName();
             $arr['password'] = $userObj->getPassword();
-            $arr['emailid'] = $userObj->getEmailId();
+            $arr['emailid'] = $userObj->getEmailId();           
             $arr['profiles'] = $userObj->getEmailId();
+            $arr['profileseqs'] = "";
             $arrCustomFields = ActivityMgr::getCustomValuesArray($userObj->getCustomFieldValues());
             $arr = array_merge($arr,$arrCustomFields);
             $arr['lastmodifiedon'] = $userObj->getLastModifiedOn();
@@ -310,9 +312,10 @@ class AdminMgr{
             $arr['datafield'] = "id";
             $arr['type'] = "integer";
             $arr['hidden'] = true;
-
             array_push($fullArr,$arr);
-
+            
+           
+           
             $arr = array();
             $arr['text'] = "User name";
             $arr['datafield'] = "username";
@@ -330,11 +333,18 @@ class AdminMgr{
             $arr['datafield'] = "emailid";
             $arr['type'] = "string";
             array_push($fullArr,$arr);
-
+            
             $arr = array();
             $arr['text'] = "Profiles";
             $arr['datafield'] = "prof_profiles";
             $arr['type'] = "string";
+            array_push($fullArr,$arr);
+            
+            $arr = array();
+            $arr['text'] = "profileseqs";
+            $arr['datafield'] = "profileseqs";
+            $arr['type'] = "string"; 
+             $arr['hidden'] = true;          
             array_push($fullArr,$arr);
 
 

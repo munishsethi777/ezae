@@ -183,16 +183,21 @@
                         $.each(selectedRowIndexes, function(index , value){
                             var dataRow = $("#learnersGrid").jqxGrid('getrowdata', value);
                             names.push(dataRow.username);
+                            i++;
                         });
                         $("#learnerNamesDiv").html(names.join());
-                        $('#setProfileModelForm').modal('show');
+                        var values = []
+                        if(selectedRowIndexes.length == 1){
+                            var dataRow = $("#learnersGrid").jqxGrid('getrowdata', selectedRowIndexes[0]);
+                            values = dataRow.profileseqs;
+                            values = values.split(",");                           
+                        }
+                        $('#profileSelect').val(values).trigger("chosen:updated");
+                        $('#setProfileModelForm').modal('show');    
+                       
                     });
                     // delete selected row.
                     deleteButton.click(function (event) {
-                       // var selectedrowindex = $("#learnersGrid").jqxGrid('getselectedrowindex');
-//                        var rowscount = $("#learnersGrid").jqxGrid('getdatainformation').rowscount;
-//                        var id = $("#learnersGrid").jqxGrid('getrowid', selectedrowindex);
-//                        $("#learnersGrid").jqxGrid('deleterow', id);
                         deleteRows("learnersGrid","Actions/LearnerAction.php?call=deleteLearners");
                     });
                     // edit grid data.
@@ -244,23 +249,8 @@
             $("#ids").val(ids);
             $('#setProfileForm').ajaxSubmit(function( data ){
                    l.stop();
-                   var obj = $.parseJSON(data);
-                   //var dataRow = $.parseJSON(obj.row);
-                    showResponseToastr(data,"setProfileModelForm","setProfileForm","profileMainDiv");
-                    if(obj.success == 1){
-                        $.each(selectedIndexes,function(key,value) {
-                            val = selctedValues;
-                            if(selectedIndexes.length > 1){
-                                profile = $("#learnersGrid").jqxGrid('getcellvalue', value, "profiles");
-                                if(profile != ""){
-                                    profile += "," + selctedValues;
-                                    val = profile;
-                                }
-                            }
-                            //$("#learnersGrid").jqxGrid('setcellvalue', value, "profiles", val.join());
-                           $("#learnersGrid").jqxGrid('updatebounddata');
-                        });
-                    }
+                   $("#learnersGrid").jqxGrid('updatebounddata');
+                   showResponseToastr(data,"setProfileModelForm","setProfileForm","profileMainDiv");
              })
         }
         function saveLearners(e,btn){

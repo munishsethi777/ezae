@@ -237,7 +237,7 @@ if(isset($_POST["sendOnDate"]) && $_POST["sendOnDate"] != ""){
         $(".chosen-select").chosen({width:"100%"});
         var values = "<?echo $lpSeqs?>";
         if(values.length > 0){
-            values = values.split(",")
+            values = values.split(",");
             $('.chosen-select').val(values).trigger("chosen:updated");
             loadModule(false);
         }
