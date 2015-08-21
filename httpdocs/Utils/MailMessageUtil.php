@@ -39,7 +39,9 @@
         $sendDate = new DateTime();
         foreach($userLearningProfiles as $userLearningProfile){
             $userSeq = $userLearningProfile->getUserSeq();
-            $this->saveMailMessageMail($mailMessage,$userSeq,$sendDate);
+            if(!empty($mailMessage)){
+                $this->saveMailMessageMail($mailMessage,$userSeq,$sendDate);
+            }
         }
                     
     }
