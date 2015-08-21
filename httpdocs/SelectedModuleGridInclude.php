@@ -11,6 +11,10 @@
         var dataRow = $("#selectedModuleGrid").jqxGrid('getrowdata', row);
         ids.push(dataRow.id);
         var commit = $("#selectedModuleGrid").jqxGrid('deleterow', ids);
+        $.each(ids, function(index , value){
+            var index = $('#moduleGrid').jqxGrid('getrowboundindexbyid',value);
+            $('#moduleGrid').jqxGrid('unselectrow', index);  
+        });     
     }
     function loadSelectedGrid(){
         var imagerenderer = function (row, column, value) {

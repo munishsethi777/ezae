@@ -2,6 +2,7 @@
     require_once('../IConstants.inc');  
     require_once($ConstantsArray['dbServerUrl'] ."Managers/LearningProfileMgr.php");
     require_once($ConstantsArray['dbServerUrl'] ."Managers/CustomFieldMgr.php");
+     require_once($ConstantsArray['dbServerUrl'] ."StringConstants.php");
 
     $call = "";
     $success = 1;
@@ -83,9 +84,13 @@
             $lpMgr = LearningProfileMgr::getInstance();
             $lpMgr->deleteCustomFields($ids);
             $message = "Record Deleted successfully";
-        }catch(Exception $e){
+        }catch(Exception $e){            
             $success = 0;
             $message  = $e->getMessage();
+            $trace = $e->getTrace();
+            if($trace[0]["args"][0][0] == "23000"){
+                $message = StringConstants::CANNOT_DELETE_PROFILE;    
+            }
         }
         writeResponse($message,$success);
     }
