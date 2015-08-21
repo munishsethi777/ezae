@@ -113,6 +113,21 @@ if($call == "saveLearningPlan"){
 
     echo json_encode($response);
 }
+if($call == "deleteLearningPlan"){
+    $ids = $_GET["ids"];
+    try{
+        $lpMgr = LearningPlanMgr::getInstance();
+        $lpMgr->deleteLearningPlans($ids);
+        $message = "Record Deleted successfully";
+    }catch(Exception $e){            
+        $success = 0;
+        $message  = $e->getMessage();
+    }
+    $response = new ArrayObject();
+    $response["message"] = $message;
+    $response["success"] =  $success;
+    echo json_encode($response);
+}
 
 //To be moved to mgr class
 function getArray($string){

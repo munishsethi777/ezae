@@ -6,6 +6,7 @@ require_once($ConstantsArray['dbServerUrl'] ."Enums/ManagerCriteriaType.php");
         private static $learningPlanMgr;
         private static $dataStore;
         private static $lpCoursedataStore;
+        private static $learningPlanProfileDataStore;
         private static $adminSeq;
         private static $companySeq;
         private static $sessionUtil;
@@ -17,6 +18,7 @@ require_once($ConstantsArray['dbServerUrl'] ."Enums/ManagerCriteriaType.php");
             {
                 self::$learningPlanMgr = new LearningPlanMgr();
                 self::$dataStore = LearningPlanDataStore::getInstance();
+                self::$learningPlanProfileDataStore = new BeanDataStore(LearningPlanProfile::$className,LearningPlanProfile::$tableName);
                 self::$lpCoursedataStore = new BeanDataStore(LearningPlanModule::$className,LearningPlanModule::$tableName);
                 self::$sessionUtil = SessionUtil::getInstance();
                 self::$adminSeq = self::$sessionUtil->getAdminLoggedInSeq();
@@ -31,13 +33,27 @@ require_once($ConstantsArray['dbServerUrl'] ."Enums/ManagerCriteriaType.php");
             $columnValue["learningplanseq"] = $learningPlanSeq;
             $id = self::$lpCoursedataStore->deleteByAttribute($columnValue);
         }
-
+        public function deleteLeaeningPlanProfiles($learningPlanSeq){
+            $columnValue = array();
+            $columnValue["learningplanseq"] = $learningPlanSeq;
+            $id = self::$learningPlanProfileDataStore->deleteByAttribute($columnValue);
+        }
+         public function deleteLearningPlans($ids){
+            $idArr = explode(",",$ids) ;
+            foreach ($idArr as $id){
+                $this->deleteLeaeningPlanCourses($id); 
+                $this->deleteLeaeningPlanProfiles($id);        
+            }
+            self::$dataStore->deleteInList($ids);
+            
+        }
         public function saveLearningPlan($learningPlanObj,$courseIds,$enableLeaderboardArr){
             $learningPlan = new LearningPlan();
             $learningPlan = $learningPlanObj;
             $id = self::$dataStore->save($learningPlan);
             $lpCourseDataStore = new BeanDataStore("","");
             $this->deleteLeaeningPlanCourses($id);
+            $this->deleteLeaeningPlanProfiles($id);            
             $i = 0;
             foreach ($courseIds as $key=>$value){
                 $val = $enableLeaderboardArr[$value];

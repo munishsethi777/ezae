@@ -165,7 +165,7 @@
                 // delete row.
                 deleteButton.click(function (event) {
                     gridId = "learningPlanGrid";
-                    deleteUrl = "Actions/LearningProfileAction.php?call=deleteLearningProfile";
+                    deleteUrl = "Actions/LearningPlanAction.php?call=deleteLearningPlan";
                     deleteRows(gridId,deleteUrl);
                 });
 
