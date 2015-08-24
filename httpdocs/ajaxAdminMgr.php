@@ -173,7 +173,7 @@
       $password = $_GET["password"];
       $adminMgr = new AdminMgr();
       $admin = $adminMgr->logInAdmin($username,$password);
-      if($admin){
+      if($admin && $admin->getPassword() == $password){
           $logger->info("Login Successful");
           $sessionUtil = SessionUtil::getInstance();
           $sessionUtil->createAdminSession($admin);

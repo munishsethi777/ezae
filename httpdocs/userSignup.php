@@ -1,16 +1,21 @@
-<?include("sessioncheck.php");?>
+<?
+    $cid = $_GET["cid"];
+?>
 <html>
 <head>
 <?include "ScriptsInclude.php"?>
+<?
 
+?>
 <!-- iCheck -->
 <link href="styles/plugins/iCheck/custom.css" rel="stylesheet">
 
 
 </head>
 <body class='default'>
+<div id="page-wrapper" class="gray-bg dashbard-1">
+
     <div id="wrapper wrapper-content animated fadeInRight">
-        <?include("adminMenu.php");?>
         <div class="row wrapper border-bottom white-bg page-heading">
             <div class="col-lg-10">
                 <h2>Manage Learner's registration form settings</h2>
@@ -27,17 +32,8 @@
                 </ol>
             </div>
         </div>
-        <div class="row wrapper-content">
-            <h3>Please copy the following url for learner's signup</h3>
-            <span style="font-size:14px" class="label label-primary signupURL">www.ezae.in/v2/usersignup.php?cid=1 </span>
-        </div>
-        <div class="ibox-content no-padding">
-            <div class="summernote">
-                <h3>Enter text for Singnup form header</h3>
-            </div>
-        </div>
+
         <div class="wrapper wrapper-content animated fadeIn mainDiv">
-            <p>You may drag and drop various field sections to maintain the sequance of registration form fields.</p>
             <form role="form"  method="post" action="Actions/SignupFormAction.php" id="SignupFieldForm" class="form-horizontal">
                 <input type="hidden" name="headerText" id="headerText"/>
                 <input type="hidden" value="saveSignupFormFields" name="call">
@@ -82,15 +78,14 @@
                   </div>
               </div>
         </div>
+
 </body>
 </html>
 <script src="scripts/plugins/pace/pace.min.js"></script>
 
 <script type="text/javascript">
     $(document).ready(function(){
-
-        loadFieldBlocks();
-        loadSignupURL();
+        loadForm();
         $("#saveBtn").click(function(e){
             saveSignupfields(e,this);
         })
@@ -107,10 +102,6 @@
             }
             $('#showSampleForm').jqxValidator('validate', validationResult);
         });
-        //enable draggable components
-        WinMove();
-
-
     })
     var edit = function() {
             $('.click2edit').summernote({focus: true});
@@ -120,23 +111,7 @@
         $('.click2edit').destroy();
     };
 
-    function loadSignupURL(){
-        var url = 'Actions/CompanyAction.php?call=getSignupFormURL';
-        $.get(url, function(data){
-            $(".signupURL").html(data);
-        });
-    }
-    function loadFieldBlocks(){
-        var url = 'ajaxAdminMgr.php?call=getLearnersFieldsForFormManagement';
-        $.get(url, function(data){
-            var obj = $.parseJSON(data);
-            $("#customFieldsBlock").append(obj.html);
-            $(".summernote").code(obj.headerText);
-            $('.i-checks').iCheck({
-                checkboxClass: 'icheckbox_square-green'
-            })
-        });
-    }
+
 
     function saveSignupfields(e,btn){
         e.preventDefault();
@@ -149,7 +124,16 @@
         })
     }
 
-    function showSampleForm(e,btn){
+    function loadForm(){
+        var url = 'Actions/SignupFormAction.php?call=getSignupFormFields&cid=<?echo $cid;?>';
+        $.getJSON(url, function(data){
+            var obj = $.parseJSON(data);
+            $("#customFieldsBlock").append(obj.html);
+            $(".summernote").code(obj.headerText);
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green'
+            })
+        });
         var divs = $("#customFieldsBlock").find("div.ibox:not(div.ibox div.ibox)")
         var formHtml = "";
         var validationRules = [];

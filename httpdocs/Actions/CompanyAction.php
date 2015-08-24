@@ -1,11 +1,13 @@
 <?php
- require_once('../IConstants.inc');  
+ require_once('../IConstants.inc');
  require_once($ConstantsArray['dbServerUrl'] ."Managers/CompanyMgr.php");
  require_once($ConstantsArray['dbServerUrl'] ."Managers/AdminMgr.php");
- require_once($ConstantsArray['dbServerUrl'] ."Utils/ImageUtil.php");     
+ require_once($ConstantsArray['dbServerUrl'] ."Utils/ImageUtil.php");
+ require_once($ConstantsArray['dbServerUrl'] ."Utils/SecurityUtil.php");
+
    $call = "";
    if(isset($_GET["call"])){
-        $call = $_GET["call"];     
+        $call = $_GET["call"];
    }else{
        $call = $_POST["call"];
    }
@@ -13,102 +15,108 @@
    $message = "";
    $sessionUtil = SessionUtil::getInstance();
    $companySeq = $sessionUtil->getAdminLoggedInCompanySeq();
-   $adminSeq =  $sessionUtil->getAdminLoggedInSeq();   
+   $adminSeq =  $sessionUtil->getAdminLoggedInSeq();
    if($call == "saveCompany"){
-        try{       
+        try{
             $companyMgr = CompanyMgr::getInstance();
             $companyMgr->SignUpCompany();
-            $message = "Settings Saved Successfully"; 
+            $message = "Settings Saved Successfully";
         }catch(Exception $e){
             $success = 0;
             $message  = $e->getMessage();
         }
-        $response = new ArrayObject(); 
+        $response = new ArrayObject();
         $response["success"]  = $success;
         $response["message"]  = $message;
-        echo json_encode($response);  
+        echo json_encode($response);
     }
     if($call == "getSettings"){
-        $adminMgr = AdminMgr::getInstance();  
+        $adminMgr = AdminMgr::getInstance();
         $companyMgr = CompanyMgr::getInstance();
         $adminJson = "";
         $compnayJson = "";
         try{
-            $compnay = $companyMgr->getCompanyBySeq($companySeq);            
+            $compnay = $companyMgr->getCompanyBySeq($companySeq);
             $admin = $adminMgr->FindBySeq($adminSeq);
             $adminArray =  (array) $admin;
-            $companyArray =  (array) $compnay; 
+            $companyArray =  (array) $compnay;
             $adminJson = json_encode($adminArray, JSON_FORCE_OBJECT);
             $adminJson = str_replace("\\u0000Admin\\u0000","",$adminJson);
-            
+
             $compnayJson = json_encode($companyArray, JSON_FORCE_OBJECT);
             $compnayJson = str_replace("\\u0000Company\\u0000","",$compnayJson);
         }catch(Exception $e){
             $success = 0;
             $message  = $e->getMessage();
-        } 
-        $response = new ArrayObject(); 
+        }
+        $response = new ArrayObject();
         $response["success"]  = $success;
         $response["message"]  = $message;
         $response["company"]  = $compnayJson;
         $response["admin"]  = $adminJson;
-        echo json_encode($response);        
+        echo json_encode($response);
     }
     if($call == "changePassword"){
         $password = $_GET["newPassword"];
         $earlierPassword = $_GET["earlierPassword"];
-        try{ 
-              
+        try{
+
             $adminMgr = AdminMgr::getInstance();
             $isPasswordExists = $adminMgr->isPasswordExist($earlierPassword);
             if($isPasswordExists){
                  $adminMgr->ChangePassword($password);
-                 $message = "Password Updated Successfully";    
+                 $message = "Password Updated Successfully";
             }else{
                 $message = "Incorrect Current Password!";
-                $success =0;     
+                $success =0;
             }
-           
+
         }catch(Exception $e){
             $success = 0;
             $message  = $e->getMessage();
         }
-        $response = new ArrayObject(); 
+        $response = new ArrayObject();
         $response["success"]  = $success;
         $response["message"]  = $message;
-        echo json_encode($response);  
+        echo json_encode($response);
     }
-    
+
     if($call == "getPrefix"){
-        try{       
+        try{
             $companyMgr = CompanyMgr::getInstance();
-            $refix =   $companyMgr->getCompanyPrefix($companySeq); 
+            $refix =   $companyMgr->getCompanyPrefix($companySeq);
         }catch (Exception $e){
             $success = 0;
-            $message  = $e->getMessage();    
+            $message  = $e->getMessage();
         }
-        $response = new ArrayObject(); 
+        $response = new ArrayObject();
         $response["prefix"]  = $refix;
         echo json_encode($response);
     }
-    
+
     if($call == "updateProfilePicture"){
-        try{       
-            $img = $_POST['imgSrc'];                        
+        try{
+            $img = $_POST['imgSrc'];
             $orgImg = $_POST['imgSrcOrg'];
             $path = $ConstantsArray['ImagePath'];
             $uploaded = ImageUtil::uploadImage($path,$img,$orgImg,$adminSeq);
             $message = "Profile Picture Updated Successfully";
         }catch (Exception $e){
             $success = 0;
-            $message  = $e->getMessage();    
+            $message  = $e->getMessage();
         }
-        $response = new ArrayObject(); 
+        $response = new ArrayObject();
         $response["success"]  = $success;
         $response["message"]  = $message;
         $response["imagepath"] = "images/AdminImages/$adminSeq.png";
-        echo json_encode($response);      
+        echo json_encode($response);
     }
-    
-    
+
+   if($call == "getSignupFormURL"){
+        $url = $ConstantsArray['ApplicationURL'];
+        $url .= "/userSignup.php?cid=";
+        $url .= SecurityUtil::Encode($companySeq);
+        echo $url;
+   }
+
 ?>
