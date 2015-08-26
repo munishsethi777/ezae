@@ -28,16 +28,17 @@ require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/MatchingRule.php")
         if(count($objList)>0){
             $machingRule = $objList[0];        
         }
-        $fieldName = "";
+        $fieldNames = array();
         if($machingRule->getUserNameField() == $customFieldName){
-             $fieldName = "usernamefield";        
+            array_push($fieldNames,"usernamefield");
         }
         if($machingRule->getPasswordField() == $customFieldName){
-             $fieldName = "passwordfield";
+             array_push($fieldNames,"passwordfield");
         }
         if($machingRule->getEmailField() == $customFieldName){
-            $fieldName = "emailfield";
+            array_push($fieldNames,"emailfield");
         }
+        $fieldName = implode(",",$fieldNames);
         return $fieldName;        
     }
     
@@ -59,11 +60,13 @@ require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/MatchingRule.php")
                 $matchingRule =  $objList[0];
             }
             $this->resetOldMappedField($matchingRule,$mappedField);
-            if($attribute == "usernamefield"){
+           if (strpos($attribute,'usernamefield') !== false) {
                 $matchingRule->setUserNameField($value);        
-            }else if($attribute == "passwordfield"){
+            }
+            if(strpos($attribute,'passwordfield') !== false){
                 $matchingRule->setPasswordField($value);    
-            }else if($attribute == "emailfield"){
+            }
+            if(strpos($attribute,'emailfield') !== false){
                 $matchingRule->setEmailField($value);    
             }
             $id = self::$dataStore->save($matchingRule);    
@@ -73,11 +76,13 @@ require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/MatchingRule.php")
     }
     
     function resetOldMappedField($matchingRule,$mappedField){
-        if($mappedField == "usernamefield"){
+        if(strpos($mappedField,'usernamefield') !== false){
             $matchingRule->setUserNameField(null);        
-        }else if($mappedField == "passwordfield"){
+        }
+        if(strpos($mappedField,'passwordfield') !== false){
             $matchingRule->setPasswordField(null);    
-        }else if($mappedField == "emailfield"){
+        }
+        if(strpos($mappedField,'emailfield') !== false){
             $matchingRule->setEmailField(null);    
         }    
     }

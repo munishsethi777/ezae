@@ -45,14 +45,18 @@ require_once($ConstantsArray['dbServerUrl']. "Utils/CustomFieldsFormGenerator.ph
         $mappedField = $matchinRuleMgr->findNameForCustomfield($customField->getTitle());
         $arr["mappedfield"] = $mappedField;
         $arr['title'] = $title;
-        if($mappedField == "usernamefield"){
-            $arr['title'] = $title. " (UserName)";
+        $fields = array();
+        if (strpos($mappedField,'usernamefield') !== false) {
+            array_push($fields,"UserName");
         }
-        if($mappedField == "passwordfield"){
-            $arr['title'] = $title. " (Password)";            
+        if (strpos($mappedField,'passwordfield') !== false){
+             array_push($fields,"Password");
         }
-        if($mappedField == "emailfield"){
-            $arr['title'] = $title. " (Email)";            
+        if (strpos($mappedField,'emailfield') !== false){
+             array_push($fields,"Email");            
+        }
+        if(!empty($fields)){
+            $arr['title']  = $title . " (" . implode(", ",$fields) . ")";
         }
         return $arr;     
     }

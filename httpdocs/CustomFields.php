@@ -193,11 +193,25 @@
                     $("#id").val(row.id);
                     $("#fieldName").val(row.name);
                     $('#fieldType').val(row.type).attr("selected", "selected");
-                    $('#usernamechk').attr('checked', row.mappedfield == "usernamefield");
-                    $('#passwordchk').attr('checked', row.mappedfield == "passwordfield");
-                    $('#emailchk').attr('checked', row.mappedfield == "emailfield");
+                    isUserName = false;
+                    isPassword = false;
+                    isEmail = false;
+                    fields = row.mappedfield.split(",");
+                     $.each(fields,function(key,value) {
+                        if(value == "usernamefield" ){
+                            isUserName = true;    
+                        }
+                        if(value == "passwordfield" ){
+                            isPassword = true;
+                        }
+                        if(value == "emailfield" ){
+                            isEmail = true;
+                        }
+                     })
+                    $('#usernamechk').attr('checked', isUserName);
+                    $('#passwordchk').attr('checked', isPassword);
+                    $('#emailchk').attr('checked', isEmail);
                     $("#mappedField").val(row.mappedfield);
-
                     $('#createNewModalForm').modal('show');
                 });
                 // delete row.
@@ -255,11 +269,11 @@
                                                     </div>
                                                      <div class="form-group">
                                                         <div class="col-sm-4">
-                                                            <label class="checkbox-inline"><input type="checkbox" onchange="HandleCheckbox(this.value,this.checked)"  value="username" name="username_map" checked="checked" id="usernamechk"> UserName </label></div>
+                                                            <label class="checkbox-inline"><input type="checkbox" value="username" name="username_map" checked="checked" id="usernamechk"> UserName </label></div>
                                                         <div class="col-sm-4">
-                                                            <label class="checkbox-inline"><input type="checkbox" onchange="HandleCheckbox(this.value,this.checked)"  value="password" name="password_map" id="passwordchk"> Password </label></div>
+                                                            <label class="checkbox-inline"><input type="checkbox" value="password" name="password_map" id="passwordchk"> Password </label></div>
                                                         <div class="col-sm-3">
-                                                            <label class="checkbox-inline"><input type="checkbox" onchange="HandleCheckbox(this.value,this.checked)" value="email" name="email_map" id="emailchk"> Email </label></div>
+                                                            <label class="checkbox-inline"><input type="checkbox" value="email" name="email_map" id="emailchk"> Email </label></div>
                                                      </div>
                                                     <div class="modal-footer">
                                                         <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveButton" type="button">

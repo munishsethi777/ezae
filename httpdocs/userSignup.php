@@ -120,6 +120,7 @@
                             label += " (Password)";
                                                    }
                         if(name == usernamefield && name == passwordfield){
+                            label = name;
                             label += " (UserName,Password)";
                         }
                         var required = inputs[5];

@@ -80,16 +80,20 @@
             $dataRow = $customFieldMgr->saveCustomFields($customField,true);
             $id = $_GET["id"];
             $value = $fieldName;
+            $arr = array();
             $attribute = "";
-            if(isset($_GET["username_map"])){              
-                $attribute = "usernamefield";    
+            if(isset($_GET["username_map"])){
+                array_push($arr,"usernamefield");   
             }
             if(isset($_GET["password_map"])){                 
-                 $attribute = "passwordfield";    
+                array_push($arr,"passwordfield");    
             }
             if(isset($_GET["email_map"])){                
-                 $attribute = "emailfield";                
+                 array_push($arr,"emailfield");                
             }
+            if(!empty($arr)){
+                $attribute = implode(",",$arr);    
+            }            
             saveOrUpdateMatchingRules($value,$attribute,$mappedField);
             $dataRow["mappedfield"] = $attribute;
             $dataRow = json_encode($dataRow);
