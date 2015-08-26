@@ -45,9 +45,9 @@
 
   if($call == "getLearnersFieldsForFormManagement"){
       $sessionUtil = SessionUtil::getInstance();
-      $companySeq = $sessionUtil->getAdminLoggedInCompanySeq();
+      $adminSeq = $sessionUtil->getAdminLoggedInSeq();
       $adminMgr = AdminMgr::getInstance();
-      $html =  $adminMgr->getLearnersFieldsForFormManagementHtml($companySeq);
+      $html =  $adminMgr->getLearnersFieldsForFormManagementHtml($adminSeq);
       echo $html;
   }
 

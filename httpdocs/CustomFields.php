@@ -7,7 +7,8 @@
 <script type="text/javascript">
     $(document).ready(function(){
         //populateGrid();
-        loadGrid();
+        checkBindingCompleted();
+        loadGrid();        
         $('#customFieldForm').jqxValidator({
             hintType: 'label',
             animationDuration: 0,
@@ -32,6 +33,12 @@
                 loadGrid(data);
         });
     }
+    function checkBindingCompleted(){
+         var url = 'Actions/CustomFieldAction.php?call=isBindingCompleted';
+            $.getJSON(url, function(data){
+                $("#bindingMsgDiv").html(data.message);    
+           });
+    }
     function validateAndSave(e,btn){
         $("#errorDiv").hide();
         $("#msgDiv").hide();
@@ -53,12 +60,7 @@
                    if(obj.success == 1){
                        var dataRow = $.parseJSON(obj.row);
                        var id = $("#id").val();
-                       if(id != "0"){
-                           var selectedrowindex = $("#jqxgrid").jqxGrid('getselectedrowindex');
-                           $("#jqxgrid").jqxGrid('updaterow', id, dataRow);
-                       }else{
-                         $("#jqxgrid").jqxGrid('addrow', null, dataRow);
-                       }
+                       $("#jqxgrid").jqxGrid('updatebounddata');
                        l.stop();
                    }
                   if(btn.id == "saveButton"){
@@ -69,6 +71,7 @@
                   $("#jqxgrid").jqxGrid('clearselection');
 
                 }
+                checkBindingCompleted();
         });
     }
     function HandleCheckbox(value,isChecked){
@@ -219,6 +222,7 @@
                     <div class="ibox-title">
                         <h5>Custom Field List</h5>
                     </div>
+                    <span style="color: red;margin-left: 50px;" id ="bindingMsgDiv"></span> 
                     <div class="ibox-content">
                         <div  id="jqxgrid"></div>
                         <div id="createNewModalForm" class="modal fade" aria-hidden="true">

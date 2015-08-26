@@ -2,6 +2,7 @@
  require_once('../IConstants.inc');
  require_once($ConstantsArray['dbServerUrl'] ."Managers/CustomFieldMgr.php");
  require_once($ConstantsArray['dbServerUrl'] ."Managers/CompanyMgr.php");
+ require_once($ConstantsArray['dbServerUrl'] ."Managers/SignupFormMgr.php");
  require_once($ConstantsArray['dbServerUrl'] ."Managers/UserMgr.php");
  require_once($ConstantsArray['dbServerUrl'] ."Managers/MatchingRuleMgr.php");   
  require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/User.php");
@@ -179,7 +180,17 @@
         $response["values"]  = $values;
         echo json_encode($response);
     }
-    
+    if($call == "isBindingCompleted"){        
+        $matchingRuleMgr = MatchingRuleMgr::getInstance();
+        $unCompletedBindingFields = $matchingRuleMgr->getUncompletedBinding();
+        $response = new ArrayObject();
+        if(!empty($unCompletedBindingFields)){
+             $response["success"]  = 0;
+             $message = "Please Complete the custom field binding for ". implode(", ",$unCompletedBindingFields);    
+        }
+        $response["message"]  = $message;
+        echo json_encode($response);     
+    }
     function getResponse($success,$message){
         $response = new ArrayObject();
         $response["success"]  = $success;
@@ -267,7 +278,7 @@
          }
          return $msg;
      }
-
+     
      function createCustomFieldObj($name,$type,$companySeq,$adminSeq) {
         $customField = new UserCustomField();
         $title = $name;

@@ -111,12 +111,13 @@
         $response["imagepath"] = "images/AdminImages/$adminSeq.png";
         echo json_encode($response);
     }
-
+    
    if($call == "getSignupFormURL"){
         $url = $ConstantsArray['ApplicationURL'];
-        $url .= "/userSignup.php?cid=";
-        $url .= SecurityUtil::Encode($companySeq);
+        $url .= "/userSignup.php?aid=";
+        $url .= SecurityUtil::Encode($adminSeq);
+        $url .= "&cid=";
+        $url .= SecurityUtil::Encode($companySeq);        
         echo $url;
    }
-
 ?>

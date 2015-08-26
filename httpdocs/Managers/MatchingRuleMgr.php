@@ -1,4 +1,5 @@
 <?php
+require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/MatchingRule.php");
   class MatchingRuleMgr{
     private static $matchingRuleMgr;
     private static $dataStore;
@@ -85,14 +86,48 @@
         self::$dataStore->deleteAllByCompany();
     }
     
+    //calling from adminMgr for construct the user signup form
+    public function getRequiredMatchingRules($adminSeq_,$companySeq_){
+        self::$adminSeq = $adminSeq_;
+        self::$companySeq = $companySeq_;
+        $matchingRule = $this->getMatchingRule();
+        $obj = new MatchingRule();
+        $obj = $matchingRule;
+        $arr = array();
+        $arr["usernamefield"] = $obj->getUserNameField();
+        $arr["passwordfield"] = $obj->getPasswordField();
+        return $arr;  
+    }
+    
     public function getMatchingRule(){
         $params["adminseq"] = self::$adminSeq;
         $params["companyseq"] = self::$companySeq;
+        $obj = new MatchingRule();
         $objList = self::$dataStore->executeConditionQuery($params);
         if(count($objList)> 0){
-            return  $objList[0];
+            $obj = $objList[0];
         }
-        return null;  
+        return $obj;  
+    }
+    //Calling From CustomFieldAction 
+    public function getUncompletedBinding(){
+        $params["adminseq"] = self::$adminSeq;
+        $unCompletedFields = array();        
+        array_push($unCompletedFields,"UserName");
+        array_push($unCompletedFields,"Password");
+        $objList = self::$dataStore->executeConditionQuery($params);
+        if(count($objList)> 0){
+            $matchingrule = $objList[0];
+            $username = $matchingrule->getUserNameField();
+            $password = $matchingrule->getPasswordField();
+            if(!empty($username)){
+                unset($unCompletedFields[0]);
+            }
+            if(!empty($password)){
+                unset($unCompletedFields[1]);
+            }
+        }
+        return $unCompletedFields;  
     }
   }
 ?>

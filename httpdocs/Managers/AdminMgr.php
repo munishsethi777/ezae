@@ -8,6 +8,7 @@ require_once($ConstantsArray['dbServerUrl']. "Utils/ChartsUtil.php");
 require_once($ConstantsArray['dbServerUrl']. "Utils/SessionUtil.php5");
 require_once($ConstantsArray['dbServerUrl']. "Managers/UserMgr.php");
 require_once($ConstantsArray['dbServerUrl']. "Managers/SignupFormMgr.php");
+require_once($ConstantsArray['dbServerUrl']. "Managers/MatchingRuleMgr.php");
 class AdminMgr{
 
     private static $adminMgr;
@@ -38,6 +39,15 @@ class AdminMgr{
     }
     public function getSignupFormHeaderText(){
         $params["seq"] = self::$adminSeq;
+        $attributes[0] = "signupformheader";
+        $text = self::$adminDataStore->executeAttributeQuery($attributes,$params);
+        if(count($text) > 0){
+           return $text[0][0];
+        }
+        return null;
+    }
+    private function getSignupFormHeaderTextByAdmin($adminSeq){
+        $params["seq"] = $adminSeq;
         $attributes[0] = "signupformheader";
         $text = self::$adminDataStore->executeAttributeQuery($attributes,$params);
         if(count($text) > 0){
@@ -208,13 +218,13 @@ class AdminMgr{
     }
 
     //called from ajaxAdminMgr for registration form settings
-    public function getLearnersFieldsForFormManagementHtml($companySeq){
+    public function getLearnersFieldsForFormManagementHtml($adminSeq){
         $customFieldsFormGenerator = CustomFieldsFormGenerator::getInstance();
         $signupFieldMgr = SignupFormMgr::getInstance();
-        $customFields = $signupFieldMgr->getSignupFormFields($companySeq);
+        $customFields = $signupFieldMgr->getSignupFormFields($adminSeq);
         $isExists =  count($customFields) > 0;
         if(!$isExists){
-            $customFields =  $this->getCustomFieldsByCompany($companySeq);
+            $customFields =  $this->getCustomFieldsByAdmin($adminSeq);
         }
         $html = $customFieldsFormGenerator->getDivsForFormSettings($customFields,$isExists);
         $adminMgr = AdminMgr::getInstance();
@@ -270,6 +280,12 @@ class AdminMgr{
     private function getCustomFieldsByCompany($companySeq){
         $customFieldsDS = UserCustomFieldsDataStore::getInstance();
         $customFields = $customFieldsDS->findByCompany($companySeq);
+        return $customFields;
+    }
+    
+    private function getCustomFieldsByAdmin($adminSeq){
+        $customFieldsDS = UserCustomFieldsDataStore::getInstance();
+        $customFields = $customFieldsDS->findByAdmin($adminSeq);
         return $customFields;
     }
 
@@ -542,6 +558,20 @@ class AdminMgr{
             array_push($fullArr,$arr);
         }
         return $fullArr;
+    }
+    
+    //called from SignupFormAction for signup form loading
+    public function getSignupFormDetails($adminSeq,$companyseq){
+        $signupFieldMgr = SignupFormMgr::getInstance();
+        $customFields = $signupFieldMgr->getSignupFormFields($adminSeq);
+        $headerText = $this->getSignupFormHeaderTextByAdmin($adminSeq);
+        $matchingRuleMgr = MatchingRuleMgr::getInstance();
+        $matchingRule = $matchingRuleMgr->getRequiredMatchingRules($adminSeq,$companyseq);
+        $response = array();
+        $response["fields"] = $customFields;
+        $response["headerText"] = $headerText;
+        $response["matchingrule"] = $matchingRule;
+        return $response;
     }
 }
 ?>

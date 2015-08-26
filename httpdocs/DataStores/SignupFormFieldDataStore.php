@@ -24,6 +24,13 @@ class SignupFormFieldDataStore extends BeanDataStore{
         return $arrList;
     }
     
+    public function findByAdmin($adminseq){
+        $query = "Select cf.seq, cf.companyseq , cf.name, cf.title, cf.fieldtype ,ff.isrequired , ff.isvisible from usercustomfields cf inner join signupformfields ff on cf.seq = ff.customfieldseq";
+        $query .= " where ff.adminseq = $adminseq";
+        $arrList = $this->executeQuery($query);
+        return $arrList;
+    }
+    
     public function deleteAll(){
         self::deleteAllByCompany();
     }

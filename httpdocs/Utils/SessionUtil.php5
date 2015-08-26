@@ -45,7 +45,7 @@ class SessionUtil{
 
         $_SESSION[self::$USER_LOGGED_IN] = $arr;
         $_SESSION[self::$LOGIN_MODE] = 'user';
-        $_SESSION[self::$ROLE] = RoleType::ADMIN; 
+        $_SESSION[self::$ROLE] = RoleType::USER; 
     }
 
     public function isSessionAdmin(){

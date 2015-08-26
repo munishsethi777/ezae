@@ -60,10 +60,12 @@
     }
 
     if($call == "getSignupFormFields"){
+        $aidEncrypted = $_GET["aid"];
         $cidEncrypted = $_GET["cid"];
-        $companySeq = SecurityUtil::Decode($cidEncrypted);
-        $companyMgr = CompanyMgr::getInstance();
-        $details = $companyMgr->getSignupFormDetails($companySeq);
+        $adminSeq = SecurityUtil::Decode($aidEncrypted);
+        $compnaySeq = SecurityUtil::Decode($cidEncrypted);
+        $adminMgr = AdminMgr::getInstance();
+        $details = $adminMgr->getSignupFormDetails($adminSeq,$compnaySeq);
         echo json_encode($details);
     }
 ?>

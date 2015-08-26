@@ -10,6 +10,15 @@
             }
             return self::$customFieldsFormGenerator;
         }
+        
+        public function getCustomfieldsFromArr($customFieldArr){
+            $userCustomFields = "";
+             foreach($customFieldArr as $key=>$value){
+                $userCustomFields .= $key . ":" . $value . ";";            
+            }
+            return $userCustomFields;
+        }
+        
         public function getDivsForFormSettings($customFields,$isAlreadyExists = false){
             $html = "";
             if(!$isAlreadyExists){

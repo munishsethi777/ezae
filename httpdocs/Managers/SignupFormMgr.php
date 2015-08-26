@@ -19,10 +19,12 @@ class SignupFormMgr{
         return $id;
     }
     
-    public function getSignupFormFields($companySeq){
-        $arrList = self::$dataStore->findByCompany($companySeq);
+    public function getSignupFormFields($adminSeq){
+        $arrList = self::$dataStore->findByAdmin($adminSeq);
         return $arrList;
     }
+    
+
     
     public function deleteAll(){
         self::$dataStore->deleteAll();

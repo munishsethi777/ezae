@@ -30,6 +30,7 @@
         <div class="row wrapper-content">
             <h3>Please copy the following url for learner's signup</h3>
             <span style="font-size:14px" class="label label-primary signupURL">www.ezae.in/v2/usersignup.php?cid=1 </span>
+            <span style="color: red;" id="bindingMsgDiv"></span>
         </div>
         <div class="ibox-content no-padding">
             <div class="summernote">
@@ -91,6 +92,7 @@
 
         loadFieldBlocks();
         loadSignupURL();
+        checkBindingCompleted();
         $("#saveBtn").click(function(e){
             saveSignupfields(e,this);
         })
@@ -119,7 +121,12 @@
         var aHTML = $('.click2edit').code(); //save HTML If you need(aHTML: array).
         $('.click2edit').destroy();
     };
-
+    function checkBindingCompleted(){
+         var url = 'Actions/CustomFieldAction.php?call=isBindingCompleted';
+            $.getJSON(url, function(data){
+                $("#bindingMsgDiv").html(data.message);    
+           });
+    }
     function loadSignupURL(){
         var url = 'Actions/CompanyAction.php?call=getSignupFormURL';
         $.get(url, function(data){

@@ -67,17 +67,7 @@ class CompanyMgr{
         $prefix =  $CDS->updateCompanyPrefix($companySeq,$prefix);
     }
 
-    //called from SignupFormAction for signup form loading
-    public function getSignupFormDetails($companySeq){
-        $signupFieldMgr = SignupFormMgr::getInstance();
-        $customFields = $signupFieldMgr->getSignupFormFields($companySeq);
-        $adminMgr = AdminMgr::getInstance();
-        $headerText = $adminMgr->getSignupFormHeaderText();
-        $response = array();
-        $response["fields"] = $customFields;
-        $response["headerText"] = $headerText;
-        return $response;
-    }
+
 
 }
 
