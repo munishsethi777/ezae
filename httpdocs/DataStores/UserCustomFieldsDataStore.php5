@@ -23,6 +23,13 @@
         $userList = $this->executeConditionQuery($colValuePair);
         return $userList;
     }
+    
+    public function findByAdmin($adminSeq){
+        $colValuePair = array();
+        /*'companyseq' is columnName*/ $colValuePair["adminseq"] = $adminSeq;
+        $userList = $this->executeConditionQuery($colValuePair);
+        return $userList;
+    }
 
     
        

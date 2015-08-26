@@ -20,7 +20,7 @@
         $colValuePair = array();
         $colValuePair["username"] = $userName;
         $userList = self::executeConditionQuery($colValuePair);
-        if(sizeof($userList) > 0){
+        if(!empty($userList)){
             return $userList[0];
         }
         return null;

@@ -1,10 +1,12 @@
 <?php
  require_once('../IConstants.inc');
  require_once($ConstantsArray['dbServerUrl'] ."Managers/UserMgr.php");
+ require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/User.php");
  require_once($ConstantsArray['dbServerUrl'] ."Managers/LearningProfileMgr.php");
  require_once($ConstantsArray['dbServerUrl'] ."Managers/CustomFieldMgr.php");
  require_once($ConstantsArray['dbServerUrl'] ."Utils/ImageUtil.php");
  require_once($ConstantsArray['dbServerUrl'] ."Utils/CustomFieldsFormGenerator.php");
+ require_once($ConstantsArray['dbServerUrl'] ."Utils/SecurityUtil.php");
  $call = "";
    if(isset($_POST["call"])){
         $call = $_POST["call"];
@@ -15,6 +17,7 @@
    $message = "";
    $sessionUtil = SessionUtil::getInstance();
    $userSeq = $sessionUtil->getUserLoggedInSeq();
+   $customFieldsFormGenerator = CustomFieldsFormGenerator::getInstance();
   if($call == "updateProfilePicture"){
         try{
             $img = $_POST['imgSrc'];
@@ -59,8 +62,8 @@
       $password = $_POST["password"];
       $userMgr = UserMgr::getInstance();
       try{
-          $user = $userMgr->logInUser($username,$password);
-          if($user){
+         // $user = $userMgr->logInUser($username,$password);
+          if($user != null){
               $sessionUtil->createUserSession($user);
           }else{
               $success = 0;
@@ -79,9 +82,45 @@
 
   if($call == "getUserFieldForm"){
       $sessionUtil = SessionUtil::getInstance();
-      $userSeq = $sessionUtil->getUserLoggedInSeq();
-      $customFieldsFormGenerator = CustomFieldsFormGenerator::getInstance();
+      $userSeq = $sessionUtil->getUserLoggedInSeq();     
       $html = $customFieldsFormGenerator->getFormHtmlForUser($userSeq);
       echo $html;
   }
-?>
+  
+  if($call == "signup"){
+    $post = $_POST;
+    unset($post["call"]);
+    $adminSeq = SecurityUtil::Decode($post["aid"]);
+    $companySeq = SecurityUtil::Decode($post["cid"]);
+    unset($post["aid"]);
+    unset($post["cid"]);
+    try{    
+        $userCustomFields = $customFieldsFormGenerator->getCustomfieldsFromArr($post);
+        $matchingRuleMgr = MatchingRuleMgr::getInstance();
+        $matchingRule = $matchingRuleMgr->getRequiredMatchingRules($adminSeq,$companySeq);
+        $user = new user();
+        $user->setUserName($post[$matchingRule["usernamefield"]]);
+        $user->setPassword($post[$matchingRule["passwordfield"]]);
+        $user->setLastModifiedOn(new DateTime());
+        $user->setCustomFieldValues($userCustomFields);
+        $user->setCreatedOn(new DateTime());
+        $user->setAdminSeq($adminSeq);
+        $user->setSeq(0);
+        $user->setIsEnabled(true);
+        $userMgr = UserMgr::getInstance();
+        $userMgr->Save($user);
+        $sessionUtil->createUserSession($user);
+        $message = "Sign up Successfully";
+    }catch(Exception $e){
+          $success = 0;
+          $message  = $e->getMessage();
+    }
+     $res = new ArrayObject();
+     $res["success"]  = $success;
+     $res["message"]  = $message;
+     echo json_encode($res);
+    
+  }
+  
+  
+  ?>

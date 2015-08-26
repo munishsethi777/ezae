@@ -1,5 +1,6 @@
 <?
     $cid = $_GET["cid"];
+    $aid = $_GET["aid"];
 ?>
 <html>
 <head>
@@ -13,72 +14,32 @@
 
 </head>
 <body class='default'>
-<div id="page-wrapper" class="gray-bg dashbard-1">
-
-    <div id="wrapper wrapper-content animated fadeInRight">
-        <div class="row wrapper border-bottom white-bg page-heading">
-            <div class="col-lg-10">
-                <h2>Manage Learner's registration form settings</h2>
-                <ol class="breadcrumb">
-                    <li>
-                        <a href="index.html">Home</a>
-                    </li>
-                    <li>
-                        <a>Learners</a>
-                    </li>
-                    <li class="active">
-                        <strong>Manage Registration Form</strong>
-                    </li>
-                </ol>
+<div id="wrapper">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title" id="formHeader">
+                    
+                </div>
+                <div class="ibox-content mainDiv">
+                    <form role="form" method="post" action="Actions/UserAction.php" id="SignupFieldForm" class="form-horizontal">
+                        <input type="hidden" value="signup" name="call">
+                        <input type="hidden" value="<?echo $cid?>" name="cid">
+                        <input type="hidden" value="<?echo $aid?>" name="aid">
+                        <div id="showSampleBlock">
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-10">
+                                <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveBtn" type="button">
+                                <span class="ladda-label">Sign up</span></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-
-        <div class="wrapper wrapper-content animated fadeIn mainDiv">
-            <form role="form"  method="post" action="Actions/SignupFormAction.php" id="SignupFieldForm" class="form-horizontal">
-                <input type="hidden" name="headerText" id="headerText"/>
-                <input type="hidden" value="saveSignupFormFields" name="call">
-                <div class="col-lg-12" id="customFieldsBlock">
-
-                </div>
-                <div class="row">
-                    <div class="col-sm-12">
-                        <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveBtn" type="button">
-                        <span class="ladda-label">Save</span></button>
-                        <button class="btn btn-primary ladda-button" data-style="expand-right" id="showSampleFormBtn" type="button">
-                        <span class="ladda-label">Show Sample Form</span></button>
-                    </div>
-                </div>
-            </form>
-              <div id="showSampleModalForm" class="modal fade" aria-hidden="true">
-                  <div class="modal-dialog" >
-                      <div class="modal-content">
-                          <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                                <h4 class="modal-title">Sign in</h4>
-                          </div>
-                          <div class="modal-body">
-                              <div class="row" >
-
-                                  <div class="col-sm-12">
-                                    <div id="formHeader"></div>
-                                    <form role="form" method="post" id="showSampleForm" class="form-horizontal">
-                                        <div id="showSampleBlock">
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button class="btn btn-primary ladda-button" data-style="expand-right" id="showSampleSaveBtn" type="button">
-                                                <span class="ladda-label">Save</span>
-                                            </button>
-                                            <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
-                                        </div>
-                                    </form>
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-        </div>
-
+    </div>
+</div>
 </body>
 </html>
 <script src="scripts/plugins/pace/pace.min.js"></script>
@@ -100,7 +61,7 @@
                     alert("Success");
                 }
             }
-            $('#showSampleForm').jqxValidator('validate', validationResult);
+            $('#SignupFieldForm').jqxValidator('validate', validationResult);
         });
     })
     var edit = function() {
@@ -115,65 +76,79 @@
 
     function saveSignupfields(e,btn){
         e.preventDefault();
-        $("#headerText").val($('.summernote').code());
-        var l = Ladda.create(btn);
-        l.start();
-        $('#SignupFieldForm').ajaxSubmit(function( data ){
-            l.stop();
-            showResponseNotification(data,"mainDiv","#SignupFieldForm");
-        })
+        var l = Ladda.create(btn);                
+         var validationResult = function (isValid){
+            if (isValid) {
+               l.start();
+               $('#SignupFieldForm').ajaxSubmit(function( data ){
+                    var obj = $.parseJSON(data);
+                    showResponseNotification(data,"mainDiv","SignupFieldForm");
+                    l.stop();
+                    if(obj.success == 1){
+                        window.setTimeout(function(){window.location.href = "UserDashBoard.php"},500);
+                    }
+               })
+            }
+         }
+         $('#SignupFieldForm').jqxValidator('validate', validationResult);
     }
 
     function loadForm(){
-        var url = 'Actions/SignupFormAction.php?call=getSignupFormFields&cid=<?echo $cid;?>';
-        $.getJSON(url, function(data){
+        var url = 'Actions/SignupFormAction.php?call=getSignupFormFields&aid=<?echo $aid;?>&cid=<?echo $cid;?>';
+        $.get(url, function(data){
             var obj = $.parseJSON(data);
-            $("#customFieldsBlock").append(obj.html);
-            $(".summernote").code(obj.headerText);
-            $('.i-checks').iCheck({
-                checkboxClass: 'icheckbox_square-green'
-            })
-        });
-        var divs = $("#customFieldsBlock").find("div.ibox:not(div.ibox div.ibox)")
-        var formHtml = "";
-        var validationRules = [];
-        $.each(divs, function(key,value){
-            var div = value;
-            var inputs = $("#" + div.id).find("input");
-            var show = inputs[4].checked;
-            if(show){
-                var name = inputs[1].value;
-                var type = inputs[2].value;
-                var required = inputs[3].checked;
-                var input =  '<div class="form-group">';
-                    input += '<label class="col-sm-3 control-label">' + name + '</label>';
-                    input += '<div class="col-sm-9">';
-                    if(type == 'string' || type == 'numeric'){
-                         type = 'text';
-                    }
-                    input += '<input type="' + type + '" id="'+  name + '" placeholder="' + name + '" class="form-control">';
-                    input += '</div></div>'
-               formHtml += input;
-               if(required){
-                var rule = { input: '#' + name, message: name + ' is required!', action: 'keyup, blur', rule: 'required'};
-                validationRules.push(rule);
-               }
-
-            }
-
-        });
-        $("#formHeader").html($('.summernote').code());
-        $("#showSampleBlock").html(formHtml);
-        $('#showSampleModalForm').modal('show');
-        $('#showSampleForm').jqxValidator({
-            hintType: 'label',
-            animationDuration: 0,
-            rules:validationRules
-        });
-
-        $("#showSampleForm").on('validationSuccess', function () {
-            $("#showSampleForm-iframe").fadeIn('fast');
-        });
+            var validationRules = [];
+                formHtml = "";
+                var fields = obj.fields;  
+                var header = obj.headerText;
+                var matchingRules = obj.matchingrule;
+                var usernamefield = matchingRules.usernamefield;
+                var passwordfield = matchingRules.passwordfield;
+                 $.each(fields, function(id,fieldobj){
+                    var inputs = fieldobj;
+                    var show = inputs[6];
+                    if(show == 1){
+                        var name = inputs[3];
+                        var type = inputs[4];
+                        var label = name;
+                        var id = name;
+                        if(name == usernamefield){
+                            label += " (UserName)";
+                           
+                        }
+                        if(name == passwordfield){
+                            label += " (Password)";
+                                                   }
+                        if(name == usernamefield && name == passwordfield){
+                            label += " (UserName,Password)";
+                        }
+                        var required = inputs[5];
+                        var input =  '<div class="form-group">';
+                            input += '<label class="col-sm-3 control-label">' + label + '</label>';
+                            input += '<div class="col-sm-5">';
+                            if(type == 'string' || type == 'numeric' || type == 'Text'){
+                                 type = 'text';
+                            }
+                            input += '<input type="' + type + '" id="'+  id + '" name="'+  name + '" placeholder="' + name + '" class="form-control">';
+                            input += '</div></div>';
+                       formHtml += input;
+                       if(required == 1){
+                           var rule = { input: '#' + id, message: name + ' is required!', action: 'keyup, blur', rule: 'required'};
+                           validationRules.push(rule);
+                       }
+                    }    
+                 });
+                $("#formHeader").html(header);
+                $("#showSampleBlock").html(formHtml);
+                $('#SignupFieldForm').jqxValidator({
+                    hintType: 'label',
+                    animationDuration: 0,
+                    rules:validationRules
+                });
+                $("#SignupFieldForm").on('validationSuccess', function () {
+                    $("#SignupFieldForm-iframe").fadeIn('fast');
+                });    
+            });
     }
 
 </script>
