@@ -36,13 +36,24 @@ require_once($ConstantsArray['dbServerUrl']. "Utils/CustomFieldsFormGenerator.ph
     
     function getJson($customField) {
         $arr = array();
+        $title = $customField->getTitle();
         $arr['id'] = $customField->getSeq();
-        $arr['name'] = $customField->getTitle();
+        $arr['name'] = $title;
         $arr['type'] = $customField->getFieldType();
         $arr['lastmodifiedon'] = $customField->getLastModifiedOn();
         $matchinRuleMgr = MatchingRuleMgr::getInstance();
         $mappedField = $matchinRuleMgr->findNameForCustomfield($customField->getTitle());
         $arr["mappedfield"] = $mappedField;
+        $arr['title'] = $title;
+        if($mappedField == "usernamefield"){
+            $arr['title'] = $title. " (UserName)";
+        }
+        if($mappedField == "passwordfield"){
+            $arr['title'] = $title. " (Password)";            
+        }
+        if($mappedField == "emailfield"){
+            $arr['title'] = $title. " (Email)";            
+        }
         return $arr;     
     }
     

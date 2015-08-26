@@ -83,7 +83,8 @@
         var columns = [
           { text: 'id', datafield: 'id' , hidden:true},
           { text: 'mappedfield', datafield: 'mappedfield' , hidden:true},
-          { text: 'Field Name' , datafield: 'name' },
+          { text: 'name', datafield: 'name' , hidden:true},
+          { text: 'Field Name' , datafield: 'title' },
           { text: 'Field Type', datafield: 'type' },
           { text: 'Modified On', datafield: 'lastmodifiedon',cellsformat: 'MM-dd-yyyy hh:mm:ss tt' }
         ]
@@ -101,6 +102,7 @@
             //localData: rows,
             datafields: [
                 { name: 'id', type: 'integer' },
+                { name: 'title', type: 'string' },
                 { name: 'name', type: 'string' },
                 { name: 'type', type: 'string' },
                 { name: 'lastmodifiedon', type: 'date' },
