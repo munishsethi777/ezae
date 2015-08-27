@@ -23,6 +23,7 @@
                                     <div class="col-sm-9">     
                                         <select id="profileSelect"  name="profileSelect[]" multiple class="chosen-select">
                                         </select>
+                                         <label class="jqx-validator-error-label" id="profileSelectError"></label>
                                     </div>
                                 </div>
                                 <div class="modal-footer">                                   

@@ -50,9 +50,8 @@ $('#setProfileForm').jqxValidator({
     rules: [
          { 
          input: '#profileSelect', message: 'Select Profile!', action: 'keyup, blur', 
-               rule: function (select){
-                        return validate("profileSelect");
-               }                     
+            rule: function (input, commit) {
+                    return requiredProfile(input);}
          }
             
     ]
@@ -67,4 +66,15 @@ function validate(input){
     }
     alert("Please Select Profile!")
    return false;
+}
+
+function requiredProfile(input){
+    if(input[0].selectedOptions.length > 0){
+        $(".hilight").removeClass("hilight");
+        $("#profileSelectError").text("");
+        return true;           
+    }    
+    $("#profileSelect_chosen").addClass("hilight");
+    $("#profileSelectError").text("Select atleast one profile!");
+    return false;
 }
