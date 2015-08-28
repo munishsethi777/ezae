@@ -261,10 +261,10 @@
                                                     <div class="form-group">
                                                         <label>Field Type</label>
                                                         <select id="fieldType" name="fieldType" class="form-control">
-                                                        <option value="string">Text</option>
-                                                        <option value="date">Date</option>
-                                                        <option value="numeric">Numeric</option>
-                                                        <option value="boolean">Yes/No</option>
+                                                        <option value="Text">Text</option>
+                                                        <option value="Data">Date</option>
+                                                        <option value="Numeric">Numeric</option>
+                                                        <option value="Yes/No">Yes/No</option>
                                                         </select>
                                                     </div>
                                                      <div class="form-group">
