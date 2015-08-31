@@ -8,6 +8,7 @@
 
 <script type="text/javascript">
         var mathingRule = "";
+        var isSelectAll = false;
         $(document).ready(function (){
             toggleForm(true);
             getMatchingRule();
@@ -176,7 +177,7 @@
                         $('#createNewModalForm').modal('show');
                     });
                     setProfile.click(function (event) {
-                        $("#id").val("0");
+                        $("#id").val("0");                       
                         var selectedRowIndexes = $("#learnersGrid").jqxGrid('selectedrowindexes');
                         var names = [];
                         $("#profileSelect").val("");
@@ -185,7 +186,7 @@
                             names.push(dataRow.username);
                             i++;
                         });
-                        $("#learnerNamesDiv").html(names.join());
+                        $("#learnerNamesDiv").html(names.join(", "));
                         var values = []
                         if(selectedRowIndexes.length == 1){
                             var dataRow = $("#learnersGrid").jqxGrid('getrowdata', selectedRowIndexes[0]);
@@ -227,11 +228,28 @@
                     reloadButton.click(function (event) {
                         $("#learnersGrid").jqxGrid({ source: dataAdapter });
                     });
-
+                    $("#learnersGrid").bind('rowselect', function (event) {
+                        var selectedRowIndex = event.args.rowindex;
+                        var pageSize = event.args.owner.rows.records.length - 1;                        
+                        if($.isArray(selectedRowIndex)){           
+                            if(isSelectAll){
+                                isSelectAll = false;    
+                            } else{
+                                isSelectAll = true;
+                            }                                                                     
+                            $('#learnersGrid').jqxGrid('clearselection');
+                            if(isSelectAll){
+                                for (i = 0; i <= pageSize; i++) {
+                                    var index = $('#learnersGrid').jqxGrid('getrowboundindex', i);
+                                    $('#learnersGrid').jqxGrid('selectrow', index);
+                                }    
+                            }
+                        }                        
+                   }); 
                 }
             });
         }
-        
+
         function setProfile(e,btn){
             e.preventDefault();
             var l = Ladda.create(btn);

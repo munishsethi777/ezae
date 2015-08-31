@@ -38,6 +38,7 @@
 </body>
 </html>
 <script type="text/javascript">
+    isSelectAll = false;
     $(document).ready(function(){
         loadGrid();
     });
@@ -168,6 +169,24 @@
                     deleteUrl = "Actions/LearningPlanAction.php?call=deleteLearningPlan";
                     deleteRows(gridId,deleteUrl);
                 });
+                $("#learningPlanGrid").bind('rowselect', function (event) {
+                        var selectedRowIndex = event.args.rowindex;
+                         var pageSize = event.args.owner.rows.records.length - 1;                       
+                        if($.isArray(selectedRowIndex)){           
+                            if(isSelectAll){
+                                isSelectAll = false;    
+                            } else{
+                                isSelectAll = true;
+                            }                                                                     
+                            $('#learningPlanGrid').jqxGrid('clearselection');
+                            if(isSelectAll){
+                                for (i = 0; i <= pageSize; i++) {
+                                    var index = $('#learningPlanGrid').jqxGrid('getrowboundindex', i);
+                                    $('#learningPlanGrid').jqxGrid('selectrow', index);
+                                }    
+                            }
+                        }                        
+                   });
 
 
             }

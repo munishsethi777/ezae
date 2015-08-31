@@ -126,9 +126,10 @@
             $lpMgr = LearningProfileMgr::getInstance();
             $id = 0;
             if(count($ids) == 1){
-                $lpMgr->removeProfileFromLearner($ids[0]);    
+                   
             }
             foreach($ids as $key=>$value){
+                $lpMgr->removeProfileFromLearner($value);
                 foreach($profiles as $k=>$v){
                     $userLearningProfile = new UserLearningProfile();
                     $userLearningProfile->setAdminSeq($adminSeq);

@@ -8,7 +8,7 @@
 
 <script type="text/javascript">
         var mathingRule = "";
-
+        isSelectAll = false;
         $(document).ready(function (){
             //var url = 'Actions/MailMessageAction.php?call=getMailMessageForGrid';
            // $.get(url, function(data){
@@ -145,6 +145,25 @@
                     reloadButton.click(function (event) {
                         $("#messagesGrid").jqxGrid({ source: dataAdapter });
                     });
+                    $("#messagesGrid").bind('rowselect', function (event) {
+                        var selectedRowIndex = event.args.rowindex;
+                        var pageSize = event.args.owner.rows.records.length - 1;
+                        if($.isArray(selectedRowIndex)){           
+                            if(isSelectAll){
+                                isSelectAll = false;    
+                            } else{
+                                isSelectAll = true;
+                            }                                                                     
+                            $('#messagesGrid').jqxGrid('clearselection');
+                            if(isSelectAll){
+                                for (i = 0; i <= pageSize; i++) {
+                                    var index = $('#messagesGrid').jqxGrid('getrowboundindex', i);
+                                    $('#messagesGrid').jqxGrid('selectrow', index);
+                                }    
+                            }
+                        }                        
+                   });
+                    
 
                 }
             });

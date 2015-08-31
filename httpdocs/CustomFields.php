@@ -5,6 +5,7 @@
 
 <?include "ScriptsInclude.php"?>
 <script type="text/javascript">
+    var isSelectAll= false;
     $(document).ready(function(){
         //populateGrid();
         checkBindingCompleted();
@@ -218,7 +219,25 @@
                 deleteButton.click(function (event) {
                      deleteRows("jqxgrid","Actions/CustomFieldAction.php?call=deleteCustomfield");
                 });
-
+                $("#jqxgrid").bind('rowselect', function (event) {
+                        var selectedRowIndex = event.args.rowindex;
+                        var pageSize = event.args.owner.rows.records.length - 1;                       
+                        if($.isArray(selectedRowIndex)){           
+                            if(isSelectAll){
+                                isSelectAll = false;    
+                            } else{
+                                isSelectAll = true;
+                            }                                                                     
+                            $('#jqxgrid').jqxGrid('clearselection');
+                            if(isSelectAll){
+                                for (i = 0; i <= pageSize; i++) {
+                                    var index = $('#jqxgrid').jqxGrid('getrowboundindex', i);
+                                    $('#jqxgrid').jqxGrid('selectrow', index);
+                                }    
+                            }
+                        }                        
+                   });
+                
             }
         });
      }

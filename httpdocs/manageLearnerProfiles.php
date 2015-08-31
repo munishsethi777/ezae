@@ -3,6 +3,7 @@
 <head>
 <?include "ScriptsInclude.php"?>
 <script type="text/javascript">
+    isSelectAll = false;
     $(document).ready(function(){
       //  var url = 'Actions/LearningProfileAction.php?call=getLearnerProfilesForGrid';
 //                $.getJSON(url, function(data){
@@ -169,6 +170,24 @@
                     deleteUrl = "Actions/LearningProfileAction.php?call=deleteLearningProfile";
                     deleteRows(gridId,deleteUrl);
                 });
+                $("#jqxgrid").bind('rowselect', function (event) {
+                        var selectedRowIndex = event.args.rowindex;
+                         var pageSize = event.args.owner.rows.records.length - 1; 
+                        if($.isArray(selectedRowIndex)){           
+                            if(isSelectAll){
+                                isSelectAll = false;    
+                            } else{
+                                isSelectAll = true;
+                            }                                                                     
+                            $('#jqxgrid').jqxGrid('clearselection');
+                            if(isSelectAll){
+                                for (i = 0; i <= pageSize; i++) {
+                                    var index = $('#jqxgrid').jqxGrid('getrowboundindex', i);
+                                    $('#jqxgrid').jqxGrid('selectrow', index);
+                                }    
+                            }
+                        }                        
+                   });
 
             }
         });

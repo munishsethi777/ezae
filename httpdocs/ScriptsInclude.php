@@ -255,8 +255,11 @@
                         if(result){
                             var ids = [];
                             $.each(selectedRowIndexes, function(index , value){
-                                var dataRow = $("#" + gridId).jqxGrid('getrowdata', value);
-                                ids.push(dataRow.id);
+                                if(value != -1){
+                                    var dataRow = $("#" + gridId).jqxGrid('getrowdata', value);
+                                    ids.push(dataRow.id);    
+                                }
+                                
                             });
                             $.get( deleteURL + "&ids=" + ids,function( data ){
                                 if(data != ""){
