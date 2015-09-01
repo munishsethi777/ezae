@@ -30,6 +30,16 @@
         echo $data;  
     }
     
+    if(isset($_GET["call"]) && $_GET["call"] == "getMailMessageLogsForGrid"){
+        try{ 
+            $data = $mmMgr->getMailMessageLogsForGrid();
+        }catch(Exception $e){
+            $success = 0;
+            $message  = $e->getMessage();
+        }
+        echo $data;  
+    }
+    
     if(isset($_GET["call"]) && $_GET["call"] == "deleteMessages"){
          $ids = $_GET["ids"];
          try{

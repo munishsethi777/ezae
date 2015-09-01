@@ -79,6 +79,28 @@
         $gridData["TotalRows"] = count($fullArr);
         return json_encode($gridData);
      }
+     
+     public function getMailMessageLogsForGrid(){
+        $isApplyFilter = true; 
+        $mailMessages =  self::$dataStore->getMailMessageLogsForGrid(self::$adminSeq);
+        $fullArr = array();
+        foreach($mailMessages as $mailMessage){
+            $seq = $mailMessage["seq"];     
+            $mmArr = array();            
+            $mmArr["id"] = $seq;
+            $mmArr["name"] = $mailMessage["name"];
+            $mmArr["username"] = $mailMessage["username"];
+            $mmArr["subject"] = $mailMessage["subject"];
+            $mmArr["detail"] = $mailMessage["failureerror"];
+            $mmArr["dated"] = $mailMessage["sendon"];
+            $mmArr["status"] = $mailMessage["status"];
+            array_push($fullArr,$mmArr);
+        }
+        $gridData["Rows"] = $fullArr;
+        $gridData["TotalRows"] = count($fullArr);
+        return json_encode($gridData);
+     }
+     
      private function getCondition($mailMessage,$mmArr){
         $condition = $mailMessage["messagecondition"];
         $percent = $mailMessage["percent"];

@@ -177,24 +177,31 @@
                         $('#createNewModalForm').modal('show');
                     });
                     setProfile.click(function (event) {
+                        removeMessagesDivs();
+                         $(".hilight").removeClass("hilight");
+                         $("#profileSelectError").text("");
                         $("#id").val("0");                       
                         var selectedRowIndexes = $("#learnersGrid").jqxGrid('selectedrowindexes');
-                        var names = [];
-                        $("#profileSelect").val("");
-                        $.each(selectedRowIndexes, function(index , value){
-                            var dataRow = $("#learnersGrid").jqxGrid('getrowdata', value);
-                            names.push(dataRow.username);
-                            i++;
-                        });
-                        $("#learnerNamesDiv").html(names.join(", "));
-                        var values = []
-                        if(selectedRowIndexes.length == 1){
-                            var dataRow = $("#learnersGrid").jqxGrid('getrowdata', selectedRowIndexes[0]);
-                            values = dataRow.profileseqs;
-                            values = values.split(",");                           
-                        }
-                        $('#profileSelect').val(values).trigger("chosen:updated");
-                        $('#setProfileModelForm').modal('show');    
+                        if(selectedRowIndexes.length > 0){
+                            var names = [];
+                            $("#profileSelect").val("");
+                            $.each(selectedRowIndexes, function(index , value){
+                                var dataRow = $("#learnersGrid").jqxGrid('getrowdata', value);
+                                names.push(dataRow.username);
+                                i++;
+                            });
+                            $("#learnerNamesDiv").html(names.join(", "));
+                            var values = []
+                            if(selectedRowIndexes.length == 1){
+                                var dataRow = $("#learnersGrid").jqxGrid('getrowdata', selectedRowIndexes[0]);
+                                values = dataRow.profileseqs;
+                                values = values.split(",");                           
+                            }
+                            $('#profileSelect').val(values).trigger("chosen:updated");
+                            $('#setProfileModelForm').modal('show');
+                        }else{
+                             bootbox.alert("No row selected.Please select atleast one row!", function() {});
+                        }    
                        
                     });
                     // delete selected row.

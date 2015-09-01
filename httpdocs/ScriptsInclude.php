@@ -226,6 +226,10 @@
                     statusDiv += '</div>';
                     return statusDiv;
             }
+            function removeMessagesDivs(){
+                $("#msgDiv").remove();
+                $("#errorDiv").remove();
+            }
             function showResponseToastr(data,modelId,formId,divClassName){
                 var obj = $.parseJSON(data);
                 $("#msgDiv").remove();

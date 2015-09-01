@@ -133,9 +133,11 @@
                             input += '<input type="' + type + '" id="'+  id + '" name="'+  name + '" placeholder="' + name + '" class="form-control">';
                             input += '</div></div>';
                        formHtml += input;
-                       if(required == 1){
+                       
+                       if(required == 1 || name == usernamefield || name == passwordfield){
                            var rule = { input: '#' + id, message: name + ' is required!', action: 'keyup, blur', rule: 'required'};
                            validationRules.push(rule);
+                           hasValidation = true;
                        }
                     }    
                  });
@@ -145,10 +147,10 @@
                     hintType: 'label',
                     animationDuration: 0,
                     rules:validationRules
-                });
-                $("#SignupFieldForm").on('validationSuccess', function () {
-                    $("#SignupFieldForm-iframe").fadeIn('fast');
-                });    
+                    });
+                    $("#SignupFieldForm").on('validationSuccess', function () {
+                        $("#SignupFieldForm-iframe").fadeIn('fast');
+                });        
             });
     }
 
