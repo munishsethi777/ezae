@@ -119,7 +119,7 @@ if($call == "deleteLearningPlan"){
         $lpMgr = LearningPlanMgr::getInstance();
         $lpMgr->deleteLearningPlans($ids);
         $message = "Record Deleted successfully";
-    }catch(Exception $e){            
+    }catch(Exception $e){
         $success = 0;
         $message  = $e->getMessage();
     }

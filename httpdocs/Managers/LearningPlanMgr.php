@@ -2,7 +2,11 @@
 require_once($ConstantsArray['dbServerUrl'] ."Managers/AdminMgr.php");
 require_once($ConstantsArray['dbServerUrl'] ."Enums/RoleType.php");
 require_once($ConstantsArray['dbServerUrl'] ."Enums/ManagerCriteriaType.php");
-    class LearningPlanMgr{
+require_once($ConstantsArray['dbServerUrl']. "DataStores/LearningPlanDataStore.php");
+require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/LearningPlanModule.php");
+
+
+class LearningPlanMgr{
         private static $learningPlanMgr;
         private static $dataStore;
         private static $lpCoursedataStore;
@@ -10,10 +14,8 @@ require_once($ConstantsArray['dbServerUrl'] ."Enums/ManagerCriteriaType.php");
         private static $adminSeq;
         private static $companySeq;
         private static $sessionUtil;
-        
 
-        public static function getInstance()
-        {
+        public static function getInstance(){
             if (!self::$learningPlanMgr)
             {
                 self::$learningPlanMgr = new LearningPlanMgr();
@@ -38,14 +40,14 @@ require_once($ConstantsArray['dbServerUrl'] ."Enums/ManagerCriteriaType.php");
             $columnValue["learningplanseq"] = $learningPlanSeq;
             $id = self::$learningPlanProfileDataStore->deleteByAttribute($columnValue);
         }
-         public function deleteLearningPlans($ids){
+        public function deleteLearningPlans($ids){
             $idArr = explode(",",$ids) ;
             foreach ($idArr as $id){
-                $this->deleteLeaeningPlanCourses($id); 
-                $this->deleteLeaeningPlanProfiles($id);        
+                $this->deleteLeaeningPlanCourses($id);
+                $this->deleteLeaeningPlanProfiles($id);
             }
             self::$dataStore->deleteInList($ids);
-            
+
         }
         public function saveLearningPlan($learningPlanObj,$courseIds,$enableLeaderboardArr){
             $learningPlan = new LearningPlan();
@@ -53,7 +55,7 @@ require_once($ConstantsArray['dbServerUrl'] ."Enums/ManagerCriteriaType.php");
             $id = self::$dataStore->save($learningPlan);
             $lpCourseDataStore = new BeanDataStore("","");
             $this->deleteLeaeningPlanCourses($id);
-            $this->deleteLeaeningPlanProfiles($id);            
+            $this->deleteLeaeningPlanProfiles($id);
             $i = 0;
             foreach ($courseIds as $key=>$value){
                 $val = $enableLeaderboardArr[$value];
@@ -69,37 +71,24 @@ require_once($ConstantsArray['dbServerUrl'] ."Enums/ManagerCriteriaType.php");
             }
             return $id;
         }
-
-        
         public function getLearningPlanByCompany($isApplyFilter = false){
             $role = self::$sessionUtil->getLoggedInRole();
-            if($role == RoleType::MANAGER){ 
+            if($role == RoleType::MANAGER){
                 $adminMgr = AdminMgr::getInstance();
                 $adminSeq = self::$sessionUtil->getAdminLoggedInSeq();
                 $managerCriteria = $adminMgr->findLoggedinManagerCriteria($adminSeq);
                 $criteriaVals = $managerCriteria->getCriteriaValue();
-                if($managerCriteria->getCriteriaType() == ManagerCriteriaType::LEARNING_PLAN){                    
+                if($managerCriteria->getCriteriaType() == ManagerCriteriaType::LEARNING_PLAN){
                     $learningPlans = $this->getLearningPlansBySeqs($criteriaVals);
-                    return $learningPlans;            
+                    return $learningPlans;
                 }else if($managerCriteria->getCriteriaType() == ManagerCriteriaType::LEARNING_PROFILE){
                     $learningPlans = $this->getLearningPlansByProfiles($criteriaVals);
-                    return $learningPlans;              
-                }   
+                    return $learningPlans;
+                }
             }
-            $learningPlans = self::$dataStore->findAllByCompany($isApplyFilter);    
+            $learningPlans = self::$dataStore->findAllByCompany($isApplyFilter);
             return $learningPlans;
         }
-        private function getLearningPlansBySeqs($seqs){
-            $colvalue["seq"] = $seqs;
-            $learningPlans = self::$dataStore->executeInListQuery($colvalue);
-            return $learningPlans;    
-        }
-        
-        private function getLearningPlansByProfiles($profileSeqs){
-            $learningPlans = self::$dataStore->getLearningPlansByProfiles($profileSeqs);
-            return $learningPlans;
-        }
-        
         public function getLearningPlanForGrid($isApplyFilter){
             $learningPlans =  $this->getLearningPlanByCompany($isApplyFilter);
             $lpJson = self::geLearningPlanDataJson($learningPlans);
@@ -126,7 +115,31 @@ require_once($ConstantsArray['dbServerUrl'] ."Enums/ManagerCriteriaType.php");
              }
              return implode(",",$ids);
         }
-        
+
+        public function getLearningPlansForUser($userSeq){
+            $learningProfilesMgr = LearningProfileMgr::getInstance();
+            $learningProfiles = $learningProfilesMgr->getLearningProfilesByUser($userSeq);
+            $learningProfilesArr = array();
+            foreach($learningProfiles as $learningProfile){
+                array_push($learningProfilesArr, $learningProfile->getSeq());
+            }
+            $learningPlans = self::getLearningPlansByProfiles(implode(",",$learningProfilesArr));
+            $learningPlansArr = array();
+            foreach($learningPlans as $learningPlan){
+                $learningPlanArr = self::getLearningPlanArry($learningPlan);
+                array_push($learningPlansArr, $learningPlanArr);
+            }
+            return $learningPlansArr;
+        }
+        private function getLearningPlansBySeqs($seqs){
+            $colvalue["seq"] = $seqs;
+            $learningPlans = self::$dataStore->executeInListQuery($colvalue);
+            return $learningPlans;
+        }
+        private function getLearningPlansByProfiles($profileSeqs){
+            $learningPlans = self::$dataStore->getLearningPlansByProfiles($profileSeqs);
+            return $learningPlans;
+        }
         private static function getLearningPlanArry($learningPlanObj){
             $learningPlan = new LearningPlan();
             $learningPlan = $learningPlanObj;
@@ -148,7 +161,7 @@ require_once($ConstantsArray['dbServerUrl'] ."Enums/ManagerCriteriaType.php");
             $lpArr["isenableleaderboard"] = $learningPlan->getIsLeaderBoard();
             return $lpArr;
         }
-        
-        
-    }
+
+
+}
 ?>

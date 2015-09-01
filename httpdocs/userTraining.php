@@ -8,6 +8,7 @@
 <?include "ScriptsInclude.php"?>
 <?
     $learningPlanSeq = $_GET['lpid'];
+    $moduleId = $_GET['id'];
 ?>
 <script language="javascript">
     var learningPlanSeq = "<?echo $learningPlanSeq;?>";;
@@ -33,9 +34,9 @@
                            <?
                                 $learningPlanSeq = 0;
                                 if(isset($_POST['lpid'])){
-                                    $learningPlanSeq = $_POST['lpid'];    
+                                    $learningPlanSeq = $_POST['lpid'];
                                 }
-                                
+
                             ?>
                             <script language="javascript">
                                 $(function() {
@@ -44,11 +45,11 @@
                                     params = loc.split('?')[1],
                                     params2 = loc.split('&')[2],
                                     iframe = $('#myiframe');
-                                    iframe.src = "Modules/demo_new/story.html" + '?' + params + '&' + params2;
+                                    iframe.src = "Modules/"+ <?echo $moduleId?> +"/story.html" + '?' + params + '&' + params2;
                                     alert(iframe.src);
                                 });
                             </script>
-                            <iframe id="myiframe" frameborder="0" src="Modules/demo_new/story.html" width="1000" height="670"></iframe>
+                            <iframe id="myiframe" frameborder="0" src="Modules/<?echo $moduleId?>/story.html" width="1000" height="670"></iframe>
                         </div>
                     </div>
                 </div>

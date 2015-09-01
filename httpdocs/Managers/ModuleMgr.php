@@ -102,26 +102,51 @@ class ModuleMgr{
 
 
     /* Method used to display various modules on the training page for users*/
-    public function getModulesForUserTrainingGrid($userSeq){
+    public function getModulesForUserTrainingGrid($userSeq,$learningPlanSeq){
         $moduleDataStore = ModuleDataStore::getInstance();
-        $arrList =  $moduleDataStore->findModulesForUserTrainingGrid($userSeq);
+        $arrList =  $moduleDataStore->findModulesForUserTrainingGrid($userSeq,$learningPlanSeq);
         $mainArr = array();
+        $lastLocked = true;
         foreach($arrList as $key=>$value){
             $arr = array();
             $arr['id'] = $value["moduleseq"];
-            $arr['status'] = '<span class="label label-primary">Active</span>';
+            if($value["iscompleted"] == "1"){
+                $arr['status'] = '<span class="label label-warning">Completed</span>';
+
+            }else{
+                $arr['status'] = '<span class="label label-primary">Active</span>';
+
+            }
             $arr['moduleName'] = $value["moduletitle"];
-            $arr['learningPlanName'] = $value["learningplantitle"];
             $arr['daysToComplete'] = 12;
-            $arr['completionPercent'] = '<small>Completion with: 48%</small>
+            $progress = 0;
+            if($value["progress"]){
+                $progress = $value["progress"];
+            }
+            $arr['completionPercent'] = '<small>Completed: '.$progress.'%</small>
                                         <div class="progress progress-mini">
-                                            <div style="width: 48%;" class="progress-bar"></div>
+                                            <div style="width: '.$progress.'%;" class="progress-bar"></div>
                                         </div>';
             $arr['leaderboardRank'] =  0;
             $arr["inactiveRemarks"] =  "No Remarks";
-            $arr["scores"] =  120;
-            $arr["action"] = '<a href="userTraining.php?id='.$arr['id'].'&lpid='. $value['learningplanseq'] .'" class="btn btn-white btn-sm"><i class="fa fa-folder"></i> View </a>';
+            $arr["scores"] =  $value["score"];
+            if($value["issequencelocked"] == "1"){ //locked case
+                if($value["iscompleted"] == 1){
+                    $arr["action"] = "Completed";
+                    $lastLocked = true;
+                }else if(!$lastLocked){
+                    $arr["action"] = "Locked";
+                }else{
+                    $lastLocked = false;
+                    $arr["action"] = '<a href="userTraining.php?id='.$arr['id'].'&lpid='. $value['learningplanseq'] .'" class="btn btn-white btn-sm"><i class="fa fa-folder"></i> View </a>';
+
+                }
+            }else{
+                $arr["action"] = '<a href="userTraining.php?id='.$arr['id'].'&lpid='. $value['learningplanseq'] .'" class="btn btn-white btn-sm"><i class="fa fa-folder"></i> View </a>';
+            }
+
             array_push($mainArr,$arr);
+
         }
         return json_encode($mainArr);
 

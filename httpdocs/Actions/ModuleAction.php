@@ -58,21 +58,7 @@ if($call == "getModulesBySelectedLearningPlan"){
     echo $data;
 }
 
-//used to display modules in user training grid
-if($call == "getModulesForUserTrainingGrid"){
-    try{
-        $sessionUtil = SessionUtil::getInstance();
-        $loggedInUserSeq = $sessionUtil->getUserLoggedInSeq();
-        $moduleMgr = ModuleMgr::getInstance();
-        if($loggedInUserSeq > 0){
-            $data = $moduleMgr->getModulesForUserTrainingGrid($loggedInUserSeq);
-        }
-    }catch(Exception $e){
-        $success = 0;
-        $message  = $e->getMessage();
-    }
-    echo $data;
-}
+
 
 //* REPORTING METHODS STARTS HERE //*
 //Completion Metrics Reporting page, load modules by learningplan

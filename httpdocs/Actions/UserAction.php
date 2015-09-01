@@ -1,5 +1,6 @@
 <?php
  require_once('../IConstants.inc');
+<<<<<<< Updated upstream
  require_once($ConstantsArray['dbServerUrl'] ."Managers/UserMgr.php");
  require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/User.php");
  require_once($ConstantsArray['dbServerUrl'] ."Managers/LearningProfileMgr.php");
@@ -7,11 +8,14 @@
  require_once($ConstantsArray['dbServerUrl'] ."Utils/ImageUtil.php");
  require_once($ConstantsArray['dbServerUrl'] ."Utils/CustomFieldsFormGenerator.php");
  require_once($ConstantsArray['dbServerUrl'] ."Utils/SecurityUtil.php");
+ require_once($ConstantsArray['dbServerUrl'] ."Managers/LearningPlanMgr.php");
+
  $call = "";
    if(isset($_POST["call"])){
         $call = $_POST["call"];
-   }else{
+    }else{
         $call = $_GET["call"];
+<<<<<<< Updated upstream
    }
    $success = 1;
    $message = "";
@@ -34,7 +38,7 @@
         $response["message"]  = $message;
         echo json_encode($response);
     }
-  if($call == "changePassword"){
+    if($call == "changePassword"){
         $password = $_POST["newPassword"];
         $earlierPassword = $_POST["earlierPassword"];
         try{
@@ -57,7 +61,7 @@
         $response["message"]  = $message;
         echo json_encode($response);
     }
-  if($call == "loginUser"){
+    if($call == "loginUser"){
       $username = $_POST["username"];
       $password = $_POST["password"];
       $userMgr = UserMgr::getInstance();
@@ -78,13 +82,13 @@
       $res["message"]  = $message;
       echo json_encode($res);
       return;
-   }
-
-  if($call == "getUserFieldForm"){
+    }
+    if($call == "getUserFieldForm"){
       $sessionUtil = SessionUtil::getInstance();
       $userSeq = $sessionUtil->getUserLoggedInSeq();     
       $html = $customFieldsFormGenerator->getFormHtmlForUser($userSeq);
       echo $html;
+
   }
   
   if($call == "signup"){
@@ -122,5 +126,22 @@
     
   }
   
-  
-  ?>
+
+    if($call == "getLearningPlansForUser"){
+        $learningPlanMgr = LearningPlanMgr::getInstance();
+        $learningPlans = $learningPlanMgr->getLearningPlansForUser($userSeq);
+        echo json_encode($learningPlans);
+    }
+    //used to display modules in user training grid
+    if($call == "getModulesForUserTrainingGrid"){
+        try{
+            $moduleMgr = ModuleMgr::getInstance();
+            $learningPlanSeq = $_GET["learningPlanSeq"];
+            $data = $moduleMgr->getModulesForUserTrainingGrid($userSeq,$learningPlanSeq);
+        }catch(Exception $e){
+            $success = 0;
+            $message  = $e->getMessage();
+        }
+        echo $data;
+    }
+?>

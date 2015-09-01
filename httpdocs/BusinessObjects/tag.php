@@ -1,6 +1,9 @@
 <?php
   class tag {
         private $seq,$tag,$description,$adminseq,$companyseq,$createdon,$lastmodifiedon,$awesomefontid;
+        public static $tableName = "learningprofiles";
+        public static $className = "tag";
+
         public function setSeq($seq_){
             $this->seq = $seq_;
         }
@@ -8,7 +11,7 @@
         public function getSeq(){
             return $this->seq;
         }
-        
+
         public function setTag($tag_){
             $this->tag = $tag_;
         }
@@ -30,14 +33,14 @@
         public function getAdminSeq(){
             return $this->adminseq;
         }
-        
+
         public function setCompanySeq($companySeq_){
             $this->companyseq = $companySeq_;
         }
         public function getCompanySeq(){
             return $this->companyseq;
         }
-        
+
         public function setCreatedOn($dateOfCreation_){
             $this->createdon = $dateOfCreation_;
         }
@@ -57,6 +60,6 @@
         public function getAwesomeFontId(){
             return $this->awesomefontid;
         }
-        
+
   }
 ?>

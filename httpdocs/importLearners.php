@@ -167,16 +167,8 @@
     }
 
     function createFieldsGrid(fieldGridData){
-        // prepare the data
-        // fieldNamesRow = fieldGridData.rows;
-
-
          var data = {};
          data = fieldGridData.rows;
-
-        //fieldTypeRow = fieldGridData.fieldTypes;
-        //var row = fieldTypeRow;
-//            data[1] = fieldTypeRow;
         dataFields = fieldGridData.dataFields;
         var source =
         {
@@ -216,6 +208,8 @@
                 return editor.val();
             }
         }
+
+
         // initialize jqxGrid
         $("#learnersFieldsGrid").jqxGrid(
         {
@@ -238,9 +232,22 @@
 
                     };
                 });
-				populateFieldDropDown();
+				//populateFieldDropDown();
+                //var columns = $("#learnersFieldsGrid").jqxGrid("columns").records;
+                //$.each(columns, function(key, value){
+                    //$('#learnersFieldsGrid').jqxGrid('setcolumnproperty', value.datafield, 'createeditor', createGridEditor);
+                //});
              }
         });
+        $("#learnersFieldsGrid").bind('cellbeginedit', function (event) {
+            var args = event.args;
+            var columnDataField = args.datafield;
+            var rowIndex = args.rowindex;
+            var cellValue = args.value;
+            return true;
+            //$('#learnersFieldsGrid').jqxGrid('setcolumnproperty', columnDataField, 'createeditor', createGridEditor);
+        });
+
     }
 
     function populateFieldDropDown(){

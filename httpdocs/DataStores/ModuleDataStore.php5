@@ -29,14 +29,19 @@ class ModuleDataStore extends BeanDataStore{
     }
 
     //Method used to display modules on user trainings page
-    public function findModulesForUserTrainingGrid($userSeq){
-        $sql = "select modules.seq as moduleseq,modules.title as moduletitle,learningplans.seq as learningplanseq,learningplans.title as learningplantitle from learningplanmodules
+    public function findModulesForUserTrainingGrid($userSeq,$learningPlanSeq){
+        $sql = "select modules.seq as moduleseq,modules.title as moduletitle,
+learningplans.seq as learningplanseq,learningplans.title as learningplantitle,learningplans.issequencelocked
+,activities.progress, activities.score, activities.iscompleted
+from learningplanmodules
 left join modules on modules.seq = learningplanmodules.courseseq
 left join learningplans on learningplans.seq = learningplanmodules.learningplanseq
 left join learningplanprofiles on learningplanprofiles.learningplanseq = learningplans.seq
+left join activities on activities.learningplanseq = learningplans.seq and activities.moduleseq = modules.seq and activities.userseq = $userSeq
 left join learningprofiles on learningprofiles.seq = learningplanprofiles.learningprofileseq
 left join userlearningprofiles on userlearningprofiles.tagseq = learningplanprofiles.learningprofileseq
-where userlearningprofiles.userseq =  $userSeq";
+where userlearningprofiles.userseq =  $userSeq
+and learningplans.seq = $learningPlanSeq";
         $list = $this->executeQuery($sql);
         return $list;
     }

@@ -29,7 +29,7 @@ class ActivityMgr{
         $ads = ActivityDataStore::getInstance();
         $activity = new Activity();
         $activity->setDateOfPlay(new DateTime());
-        $activity->setModuleSeq($learningPlanSeq);
+        $activity->setModuleSeq($moduleId);
         $activity->setProgress($progres);
         $activity->setScore($score);
         $activity->setUserSeq($userSeq);
@@ -48,7 +48,7 @@ class ActivityMgr{
     public function getUserSeqsByCustomFieldCriteria(){
         $userSeqs = array();
         $role = self::$sessionUtil->getLoggedInRole();
-            if($role == RoleType::MANAGER){ 
+            if($role == RoleType::MANAGER){
                 $adminMgr = AdminMgr::getInstance();
                 $adminSeq = self::$sessionUtil->getAdminLoggedInSeq();
                 $managerCriteria = $adminMgr->findLoggedinManagerCriteria($adminSeq);
@@ -57,17 +57,17 @@ class ActivityMgr{
                     $customFieldGenerator = CustomFieldsFormGenerator::getInstance();
                     $customfieldArr = $customFieldGenerator->getCustomFieldsArray($criteriaVals,false);
                     $userMgr = UserMgr::getInstance();
-                    $userSeqs = $userMgr->getUserSeqsByCustomfield($customfieldArr);                        
+                    $userSeqs = $userMgr->getUserSeqsByCustomfield($customfieldArr);
                 }
             }
         return $userSeqs;
     }
     public function getCompletionCounts($learningPlanSeq,$moduleSeq){
-       $userSeqs = $this->getUserSeqsByCustomFieldCriteria(); 
+       $userSeqs = $this->getUserSeqsByCustomFieldCriteria();
        $ads = ActivityDataStore::getInstance();
        return $ads->getCompletionCounts($learningPlanSeq,$moduleSeq,$userSeqs);
     }
-   
+
     public function getUserPerformance($userSeq){
         $ads = ActivityDataStore::getInstance();
        return $ads->findByUser($userSeq);

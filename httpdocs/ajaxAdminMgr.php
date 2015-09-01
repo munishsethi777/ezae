@@ -25,7 +25,7 @@
     if($call == "getLearnersGridHeaders"){
         $onlyRows = false;
         if(isset($_GET["onlyRows"])){
-            $onlyRows = true;    
+            $onlyRows = true;
         }
         $sessionUtil = SessionUtil::getInstance();
         $companySeq = $sessionUtil->getAdminLoggedInCompanySeq();

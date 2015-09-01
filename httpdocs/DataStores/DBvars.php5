@@ -1,8 +1,8 @@
 <?php
-	 class DBvars{                      
-		public $database = "ezae";
+	 class DBvars{
+		public $database = "ezae1";
 		public $username = "root";
-        public $password = "rootadmin";
+        public $password = "password";
         public $hostname = "localhost";
 	}
  ?>

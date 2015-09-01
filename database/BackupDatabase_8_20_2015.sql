@@ -15,12 +15,6 @@
 
 SET FOREIGN_KEY_CHECKS=0;
 
-CREATE DATABASE `ezae`
-  CHARACTER SET `latin1`
-  COLLATE `latin1_swedish_ci`;
-
-USE `ezae`;
-
 /* Tables */
 CREATE TABLE `activities` (
   `seq`              bigint AUTO_INCREMENT NOT NULL,

@@ -9,7 +9,7 @@
 <script type="text/javascript">
 
         $(document).ready(function (){
-            loadCombo();
+            //loadCombo();
             $('#showReportButton').jqxButton({ width: 100, height: 25, theme:'arctic' });
             $("#showReportButton").click(function () {
                 var item = $("#combobox").jqxComboBox('getSelectedItem');
