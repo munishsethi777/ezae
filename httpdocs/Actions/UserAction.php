@@ -1,6 +1,5 @@
 <?php
  require_once('../IConstants.inc');
-<<<<<<< Updated upstream
  require_once($ConstantsArray['dbServerUrl'] ."Managers/UserMgr.php");
  require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/User.php");
  require_once($ConstantsArray['dbServerUrl'] ."Managers/LearningProfileMgr.php");
@@ -15,7 +14,6 @@
         $call = $_POST["call"];
     }else{
         $call = $_GET["call"];
-<<<<<<< Updated upstream
    }
    $success = 1;
    $message = "";
@@ -66,7 +64,7 @@
       $password = $_POST["password"];
       $userMgr = UserMgr::getInstance();
       try{
-         // $user = $userMgr->logInUser($username,$password);
+          $user = $userMgr->logInUser($username,$password);
           if($user != null){
               $sessionUtil->createUserSession($user);
           }else{
@@ -85,12 +83,12 @@
     }
     if($call == "getUserFieldForm"){
       $sessionUtil = SessionUtil::getInstance();
-      $userSeq = $sessionUtil->getUserLoggedInSeq();     
+      $userSeq = $sessionUtil->getUserLoggedInSeq();
       $html = $customFieldsFormGenerator->getFormHtmlForUser($userSeq);
       echo $html;
 
   }
-  
+
   if($call == "signup"){
     $post = $_POST;
     unset($post["call"]);
@@ -98,7 +96,7 @@
     $companySeq = SecurityUtil::Decode($post["cid"]);
     unset($post["aid"]);
     unset($post["cid"]);
-    try{    
+    try{
         $userCustomFields = $customFieldsFormGenerator->getCustomfieldsFromArr($post);
         $matchingRuleMgr = MatchingRuleMgr::getInstance();
         $matchingRule = $matchingRuleMgr->getRequiredMatchingRules($adminSeq,$companySeq);
@@ -123,10 +121,10 @@
      $res["success"]  = $success;
      $res["message"]  = $message;
      echo json_encode($res);
-    
-  }
-  
 
+  }
+
+     //used to display learningplans in user's training page learningplans dropdown
     if($call == "getLearningPlansForUser"){
         $learningPlanMgr = LearningPlanMgr::getInstance();
         $learningPlans = $learningPlanMgr->getLearningPlansForUser($userSeq);
