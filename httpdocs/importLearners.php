@@ -167,8 +167,9 @@
     }
 
     function createFieldsGrid(fieldGridData){
-         var data = {};
-         data = fieldGridData.rows;
+        var data = {};
+        data = fieldGridData.rows;
+		isNew = data.length > 1;
         dataFields = fieldGridData.dataFields;
         var source =
         {
@@ -177,39 +178,55 @@
             datafields:dataFields,
         };
         var dataAdapter = new $.jqx.dataAdapter(source);
-        var createGridEditor = function(row, cellValue, editor, cellText, width, height)
-        {
-            if(row == 0){
-                var inputElement = $("<input/>").prependTo(editor);
-                inputElement.jqxInput({ width: width, height: height});
-            }else if (row == 1) {
-                editor.jqxDropDownList({autoDropDownHeight: true,  width: width, height: height, source: ['Text', 'Numeric', 'Date', 'Yes/No']});
-            }
-        }
 
-        var initGridEditor = function (row, cellvalue, editor, celltext, pressedkey) {
-            if(row == 0){
-                var inputField = editor.find('input');
-                if (pressedkey) {
-                    inputField.val(pressedkey);
-                    inputField.jqxInput('selectLast');
-                }else {
-                    inputField.val(cellvalue);
-                    inputField.jqxInput('selectAll');
-                }
-            }else if (row == 1) {
-                editor.jqxDropDownList('selectItem', cellvalue);
-            }
-        }
-        var gridEditorValue = function (row, cellValue, editor) {
-            if(row == 0){
-                return editor.find('input').val();
-            }else{
-                return editor.val();
-            }
-        }
-
-
+		for(var x in fieldGridData.columns){
+			//if(typeof fieldGridData.columns[x].cellsformat!=='undefined'){
+				fieldGridData.columns[x] = $.extend({
+					createeditor: function(row, cellValue, editor, cellText, width, height){
+						 // construct the editor.
+			                if (row == 0) {
+								if(isNew){
+									var inputElement = $("<input/>").prependTo(editor);
+									inputElement.jqxInput({ width: width, height: height});
+								}else{
+									editor.jqxDropDownList({autoDropDownHeight: true,width: width, height: height, source: ['Select Field']});	
+								    if(fieldNames.length > 0){
+										editor.jqxDropDownList({autoDropDownHeight: true,width: width, height: height, source: fieldNames});	
+									}else{
+										url = "Actions/CustomFieldAction.php?call=getCustomFieldNames";
+										$.get(url,function(data){
+											var obj = $.parseJSON(data);
+							                    fieldNames = obj.names;
+												fieldNames.splice(0,0,"Select Field")
+												editor.jqxDropDownList({autoDropDownHeight: true,width: width, height: height, source: fieldNames});
+										});	
+									}
+								}
+			                }
+			                else if (row == 1) {
+			                    editor.jqxDropDownList({autoDropDownHeight: true,  width: width, height: height, source: ['Text', 'Numeric', 'Date', 'Yes/No']});
+			                }
+			             
+						},
+					initeditor: function (row, cellValue, editor, cellText, width, height) {
+							// set the editor's current value. The callback is called each time the editor is displayed.
+			                if (row == 0 && isNew) {
+			                    editor.jqxInput({ value: cellValue});
+			                }else{
+			                    editor.jqxDropDownList('selectItem', cellValue);
+			                }
+					},
+					
+					geteditorvalue : function (row, cellValue, editor) {
+		                if(row == 0){
+							return editor.find('input').val();
+						}
+						return editor.val();
+					}
+						
+					},fieldGridData.columns[x]);
+				//}
+		}
         // initialize jqxGrid
         $("#learnersFieldsGrid").jqxGrid(
         {
@@ -239,14 +256,14 @@
                 //});
              }
         });
-        $("#learnersFieldsGrid").bind('cellbeginedit', function (event) {
-            var args = event.args;
-            var columnDataField = args.datafield;
-            var rowIndex = args.rowindex;
-            var cellValue = args.value;
-            return true;
+        //$("#learnersFieldsGrid").bind('cellbeginedit', function (event) {
+            //var args = event.args;
+            //var columnDataField = args.datafield;
+            //var rowIndex = args.rowindex;
+            //var cellValue = args.value;
+            //return true;
             //$('#learnersFieldsGrid').jqxGrid('setcolumnproperty', columnDataField, 'createeditor', createGridEditor);
-        });
+        //});
 
     }
 
@@ -313,7 +330,7 @@
              fieldNames = $('#learnersFieldsGrid').jqxGrid('getrowdata', 0);
         }
         $.each(fieldNames, function(key, value){
-            if(value != 0){
+            if(value != 0 && value != "Select Field"){
                 options += "<option value='" + value + "'>" + value + "</option>";
             }
            $("#uSelect").html(options);

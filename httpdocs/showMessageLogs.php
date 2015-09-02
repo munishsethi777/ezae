@@ -11,10 +11,10 @@
         isSelectAll = false;
         var gridId = "#messageLogsGrid"
         $(document).ready(function (){
-            var url = 'Actions/MailMessageAction.php?call=getMailMessageLogsForGrid';
-            $.get(url, function(data){
+            //var url = 'Actions/MailMessageAction.php?call=getMailMessageLogsForGrid';
+            //$.get(url, function(data){
                 loadGrid();
-            })
+            //})
         });
 
 

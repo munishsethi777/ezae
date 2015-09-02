@@ -55,7 +55,11 @@ if(!file_exists ($path)){
     }elseif($page == "createMessage.php"){
         $communications = "active";
         $createMessage = "active";
-    }elseif($page == "notifications.php"){
+    }elseif($page == "showMessageLogs.php"){
+        $communications = "active";
+        $messageLogs = "active";
+    }
+    elseif($page == "notifications.php"){
         $notificaitons = "active";
     }elseif($page == "adminManagers.php"){
         $company = "active";
@@ -133,6 +137,7 @@ if(!file_exists ($path)){
                             <ul class="nav nav-second-level">
                                 <li class="<?=$manageMessages?>"><a href="manageMessages.php">Manage Messages</a></li>
                                 <li class="<?=$createMessage?>"><a href="createMessage.php">Create Message</a></li>
+                                 <li class="<?=$messageLogs?>"><a href="showMessageLogs.php">Message Logs</a></li>
                             </ul>
                         </li>
                         <li class="<?=$notifications?>">

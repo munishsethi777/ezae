@@ -53,6 +53,7 @@ class UserMgr{
         $fieldNameRow = array();
         $fieldTypeRow = array();
         $rows = array();
+        
         foreach ($firstRow as $key => $value) {
             //if(!StringUtil::IsNullOrEmptyString($value)){
                 $fieldName =  "field" . $i;
@@ -65,11 +66,9 @@ class UserMgr{
                 $col['text'] = "Field " . $i;
                 $col['datafield'] = $fieldName;
                 $col['width'] = 250;
-                $col['columntype'] = "template";
-                //$col['createeditor'] = '%createGridEditor%';
-               // $col['initeditor'] = "initGridEditor";
-              // $col['geteditorvalue'] = "gridEditorValue";
-                //$col = $this->replaceQuotes($col);
+               
+                $col['columntype'] = "custom";    
+
                 array_push($columnsArr,$col);
                 if($isFirstRowContainsFields){
                     $fieldNameRow[$fieldName] =  $value;
