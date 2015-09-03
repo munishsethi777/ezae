@@ -8,6 +8,7 @@ require_once($ConstantsArray['dbServerUrl']. "Utils/ChartsUtil.php");
 require_once($ConstantsArray['dbServerUrl']. "Utils/SessionUtil.php5");
 require_once($ConstantsArray['dbServerUrl']. "Managers/UserMgr.php");
 require_once($ConstantsArray['dbServerUrl']. "Managers/SignupFormMgr.php");
+require_once($ConstantsArray['dbServerUrl']. "StringConstants.php");
 require_once($ConstantsArray['dbServerUrl']. "Managers/MatchingRuleMgr.php");
 class AdminMgr{
 
@@ -93,7 +94,7 @@ class AdminMgr{
         return json_encode($mainJsonArray);
 
     }
-    public function getLearnersWithCustomFieldsGridJSON($companySeq){
+    public function getLearnersWithCustomfields($companySeq){
         $userMgr = UserMgr::getInstance();
         $usersDS = UserDataStore::getInstance();
         $users = $usersDS->findByCompany($companySeq,true);
@@ -104,7 +105,7 @@ class AdminMgr{
         $count = 0;
         foreach($users as $user){
             $arr = array();
-            $arr['id'] = $user["seq"];
+            $arr['id'] = $user["seq"]; 
             $arr['username'] = $user["username"];
             $arr['emailid'] = $user["emailid"];
             $profile = $userMgr->getUserLearningProfiles($user["seq"]);            
@@ -127,6 +128,31 @@ class AdminMgr{
         $mainJsonArray = array();
         $mainJsonArray["Rows"] = $fullArr;
         $mainJsonArray["TotalRows"] = $count;
+        return $mainJsonArray;
+    }
+    public function getLearnersForExports($exportOption,$seqs){
+        $userMgr = UserMgr::getInstance();
+        $usersDS = UserDataStore::getInstance();
+        $companySeq = self::$sessionUtil->getAdminLoggedInCompanySeq();
+        if($exportOption == StringConstants::ALL_ROWS){
+            $users = $usersDS->findByCompany($companySeq);    
+        }else{
+            $users = $usersDS->findBySeqs($seqs);
+        }        
+        $fullArr = array();
+        foreach($users as $user){
+            $arr = array(); 
+            $arr['UserName'] = $user["username"];
+            $arr['Password'] = $user["password"];
+            $arr['Email'] = $user["emailid"];
+            $arrCustomFields = ActivityMgr::getCustomValuesArray($user["customfieldvalues"]);
+            $arr = array_merge($arr,$arrCustomFields);
+            array_push($fullArr,$arr);
+        }
+        return $fullArr;
+    }
+    public function getLearnersWithCustomFieldsGridJSON($companySeq){
+        $mainJsonArray = $this->getLearnersWithCustomfields($companySeq);   
         return json_encode($mainJsonArray);
     }
 
@@ -174,7 +200,7 @@ class AdminMgr{
     
     public function getActivitiesGridJSON($companySeq,$moduleSeq){
         $activityDS = ActivityDataStore::getInstance();
-        $data = $activityDS->getUsersAndActivity($moduleSeq,$companySeq,true);
+        $data = $activityDS->getUsersActivity($moduleSeq,$companySeq,true);
         $fullArr = array();
         $pagination = LearnerFilterUtil::getPagination();
         $start = $pagination["start"];
@@ -187,7 +213,7 @@ class AdminMgr{
             $arr['username'] = $dataArr['username'];
             //$arr['password'] = $dataArr['password'];
             $profile = $userMgr->getUserLearningProfiles($dataArr['seq']);
-            $arr['prof_profiles'] = $profile;
+            $arr['prof_profiles'] = implode(",",$profile[1]);
             $arrCustomFields = ActivityMgr::getCustomValuesArray($dataArr['customfieldvalues']);
             $cus_flag = LearnerFilterUtil::applyFilterOnCustomfield($arrCustomFields);
             $prof_flag = LearnerFilterUtil::applyFilterOnCustomfield($arr,false);   

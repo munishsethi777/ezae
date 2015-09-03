@@ -66,7 +66,16 @@ class ActivityDataStore extends BeanDataStore{
         $list = $this->executeQuery($sql);
         return $list;
     }
-
+    public function getUsersActivity($moduleSeq,$companySeq,$isApplyFilter = false){
+        //$sql= "select * from users left join activities on users.seq = activities.userseq and activities.moduleseq = ".$moduleSeq;
+        $sql= "select users.*,activities.*, users.seq from users left join activities on activities.userseq = users.seq
+        and activities.moduleseq = ".$moduleSeq ." where users.companyseq=".$companySeq  ;
+        if($isApplyFilter){
+            $sql = LearnerFilterUtil::applyFilter($sql,false);    
+        }          
+        $list = $this->executeQuery($sql);
+        return $list;
+    }
     public function getCompletionCounts($learningPlanSeq,$moduleId,$userSeqs){
         $sql = "select count(u.seq) as totalUsers , u.customfieldvalues as customfields, count(attemptedTable.seq) as attemtedCount, ";
         $sql .= "count(completedTable.seq) as completedCount from users u ";

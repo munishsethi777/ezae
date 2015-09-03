@@ -251,7 +251,9 @@
             function isInArray(value, array) {
                 return array.indexOf(value) > -1;
             }
-
+            function noRowSelectedAlert(){
+                 bootbox.alert("No row selected.Please select atleast one row!", function() {});
+            }
             function deleteRows(gridId,deleteURL){
                 var selectedRowIndexes = $("#" + gridId).jqxGrid('selectedrowindexes');
                 if(selectedRowIndexes.length > 0){

@@ -41,7 +41,12 @@
         echo json_encode($res);
         return;
     }
-    
+    if($call == "exportLearners"){
+        $exportOption = $_POST["exportOption"];
+        $seqs = $_POST["learnerseqs"];
+        $userMgr = UserMgr::getInstance();
+        $userMgr->exportLearners($exportOption,$seqs);
+    }
      if($call == "saveLearners"){
         try{
             $id =  0;

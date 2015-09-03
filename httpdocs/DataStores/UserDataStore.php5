@@ -26,7 +26,7 @@
         return null;
     }
 
-     public function findByCompany($companySeq,$isApplyFilter){
+     public function findByCompany($companySeq,$isApplyFilter = false){
         $colValuePair = array();
         /*'companyseq' is columnName*/
         $colValuePair["companyseq"] = $companySeq;
@@ -43,7 +43,13 @@
         $colList = $this->executeAttributeQuery($attributes,$colValuePair);
         if(sizeof($colList) > 0){
             return $colList[0]["customfieldValues"];
-        }
+        } 
+      }
+      public function findBySeqs($seqs){
+        $colValuePair = array();
+        $colValuePair["seq"] = $seqs;
+        $users = $this->executeInList($colValuePair);
+        return $users;
       }
       public function findCustomfieldsByAdmin($adminseq){
         $attributes = array("customfieldValues");
@@ -94,6 +100,7 @@
         $learningProfileList = self::executeQuery($query);
         $tagArr = array();
         $seqArr = array();
+        $arr = array();
         foreach($learningProfileList as $learningProfile){
           array_push($seqArr,$learningProfile["seq"]);
           array_push($tagArr,$learningProfile["tag"]);

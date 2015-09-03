@@ -3,8 +3,11 @@ set_include_path(get_include_path() . PATH_SEPARATOR . '../../../Classes/');
 require_once($ConstantsArray['dbServerUrl']. "DataStores/UserDataStore.php5");
 require_once($ConstantsArray['dbServerUrl']. "Utils/CustomFieldsFormGenerator.php");
 require_once($ConstantsArray['dbServerUrl']. "Managers/ActivityMgr.php");
+require_once($ConstantsArray['dbServerUrl']. "Managers/AdminMgr.php");
 require_once($ConstantsArray['dbServerUrl']. "DataStores/UserCustomFieldsDataStore.php5");
 require_once($ConstantsArray['dbServerUrl']. "Utils/StringUtil.php");
+require_once($ConstantsArray['dbServerUrl']. "Utils/SessionUtil.php5");
+require_once($ConstantsArray['dbServerUrl']. "Utils/ExportUtil.php");
 include $ConstantsArray['dbServerUrl'] . '//PHPExcel/IOFactory.php';
 
 class UserMgr{
@@ -20,7 +23,13 @@ class UserMgr{
         }
         return self::$userMgr;
     }
-
+    public function exportLearners($exportOption,$seqs){
+       $sessionUtil = SessionUtil::getInstance();
+       $companySeq = $sessionUtil->getAdminLoggedInCompanySeq();
+       $adminMgr = AdminMgr::getInstance();
+       $data = $adminMgr->getLearnersForExports($exportOption,$seqs);
+       ExportUtil::ExportData($data);           
+    }
     public function logInUser($username, $password){
         $userDataStore = UserDataStore::getInstance();
         $user = $userDataStore->findByUserName($username);

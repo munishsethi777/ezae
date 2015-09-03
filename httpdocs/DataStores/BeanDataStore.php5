@@ -203,6 +203,23 @@ class BeanDataStore {
         return $objList;
     }
     
+     public function executeInList($colValues,$isApplyFilter = false){
+        $colName = $colValues;
+        if(is_array($colValues)){
+            $colName = key($colValues);    
+        }        
+        $query = "SELECT * FROM " .  $this->tableName ." where $colName in($colValues[$colName])";
+        if($isApplyFilter){
+           $query = FilterUtil::applyFilter($query);
+        }
+        $db = MainDB::getInstance();
+        $conn = $db->getConnection();
+        $STH = $conn->prepare($query);
+        $STH->execute();
+        $this->throwException($STH->errorInfo());
+        $objList = $STH->fetchAll();
+        return $objList;
+    }
    
     
      public function updateByAttributes($colValuePair,$condiationPair = null){

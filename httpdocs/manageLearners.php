@@ -39,6 +39,10 @@
             $("#saveNewBtn").click(function(e){
                 ValidateAndSave(e,this);
             });
+            $("#exportBtn").click(function(e){
+                exportLearners(e,this);
+            });
+            
             $("#isMakeChange").change(function(e){
                 var isChecked = this.checked;
                 if(isChecked){
@@ -176,8 +180,21 @@
                         $("#passwordDiv").show();
                         $('#createNewModalForm').modal('show');
                     });
+                    exportButton.click(function (event) {
+                          $('#exportLearnerModalForm').modal('show');                          
+                          var selectedRowIndexes = $("#learnersGrid").jqxGrid('selectedrowindexes');
+                          var ids = [];
+                          $.each(selectedRowIndexes, function(index , value){
+                                if(value != -1){
+                                    var dataRow = $("#learnersGrid").jqxGrid('getrowdata', value);
+                                    ids.push(dataRow.id);    
+                                } 
+                          });
+                          $("#learnerseqs").val(ids);
+                     })
+                     
                     setProfile.click(function (event) {
-                        removeMessagesDivs();
+                        //removeMessagesDivs();
                          $(".hilight").removeClass("hilight");
                          $("#profileSelectError").text("");
                         $("#id").val("0");                       
@@ -200,7 +217,7 @@
                             $('#profileSelect').val(values).trigger("chosen:updated");
                             $('#setProfileModelForm').modal('show');
                         }else{
-                             bootbox.alert("No row selected.Please select atleast one row!", function() {});
+                            noRowSelectedAlert();
                         }    
                        
                     });
@@ -330,6 +347,25 @@
                 }
             })
         }
+        function exportLearners(e,btn){
+            var exportOption = $('input[name=exportOption]:checked').val()
+            if(exportOption == "selectedRows"){
+                var selectedRowIndexes = $("#learnersGrid").jqxGrid('selectedrowindexes');
+                if(selectedRowIndexes.length > 0){
+                }else{
+                  noRowSelectedAlert();
+                  return;
+                }       
+            }            
+            e.preventDefault();
+            var l = Ladda.create(btn);
+            l.start();
+            $('#exportLearnerForm').submit();
+            l.stop();
+            $('#exportLearnerModalForm').modal('hide');
+            showResponseToastr(data,"exportLearnerModalForm","exportLearnerForm","exportMainDiv");
+            
+        }
 </script>
 
 </head>
@@ -353,6 +389,7 @@
     </div>
 
     <?include "SetProfile.php"?>
+    <?include "exportLearnersInclude.php"?>
     <div id="createNewModalForm" class="modal fade" aria-hidden="true">
         <div class="modal-dialog" >
             <div class="modal-content">
