@@ -48,6 +48,7 @@
         $userMgr->exportLearners($exportOption,$seqs);
     }
      if($call == "saveLearners"){
+        $row = "";
         try{
             $id =  0;
             if(isset($_POST["id"])){

@@ -199,6 +199,41 @@ class UserMgr{
         $profiles = $userDataStore->getUserLearningProfiles($userSeq);
         return $profiles;
     }
+    public function saveUserRowsData($data,$userNameField,$passwordField,$emailId,$prefix,$isRandom,$companySeq,$adminSeq){
+        $userList = array();
+        foreach($data as  $key => $value){
+            $userName = $prefix . $value[$userNameField];            
+            $email = null;
+            if(!empty($emailId)){
+                $email = $value[$emailId];    
+            }            
+            $password = "";
+            if(!$isRandom){
+                $password = $value[$passwordField];
+            }else{
+               $password = StringUtil::generatePassword();
+            }
+            $user = new User();
+            $user->setUserName($userName);
+            $user->setPassword($password);
+            $user->setEmailId($email);
+            $user->setCompanySeq($companySeq);
+            $user->setAdminSeq($adminSeq);
+            $user->setCreatedOn(new DateTime());
+            $user->setLastModifiedOn(new DateTime());
+            $user->setIsEnabled(true);
+            $customVal = "";
+            unset($value["uid"]);
+            foreach($value as $id => $val){
+               //$val = urlencode($val);
+                $customVal .= $id .":". $val .";";
+            }
+            $user->setCustomFieldValues($customVal);
+            array_push($userList,$user);
+        }
+        $userDataStore = UserDataStore::getInstance();
+        $userDataStore->SaveUsersWithRollBack($userList);
+     }
     public function getUserLearningProfileByProfileSeq($profileSeqs){
         $userLearningProfileDataStore = new BeanDataStore("UserLearningProfile","userlearningprofiles");
         $params["tagseq"] = $profileSeqs;

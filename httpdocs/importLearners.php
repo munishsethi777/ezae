@@ -553,7 +553,8 @@
                                     <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveButton" type="button">
                                         <span class="ladda-label">Save Imported Data</span>
                                     </button>
-                                    </div>
+                                    
+                                    </div><br/><br/>
                                 </form>
                             </div>
 

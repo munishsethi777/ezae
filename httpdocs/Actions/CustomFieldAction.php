@@ -8,6 +8,7 @@
  require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/User.php");
  require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/MatchingRule.php");
  require_once($ConstantsArray['dbServerUrl'] ."Utils/StringUtil.php"); 
+ require_once($ConstantsArray['dbServerUrl'] ."Utils/ErrorUtil.php"); 
  require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/UserCustomField.php");
  require_once($ConstantsArray['dbServerUrl'] ."DataStores/UserDataStore.php5");
    $call = $_GET["call"];
@@ -19,7 +20,8 @@
    $adminSeq =  $sessionUtil->getAdminLoggedInSeq();
 
    if($call == "saveImportedFields"){
-        $data = $_POST["data"];
+       try{
+            $data = $_POST["data"];
         $data = str_replace('\\', '', $data);
         $rows = json_decode($data,true);
         $userNameField = $_POST["userName"];
@@ -44,17 +46,22 @@
                 $message .=  $value . "<br/>";
             }
         }else{
+             $userMgr = UserMgr::getInstance();
+             $userMgr->saveUserRowsData($rows,$userNameField,$passwordField,$emailField,$prefix,$isRandomPassword,$companySeq,$adminSeq);               
              $customMgr = CustomFieldMgr::getInstance();
              $isExist = $customMgr->isExists($adminSeq,$companySeq);
              if(!$isExist){
                 saveFieldRowsData($fieldRows,$companySeq,$adminSeq);
-             }
-             saveUserRowsData($rows,$userNameField,$passwordField,$emailField,$prefix,$isRandomPassword,$companySeq,$adminSeq);
+             }             
              $message = "Imported data Saved successfully";
              updatePrefix($companySeq,$prefix);
              saveMatchingRules($userNameField,$passwordField,$emailField);
         }
-
+         
+       }catch(Exception $e){
+            $success = 0;
+            $message = ErrorUtil::checkDulicateEntryError($e);
+        }
         $response = getResponse($success,$message);
         echo json_encode($response);
     }
@@ -265,19 +272,22 @@
         $msg = array();
         foreach($data as  $key => $value){
              $userName = $value[$userNameField];
-             $rowNo = $key + 1;
+             $rowNo = $key + 2;
              if(StringUtil::IsNullOrEmptyString($userName)){
-                $msg["userName"] = "Value is null for selected username field for Row no." . $rowNo;
+                $msg["userName"] = "Value is null for selected $userNameField (UserName) field for Row no. " . $rowNo ;
              }
              $password = $value[$passwordField];
              if(StringUtil::IsNullOrEmptyString($password)){
-                $msg["password"] = "Value is null for selected password field for Row no." . $rowNo;
+                $msg["password"] = "Value is null for selected $passwordField (Password) field for Row no. " . $rowNo ;
              }
              if(!StringUtil::IsNullOrEmptyString($emailField)){
                $email = $value[$emailField];
                if(StringUtil::IsNullOrEmptyString($email)){
-                    $msg["email"] = "Value is null for selected email field for Row no." . $rowNo;
+                    $msg["email"] = "Value is null for selected $emailField (EmailId) field for Row no. " . $rowNo;
                }
+             }
+             if(count($msg) > 0){
+                 return $msg;
              }
          }
          return $msg;
@@ -301,50 +311,20 @@
          $types = $fieldData[1];
          unset($names["uid"]);
          unset($types["uid"]);
+         $customFieldArr = array();
          foreach($names as  $key => $value){
             $customField = createCustomFieldObj($names[$key],$types[$key],$companySeq,$adminSeq);
+            array_push($customFieldArr,$customField);
             try{
                 $customFieldMgr = CustomFieldMgr ::getInstance();
                 $id = $customFieldMgr->saveCustomFields($customField);
             }catch(Exception $e){
-                //TODO Log Error Here---
+               // TODO Log Error Here---
             }
          }
      }
 
-     function saveUserRowsData($data,$userNameField,$passwordField,$emailId,$prefix,$isRandom,$companySeq,$adminSeq){
-        $userMgr = UserMgr::getInstance();
-        foreach($data as  $key => $value){
-            $userName = $prefix . $value[$userNameField];            
-            $email = null;
-            if(!empty($emailId)){
-                $email = $value[$emailId];    
-            }            
-            $password = "";
-            if(!$isRandom){
-                $password = $value[$passwordField];
-            }else{
-               $password = StringUtil::generatePassword();
-            }
-            $user = new User();
-            $user->setUserName($userName);
-            $user->setPassword($password);
-            $user->setEmailId($email);
-            $user->setCompanySeq($companySeq);
-            $user->setAdminSeq($adminSeq);
-            $user->setCreatedOn(new DateTime());
-            $user->setLastModifiedOn(new DateTime());
-            $user->setIsEnabled(true);
-            $customVal = "";
-            unset($value["uid"]);
-            foreach($value as $id => $val){
-               //$val = urlencode($val);
-                $customVal .= $id .":". $val .";";
-            }
-            $user->setCustomFieldValues($customVal);
-            $userMgr->Save($user);
-        }
-     }
+     
      
      function updatePrefix($companySeq,$prefix){
         $companyMgr = CompanyMgr::getInstance();

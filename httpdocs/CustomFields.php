@@ -288,7 +288,7 @@
                                                     </div>
                                                      <div class="form-group">
                                                         <div class="col-sm-4">
-                                                            <label class="checkbox-inline"><input type="checkbox" value="username" name="username_map" checked="checked" id="usernamechk"> UserName </label></div>
+                                                            <label class="checkbox-inline"><input type="checkbox" value="username" name="username_map" id="usernamechk"> UserName </label></div>
                                                         <div class="col-sm-4">
                                                             <label class="checkbox-inline"><input type="checkbox" value="password" name="password_map" id="passwordchk"> Password </label></div>
                                                         <div class="col-sm-3">

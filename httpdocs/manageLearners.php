@@ -302,15 +302,18 @@
              $('#customFieldForm').ajaxSubmit(function( data ){
                   l.stop();
                   var obj = $.parseJSON(data);
-                   var dataRow = $.parseJSON(obj.row);
-                   $("#createdDate").val(dataRow.createDate);
-                   var id = $("#id").val();
-                   if(id != "0"){
+                  if(obj.success == 1){
+                    var dataRow = $.parseJSON(obj.row);
+                    $("#createdDate").val(dataRow.createDate);
+                    var id = $("#id").val();
+                    if(id != "0"){
                        var selectedrowindex = $("#learnersGrid").jqxGrid('getselectedrowindex');
                        $("#learnersGrid").jqxGrid('updaterow', id, dataRow);
-                   }else{
-                     $("#learnersGrid").jqxGrid('addrow', null, dataRow);
-                   }
+                    }else{
+                       $("#learnersGrid").jqxGrid('addrow', null, dataRow);
+                    }
+    
+                  }
                   if(btn.id == "saveBtn"){
                      showResponseToastr(data,"createNewModalForm","customFieldForm","mainDiv");
                   }else{

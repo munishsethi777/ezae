@@ -93,7 +93,22 @@
         }
         return $id;   
       }
-
+      
+      public function SaveUsersWithRollBack($userList){
+            $db_New = MainDB::getInstance();
+            $conn = $db_New->getConnection();
+            $conn->beginTransaction();
+            $customFieldDataStore = UserCustomFieldsDataStore::getInstance();
+            try {
+                foreach($userList as  $user){
+                    $this->saveObject($user,$conn);    
+                }                
+                $conn->commit();
+            } catch (Exception $e) {
+                $conn->rollback();
+                throw $e;
+            }                                                    
+      }
       
       public function getUserLearningProfiles($userSeq){
         $query = "select lp.seq, lp.tag from userlearningprofiles ulp inner join learningprofiles lp on ulp.tagseq  = lp.seq where ulp.userseq = $userSeq";
