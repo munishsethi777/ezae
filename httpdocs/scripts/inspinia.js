@@ -275,4 +275,10 @@ function WinMove() {
         .disableSelection();
 }
 
+// Dragable chosen
+function dragChosen() {
+    $( ".chosen-choices" ).sortable();
+    $( ".chosen-choices" ).disableSelection();
+}
+
 

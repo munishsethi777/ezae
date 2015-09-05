@@ -39,34 +39,34 @@
                 });
                 //$('#loginButton').jqxButton({ width: 100, height: 25 });
                 $("#loginButton").click(function (e) {
-                    validateAndSave(e,this);    
+                    validateAndSave(e,this);
                 });
                 $("#loginForm").on('validationSuccess', function () {
                     $("#loginForm-iframe").fadeIn('fast');
                 });
-                $('#usernameInput').keypress(function (e) { 
+                $('#usernameInput').keypress(function (e) {
                     btn = $("#loginButton")[0];
-                    if (e.which == 13) { 
+                    if (e.which == 13) {
                         validateAndSave(e,btn);
-                        return false; 
+                        return false;
                     }
                 })
-                $('#passwordInput').keypress(function (e) { 
+                $('#passwordInput').keypress(function (e) {
                     btn = $("#loginButton")[0];
-                    if (e.which == 13) { 
+                    if (e.which == 13) {
                         validateAndSave(e,btn);
-                        return false; 
+                        return false;
                     }
                 })
             });
-            
+
             function validateAndSave(e,btn){
                 var validationResult = function (isValid) {
                     if (isValid) {
                         submitLogin(e,btn);
                     }
                 }
-                $('#loginForm').jqxValidator('validate', validationResult);    
+                $('#loginForm').jqxValidator('validate', validationResult);
             }
             function submitLogin(e,btn){
                 var l = Ladda.create(btn);
@@ -128,7 +128,7 @@
                   </div>
                 </form>
                 <a href="forgotPassword.php">Forgot Password</a><br/>
-                <a href="CompanySignUpForm.php">Singnup</a>
+                <a href="CompanySignUpForm.php">New User? Sign up.</a>
             </div>
         </div>
     </div>

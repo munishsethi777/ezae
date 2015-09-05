@@ -1,10 +1,20 @@
-
 <?php
+require_once($ConstantsArray['dbServerUrl'] ."Enums/RoleType.php");
 $action = "UserAction.php";
 $sessionUtil = SessionUtil::getInstance();
 $userSeq =  $sessionUtil->getUserLoggedInSeq();
 $userName =  $sessionUtil->getUserLoggedInName();
 $path = "images/UserImages/" . $userSeq . ".png";
+$role = $sessionUtil->getLoggedInRole();
+$userName = null;
+$userRole = strtoupper($role) ." : ";
+if($role == RoleType::ADMIN || $role == RoleType::MANAGER){
+    $userName = $sessionUtil->getAdminLoggedInName();
+    $userRole .= $sessionUtil->getAdminLoggedInCompanyName();
+}elseif($role == RoleType::USER){
+    $userName = $sessionUtil->getUserLoggedInName();
+    $userRole .= $sessionUtil->getUserLoggedInCompanyName();
+}
 if(!file_exists ($path)){
     $path = "images/dummy.jpg";
 }?>
@@ -17,11 +27,14 @@ if(!file_exists ($path)){
                     <li class="nav-header">
                         <div class="dropdown profile-element">
                             <div id="profilePicDiv">
-                                <img alt="image" id="profilePicImg" class="img-circle" width="50px;" src="<?echo($path)?>"/>
+                                <img alt="image" id="profilePicImg" class="img-circle" width="80px;" src="<?echo($path)?>"/>
                             </div>
                             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                            <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold"><?echo $userName?></strong>
-                             </span> <span class="text-muted text-xs block">Administrator - JCB <b class="caret"></b></span> </span> </a>
+                                <span class="clear">
+                                    <span class="block m-t-xs"> <strong class="font-bold"><? echo $userName;?></strong></span>
+                                    <span class="text-muted text-xs block"><?echo $userRole;?> <b class="caret"></b></span>
+                                </span>
+                            </a>
                             <ul class="dropdown-menu animated fadeInRight m-t-xs">
                                 <li><a href="#openUploader" onclick="openUploader()">Update Profile Picture</a></li>
                                 <li><a href="UserSettings.php">Profile</a></li>

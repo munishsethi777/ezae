@@ -11,8 +11,10 @@
  <?
     require_once('IConstants.inc');
     require_once($ConstantsArray['dbServerUrl'] ."Managers/ModuleMgr.php");
+    $sessionUtil = SessionUtil::getInstance();
+    $companySeq = $sessionUtil->getAdminLoggedInCompanySeq();
     $moduleMgr = ModuleMgr::getInstance();
-    $modules = $moduleMgr->getModulesByCompany(1);
+    $modules = $moduleMgr->getModulesByCompany($companySeq);
  ?>
 
 

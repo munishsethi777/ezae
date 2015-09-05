@@ -1,12 +1,12 @@
 <?php
-    require_once('../IConstants.inc');  
+    require_once('../IConstants.inc');
     require_once($ConstantsArray['dbServerUrl'] ."Managers/AdminMgr.php");
     require_once($ConstantsArray['dbServerUrl'] ."Enums/ManagerCriteriaType.php");
     require_once($ConstantsArray['dbServerUrl'] ."StringConstants.php");
-      require_once($ConstantsArray['dbServerUrl'] ."Utils/StringUtil.php"); 
+      require_once($ConstantsArray['dbServerUrl'] ."Utils/StringUtil.php");
     $call = "";
     if(isset($_GET["call"])){
-        $call = $_GET["call"];     
+        $call = $_GET["call"];
     }else{
        $call = $_POST["call"];
     }
@@ -17,13 +17,13 @@
     $adminSeq =  $sessionUtil->getAdminLoggedInSeq();
     $adminMgr = AdminMgr::getInstance();
     if($call == "getManagersForGrid"){
-        try{ 
+        try{
             $data = $adminMgr->getManagersForGrid();
         }catch(Exception $e){
             $success = 0;
             $message  = $e->getMessage();
         }
-        echo $data;  
+        echo $data;
     }
     if($call == "deleteManager"){
          $ids = $_GET["ids"];
@@ -34,11 +34,11 @@
             $success = 0;
             $message  = $e->getMessage();
         }
-        $response = new ArrayObject(); 
+        $response = new ArrayObject();
         $response["success"]  = $success;
         $response["message"]  = $message;
-        echo json_encode($response);  
-    } 
+        echo json_encode($response);
+    }
     if($call == "getCriteriaDetail"){
         try{
             $id = $_GET["id"];
@@ -47,9 +47,9 @@
             $success = 0;
             $message  = $e->getMessage();
         }
-        echo $data;  
+        echo $data;
     }
- 
+
     if($call == "saveAdminMgr"){
         try{
             validateCriteria();
@@ -75,21 +75,21 @@
             $id = 0;
             if(isset($_POST["id"])){
                 $id = intval($_POST["id"]);
-                $admin->setSeq($id);     
+                $admin->setSeq($id);
             }
-            $id = $adminMgr->saveAdminManager($admin); 
+            $id = $adminMgr->saveAdminManager($admin);
             if($id > 0){
                 saveManagerCriteria($id);
-                $message = StringConstants::MANAGER_SAVED;      
-            }   
+                $message = StringConstants::MANAGER_SAVED;
+            }
         }catch(Exception $e){
             $success = 0;
             $message  = $e->getMessage();
         }
-        $response = new ArrayObject(); 
+        $response = new ArrayObject();
         $response["success"]  = $success;
         $response["message"]  = $message;
-        echo json_encode($response);  
+        echo json_encode($response);
         return;
     }
     function validateCriteria(){
@@ -100,52 +100,52 @@
             throw new RuntimeException("Duplicate custom field name !");
         }
     }
-    
+
     function saveManagerCriteria($managerId){
-        global $adminMgr;     
+        global $adminMgr;
         $adminMgr->deleteManagerCriteria($managerId);
         $criteriaType = $_POST["actOption"];
         if($criteriaType == ManagerCriteriaType::LEARNING_PLAN){
-             $criteriavalues = $_POST["learningPlans"]; 
-             $criteriavalues = implode(",",$criteriavalues);                 
+             $criteriavalues = $_POST["learningPlans"];
+             $criteriavalues = implode(",",$criteriavalues);
         }else if($criteriaType == ManagerCriteriaType::LEARNING_PROFILE){
              $criteriavalues = $_POST["learningProfiles"];
-             $criteriavalues = implode(",",$criteriavalues); 
+             $criteriavalues = implode(",",$criteriavalues);
         }else if($criteriaType == ManagerCriteriaType::CUSTOM_FIELD){
-              $customFieldStr = ""; 
+              $customFieldStr = "";
               $customFieldNames = $_POST["customFieldNames"];
               $customFieldValues = $_POST["customFieldValues"];
               $values = array();
               foreach($customFieldNames as $name){
-                $startwith = $name. "_";                
+                $startwith = $name. "_";
                 foreach($customFieldValues as $value){
                     $val = urlencode(str_replace($startwith,"",$value));
-                    $cus_value = $val;    
-                    if(strpos($value, $startwith) === 0){                         
+                    $cus_value = $val;
+                    if(strpos($value, $startwith) === 0){
                         if(array_key_exists($name,$values)){
                             $cus_value = $values[$name];
-                            $cus_value .= "," . $val;    
-                        }                          
-                        $values[$name] =  $cus_value;     
-                    }    
+                            $cus_value .= "," . $val;
+                        }
+                        $values[$name] =  $cus_value;
+                    }
                 }
                 if(empty($customFieldStr)){
-                    $customFieldStr = $name. ":" .$values[$name];   
+                    $customFieldStr = $name. ":" .$values[$name];
                 }else{
                     $customFieldStr .= ";" . $name. ":" .$values[$name];
                 }
               }
-              $criteriavalues =  $customFieldStr;  
+              $criteriavalues =  $customFieldStr;
         }
-        
+
         //foreach($criteriavalues as $value){
             $managerCriteria = new ManagerCriteria();
             $managerCriteria->setCriteriaType($criteriaType);
             $managerCriteria->setCriteriaValue($criteriavalues);
             $managerCriteria->setManagerSeq($managerId);
             $id = $adminMgr->SaveManagerCriteria($managerCriteria);
-              
+
         //}
-       
+
     }
 ?>

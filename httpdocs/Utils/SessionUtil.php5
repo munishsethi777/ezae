@@ -1,4 +1,6 @@
 <?php
+require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/Company.php");
+require_once($ConstantsArray['dbServerUrl'] ."DataStores/CompanyDataStore.php");
 
 class SessionUtil{
     private static $LOGIN_MODE = "loginMode";
@@ -6,11 +8,14 @@ class SessionUtil{
     private static $ADMIN_NAME = "adminName";
     private static $ADMIN_LOGGED_IN = "adminLoggedIn";
     private static $ADMIN_COMPANY_SEQ = "adminCompanySeq";
+    private static $ADMIN_COMPANY_NAME = "adminCompanyName";
 
     private static $USER_SEQ = "userSeq";
     private static $USER_USERNAME = "userUserName";
     private static $USER_LOGGED_IN = "userLoggedIn";
     private static $USER_COMPANY_SEQ = "userCompanyseq";
+    private static $USER_COMPANY_NAME = "userCompanyName";
+
     private static $ROLE = "role";
 
 	private static $sessionUtil;
@@ -24,10 +29,15 @@ class SessionUtil{
 	}
 
     public function createAdminSession(Admin $admin){
+        $CDS = CompanyDataStore::getInstance();
+        $company = $CDS->FindBySeq($admin->getCompanySeq());
+
         $arr = new ArrayObject();
         $arr[0] = $admin->getSeq();
         $arr[1] = $admin->getName();
         $arr[2] = $admin->getCompanySeq();
+        $arr[3] = $company->getName();
+
 
         $_SESSION[self::$ADMIN_LOGGED_IN] = $arr;
         $_SESSION[self::$LOGIN_MODE] = 'admin';
@@ -37,12 +47,15 @@ class SessionUtil{
         }
     }
     public function createUserSession(User $user){
+        $CDS = CompanyDataStore::getInstance();
+        $company = $CDS->FindBySeq($user->getCompanySeq());
+
         $arr = new ArrayObject();
         $arr[0] = $user->getSeq();
         $arr[1] = $user->getUserName();
         $arr[2] = $user->getCompanySeq();
         $arr[3] = $user->getAdminSeq();
-
+        $arr[4] = $company->getName();
         $_SESSION[self::$USER_LOGGED_IN] = $arr;
         $_SESSION[self::$LOGIN_MODE] = 'user';
         $_SESSION[self::$ROLE] = RoleType::USER;
@@ -94,6 +107,14 @@ class SessionUtil{
         }
         return null;
     }
+    public function getUserLoggedInCompanyName(){
+      if($_SESSION[self::$LOGIN_MODE] == "user" &&
+            $_SESSION[self::$USER_LOGGED_IN] != null){
+                $arr = $_SESSION[self::$USER_LOGGED_IN];
+                return $arr[4];
+        }
+        return null;
+    }
     public function getUserLoggedInAdminSeq(){
       if($_SESSION[self::$LOGIN_MODE] == "user" &&
             $_SESSION[self::$USER_LOGGED_IN] != null){
@@ -112,7 +133,14 @@ class SessionUtil{
             }
         }
     }
-
+    public function getAdminLoggedInCompanyName(){
+      if($_SESSION[self::$LOGIN_MODE] == "admin" &&
+            $_SESSION[self::$ADMIN_LOGGED_IN] != null){
+                $arr = $_SESSION[self::$ADMIN_LOGGED_IN];
+                return $arr[3];
+        }
+        return null;
+    }
     public function getAdminLoggedInSeq(){
         if((count($_SESSION) > 0)){
             if($_SESSION[self::$LOGIN_MODE] == "admin" &&

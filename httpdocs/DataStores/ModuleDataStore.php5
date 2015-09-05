@@ -17,8 +17,8 @@ class ModuleDataStore extends BeanDataStore{
 
     public function findByCompanySeq($companySeq){
         $colValuePair = array();
-        $list = $this->executeQuery("select * from modules left join companymodules on modules.seq = companymodules.moduleseq
-        where companymodules.companyseq = $companySeq;");
+        $list = $this->executeQuery("select modules.* from modules left join companymodules on modules.seq = companymodules.moduleseq
+        where companymodules.companyseq = $companySeq");
         return $list;
     }
 

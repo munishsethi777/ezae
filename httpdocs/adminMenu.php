@@ -5,12 +5,43 @@ $sessionUtil = SessionUtil::getInstance();
 $adminSeq = $sessionUtil->getAdminLoggedInSeq();
 $path = "images/AdminImages/" . $adminSeq . ".png";
 $role = $sessionUtil->getLoggedInRole();
+$userName = null;
+$userRole = strtoupper($role) ." : ";
+if($role == RoleType::ADMIN || $role == RoleType::MANAGER){
+    $userName = $sessionUtil->getAdminLoggedInName();
+    $userRole .= $sessionUtil->getAdminLoggedInCompanyName();
+}elseif($role == RoleType::USER){
+    $userName = $sessionUtil->getUserLoggedInName();
+    $userRole .= $sessionUtil->getUserLoggedInCompanyName();
+}
 if(!file_exists ($path)){
     $path = "images/dummy.jpg";
 }?>
 <?include "UpdateProfilePicture.php"?>
 <?
     $page = basename($_SERVER['PHP_SELF']);
+    $dashboard = null;
+    $customFields = null;
+    $manageLeaderBoard = null;
+    $adminModulesManagement = null;
+    $learningPlans = null;
+    $createLearningPlan = null;
+    $manageLearningPlan = null;
+    $reporting = null;
+    $adminCompletionMetrics = null;
+    $adminComparativeMetrics = null;
+    $analytics = null;
+    $importLearners = null;
+    $manageLearners = null;
+    $manageRegistrationForm = null;
+    $manageLearnerProfiles = null;
+    $manageMessages = null;
+    $createMessage = null;
+    $messageLogs = null;
+    $notificaitons = null;
+    $company = null;
+    $adminManagers = null;
+
     if($page == "dashboard.php"){
         $dashboard = "active";
     }elseif($page == "CustomFields.php"){
@@ -75,11 +106,14 @@ if(!file_exists ($path)){
                             <div id="profilePicDiv">
 
 
-                                <img alt="image" id="profilePicImg" class="img-circle" width="50px;" src="<?echo($path)?>"/>
+                                <img alt="image" id="profilePicImg" class="img-circle" width="80px;" src="<?echo($path)?>"/>
                             </div>
                             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                            <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">Amandeep Dubey</strong>
-                             </span> <span class="text-muted text-xs block">Administrator - JCB <b class="caret"></b></span> </span> </a>
+                                <span class="clear">
+                                    <span class="block m-t-xs"> <strong class="font-bold"><? echo $userName;?></strong></span>
+                                    <span class="text-muted text-xs block"><?echo $userRole;?> <b class="caret"></b></span>
+                                </span>
+                            </a>
                             <ul class="dropdown-menu animated fadeInRight m-t-xs">
                                 <li><a href="#openUploader" onclick="openUploader()">Update Profile Picture</a></li>
                                 <li><a href="AdminSettings.php">Profile</a></li>
@@ -95,9 +129,6 @@ if(!file_exists ($path)){
                     <?if($role == RoleType::ADMIN){?>
                         <li class="<?=$dashboard?>">
                             <a href="dashboard.php"><i class="fa fa-dashboard"></i> <span class="nav-label">Dashboard</span></a>
-                        </li>
-                        <li class="<?=$customFields?>">
-                            <a href="CustomFields.php"><i class="fa fa-th-large"></i> <span class="nav-label">CustomFields</span></a>
                         </li>
                         <li class="<?=$manageLeaderBoard?>">
                             <a href="ManageLeaderBoard.php"><i class="fa fa-angellist"></i> <span class="nav-label">LeaderBoards</span></a>
@@ -124,12 +155,13 @@ if(!file_exists ($path)){
                     </li>
                     <?if($role == RoleType::ADMIN){?>
                         <li class="<?=$learners?>">
-                            <a href="mailbox.html"><i class="fa fa-group"></i> <span class="nav-label">Learners </span><span class="label label-warning pull-right">1024</span></a>
+                            <a href="mailbox.html"><i class="fa fa-group"></i> <span class="nav-label">Learners</span><span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li class="<?=$importLearners?>"><a href="importLearners.php">Import</a></li>
                                 <li class="<?=$manageLearners?>"><a href="manageLearners.php">Manage learners</a></li>
                                 <li class="<?=$manageRegistrationForm?>"><a href="manageRegistrationForm.php">Registration Form</a></li>
                                 <li class="<?=$manageLearnerProfiles?>"><a href="manageLearnerProfiles.php">Learner's Profiles</a></li>
+                                <li class="<?=$customFields?>"><a href="CustomFields.php">Manage Custom Fields</a></li>
                             </ul>
                         </li>
                         <li class="<?=$communications?>">

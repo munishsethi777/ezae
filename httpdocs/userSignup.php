@@ -85,7 +85,7 @@
                     showResponseNotification(data,"mainDiv","SignupFieldForm");
                     l.stop();
                     if(obj.success == 1){
-                        window.setTimeout(function(){window.location.href = "UserDashBoard.php"},500);
+                        window.setTimeout(function(){window.location.href = "UserDashboard.php"},500);
                     }
                })
             }

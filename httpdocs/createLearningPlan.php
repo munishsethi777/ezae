@@ -57,6 +57,14 @@ if(isset($_POST["moduleIds"])){
 
 }
 ?>
+<style>
+.chosen-container-multi .chosen-choices li.search-choice{
+    line-height:25px;
+}
+.chosen-container-multi .chosen-choices li{
+    float:none;
+}
+</style>
 </head>
 <body>
     <div id="wrapper">
@@ -128,6 +136,8 @@ if(isset($_POST["moduleIds"])){
                                     <h5>Selected Courses for learning plan(0 Selected)</h5>
                                     <?include "SelectedModuleGridInclude.php"?>
 
+                                    <select class="form-control chosen-modulesSelect" name="modulesSelect[]" id="modulesSelect" multiple></select>
+
                                     <div id="addCourseModalForm" style="width: auto;" class="modal fade" aria-hidden="true">
                                         <div class="modal-dialog" >
                                             <div class="modal-content">
@@ -150,9 +160,6 @@ if(isset($_POST["moduleIds"])){
 
                                   <div style="clear:both;margin-top:10px"></div>
                                   <div class="col-sm-4" style="padding-left:0px;">
-                                    <button class="btn btn-primary ladda-button"  data-style="expand-right" id="addCourseBtn" type="button">
-                                        <span class="ladda-label">Add Courses</span>
-                                    </button>
                                   </div>
                                   <div class="col-sm-offset-9" style="text-align:right">
                                        <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveBtn" type="button">
@@ -177,8 +184,6 @@ if(isset($_POST["moduleIds"])){
     $(document).ready(function(){
         $('#activationDate').datetimepicker({step:5,format:"m/d/Y h:i A"});
         $('#deactiveDate').datetimepicker({step:5,format:"m/d/Y h:i A"});
-        loadGrid();
-        loadSelectedGrid();
         populateProfiles();
         $("#saveBtn").click(function(e){
             ValidateAndSave(e,this);
@@ -190,9 +195,7 @@ if(isset($_POST["moduleIds"])){
         $("#cancelBtn").click(function(e){
             location.href = "ManageLearningPlan.php";
         });
-        $("#addCourseBtn").click(function(e){
-            $("#addCourseModalForm").modal('show')
-        });
+
         var selectedOption  = $("input[type='radio'][name='actOption']:checked");
         showHideActivateDate(selectedOption.val());
 
@@ -201,6 +204,8 @@ if(isset($_POST["moduleIds"])){
         })
          var isDeactivateChecked  = $("#deactivateChk").is(':checked')  ;
          showHideDeactivateDate(isDeactivateChecked);
+         loadModules();
+
 
     });
     function showHideActivateDate(value){
@@ -225,31 +230,8 @@ if(isset($_POST["moduleIds"])){
         }
         $('#createLearningPlanForm').jqxValidator('validate', validationResult);
     }
-    function getSelectedModules(){
-        var rows = $("#selectedModuleGrid").jqxGrid('getrows');
-        var selectedMIds = [];
-        $.each(rows, function(index , value){
-            selectedMIds.push(value.id);
-        });
-        return selectedMIds;
-    }
-    function addCourses(){
-        var selectedRowIndexes = $("#moduleGrid").jqxGrid('selectedrowindexes');
-        if(selectedRowIndexes.length == 0){
-            bootbox.alert("Please Select atleast one course for save learning plan.", function() {});
-            return;
-        }
-        var selectedMIds = getSelectedModules();
-        $.each(selectedRowIndexes, function(index , value){
-            var dataRow = $("#moduleGrid").jqxGrid('getrowdata', value);
-            if(!isInArray(dataRow.id,selectedMIds)) {
-                $("#selectedModuleGrid").jqxGrid('addrow', null, dataRow);
-            }
 
-        });
-        $("#addCourseModalForm").modal('hide')
 
-    }
     function populateProfiles(){
         var url = 'Actions/LearningProfileAction.php?call=getLearnerProfiles';
         $.getJSON(url, function(data){
@@ -264,6 +246,16 @@ if(isset($_POST["moduleIds"])){
         e.preventDefault();
         var l = Ladda.create(btn);
         l.start();
+
+        var moduleIds = [];
+        $('.search-choice').each(function(){
+          var selectedText = $(this).find('span').text();
+          var selectedValue = $('#modulesSelect').find('option[text="'+ selectedText +'"]').val();
+          var selectedValue = $('#modulesSelect option').filter(function () {
+                return $(this).html() ==  selectedText ; }).val();
+          moduleIds.push(selectedValue);
+        })
+
         var rows = $("#selectedModuleGrid").jqxGrid('getrows');
         var ids = [];
         var isModuleLeaderboard = []
@@ -275,7 +267,7 @@ if(isset($_POST["moduleIds"])){
             }
             isModuleLeaderboard.push(val);
         });
-        $("#moduleIds").val(ids);
+        $("#moduleIds").val(moduleIds);
         $("#isModuleLeaderboard").val(isModuleLeaderboard);
 
         $('#createLearningPlanForm').ajaxSubmit(function( data ){
@@ -293,4 +285,16 @@ if(isset($_POST["moduleIds"])){
 
         })
      }
+    function loadModules(){
+        var url = 'Actions/ModuleAction.php?call=getModulesForGrid';
+        $.getJSON(url, function(data){
+            var options = "";
+            $.each(data, function(index , value){
+                  options += "<option value='" + value.id + "'>" + value.title + "</option>";
+            });
+            $(".chosen-modulesSelect").append(options);
+            $(".chosen-modulesSelect").chosen({width:"100%"});
+            dragChosen();
+        });
+    }
 </script>

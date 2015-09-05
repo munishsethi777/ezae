@@ -109,7 +109,7 @@
                 root: 'Rows',
                 cache: false,
                 beforeprocessing: function(data)
-                {        
+                {
                     source.totalrecords = data.TotalRows;
                 },                
                 filter: function()
@@ -181,23 +181,23 @@
                         $('#createNewModalForm').modal('show');
                     });
                     exportButton.click(function (event) {
-                          $('#exportLearnerModalForm').modal('show');                          
+                          $('#exportLearnerModalForm').modal('show');
                           var selectedRowIndexes = $("#learnersGrid").jqxGrid('selectedrowindexes');
                           var ids = [];
                           $.each(selectedRowIndexes, function(index , value){
                                 if(value != -1){
                                     var dataRow = $("#learnersGrid").jqxGrid('getrowdata', value);
-                                    ids.push(dataRow.id);    
-                                } 
+                                    ids.push(dataRow.id);
+                                }
                           });
                           $("#learnerseqs").val(ids);
                      })
-                     
+
                     setProfile.click(function (event) {
                         //removeMessagesDivs();
                          $(".hilight").removeClass("hilight");
                          $("#profileSelectError").text("");
-                        $("#id").val("0");                       
+                        $("#id").val("0");
                         var selectedRowIndexes = $("#learnersGrid").jqxGrid('selectedrowindexes');
                         if(selectedRowIndexes.length > 0){
                             var names = [];
@@ -212,14 +212,14 @@
                             if(selectedRowIndexes.length == 1){
                                 var dataRow = $("#learnersGrid").jqxGrid('getrowdata', selectedRowIndexes[0]);
                                 values = dataRow.profileseqs;
-                                values = values.split(",");                           
+                                values = values.split(",");
                             }
                             $('#profileSelect').val(values).trigger("chosen:updated");
                             $('#setProfileModelForm').modal('show');
                         }else{
                             noRowSelectedAlert();
-                        }    
-                       
+                        }
+
                     });
                     // delete selected row.
                     deleteButton.click(function (event) {
@@ -254,22 +254,22 @@
                     });
                     $("#learnersGrid").bind('rowselect', function (event) {
                         var selectedRowIndex = event.args.rowindex;
-                        var pageSize = event.args.owner.rows.records.length - 1;                        
-                        if($.isArray(selectedRowIndex)){           
+                        var pageSize = event.args.owner.rows.records.length - 1;
+                        if($.isArray(selectedRowIndex)){
                             if(isSelectAll){
-                                isSelectAll = false;    
+                                isSelectAll = false;
                             } else{
                                 isSelectAll = true;
-                            }                                                                     
+                            }
                             $('#learnersGrid').jqxGrid('clearselection');
                             if(isSelectAll){
                                 for (i = 0; i <= pageSize; i++) {
                                     var index = $('#learnersGrid').jqxGrid('getrowboundindex', i);
                                     $('#learnersGrid').jqxGrid('selectrow', index);
-                                }    
+                                }
                             }
-                        }                        
-                   }); 
+                        }
+                   });
                 }
             });
         }
@@ -288,7 +288,7 @@
             $.each(selectedIndexes,function(key,value) {
                 ids.push($("#learnersGrid").jqxGrid('getrowid',value));
             })
-            $("#ids").val(ids);
+            $("#ids").html(ids);
             $('#setProfileForm').ajaxSubmit(function( data ){
                    l.stop();
                    $("#learnersGrid").jqxGrid('updatebounddata');
@@ -358,8 +358,8 @@
                 }else{
                   noRowSelectedAlert();
                   return;
-                }       
-            }            
+                }
+            }
             e.preventDefault();
             var l = Ladda.create(btn);
             l.start();
@@ -367,7 +367,7 @@
             l.stop();
             $('#exportLearnerModalForm').modal('hide');
             showResponseToastr(data,"exportLearnerModalForm","exportLearnerForm","exportMainDiv");
-            
+
         }
 </script>
 
