@@ -140,6 +140,18 @@ class LearningPlanMgr{
             $learningPlans = self::$dataStore->getLearningPlansByProfiles($profileSeqs);
             return $learningPlans;
         }
+        //Calling from adminModuleManagement.php
+        public function getLearningPlansByModule($modules)
+        {
+            $lpListByModule = array();
+            foreach($modules as $module){
+                $moduleSeq = $module["seq"]; 
+                $learningPlans = self::$dataStore->getLearningPlansByModule($moduleSeq); 
+                $lpListByModule[$module["seq"]] = $learningPlans;
+            }
+            return $lpListByModule;
+        }
+        
         private static function getLearningPlanArry($learningPlanObj){
             $learningPlan = new LearningPlan();
             $learningPlan = $learningPlanObj;

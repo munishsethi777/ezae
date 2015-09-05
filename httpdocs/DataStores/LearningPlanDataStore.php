@@ -20,5 +20,11 @@ require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/LearningPlan.php")
         $learningPlans = self::$learningPlanDataStore->executeObjectQuery($sql);
         return $learningPlans;
     }
+    //Calling from LearningPlanMgr
+    public function getLearningPlansByModule($moduleSeq){
+        $sql = "select lpm.seq as moduleseq,lp.* from learningplanmodules lpm inner join learningplans lp on lpm.learningplanseq = lp.seq where lpm.courseseq = $moduleSeq";
+        $learningPlans = self::$learningPlanDataStore->executeObjectQuery($sql);
+        return $learningPlans;
+    }
  }  
 ?>
