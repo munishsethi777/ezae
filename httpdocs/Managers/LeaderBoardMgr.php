@@ -45,6 +45,7 @@ require_once($ConstantsArray['dbServerUrl']. "DataStores/LeaderBoardDataStore.ph
             }else{
                $leaderBoards[$i]['basedOn'] = "LearningPlan - ". $leaderBoards[$i]['learningPlanName'];
             }
+            $leaderBoards[$i]['leaderboard.lastmodifiedon'] = $leaderBoards[$i]["lastmodifiedon"];
 
         }
         $gridData["Rows"] = $leaderBoards;

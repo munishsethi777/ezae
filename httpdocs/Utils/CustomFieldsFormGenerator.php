@@ -108,34 +108,53 @@
         }
 
         private function getDraggableHtmlForEachField($userCustomField,$isRequired = false,$isVisible = false){
+            $matchingRulesMgr = MatchingRuleMgr::getInstance();
+            $matchingRules =$matchingRulesMgr->getMatchingRule();
             $customFieldObj = new UserCustomField();
+            $customFieldObj =  $userCustomField;
+            $fieldName = $customFieldObj->getTitle();
+            $fieldNameLbl = "";
+            if($fieldName == $matchingRules->getUserNameField()){
+                    $fieldNameLbl = $fieldName . " (UserName)";      
+            }
+            if($fieldName == $matchingRules->getPasswordField()){
+                    $fieldNameLbl = $fieldName . " (Password)"; 
+            }
+            if($fieldName == $matchingRules->getPasswordField() && 
+                                        $fieldName == $matchingRules->getUserNameField()){
+                    $fieldNameLbl = $fieldName .  " (UserName,Password)";      
+            }                        
             $customFieldObj = $userCustomField;              
-            $html = '<div class="ibox border-bottom" id="block_'.$customFieldObj->getSeq()  . '">';
+            $html = '<div class="ibox border-bottom" id="block_'. $customFieldObj->getSeq() . '">';
             $html .= '<input type="hidden" name="seq[]" value="' . $customFieldObj->getSeq() . '" />';
-            $html .= '<input type="hidden" name="fieldName_'. $customFieldObj->getSeq() . '" value="' . $customFieldObj->getName() . '" />';
+            $html .= '<input type="hidden" name="fieldName_'. $customFieldObj->getSeq() . '" value="' . $fieldNameLbl . '" />';
             $html .= '<input type="hidden" name="fieldType_'. $customFieldObj->getSeq() . '" value="' . $customFieldObj->getFieldType() . '" />';
             $html .= '<div class="ibox-title" style="padding-bottom:40px;">';
-            $html .= '<div class="col-sm-6"><h3>Field Name: '. $customFieldObj->getTitle() .'</h3></div>';
+            $html .= '<div class="col-sm-6"><h3>Field Name: '. $fieldNameLbl .'</h3></div>';
             $html .= '<div class="col-sm-2"><h3>Field Type: '. $customFieldObj->getFieldType() .'</h3></div>';
             $html .= '<div class="col-sm-2">';
             $html .= '<div class="checkbox i-checks">';
             $html .= '<label style="padding-left:0px">';            
             $visibleChecked = "";
             $requiredChecked = "";
-            if($isVisible){
+            if($isVisible || !empty($fieldNameLbl)){
                 $visibleChecked = 'checked="checked"';
             }
-            if($isRequired){
+            if($isRequired || !empty($fieldNameLbl)){
                 $requiredChecked = 'checked="checked"';
             }
-            $html .= '<input type="checkbox" name="required_'. $customFieldObj->getSeq() .'"' . $requiredChecked . '>';
+            $disabled = "";
+            if(!empty($fieldNameLbl)){
+                $disabled = "disabled";    
+            }
+            $html .= '<input type="checkbox"'. $disabled .' name="required_'. $customFieldObj->getSeq() .'"' . $requiredChecked . '>';
             $html .= '<i></i> Required Field</label>';
             $html .= '</div>';
             $html .= '</div>';
             $html .= '<div class="col-sm-2">';
             $html .= '<div class="checkbox i-checks">';
             $html .= '<label style="padding-left:0px">';
-            $html .= '<input type="checkbox" name="show_'. $customFieldObj->getSeq() .'"'. $visibleChecked. '>';
+            $html .= '<input type="checkbox"'.$disabled.' name="show_'. $customFieldObj->getSeq() .'"'. $visibleChecked. '>';
             $html .= '<i></i> Show on Form </label>';
             $html .= '</div>';
             $html .= '</div>';

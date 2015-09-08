@@ -12,7 +12,7 @@
           { text: 'id', datafield: 'id' , hidden:true},
           { text: 'Name' , datafield: 'name'},
           { text: 'Based on', datafield: 'basedOn' },
-          { text: 'Modified On', datafield: 'lastmodifiedon' ,cellsformat: 'MM-dd-yyyy hh:mm:ss tt'},
+          { text: 'Modified On', datafield: 'leaderboard.lastmodifiedon' ,cellsformat: 'MM-dd-yyyy hh:mm:ss tt'},
           { text: 'Action', datafield: 'action'}
         ]
         var source =
@@ -25,7 +25,7 @@
                 { name: 'id', type: 'integer' },
                 { name: 'name', type: 'string' },
                 { name: 'basedOn', type: 'string' },
-                { name: 'lastmodifiedon', type: 'date' },
+                { name: 'leaderboard.lastmodifiedon', type: 'date' },
                 { name: 'action', type: 'string' }
             ],
             url: 'Actions/LeaderBoardAction.php?call=getLeaderBoardsForGrid',

@@ -89,7 +89,13 @@
             },
             updaterow: function (rowid, newdata, commit) {
                 commit(true);
+            }, 
+            sort: function()
+            {
+                    // update the grid and send a request to the server.
+                   $("#learningPlanGrid").jqxGrid('updatebounddata', 'sort');
             }
+                
         };
         var dataAdapter = new $.jqx.dataAdapter(source);
         $("#learningPlanGrid").jqxGrid(
