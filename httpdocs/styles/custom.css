@@ -15,3 +15,17 @@
 .product-imitation img{
     width:100%;
 }
+
+/** Grid Styling starts here**/
+
+
+.jqx-grid-column-header{
+    background-color: #1ab394 !important;
+    color:white !important;
+}
+.jqx-widget-content{
+    font-family:inherit !important;
+}
+
+
+/** Grid Styling ends here**/

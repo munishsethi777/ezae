@@ -24,6 +24,7 @@ if(!file_exists ($path)){
     $customFields = null;
     $manageLeaderBoard = null;
     $adminModulesManagement = null;
+    $myModules = null;
     $learningPlans = null;
     $createLearningPlan = null;
     $manageLearningPlan = null;
@@ -50,6 +51,10 @@ if(!file_exists ($path)){
         $manageLeaderBoard = "active";
     }elseif($page == "adminModulesManagement.php"){
         $adminModulesManagement = "active";
+        $myModules = "active";
+    }elseif($page == "adminCreateModule.php"){
+        $adminModulesManagement = "active";
+        $adminCreateModule = "active";
     }elseif($page == "createLearningPlan.php"){
         $learningPlans = "active";
         $createLearningPlan = "active";
@@ -134,7 +139,11 @@ if(!file_exists ($path)){
                             <a href="ManageLeaderBoard.php"><i class="fa fa-angellist"></i> <span class="nav-label">LeaderBoards</span></a>
                         </li>
                         <li class="<?=$adminModulesManagement?>">
-                            <a href="adminModulesManagement.php"><i class="fa fa-archive"></i> <span class="nav-label">Modules Management</span></a>
+                            <a href="#"><i class="fa fa-group"></i> <span class="nav-label">Learning Modules</span><span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li class="<?=$adminCreateModule?>"><a href="adminCreateModule.php">Create New Module</a></li>
+                                <li class="<?=$myModules?>"><a href="adminModulesManagement.php">My Modules</a></li>
+                            </ul>
                         </li>
                         <li class="<?=$learningPlans?>">
                             <a href="layouts.html"><i class="fa fa-gift"></i> <span class="nav-label">Learning Plans</span></a>
@@ -155,7 +164,7 @@ if(!file_exists ($path)){
                     </li>
                     <?if($role == RoleType::ADMIN){?>
                         <li class="<?=$learners?>">
-                            <a href="mailbox.html"><i class="fa fa-group"></i> <span class="nav-label">Learners</span><span class="fa arrow"></span></a>
+                            <a href="#"><i class="fa fa-group"></i> <span class="nav-label">Learners</span><span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li class="<?=$importLearners?>"><a href="importLearners.php">Import</a></li>
                                 <li class="<?=$manageLearners?>"><a href="manageLearners.php">Manage learners</a></li>
