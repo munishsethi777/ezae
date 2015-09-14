@@ -290,7 +290,7 @@ if(isset($_POST["moduleIds"])){
         $.getJSON(url, function(data){
             var options = "";
             $.each(data, function(index , value){
-                  options += "<option value='" + value.id + "'>" + value.title + "</option>";
+                options += "<option value='" + value.id + "'>" + value.title +" - "+ value.moduleType +"</option>";
             });
             $(".chosen-modulesSelect").append(options);
             $(".chosen-modulesSelect").chosen({width:"100%"});

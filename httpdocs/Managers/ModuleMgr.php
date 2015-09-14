@@ -34,6 +34,8 @@ class ModuleMgr{
         $arr["ispaid"] = $module['ispaid'];//$moduleObj->getIsPaid();
         $createdDate = new DateTime($module['createdon']); //new DateTime($moduleObj->getCreatedOn());
         $arr['createdon'] = $createdDate->format('d M Y');
+        $arr['moduleType'] = $module['moduletype'];
+
         //$arr['companyseq'] = $moduleObj->getCompanySeq();
         //$arr['isenabled'] = $moduleObj->getIsEnabled();
         return $arr;

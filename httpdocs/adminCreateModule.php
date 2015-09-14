@@ -41,12 +41,12 @@
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label">Type</label>
                                     <div class="col-sm-2">
-                                        <select class="form-control" id="profiles" name="profile" style="font-family: 'FontAwesome', Helvetica;">
-                                                    <option value="fa-medium">Quiz</option>
-                                                    <option value="fa-sellsy">Essay</option>
-                                                    <option value="fa-sellsy">Document</option>
-                                                    <option value="fa-diamond">Video</option>
-                                                    <option value="fa-user-secret">Audio</option>
+                                        <select class="form-control" id="moduleType" name="moduleType" style="font-family: 'FontAwesome', Helvetica;">
+                                                    <option value="quiz">Quiz</option>
+                                                    <option value="essay">Essay</option>
+                                                    <option value="document">Document</option>
+                                                    <option value="video">Video</option>
+                                                    <option value="audio">Audio</option>
                                            </select>
                                     </div>
                                     <label class="col-sm-1 control-label">TagLine</label>
@@ -68,62 +68,51 @@
                                     <div class="col-sm-2"><input type="text" name="name" value="<?echo $desc?>" id="name" class="form-control"></div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label class="col-sm-1 control-label">Questions</label>
-                                    <div class="col-sm-9">
-                                        <select class="form-control chosen-questionsSelect" name="questionsSelect[]" id="questionsSelect" multiple></select>
-                                    </div>
-                                    <button class="col-sm-1 btn-xs btn-success" id="saveBtn" type="button">Add New Question</button>
 
-                                </div>
-                                <div class="hr-line-dashed"></div>
 
-                                <div class="questionEditor">
-                                    <h4>Create New Question</h4>
+                                <div class="quizEditor editorPanel animated fadeInRight" style="display: none;">
                                     <div class="form-group">
-                                        <label class="col-sm-1 control-label">Question</label>
-                                        <div class="col-sm-9"><input type="text" name="name" value="<?echo $desc?>" id="name" class="form-control"></div>
-
-                                        <label class="col-sm-1 control-label">Marks</label>
-                                        <div class="col-sm-1"><input type="text" name="name" value="<?echo $desc?>" id="name" class="form-control" disabled="true"></div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-sm-1 control-label">Option 1</label>
-                                        <div class="col-sm-4"><input type="text" name="name" value="<?echo $desc?>" id="name" class="form-control"></div>
-
-                                        <label class="col-sm-1 control-label">Feedback</label>
-                                        <div class="col-sm-4"><input type="text" name="name" id="name" class="form-control"></div>
-
-                                        <label class="col-sm-1 control-label">Marks</label>
-                                        <div class="col-sm-1"><input type="text" name="name" id="name" class="form-control questionOptionMarksDiv">
-                                            <button class="btn-xs btn-danger btn-circle" type="button"><i class="fa fa-times"></i></button>
+                                        <label class="col-sm-1 control-label">Questions</label>
+                                        <div class="col-sm-9">
+                                            <select class="form-control chosen-questionsSelect" name="questionsSelect[]" id="questionsSelect" multiple></select>
                                         </div>
+                                        <button class="col-sm-1 btn-xs btn-success" id="addNewQuestionButton" type="button">Add New Question</button>
                                     </div>
-                                    <div class="form-group">
-                                        <label class="col-sm-1 control-label">Option 2</label>
-                                        <div class="col-sm-4"><input type="text" name="name" value="<?echo $desc?>" id="name" class="form-control"></div>
+                                    <div class="hr-line-dashed"></div>
+                                    <div class="quizQuestionEditor animated fadeInDown" style="display:none">
+                                        <h4>Create New Question</h4>
+                                        <div class="form-group">
+                                            <label class="col-sm-1 control-label">Question</label>
+                                            <div class="col-sm-9"><input type="text" name="name" value="<?echo $desc?>" id="name" class="form-control"></div>
 
-                                        <label class="col-sm-1 control-label">Feedback</label>
-                                        <div class="col-sm-4"><input type="text" name="name" id="name" class="form-control"></div>
-
-                                        <label class="col-sm-1 control-label">Marks</label>
-                                        <div class="col-sm-1"><input type="text" name="name" id="name" class="form-control questionOptionMarksDiv">
-                                            <button class="btn-xs btn-danger btn-circle" type="button"><i class="fa fa-times"></i></button>
+                                            <label class="col-sm-1 control-label">Marks</label>
+                                            <div class="col-sm-1"><input type="text" name="name" value="<?echo $desc?>" id="name" class="form-control" disabled="true"></div>
                                         </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <button class="col-sm-offset-1 col-sm-1 btn-xs btn-success" id="saveBtn" type="button">
-                                        <i class="fa fa-plus"></i> Add Option</button>
-                                        <div class="col-sm-offset-9">
-                                            <button class="btn-xs btn-success" id="saveBtn" type="button"><i class="fa fa-save"></i> Save Question</button>
-                                            <button class="btn-xs btn-success" id="saveBtn" type="button"><i class="fa fa-save"></i> Save & New Question</button>
-                                            <button class="btn-xs btn-white" id="saveBtn" type="button"><i class="fa fa-sign-out"></i> Cancel</button>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-1 control-label">Option 1</label>
+                                            <div class="col-sm-4"><input type="text" name="name" value="<?echo $desc?>" id="name" class="form-control"></div>
+
+                                            <label class="col-sm-1 control-label">Feedback</label>
+                                            <div class="col-sm-4"><input type="text" name="name" id="name" class="form-control"></div>
+
+                                            <label class="col-sm-1 control-label">Marks</label>
+                                            <div class="col-sm-1"><input type="text" name="name" id="name" class="form-control questionOptionMarksDiv"></div>
+                                        </div>
+                                        <div class="quizQuestionOptionsDiv animation_box"></div>
+
+                                        <div class="form-group">
+                                            <button class="col-sm-offset-1 col-sm-1 btn-xs btn-success" id="addQuizQuestionOptionButton" type="button"><i class="fa fa-plus"></i> Add Option</button>
+                                            <div class="col-sm-offset-9">
+                                                <button class="btn-xs btn-success" id="saveBtn" type="button"><i class="fa fa-save"></i> Save Question</button>
+                                                <button class="btn-xs btn-success" id="saveBtn" type="button"><i class="fa fa-save"></i> Save & New Question</button>
+                                                <button class="btn-xs btn-white" id="saveBtn" type="button"><i class="fa fa-sign-out"></i> Cancel</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="hr-line-dashed"></div>
 
-                                <div class="essayEditor">
+                                <div class="essayEditor editorPanel animated fadeInRight" style="display: none;">
                                     <h4>Create New Essay</h4>
                                     <div class="form-group">
                                         <div class="col-sm-12">
@@ -132,20 +121,18 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="hr-line-dashed"></div>
                                 </div>
-                                <div class="hr-line-dashed"></div>
-
-                                <div class="documentEditor">
+                                <div class="documentEditor editorPanel animated fadeInRight"  style="display: none;">
                                     <h4>Create New Document</h4>
                                     <div class="form-group">
                                         <div class="col-sm-12">
                                            <input type="file">
                                         </div>
                                     </div>
+                                    <div class="hr-line-dashed"></div>
                                 </div>
-                                <div class="hr-line-dashed"></div>
-
-                                <div class="videoURLEditor">
+                                <div class="videoEditor editorPanel animated fadeInRight"  style="display: none;">
                                     <h4>Create New Video</h4>
                                     <div class="form-group">
                                         <label class="col-sm-1 control-label">Embed Code</label>
@@ -153,10 +140,9 @@
                                            <input type="text" class="form-control">
                                         </div>
                                     </div>
+                                    <div class="hr-line-dashed"></div>
                                 </div>
-                                <div class="hr-line-dashed"></div>
-
-                                <div class="audioURLEditor">
+                                <div class="audioEditor editorPanel"  style="display: none;">
                                     <h4>Create New Audio</h4>
                                     <div class="form-group">
                                         <label class="col-sm-1 control-label">Embed Code</label>
@@ -164,12 +150,8 @@
                                            <input type="text" class="form-control">
                                         </div>
                                     </div>
+                                    <div class="hr-line-dashed"></div>
                                 </div>
-                                <div class="hr-line-dashed"></div>
-
-
-
-
 
                                   <div style="clear:both;margin-top:10px"></div>
                                   <div class="col-sm-4" style="padding-left:0px;">
@@ -195,6 +177,8 @@
 <script src="scripts/FormValidators/CreateLearningPlanValidations.js"></script>
 <script type="text/javascript">
     $(document).ready(function(){
+        //display quiz module by default
+        $(".quizEditor").show();
         $(".chosen-questionsSelect").chosen({width:"100%"});
         CKEDITOR.replace( 'editor');
         $("#saveBtn").click(function(e){
@@ -204,9 +188,33 @@
         $("#saveNewBtn").click(function(e){
             ValidateAndSave(e,this);
         });
-        $("#cancelBtn").click(function(e){
-            location.href = "ManageLearningPlan.php";
+
+        $('#moduleType').change(function(){
+            $(".editorPanel").hide();
+            $(".quizQuestionEditor").hide();
+            $("."+this.value+"Editor").show();
         });
+        $("#addNewQuestionButton").click(function(e){
+            $(".quizQuestionEditor").show();
+        });
+        optionsCount = 1;
+        $("#addQuizQuestionOptionButton").click(function(e){
+
+            option = '<div class="form-group animated fadeInDown" id="quizQuestionOption'+ ++optionsCount +'">';
+            option += '<label class="col-sm-1 control-label">Option '+ optionsCount +'</label>' ;
+            option += '<div class="col-sm-4"><input type="text" name="name" value="<?echo $desc?>" id="name" class="form-control"></div>';
+            option += '<label class="col-sm-1 control-label">Feedback</label>';
+            option += '<div class="col-sm-4"><input type="text" name="name" id="name" class="form-control"></div>';
+            option += '<label class="col-sm-1 control-label">Marks</label>';
+            option += '<div class="col-sm-1"><input type="text" name="name" id="name" class="form-control questionOptionMarksDiv">&nbsp;';
+            option += '<button class="btn-xs btn-danger btn-circle" data-animation="fadeOut" class="removeQuizQuestionOptionButton" type="button" onclick="javascript:removeOption('+optionsCount+')"><i class="fa fa-times"></i></button>';
+            option += '</div></div> ';
+            $(".quizQuestionOptionsDiv").append(option);
+        });
+
     });
+    function removeOption(id){
+       $("#quizQuestionOption"+id).hide();
+    }
 
 </script>

@@ -181,9 +181,6 @@ if(!file_exists ($path)){
                                  <li class="<?=$messageLogs?>"><a href="showMessageLogs.php">Message Logs</a></li>
                             </ul>
                         </li>
-                        <li class="<?=$notifications?>">
-                            <a href="widgets.html"><i class="fa fa-bell-o"></i> <span class="nav-label">Notifications</span> </a>
-                        </li>
                         <li class="<?=$company?>">
                             <a href="#"><i class="fa fa-life-ring"></i> <span class="nav-label">Company</span><span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
