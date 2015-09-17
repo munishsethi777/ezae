@@ -82,7 +82,7 @@ if(isset($_POST["moduleIds"])){
                                  <input type="hidden" id="isModuleLeaderboard" name="isModuleLeaderboard">
                                  <input type="hidden" id="id" name="id" value="<?echo $id?>">
                                 <div class="form-group"><label class="col-sm-2 control-label">Name</label>
-                                    <div class="col-sm-10"><input type="text" name="name" value="<?echo $name?>" id="name" class="form-control"></div>
+                                    <div class="col-sm-10"><input type="text" name="name" value="" id="name" class="form-control"></div>
                                 </div>
                                 <div class="form-group"><label class="col-sm-2 control-label">Description</label>
                                     <div class="col-sm-10"><input type="text" class="form-control" value="<?echo $des?>" name="description"></div>

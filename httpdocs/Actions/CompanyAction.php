@@ -120,4 +120,29 @@
         $url .= SecurityUtil::Encode($companySeq);        
         echo $url;
    }
+   //calling from forgotPassword.php
+    if($call == "forgotPassword"){
+         $adminDataStore = AdminDataStore::getInstance();
+        try{
+            $username = $_POST['username'];
+            if(!empty($username)){     
+                $admin = $adminDataStore->findByUserName($username);
+                if(!empty($admin)){
+                    $mailMessage = new MailMessage();
+                    $mailMessage->setMessage("Password for admin panel is ". $admin->getPassword());
+                    MailMessageUtil::sendforgotPasswordEmail($mailMessage,$admin);        
+                }else{
+                    throw new Exception("User Name is not exist");
+                }
+            }           
+            $message = "your password emailed to your email account";
+        }catch (Exception $e){
+            $success = 0;
+            $message  = $e->getMessage();
+        }
+        $response = new ArrayObject();
+        $response["success"]  = $success;
+        $response["message"]  = $message;
+        echo json_encode($response);
+    }
 ?>

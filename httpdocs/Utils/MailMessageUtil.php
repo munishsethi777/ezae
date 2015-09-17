@@ -7,6 +7,7 @@
     require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/MailMessageMail.php");
     require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/MailAction.php");
     require_once($ConstantsArray['dbServerUrl'] ."Utils/MailMessageUtil.php");
+    require_once($ConstantsArray['dbServerUrl'] ."Utils/MailerUtils.php");
     require_once($ConstantsArray['dbServerUrl'] ."Managers/LearningProfileMgr.php");
   Class MailMessageUtil{
     private static $mailMessageUtil;
@@ -109,6 +110,10 @@
         $mailMessageMail->setStatus("Pending");
         $mailMessageMail->setFailureCounter(0);
         self::$mailMessageMailMgr->save($mailMessageMail);
+    }
+    
+    public static function sendforgotPasswordEmail($mailMessage,$user){
+        MailerUtils::sendMandrillEmailNotification($mailMessage,$user);
     }
   }
 ?>

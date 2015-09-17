@@ -108,6 +108,9 @@
                 url: 'ajaxAdminMgr.php?call=getLearnersForGrid',
                 root: 'Rows',
                 cache: false,
+                addrow: function (rowid, rowdata, position, commit) {
+                   commit(true);
+                },
                 beforeprocessing: function(data)
                 {
                     source.totalrecords = data.TotalRows;
@@ -310,7 +313,7 @@
                        var selectedrowindex = $("#learnersGrid").jqxGrid('getselectedrowindex');
                        $("#learnersGrid").jqxGrid('updaterow', id, dataRow);
                     }else{
-                       $("#learnersGrid").jqxGrid('addrow', null, dataRow);
+                       $("#learnersGrid").jqxGrid('addrow', null, dataRow,"first");
                     }
     
                   }

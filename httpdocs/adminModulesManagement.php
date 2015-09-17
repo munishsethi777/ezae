@@ -12,8 +12,11 @@
     })
    function showDetail(id){
        $("#moduleDetailsModal" + id).modal('show') 
-    }
-
+   }
+   function editModule(id){
+       $("#moduleId").val(id);
+       $("#moduleEditForm").submit();          
+   } 
  <?
     require_once('IConstants.inc');
     require_once($ConstantsArray['dbServerUrl'] ."Managers/ModuleMgr.php");
@@ -66,6 +69,9 @@
                                             <div class="m-t text-righ">
                                                 <a href="#" class="btn btn-xs btn-outline btn-primary moduleDetailsButton" onclick=showDetail(<?echo $module['seq']?>)>
                                                     Info <i class="fa fa-long-arrow-right"></i>
+                                                </a>
+                                                <a href="#" class="btn btn-xs btn-outline btn-primary moduleDetailsButton" onclick=editModule(<?echo $module['seq']?>)>
+                                                    Edit <i class="fa fa-long-arrow-right"></i>
                                                 </a>
                                             </div>
                                         </div>
@@ -130,6 +136,9 @@
             </div>
         </div>
     </div>
+    <form name="moduleEditForm" action="adminCreateModule.php" id="moduleEditForm" method="post">
+        <input type="hidden" id="moduleId" name="moduleId">
+    </form>
 </body>
 </html>
 

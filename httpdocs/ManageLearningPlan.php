@@ -48,7 +48,7 @@
           { text: 'id', datafield: 'id' , hidden:true},
           { text: 'Title' , datafield: 'title', width: 250 },
           { text: 'Description', datafield: 'description' },
-          { text: 'Active', datafield: 'isactive'},
+          { text: 'Active', datafield: 'isactive', columntype: 'checkbox'},
           { text: 'Activate on', datafield: 'activateon',cellsformat: 'MM-dd-yyyy hh:mm:ss tt'  },
           { text: 'Deactivate on', datafield: 'deactivateon',cellsformat: 'MM-dd-yyyy hh:mm:ss tt'  },
           { text: 'Modified On', datafield: 'lastmodifiedon' ,cellsformat: 'MM-dd-yyyy hh:mm:ss tt' }

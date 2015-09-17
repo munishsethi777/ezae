@@ -1,14 +1,17 @@
 <?php
     require_once($ConstantsArray['dbServerUrl']. "DataStores/ModuleDataStore.php5");
+    require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/ModuleQuestion.php");
 
 class ModuleMgr{
     private static $moduleMgr;
+    private static $moduleQuesDataStore;
 
     public static function getInstance()
     {
         if (!self::$moduleMgr)
         {
             self::$moduleMgr = new ModuleMgr();
+            self::$moduleQuesDataStore = new BeanDataStore(ModuleQuestion::$className,ModuleQuestion::$tableName);  
             return self::$moduleMgr;
         }
         return self::$moduleMgr;
@@ -198,6 +201,7 @@ class ModuleMgr{
 
     public function getModule($moduleSeq){
         $moduleDataStore = ModuleDataStore::getInstance();
+        $module = new Module();
         $module = $moduleDataStore->findBySeq($moduleSeq);
         return $module;
     }
@@ -252,5 +256,39 @@ class ModuleMgr{
         }
         return json_encode($fullArr);
     }
+    
+    public function saveModule($module){
+        $moduleDataStore = ModuleDataStore::getInstance(); 
+        $id = $moduleDataStore->save($module);
+        return $id;
+    }
+    public function saveModuleQuestion($selectedQuestions,$moduleId){
+        $colVal["moduleseq"] = $moduleId;
+        self::$moduleQuesDataStore->deleteByAttribute($colVal);  
+        $questions = explode(",",$selectedQuestions);
+        foreach($questions as $ques){
+            $moduleQuestion = new ModuleQuestion();
+            $moduleQuestion->setAddedOn(new DateTime());
+            $moduleQuestion->setModuleSeq($moduleId);
+            $moduleQuestion->setQuestionSeq($ques);
+            self::$moduleQuesDataStore->save($moduleQuestion);    
+        }
+    }
+    
+    public function getModuleQuestions($moduleId){
+       $colVal["moduleseq"] = $moduleId;
+       $moduleQuestionList = self::$moduleQuesDataStore->executeConditionQuery($colVal);
+       return $moduleQuestionList;
+    }
+    
+    public function getSelectedQuestionSeqs($moduleId){
+       $moduleQuestionList = $this->getModuleQuestions($moduleId);
+       $questionSeqs =  array();
+       foreach($moduleQuestionList as $mq){
+           array_push($questionSeqs,$mq->getQuestionSeq());
+       }
+       $questionSeqs = implode(",",$questionSeqs);
+       return $questionSeqs;    
+    }                                                      
 }
 ?>

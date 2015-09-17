@@ -3,7 +3,7 @@
   class Module{
       public static $tableName = "modules";
       private $seq, $title, $description, $createdon, $isenabled, $ispaid, $price, $lastmodifiedon, $maxscore, $passpercent,
-      $companyseq, $timeallowed, $tagline, $imagepath, $synopsis, $author, $moduletype, $tags, $prerequisties, $prework, $videourl;
+      $companyseq, $timeallowed, $tagline, $imagepath, $synopsis, $author, $moduletype, $tags, $prerequisties, $prework, $videourl,$typedetails;
 
 
       public function setSeq($seq_){
@@ -52,7 +52,7 @@
         $this->price = $price_;
       }
       public function getPrice(){
-        return $this->$price_;
+        return $this->price;
       }
 
       public function setLastModifiedOn($lastModifiedOn_){
@@ -151,6 +151,13 @@
       }
       public function getVideoUrl(){
             return $this->videourl;
+      }
+      
+      public function setTypeDetails($typeDetail_){
+            $this->typedetails = $typeDetail_;
+      }
+      public function getTypeDetails(){
+            return $this->typedetails;
       }
 
   }

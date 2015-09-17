@@ -70,6 +70,10 @@
         $sortorder = $_GET['sortorder'];            
         if ($sortfield != NULL)
         {
+            if (strpos($query,'ORDER BY') !== false) {
+                $pos = strpos($query,'ORDER BY');
+                $query = substr($query,0,$pos);
+            }
             if ($sortorder == "desc")
             {
                 $query = $query . " ORDER BY" . " " . $sortfield . " DESC";

@@ -90,7 +90,7 @@ if(isset($_POST["sendOnDate"]) && $_POST["sendOnDate"] != ""){
                                  <input type="hidden" id="lpSeqs" name="lpSeqs[]">
                                  <input type="hidden" id="id" name="id" value="<?echo $id?>">
                                 <div class="form-group"><label class="col-sm-2 control-label">Name</label>
-                                    <div class="col-sm-10"><input type="text" name="name" value="<?echo $name?>" id="name" class="form-control"></div>
+                                    <div class="col-sm-10"><input type="text" name="name" value="" id="name" class="form-control"></div>
                                 </div>
                                 <div class="form-group"><label class="col-sm-2 control-label">Subject</label>
                                     <div class="col-sm-10"><input type="text" name="subject" value="<?echo $subject?>" id="subject" class="form-control"></div>

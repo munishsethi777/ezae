@@ -99,6 +99,9 @@ class MailerUtils{
 
             try {
                 $mandrill = new Mandrill('knMTJMqu1M6pPB5zahJ6XA');
+                $async = "";
+                $ip_pool = "";
+                $send_at = "";
                 $message = array(
                     'html' => $mailMessage->getMessage(),
                     'text' => $mailMessage->getMessage(),
@@ -136,7 +139,7 @@ class MailerUtils{
                 $async = false;
                 $ip_pool = 'Main Pool';
                 $result = $mandrill->messages->send($message, $async, $ip_pool, $send_at);
-                print_r($result);
+                //print_r($result);
                 /*
                 Array
                 (
