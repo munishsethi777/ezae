@@ -281,7 +281,7 @@ class BeanDataStore {
         foreach ($colValuePair as $key => $value){
             $attribute_array[] = $key.' = '. "'" . $value . "'";
         }
-        $query = "update " .  $this->tableName . "set " . implode(" AND ", $attribute_array);
+        $query = "update " .  $this->tableName . " set " . implode(" AND ", $attribute_array);
         if($condiationPair != null){
             $query .= " WHERE " .implode(" AND ", $query_array);
         }

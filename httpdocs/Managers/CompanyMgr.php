@@ -3,15 +3,17 @@ require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/Company.php");
 require_once($ConstantsArray['dbServerUrl'] ."Managers/AdminMgr.php");
 require_once($ConstantsArray['dbServerUrl'] ."DataStores/CompanyDataStore.php");
 require_once($ConstantsArray['dbServerUrl'] ."Utils/SessionUtil.php5");
+require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/CompanyModule.php");
 class CompanyMgr{
 
     private static $companyMgr;
-
+    private static $companyModuleDataStore;
     public static function getInstance()
     {
         if (!self::$companyMgr)
         {
             self::$companyMgr = new CompanyMgr();
+            self::$companyModuleDataStore = new BeanDataStore(CompanyModule::$className,CompanyModule::$tableName); 
         }
         return self::$companyMgr;
     }
@@ -65,6 +67,26 @@ class CompanyMgr{
     public function updateCompanyPrefix($companySeq,$prefix){
         $CDS = CompanyDataStore::getInstance();
         $prefix =  $CDS->updateCompanyPrefix($companySeq,$prefix);
+    }
+    
+    public function saveCompanyModule($moduleId){
+        $sessionUtil = SessionUtil::getInstance();
+        $adminSeq = $sessionUtil->getAdminLoggedInSeq();
+        $companySeq = $sessionUtil->getAdminLoggedInCompanySeq();
+        $companyModule = new CompanyModule();
+        $companyModule->setAddedOn(new DateTime());
+        $companyModule->setAdminSeq($adminSeq);
+        $companyModule->setCompanySeq($companySeq);
+        $companyModule->setModuleSeq($moduleId);
+        $this->deleteCompanyModule($moduleId);       
+        self::$companyModuleDataStore->save($companyModule);
+    }
+    public function deleteCompanyModule($moduleId){
+        $sessionUtil = SessionUtil::getInstance();
+        $companySeq = $sessionUtil->getAdminLoggedInCompanySeq();
+        $colValues["companyseq"]  =  $companySeq;
+        $colValues["moduleseq"] = $moduleId;
+        self::$companyModuleDataStore->deleteByAttribute($colValues);
     }
 
 

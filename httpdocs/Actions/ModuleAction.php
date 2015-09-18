@@ -1,6 +1,7 @@
 <?
 require_once('../IConstants.inc');
 require_once($ConstantsArray['dbServerUrl'] ."Managers/ModuleMgr.php");
+require_once($ConstantsArray['dbServerUrl'] ."Managers/CompanyMgr.php");
 require_once($ConstantsArray['dbServerUrl'] ."Enums/ModuleType.php");    
 require_once($ConstantsArray['dbServerUrl'] ."Managers/QuestionMgr.php"); 
 require_once($ConstantsArray['dbServerUrl'] ."Utils/SessionUtil.php5");
@@ -96,14 +97,11 @@ if($call == "saveModule"){
             $uploaddir = $ConstantsArray["docspath"] . "moduledocs\\";
             $fileName = FileUtil::uploadFiles($file,$uploaddir);
             $typeDetail = $fileName;        
-         }
-         
-    } 
-    if(isset($_FILES["imgfileToUpload"])){
-            $file = $_FILES["imgfileToUpload"];
-            $uploaddir = $ConstantsArray["imagefolderpath"] . "modules\\";
-            $imgfilePath = FileUtil::uploadFiles($file,$uploaddir);
+         }   
     }
+    
+     
+    
     try{
         $module->setSeq($id);
         $module->setCompanySeq($companySeq);
@@ -126,7 +124,15 @@ if($call == "saveModule"){
         if($type == ModuleType::QUIZ){
             $moduleMgr->saveModuleQuestion($questions,$id);
         }
-        
+        $companyMgr = CompanyMgr::getInstance();
+        $companyMgr->saveCompanyModule($id);
+        if(isset($_FILES["imgfileToUpload"])){
+            $file = $_FILES["imgfileToUpload"];
+            $moduleImageName = $id.".jpg";
+            $uploaddir = $ConstantsArray["imagefolderpath"] . "modules\\";
+            $imgfilePath = FileUtil::uploadImageFiles($file,$uploaddir,$moduleImageName);
+            $moduleMgr->updateMoudleImageName($id,$imgfilePath);
+        }
         $message = "Module Added Sucessfully";     
     }catch(Exception $e){
         $success = 0;

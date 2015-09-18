@@ -262,6 +262,12 @@ class ModuleMgr{
         $id = $moduleDataStore->save($module);
         return $id;
     }
+    public function updateMoudleImageName($moduleId,$name){
+        $colValue["imagepath"] = $name;
+        $condition["seq"] = $moduleId;
+        $moduleDataStore = ModuleDataStore::getInstance();
+        $moduleDataStore->updateByAttributes($colValue,$condition);
+    }
     public function saveModuleQuestion($selectedQuestions,$moduleId){
         $colVal["moduleseq"] = $moduleId;
         self::$moduleQuesDataStore->deleteByAttribute($colVal);  
@@ -289,6 +295,8 @@ class ModuleMgr{
        }
        $questionSeqs = implode(",",$questionSeqs);
        return $questionSeqs;    
-    }                                                      
+    }
+    
+                                                          
 }
 ?>
