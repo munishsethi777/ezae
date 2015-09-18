@@ -64,45 +64,47 @@ if($call == "getModulesBySelectedLearningPlan"){
     echo $data;
 }
 if($call == "saveModule"){
-    $id = $name = $_POST["id"];
-    $name = $_POST["name"];
-    $description = $_POST["description"];
-    $type = $_POST["moduleType"];
-    $tagline = $_POST["tagline"];
-    $preReq = $_POST["prereq"];
-    $tags = $_POST["tags"];
-    $maxMarks = $_POST["maxmarks"];
-    $passPercent = $_POST["passpercent"];
-    $timeAllowed = $_POST["time"];
-    $questions = $_POST["selectedQuestions"];
-    $moduleType = $_POST["moduleType"];
-    $typeDetail = "";
-    $imgfilePath = "";
-    $module = new Module();
     $moduleMgr = ModuleMgr::getInstance();
-    if($id > 0){
-        $moduleObj = $moduleMgr->getModule($id);
-        $typeDetail = $moduleObj->getTypeDetails();
-        $imgfilePath = $moduleObj->getImagePath();
-    }
-    if($type == ModuleType::EASSY){
-        $typeDetail = $_POST["eassy"];    
-    }else if($type == ModuleType::VIDEO){
-        $typeDetail = $_POST["vembedCode"];
-    }else if($type == ModuleType::AUDIO){
-        $typeDetail = $_POST["aembedCode"];
-    }else if($type == ModuleType::DOCUMENT){  
-         if(isset($_FILES["fileToUpload"])){
-            $file = $_FILES["fileToUpload"];
-            $uploaddir = $ConstantsArray["docspath"] . "moduledocs\\";
-            $fileName = FileUtil::uploadFiles($file,$uploaddir);
-            $typeDetail = $fileName;        
-         }   
-    }
-    
-     
-    
     try{
+        $id = $_POST["id"];
+        $name = $_POST["name"];
+        $isalreadyExist = $moduleMgr->moduleAlreadyExist($id,$name);
+        if($isalreadyExist){
+            throw new Exception("Module is already exist with this name!");    
+        }
+        $description = $_POST["description"];
+        $type = $_POST["moduleType"];
+        $tagline = $_POST["tagline"];
+        $preReq = $_POST["prereq"];
+        $tags = $_POST["tags"];
+        $maxMarks = $_POST["maxmarks"];
+        $passPercent = $_POST["passpercent"];
+        $timeAllowed = $_POST["time"];
+        $questions = $_POST["selectedQuestions"];
+        $moduleType = $_POST["moduleType"];
+        $typeDetail = "";
+        $imgfilePath = "";
+        $module = new Module();
+        
+        if($id > 0){
+            $moduleObj = $moduleMgr->getModule($id);
+            $typeDetail = $moduleObj->getTypeDetails();
+            $imgfilePath = $moduleObj->getImagePath();
+        }
+        if($type == ModuleType::EASSY){
+            $typeDetail = $_POST["eassy"];    
+        }else if($type == ModuleType::VIDEO){
+            $typeDetail = $_POST["vembedCode"];
+        }else if($type == ModuleType::AUDIO){
+            $typeDetail = $_POST["aembedCode"];
+        }else if($type == ModuleType::DOCUMENT){  
+             if(isset($_FILES["fileToUpload"])){
+                $file = $_FILES["fileToUpload"];
+                $uploaddir = $ConstantsArray["docspath"] . "moduledocs\\";
+                $fileName = FileUtil::uploadFiles($file,$uploaddir);
+                $typeDetail = $fileName;        
+             }   
+        }
         $module->setSeq($id);
         $module->setCompanySeq($companySeq);
         $module->setDescription($description);
@@ -156,18 +158,23 @@ if($call == "getQuestions"){
 }
 
 if($call == "saveQuestion"){
-    $name = $_POST["questionname"];
-    $questionType = $_POST["questiontype"];
-    $options = $_POST["option"];
-    $feedbacks = $_POST["feedback"];
-    $marks = $_POST["marks"];
-    $maxMarks = 0;
-    if(isset($_POST["totalMarks"])){
-        $maxMarks = $_POST["totalMarks"];    
-    }    
     $questionMgr = QuestionMgr::getInstance();
-    $addedQuestionArr = array();    
+    $addedQuestionArr = array(); 
     try{
+        $name = $_POST["questionname"];
+        $isalreadyExist = $questionMgr->isAlreadyExist($name);
+        if($isalreadyExist){
+            throw new Exception("Question is already exist with this name!");    
+        }
+        $questionType = $_POST["questiontype"];
+        $options = $_POST["option"];
+        $feedbacks = $_POST["feedback"];
+        $marks = $_POST["marks"];
+        $maxMarks = 0;
+        if(isset($_POST["totalMarks"])){
+            $maxMarks = $_POST["totalMarks"];    
+        }    
+        $addedQuestionArr = array();  
         $question = new Question();
         $question->setAdminSeq($adminSeq);
         $question->setCompanySeq($companySeq);

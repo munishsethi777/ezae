@@ -297,6 +297,21 @@ class ModuleMgr{
        return $questionSeqs;    
     }
     
+    public function moduleAlreadyExist($moduleid,$name){
+        $moduleDataStore = ModuleDataStore::getInstance();
+        $sessionUtil = SessionUtil::getInstance();
+        $companySeq = $sessionUtil->getAdminLoggedInCompanySeq();
+        $colval["companyseq"] = $companySeq;
+        $colval["title"] = $name;
+        $attributes[0] = "title";
+        $attributes[1] = "seq";
+        $module = $moduleDataStore->executeAttributeQuery($attributes,$colval);
+        if(!empty($module)){
+            return $module[0]["seq"] != $moduleid;
+        }
+        return false;
+    }
+    
                                                           
 }
 ?>

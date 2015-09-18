@@ -48,6 +48,14 @@ require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/QuestionAnswer.php
         $arr['title'] = $question->getTitle();
         return $arr;
      }
+     
+     public function isAlreadyExist($name){
+       $companySeq = self::$sessionUtil->getAdminLoggedInCompanySeq();
+       $colValue["companyseq"] = $companySeq;
+       $colValue["title"] = $name;
+       $count = self::$questionDataStore->executeCountQuery($colValue);
+       return $count > 0;  
+     }
       
   }
 ?>

@@ -21,8 +21,10 @@
     $audioUrl = "";
     $document = "<a>Select Document</a>";
     $imagePath =  $module->getImagePath();
-   
-    
+    $moduleType = $module->getModuleType();
+     if(empty($moduleType)){
+        $moduleType = "quiz";
+    }
     if(empty($imagePath)){
         $imagePath = "dummy.jpg";
     }
@@ -81,12 +83,12 @@
                                     <label class="col-sm-1 control-label">Type</label>
                                     <div class="col-sm-2">
                                         <select class="form-control" id="moduleType" name="moduleType" style="font-family: 'FontAwesome', Helvetica;">
-                                                    <option value="quiz">Quiz</option>
-                                                    <option value="essay">Essay</option>
-                                                    <option value="document">Document</option>
-                                                    <option value="video">Video</option>
-                                                    <option value="audio">Audio</option>
-                                           </select>
+                                            <option value="quiz">Quiz</option>
+                                            <option value="essay">Essay</option>
+                                            <option value="document">Document</option>
+                                            <option value="video">Video</option>
+                                            <option value="audio">Audio</option>
+                                        </select>
                                     </div>
                                     <label class="col-sm-1 control-label">TagLine</label>
                                     <div class="col-sm-2"><input type="text" name="tagline" value="<?echo $module->getTagLine()?>" id="tagline" class="form-control"></div>
@@ -116,6 +118,7 @@
                                             <div id="editor">
 
                                             </div>
+                                             <label class="jqx-validator-error-label" id="essayError"></label> 
                                         </div>
                                     </div>
                                     <div class="hr-line-dashed"></div>
@@ -124,8 +127,9 @@
                                     <h4>Create New Document</h4>
                                     <div class="form-group">
                                         <div class="col-sm-12">
-                                           <input type="file" name="fileToUpload" id="fileToUpload" class="hidden" >
-                                           <label id="lblFileUpload" for="fileToUpload" class="control-label"><?echo $document?></label>                                           
+                                           <input type="file" name="fileToUpload" id="fileToUpload" class="hidden">
+                                           <label id="lblFileUpload" for="fileToUpload" class="control-label"><?echo $document?></label> 
+                                           <label class="jqx-validator-error-label" id="documentError"></label>                                            
                                         </div>
                                     </div>
                                     <div class="hr-line-dashed"></div>
@@ -135,7 +139,7 @@
                                     <div class="form-group">
                                         <label class="col-sm-1 control-label">Embed Code</label>
                                         <div class="col-sm-11">
-                                           <input type="text" name="vembedCode" value="<?echo $videoUrl?>" class="form-control">
+                                           <input type="text" name="vembedCode"  id="vembedCode" value="<?echo $videoUrl?>" class="form-control">
                                         </div>
                                     </div>
                                     <div class="hr-line-dashed"></div>
@@ -145,7 +149,7 @@
                                     <div class="form-group">
                                         <label class="col-sm-1 control-label">Embed Code</label>
                                         <div class="col-sm-11">
-                                           <input type="text" name="aembedCode" value="<?echo $audioUrl?>" class="form-control">
+                                           <input type="text" name="aembedCode" id="aembedCode" value="<?echo $audioUrl?>" class="form-control">
                                         </div>
                                     </div>
                                     <div class="hr-line-dashed"></div>
@@ -157,7 +161,8 @@
                                     <div class="form-group">
                                         <label class="col-sm-1 control-label">Questions</label>
                                         <div class="col-sm-9">
-                                            <select class="form-control chosen-questionsSelect" name="questionsSelect" id="questionsSelect" multiple></select>
+                                            <select class="form-control chosen-questionsSelect" onchange="requiredQuestion(this)" name="questionsSelect" id="questionsSelect" multiple></select>
+                                            <label class="jqx-validator-error-label" id="questionError"></label> 
                                         </div>
                                         <button class="col-sm-1 btn-xs btn-success" id="addNewQuestionButton" type="button">Add New Question</button>
                                     </div>
@@ -186,7 +191,7 @@
                                             <div class="col-sm-4"><input type="text" name="feedback[]" id="feedback1" class="form-control"></div>
 
                                             <label class="col-sm-1 control-label">Marks</label>
-                                            <div class="col-sm-1"><input type="text" name="marks[]" id="marks" class="form-control questionOptionMarksDiv"></div>
+                                            <div class="col-sm-1"><input type="text" name="marks[]" id="marks1" onchange="calTotalMarks(this.value)" class="form-control questionOptionMarksDiv"></div>
                                         </div>
                                         <div class="quizQuestionOptionsDiv animation_box"></div>
 
@@ -213,8 +218,6 @@
                                         <span class="ladda-label">Save & New Module</span>
                                      </button>
                                <?}?>
-                               
-                                <button type="button" class="btn btn-white" id="cancelBtn" data-dismiss="modal">Cancel Module</button>
                             </div>
                             </div>
                             </div>
@@ -226,9 +229,11 @@
 </html>
 
 <script src="scripts/FormValidators/CreateQuestionValidations.js"></script>
+<script src="scripts/FormValidators/CreateModuleValidations.js"></script> 
 <script type="text/javascript">
-    $(document).ready(function(){
-        
+    optionsCount = 1;
+    totalMarks = 0;
+    $(document).ready(function(){        
         //display quiz module by default
         $(".quizEditor").show();
         $(".chosen-questionsSelect").chosen({width:"100%"});
@@ -259,22 +264,29 @@
         $("#addNewQuestionButton").click(function(e){
             $(".quizQuestionEditor").show();
         });
-        $("#moduleType").val("<?echo $module->getModuleType()?>").change(); 
-        optionsCount = 1;
+        $("#moduleType").val("<?echo $moduleType?>").change(); 
+        
         $("#addQuizQuestionOptionButton").click(function(e){
+            ++optionsCount;
+            rules = $("#createQuestionForm").jqxValidator('rules')
             optionName = "option" + optionsCount;  
             feedbackName = "feedback" + optionsCount; 
             marksName = "marks" + optionsCount; 
-            option = '<div class="form-group animated fadeInDown" id="quizQuestionOption'+ ++optionsCount +'">';
+            option = '<div class="form-group animated fadeInDown" id="quizQuestionOption'+ optionsCount +'">';
             option += '<label class="col-sm-1 control-label">Option '+ optionsCount +'</label>' ;
             option += '<div class="col-sm-4"><input type="text" name="option[]" value="" id="'+ optionName + '" class="form-control"></div>';
             option += '<label class="col-sm-1 control-label">Feedback</label>';
             option += '<div class="col-sm-4"><input type="text" name="feedback[]" id="' + feedbackName + '" class="form-control"></div>';
             option += '<label class="col-sm-1 control-label">Marks</label>';
-            option += '<div class="col-sm-1"><input type="text" name="marks[]" id="'+ marksName + '" class="form-control questionOptionMarksDiv">&nbsp;';
+            option += '<div class="col-sm-1"><input type="text" name="marks[]" onchange="calTotalMarks(this.value)"  id="'+ marksName + '" class="form-control questionOptionMarksDiv">&nbsp;';
             option += '<button class="btn-xs btn-danger btn-circle" data-animation="fadeOut" class="removeQuizQuestionOptionButton" type="button" onclick="javascript:removeOption('+optionsCount+')"><i class="fa fa-times"></i></button>';
             option += '</div></div> ';
             $(".quizQuestionOptionsDiv").append(option);
+            rules.push(
+                { input: '#' + optionName , message: optionName + ' is required!', action: 'keyup', rule: 'required' },
+                { input: '#' + marksName, message: 'Marks should be numeric!', action: 'keyup', rule: 'number' }
+            );
+            $('#createQuestionForm').jqxValidator('rules', rules);
         });
          $("#imgfileToUpload").change(function(){
             readIMG(this);
@@ -284,6 +296,22 @@
          });
 
     });
+    function calTotalMarks(value){
+       
+        var marks = 0;
+        for(var i =1;i<=optionsCount;i++){
+            val = $("#marks" + i).val();
+            if(val  != "" && !isNaN(val)){
+                 marks = marks + parseInt(val);    
+            }           
+        }
+        $("#totalMarks").val(marks).change();
+        
+    }
+    
+    function checkValidation(input){
+        requiredQuestion(input);
+    }
     function readIMG(input) {
         if (input.files && input.files[0]) {
             var reader = new FileReader();
@@ -295,6 +323,7 @@
         }
     } 
     function setDocName(input) {
+        validateFile(input);
         if (input.files && input.files[0]) {
             name = input.files[0]["name"];  
             $('#lblFileUpload').html("Selected Document : - <a>" + name + "</a>");
@@ -302,7 +331,8 @@
     }
     
     function removeOption(id){
-       $("#quizQuestionOption"+id).hide();
+       $("#quizQuestionOption"+id).remove();
+       optionsCount--;
     }
     
     function validateAndSaveQuestion(e,btn){
@@ -352,14 +382,17 @@
     }
     
     function ValidateAndSave(e,btn){
-       // var validationResult = function (isValid){
-           //if (isValid) {
+       var validationResult = function (isValid){
+           if (isValid) {
                saveModule(e,btn);
-            //}
-        //}
-       //$('#createMessageForm').jqxValidator('validate', validationResult);
+            }
+        }
+       $('#createModuleForm').jqxValidator('validate', validationResult);
     }
     function saveModule(e,btn){
+        if(requiredEssay()){
+            return;
+        }
         var vals = [];
         $( '#questionsSelect :selected' ).each( function( i, selected ) {
             vals[i] = $( selected ).val();
