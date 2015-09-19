@@ -200,7 +200,7 @@
                                             <div class="col-sm-offset-9">
                                                 <button class="btn-xs btn-success" id="saveQuesBtn" type="button"><i class="fa fa-save"></i> Save Question</button>
                                                 <button class="btn-xs btn-success" id="saveNewQuesBtn" type="button"><i class="fa fa-save"></i> Save & New Question</button>
-                                                <button class="btn-xs btn-white" id="cancel" type="button"><i class="fa fa-sign-out"></i> Cancel</button>
+                                                <button class="btn-xs btn-white" id="cancelQues" type="button"><i class="fa fa-sign-out"></i> Cancel</button>
                                             </div>
                                         </div>
                                     </div>
@@ -263,6 +263,9 @@
         });
         $("#addNewQuestionButton").click(function(e){
             $(".quizQuestionEditor").show();
+        });
+        $("#cancelQues").click(function(e){
+            $(".quizQuestionEditor").hide();
         });
         $("#moduleType").val("<?echo $moduleType?>").change(); 
         
