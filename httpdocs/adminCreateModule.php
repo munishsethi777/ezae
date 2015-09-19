@@ -349,11 +349,15 @@
         $('#createQuestionForm').ajaxSubmit(function( data ){
             l.stop();
             var obj = $.parseJSON(data);
-            var dataRow = "";
+            var dataRow = "";             
+                if(obj.success == 1){
+                   selectAddedQuetion(obj.question);                  
+                }
             if(btn.id == "saveQuesBtn"){
                 showResponseToastr(data,null,"createQuestionForm","mainDiv");
-                if(obj.success == 1){
-                   selectAddedQuetion(obj.question);
+                if(obj.success == 1){;
+                showResponseToastr(data,null,"createQuestionForm","mainDiv");
+                   $(".quizQuestionEditor").hide();                   
                 }
             }else{
                 showResponseNotification(data,"mainDiv","createQuestionForm");
