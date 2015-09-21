@@ -58,15 +58,15 @@ class LearningPlanMgr{
             $this->deleteLeaeningPlanProfiles($id);
             $i = 0;
             foreach ($courseIds as $key=>$value){
-                $val = $enableLeaderboardArr[$value];
-                $enableLeaderboard = 0;
-                if($val == "true"){
-                    $enableLeaderboard = 1;
-                }
+                //al = $enableLeaderboardArr[$value];
+                //nableLeaderboard = 0;
+                //($val == "true"){
+                    //nableLeaderboard = 1;
+            
                 $lpCourse = new LearningPlanModule();
                 $lpCourse->setCourseSeq($value);
                 $lpCourse->setLearningPlanSeq($id);
-                $lpCourse->setIsEnableLeaderBoard($enableLeaderboard);
+                $lpCourse->setIsEnableLeaderBoard(1);
                 self::$lpCoursedataStore->save($lpCourse);
             }
             return $id;
