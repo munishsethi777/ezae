@@ -402,8 +402,9 @@
             $('.chosen-questionsSelect').trigger("chosen:updated"); 
             var values = "<?echo $selectedQuesSeqs?>";
             if(values.length > 0){
-                values = values.split(",");
+               // values = values.split(",");
                 $('.chosen-questionsSelect').val(values).trigger("chosen:updated");
+                
             }
         dragChosen();
         });
@@ -435,9 +436,16 @@
             return;
         }
         var vals = [];
-        $( '#questionsSelect :selected' ).each( function( i, selected ) {
-            vals[i] = $( selected ).val();
-        });
+        //$( '#questionsSelect :selected' ).each( function( i, selected ) {
+           // vals[i] = $( selected ).val();
+        //});
+        $('.search-choice').each(function(){
+          var selectedText = $(this).find('span').text();
+          var selectedValue = $('#questionsSelect').find('option[text="'+ selectedText +'"]').val();
+          var selectedValue = $('#questionsSelect option').filter(function () {
+                return $(this).html() ==  selectedText ; }).val();
+          vals.push(selectedValue);
+        })
         $("#selectedQuestions").val(vals);
         var editorData = CKEDITOR.instances.editor.getData();
         $("#eassy").val(editorData);
