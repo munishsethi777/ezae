@@ -19,6 +19,7 @@
     $essay = "";
     $videoUrl = "";
     $audioUrl = "";
+    $isDocumentLoaded = 0;
     $document = "<a>Select Document</a>";
     $imagePath =  $module->getImagePath();
     $moduleType = $module->getModuleType();
@@ -38,6 +39,7 @@
         $selectedQuesSeqs = $moduleMgr->getSelectedQuestionSeqs($module->getSeq());
     }else if($module->getModuleType() == ModuleType::DOCUMENT){
         $document = "Selected Document : - <a>". $module->getTypeDetails() ."</a>";
+        $isDocumentLoaded = 1;
     } 
 ?>
 <style>
@@ -112,13 +114,13 @@
                                     </div>
                                 </div>
                                 <div class="essayEditor editorPanel animated fadeInRight" style="display: none;">
-                                    <h4>Create New Essay</h4>
+                                    <h4>Create New Essay</h4> <label class="jqx-validator-error-label" id="essayError"></label> 
                                     <div class="form-group">
                                         <div class="col-sm-12">
                                             <div id="editor">
 
                                             </div>
-                                             <label class="jqx-validator-error-label" id="essayError"></label> 
+                                            
                                         </div>
                                     </div>
                                     <div class="hr-line-dashed"></div>
@@ -139,7 +141,7 @@
                                     <div class="form-group">
                                         <label class="col-sm-1 control-label">Embed Code</label>
                                         <div class="col-sm-11">
-                                           <input type="text" name="vembedCode"  id="vembedCode" value="<?echo $videoUrl?>" class="form-control">
+                                           <input type="text" name="vembedCode"  id="vembedCode" value="<?echo htmlentities($videoUrl)?>" class="form-control">
                                         </div>
                                     </div>
                                     <div class="hr-line-dashed"></div>
@@ -149,7 +151,7 @@
                                     <div class="form-group">
                                         <label class="col-sm-1 control-label">Embed Code</label>
                                         <div class="col-sm-11">
-                                           <input type="text" name="aembedCode" id="aembedCode" value="<?echo $audioUrl?>" class="form-control">
+                                           <input type="text" name="aembedCode" id="aembedCode" value="<?echo htmlentities($audioUrl)?>" class="form-control">
                                         </div>
                                     </div>
                                     <div class="hr-line-dashed"></div>
@@ -174,7 +176,7 @@
                                             <div class="col-sm-5"><input type="text" name="questionname" value="" id="questionname" class="form-control"></div>
                                              <label class="col-sm-1 control-label">Type</label>
                                              <div class="col-sm-3">
-                                                <select class="form-control" id="mselect questionType" name="questiontype" style="font-family: 'FontAwesome', Helvetica;">
+                                                <select class="form-control" id="questionType" name="questiontype" style="font-family: 'FontAwesome', Helvetica;">
                                                     <option value="single">Single Selection</option>
                                                     <option value="multi">Multi Selection</option>
                                                 </select>
@@ -231,8 +233,10 @@
 <script src="scripts/FormValidators/CreateQuestionValidations.js"></script>
 <script src="scripts/FormValidators/CreateModuleValidations.js"></script> 
 <script type="text/javascript">
+    isDocumentLoaded = <?echo $isDocumentLoaded?> 
     optionsCount = 1;
     totalMarks = 0;
+   
     $(document).ready(function(){        
         //display quiz module by default
         $(".quizEditor").show();
@@ -299,6 +303,17 @@
          });
 
     });
+    function resetQuestionForm(){
+        $("#questionname").val("");
+        $("#questionType")[0].selectedIndex = 0;
+        $("#totalMarks").val("");
+        $("#option1").val("");
+        $("#feedback1").val("");
+        $("#marks1").val("");
+        for(var i =1;i<=optionsCount;i++){
+            removeOption(i);      
+        }
+    }
     function calTotalMarks(value){
        
         var marks = 0;
@@ -335,6 +350,17 @@
     
     function removeOption(id){
        $("#quizQuestionOption"+id).remove();
+       rules = $("#createQuestionForm").jqxValidator('rules')
+       $updatedRules = [];
+       $.each(rules, function(index , value){
+            var inputName = value.input;
+            var optionName = "#option" + id;
+            var marksName = "#marks" + id;
+            if(inputName != optionName && inputName != marksName){
+                $updatedRules.push(value);    
+            }
+       });
+       $('#createQuestionForm').jqxValidator('rules', $updatedRules);       
        optionsCount--;
     }
     
@@ -357,10 +383,9 @@
                    selectAddedQuetion(obj.question);                  
                 }
             if(btn.id == "saveQuesBtn"){
-                showResponseToastr(data,null,"createQuestionForm","mainDiv");
                 if(obj.success == 1){;
-                showResponseToastr(data,null,"createQuestionForm","mainDiv");
-                   $(".quizQuestionEditor").hide();                   
+                resetQuestionForm();
+                $(".quizQuestionEditor").hide();                   
                 }
             }else{
                 showResponseNotification(data,"mainDiv","createQuestionForm");
@@ -380,12 +405,21 @@
                 values = values.split(",");
                 $('.chosen-questionsSelect').val(values).trigger("chosen:updated");
             }
+        dragChosen();
         });
     }
     
     function selectAddedQuetion(question){
+        var vals = [];
+        $( '#questionsSelect :selected' ).each( function( i, selected ) {
+            vals[i] = $( selected ).val();
+        });
+        $(".chosen-questionsSelect").chosen({width:"100%"});   
+        vals.push(question.id);
         $('.chosen-questionsSelect').append("<option value='" + question.id+"'>" + question.title + "</option>");
-        $('.chosen-questionsSelect').val(question.id).trigger("chosen:updated");
+        $('.chosen-questionsSelect').trigger("chosen:updated"); 
+        $('.chosen-questionsSelect').val(vals).trigger("chosen:updated");
+        dragChosen();  
     }
     
     function ValidateAndSave(e,btn){

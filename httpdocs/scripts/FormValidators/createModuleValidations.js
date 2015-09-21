@@ -24,11 +24,18 @@ $("#createModuleForm").on('validationSuccess', function () {
 });
 function validateFile(input){
      var val = $("#moduleType").val(); 
-      if(val == "document"){
-        val = input[0].value;
+      $("#documentError").text("");
+      if(val == "document" && isDocumentLoaded == 0){
+        var fileinput = input[0];
+        if(fileinput == undefined){
+            fileinput =input         
+        }
+        val = fileinput.value;
         if(val != ""){
             return true;
         }
+        $('#lblFileUpload').html("<a>Select Document</a>"); 
+        $("#documentError").text("Please Select Document!");    
         return false;
        }return true;
 }
@@ -44,7 +51,7 @@ function reuiredVideoIf(input){
 function reuiredIf(input){
     var val = $("#moduleType").val(); 
     if(val == "audio"){
-        if($("#aembedCode").val() != ""){
+        if($("#aembedCode").val() != ""){                          
             return true;    
         }return false   
     }
@@ -59,11 +66,11 @@ function reuiredIf(input){
 function requiredQuestion(input){
     var val = $("#moduleType").val();
     if(val == "quiz"){
-        var selectInput = input[0];
-        if(selectInput.selectedOptions == undefined){
-          selectInput = input;  
-        }
-        if(selectInput.selectedOptions.length > 0){
+         var vals = [];
+        $( '#questionsSelect :selected' ).each( function( i, selected ) {
+            vals[i] = $( selected ).val();
+        });
+        if(vals.length > 0){
             $("#questionError").text("");
             $(".hilight").removeClass("hilight");
             return true;           
@@ -78,10 +85,11 @@ function requiredEssay(){
     var val = $("#moduleType").val();
     if(val == "essay"){
          var editorData = CKEDITOR.instances.editor.getData();
-         if(editorData == ""){
-             toastr.error("Please create essay",'Failed');
-             return true
-         }
-         return false;
+         if(editorData != ""){
+            $("#essayError").text("");
+            return false;           
+        }
+        $("#essayError").text("Please create essay!");
+        return true;
     }
 }
