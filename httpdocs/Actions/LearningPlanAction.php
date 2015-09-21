@@ -91,8 +91,9 @@ if($call == "saveLearningPlan"){
         $learningPlan->setIsSequenceLocked($isLockSequence);
         $learningPlanMgr = LearningPlanMgr::getInstance();
         $moduleIdArr = explode(",",$moduleIds);
-        $enableLeaderboardArr = getArray($enableModuleLeaderboard);
-        $id = $learningPlanMgr->saveLearningPlan($learningPlan,$moduleIdArr,$enableLeaderboardArr);
+        //nableModuleLeaderboard = 1;
+       //enableLeaderboardArr = getArray($enableModuleLeaderboard);
+        $id = $learningPlanMgr->saveLearningPlan($learningPlan,$moduleIdArr,null);
         $leaderBoardMgr = LeaderBoardMgr::getInstance();
         $leaderBoardMgr->deleteByLearningPlan($id);
 
