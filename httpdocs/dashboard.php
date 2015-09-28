@@ -169,7 +169,7 @@
 
 <div id="wrapper">
         <?include("adminMenu.php");?>
-        <div class="row  border-bottom white-bg dashboard-header">
+        <div class="row border-bottom white-bg dashboard-header">
             <div id='jqxWidget' style="font-size: 13px; font-family: Verdana; float: left;">
                 <div style="float:left;margin-top:5px;margin-right:6px;">Select Module : </div>
                 <div style="float:left" id="combobox"></div>
@@ -179,6 +179,12 @@
                 <div id='chartContainer' style="margin-top:40px;width: 500px; height: 500px;float:left"></div>
             </div>
         </div>
+
+
+
+
+
+
 </div>
 </body>
 </html>

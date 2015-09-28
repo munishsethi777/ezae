@@ -256,19 +256,19 @@ if(isset($_POST["moduleIds"])){
           moduleIds.push(selectedValue);
         })
 
-       // var rows = $("#selectedModuleGrid").jqxGrid('getrows');
-       // var ids = [];
-       // var isModuleLeaderboard = []
-       // $.each(rows, function(index , value){
-           // ids.push(value.id);
-           // var val = value.id + "=" + true;
-            //if(value.enableleaderboard == undefined || !value.enableleaderboard){
-               // val =  value.id + "=" + false;
-           // }
-           //isModuleLeaderboard.push(val);
-        //});
+        //var rows = $("#selectedModuleGrid").jqxGrid('getrows');
+//        var ids = [];
+//        var isModuleLeaderboard = []
+//        $.each(rows, function(index , value){
+//            ids.push(value.id);
+//            var val = value.id + "=" + true;
+//            if(value.enableleaderboard == undefined || !value.enableleaderboard){
+//                val =  value.id + "=" + false;
+//            }
+//            isModuleLeaderboard.push(val);
+//        });
         $("#moduleIds").val(moduleIds);
-        //$("#isModuleLeaderboard").val(isModuleLeaderboard);
+//        $("#isModuleLeaderboard").val(isModuleLeaderboard);
 
         $('#createLearningPlanForm').ajaxSubmit(function( data ){
             l.stop();

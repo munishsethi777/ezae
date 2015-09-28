@@ -4,7 +4,6 @@ CREATE TABLE `quizprogress` (
   `learningplanseq`  bigint NOT NULL,
   `questionseq`      bigint NOT NULL,
   `answerseq`        bigint NOT NULL,
-  `userseq`          bigint NOT NULL
-  `dated`            datetime NOT NULL;
-
+  `userseq`          bigint NOT NULL,
+  `dated`            datetime NOT NULL
 ) ENGINE = InnoDB;
