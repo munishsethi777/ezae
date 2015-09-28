@@ -379,13 +379,15 @@
             l.stop();
             var obj = $.parseJSON(data);
             var dataRow = "";             
-                if(obj.success == 1){
-                   selectAddedQuetion(obj.question);                  
-                }
+            if(obj.success == 1){
+               selectAddedQuetion(obj.question);                  
+            }else{
+                showResponseNotification(data,"mainDiv","createQuestionForm"); 
+            }
             if(btn.id == "saveQuesBtn"){
                 if(obj.success == 1){;
-                resetQuestionForm();
-                $(".quizQuestionEditor").hide();                   
+                    resetQuestionForm();
+                    $(".quizQuestionEditor").hide();                   
                 }
             }else{
                 showResponseNotification(data,"mainDiv","createQuestionForm");
