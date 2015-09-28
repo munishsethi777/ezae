@@ -74,8 +74,8 @@
                                         <div id="danger<?echo $questionSeq?>" class="alert alert-danger" style="display: none;">
                                                
                                         </div>
-                                        <button class="btn btn-sm btn-primary m-t-n-xs pull-left" onclick="setNextPannel(this)" id="prevBtnDiv<?echo $questionSeq?>" style="display: none;" type="button"><strong><i class="fa fa-long-arrow-left"></i> Previous</strong></button>
-                                        <button class="btn btn-sm btn-primary m-t-n-xs pull-right" onclick="setPrevPannel(this)" id="nextBtnDiv<?echo $questionSeq?>" style="display: none;" type="button"><strong>Next <i class="fa fa-long-arrow-right"></i></strong></button>
+                                        <button class="btn btn-sm btn-primary m-t-n-xs pull-left" onclick="setPrevPannel(this)" id="prevBtnDiv<?echo $questionSeq?>" style="display: none;" type="button"><strong><i class="fa fa-long-arrow-left"></i> Previous</strong></button>
+                                        <button class="btn btn-sm btn-primary m-t-n-xs pull-right" onclick="setNextPannel(this)" id="nextBtnDiv<?echo $questionSeq?>" style="display: none;" type="button"><strong>Next <i class="fa fa-long-arrow-right"></i></strong></button>
                                     </form>
                                 </div>
                              </div>
@@ -132,9 +132,15 @@ function submitAns(quesSeq,btn){
         })
         $(divClass).html(htmlCont);
         $(divClass).show();
-        $("#prevBtnDiv" + quesSeq).show();
-        $("#nextBtnDiv" + quesSeq).show();
-        $("#submitBtnDiv" + quesSeq).hide();
+        var totalCount = <?echo $totalCount?>
+        //$("next");
+        if($slideCounter > 0){
+            $("#form" + quesSeq + " #prevBtnDiv" + quesSeq).show();    
+        }        
+        if((totalCount -1) != $slideCounter ){
+            $("#form" + quesSeq + " #nextBtnDiv" + quesSeq).show();
+        }
+        $("#form" + quesSeq + " #submitBtnDiv" + quesSeq).hide();
     })
     
     
