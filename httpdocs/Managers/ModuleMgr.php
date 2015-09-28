@@ -270,14 +270,15 @@ class ModuleMgr{
     }
     public function saveModuleQuestion($selectedQuestions,$moduleId){
         $colVal["moduleseq"] = $moduleId;
-        self::$moduleQuesDataStore->deleteByAttribute($colVal);  
-        $questions = explode(",",$selectedQuestions);
+        $mqDataStore = new BeanDataStore(ModuleQuestion::$className,ModuleQuestion::$tableName);  
+        $mqDataStore->deleteByAttribute($colVal);
+        $questions = explode(",",$selectedQuestions);        
         foreach($questions as $ques){
             $moduleQuestion = new ModuleQuestion();
             $moduleQuestion->setAddedOn(new DateTime());
             $moduleQuestion->setModuleSeq($moduleId);
             $moduleQuestion->setQuestionSeq($ques);
-            self::$moduleQuesDataStore->save($moduleQuestion);    
+            $mqDataStore->save($moduleQuestion);    
         }
     }
     
