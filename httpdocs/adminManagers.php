@@ -99,16 +99,23 @@ if(isset($_POST["mobile"])){
                                 </div>
                                 <div class="form-group" id="customFieldDiv">
                                     <label class="col-sm-2 control-label">CustomField Name</label>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-3">
                                     <select class="form-control" onchange="loadCustomfieldValues(this.value,'cusFieldValue-chosen')" name="customFieldNames[]" id="cusFieldNameDD"></select>
                                     </div>
-                                    <label class="col-sm-2 control-label">CustomField Value</label>
+                                    <label class="col-sm-2 control-label">Value(s)</label>
                                     <div class="col-sm-4">
                                         <select class="form-control cusFieldValue-chosen" id="cusFieldValueDD" name="customFieldValues[]" multiple></select>
-                                        <label class="jqx-validator-error-label" id="cusFieldValueError"></label></div> 
+                                        <label class="jqx-validator-error-label" id="cusFieldValueError"></label>
+                                    </div>
+                                    <div class="col-sm-1">
+
+                                    </div>
                                 </div>
                                 <div class="form-group" id="addButtonDiv">
-                                    <button type="button" class="btn btn-white" id="addCusFieldRow" data-dismiss="modal">Add</button>    
+                                    <div class="col-sm-offset-2 col-sm-2">
+                                        <button type="button" class="btn-xs btn-success" id="addCusFieldRow" data-dismiss="modal"><i class="fa fa-plus"></i> Add More</button>
+                                    </div>
+
                                 </div>
                                 <div class="form-group">
                                     <div class="col-sm-4 col-sm-offset-9">
@@ -135,15 +142,15 @@ if(isset($_POST["mobile"])){
     var counter = 1;
     var selectedValues = [];
     $(document).ready(function(){
-        
+
         $(".cusFieldValue-chosen").chosen({width:"100%"});
-        
+
         var url = 'Actions/LearningPlanAction.php?call=getLearnerPlansForGrid';
         $.getJSON(url, function(data){
             populateLearningPlans(data);
-        }); 
+        });
         populateCustomFieldNames();
-        populateProfiles(); 
+        populateProfiles();
         $( 'input[name="actOption"]:radio' ).change(function(){
              showHideDiv(this.value + "Div");
         })
@@ -156,53 +163,56 @@ if(isset($_POST["mobile"])){
             ValidateAndSave(e,this);
         });
         $("#addCusFieldRow").click(function(e){
-            addCustomFieldRow();   
+            addCustomFieldRow();
         });
     });
-    
+
     function addCustomFieldRow(){
         rules = $("#createManagerForm").jqxValidator('rules');
            var cusValueClass = 'cusFieldValue-chosen' + counter;
            var cusDiv =   "cusDiv" + counter;
            var html = '<div id="'+ cusDiv + '">';
-               html +=  '<label class="col-sm-2 control-label">CustomField Name</label>';   
-               html += '<div class="col-sm-4">';
+               html +=  '<label class="col-sm-2 control-label">CustomField Name</label>';
+               html += '<div class="col-sm-3">';
                html += "<select class='form-control' onchange='loadCustomfieldValues(this.value, \"" +  cusValueClass + "\")' name='customFieldNames[]' id='cusFieldNameDD" + counter + "'>"
                html += '</select></div>';
                html += '<label class="col-sm-2 control-label">CustomField Value</label>';
                html += '<div class="col-sm-4">';
                html += '<select class="form-control '+ cusValueClass + '" id="cusFieldValueDD'+ counter + '" name="customFieldValues[]" multiple>';
                html += '</select>';
-               html += '<label class="jqx-validator-error-label" id="cusFieldValueError'+ counter + '"></label></div>'; 
-               html += "<button type='button' onclick='removeCusFieldRow(\"" + cusDiv + "\"," + counter + ")' class='btn btn-white'>Remove</button>";
+               html += '<label class="jqx-validator-error-label" id="cusFieldValueError'+ counter + '"></label></div>';
+               html += '<div class="col-sm-1">';
+               html += "<button class='btn-xs btn-danger btn-circle' type='button' onclick='removeCusFieldRow(\"" + cusDiv + "\"," + counter + ")' ><i class='fa fa-times'></i></button>";
+                html += '</div>';
+
                index = counter;
                $("#customFieldDiv").append(html);
                rules.push(
                 { input: '#cusFieldNameDD' + counter , message: 'Select CustomField Name !', action: 'keyup, blur', rule: function (input, commit) {
                     return requiredCustomField(input);}
-                }                
+                }
                 );
                rules.push(
                 { input: '#cusFieldValueDD' + counter , message: 'Select CustomField Value !', action: 'keyup, blur', rule: function (input, commit) {
                     return requiredCustomFieldValue(input,index);}
-                }                
+                }
                 );
                //Update jqxValidator's rules
                 $('#createManagerForm').jqxValidator('rules', rules);
-               $("." + cusValueClass).chosen({width:"100%"}); 
-               $('#cusFieldNameDD'+ counter).html($customFieldSelectHtml); 
-               $('.' + cusValueClass).trigger("chosen:updated");                 
+               $("." + cusValueClass).chosen({width:"100%"});
+               $('#cusFieldNameDD'+ counter).html($customFieldSelectHtml);
+               $('.' + cusValueClass).trigger("chosen:updated");
                counter = counter + 1;
     }
-    
+
     function removeCusFieldRow(divId,counter){
         $('#' + divId).remove();
-        rules = $("#createManagerForm").jqxValidator('rules'); 
+        rules = $("#createManagerForm").jqxValidator('rules');
         var rulesToDelete = ["#cusFieldNameDD" + counter, "#cusFieldValueDD" + counter];
         rules = rules.filter(function(obj) {
             return rulesToDelete.indexOf(obj.input) === -1;
         });
-        $('#createManagerForm').jqxValidator('rules', rules);         
+        $('#createManagerForm').jqxValidator('rules', rules);
     }
     function populateLearningPlans(learningPlans){
         var options = "";
@@ -213,7 +223,7 @@ if(isset($_POST["mobile"])){
         $("#learningPlanDD").html(options);
         $(".chosen-select1").chosen({width:"100%"});
     }
-    
+
     function loadCustomfieldValues(cusFieldName,divClassName){
         var url = 'Actions/CustomFieldAction.php?call=getCustomFieldValuesByName&cusFieldName=' + cusFieldName;
         $.ajax({
@@ -226,15 +236,15 @@ if(isset($_POST["mobile"])){
                 $.each(data, function(index , value){
                       options += "<option value='" + index + "'>" + value + "</option>";
                 });
-                $("." + divClassName).html(options);           
+                $("." + divClassName).html(options);
                 $("." + divClassName).trigger("chosen:updated");
-                if(selectedValues.length > 0){ 
+                if(selectedValues.length > 0){
                     $("." + divClassName).val(selectedValues).trigger("chosen:updated");
                 }
           }
         });
     }
-    
+
     function populateProfiles(){
         var url = 'Actions/LearningProfileAction.php?call=getLearnerProfiles';
         $.getJSON(url, function(data){
@@ -257,9 +267,9 @@ if(isset($_POST["mobile"])){
             $("#cusFieldNameDD").html(options);
             $customFieldSelectHtml = options;
             <?if(!empty($id)){?>
-                populateCriteriaDetail();    
+                populateCriteriaDetail();
             <?}?>
-              
+
         });
     }
     function showHideDiv(divId){
@@ -268,11 +278,11 @@ if(isset($_POST["mobile"])){
         $("#customFieldDiv").hide();
         $("#addButtonDiv").hide();
         if(divId == "customFieldDiv"){
-            $("#addButtonDiv").show();    
-        }        
+            $("#addButtonDiv").show();
+        }
         $("#" + divId).show();
     }
-    
+
     function showHideModule(isChecked){
         if(isChecked){
             $("#deactivateDateDiv").show();
@@ -308,14 +318,14 @@ if(isset($_POST["mobile"])){
                     });
                     if(i > 0){
                         addCustomFieldRow();
-                        fieldDiv += i;                 
+                        fieldDiv += i;
                         valueClass += i;
                     }
-                    selectedValues = values;                
+                    selectedValues = values;
                     $(fieldDiv).val(key).change();
                     i++;
-                });    
-            }else{ 
+                });
+            }else{
                 if(criteriaType == "learningProfile"){
                     divId = "profilesDD"
                 }
@@ -324,7 +334,7 @@ if(isset($_POST["mobile"])){
                  }
         })
     }
-    
+
     function saveManager(e,btn){
         var l = Ladda.create(btn);
         l.start();
