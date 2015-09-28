@@ -1,5 +1,6 @@
 <?php
     require_once($ConstantsArray['dbServerUrl']. "DataStores/ModuleDataStore.php5");
+    require_once($ConstantsArray['dbServerUrl']. "DataStores/QuestionDataStore.php");
     require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/ModuleQuestion.php");
 
 class ModuleMgr{
@@ -11,7 +12,7 @@ class ModuleMgr{
         if (!self::$moduleMgr)
         {
             self::$moduleMgr = new ModuleMgr();
-            self::$moduleQuesDataStore = new BeanDataStore(ModuleQuestion::$className,ModuleQuestion::$tableName);  
+            self::$moduleQuesDataStore = QuestionDataStore::getInstance();  
             return self::$moduleMgr;
         }
         return self::$moduleMgr;
@@ -201,7 +202,6 @@ class ModuleMgr{
 
     public function getModule($moduleSeq){
         $moduleDataStore = ModuleDataStore::getInstance();
-        $module = new Module();
         $module = $moduleDataStore->findBySeq($moduleSeq);
         return $module;
     }
@@ -286,7 +286,10 @@ class ModuleMgr{
        $moduleQuestionList = self::$moduleQuesDataStore->executeConditionQuery($colVal);
        return $moduleQuestionList;
     }
-    
+    public function getQuestions($moduleId){
+       $moduleQuestionList = self::$moduleQuesDataStore->getQuestions($moduleId);
+       return $moduleQuestionList;
+    }
     public function getSelectedQuestionSeqs($moduleId){
        $moduleQuestionList = $this->getModuleQuestions($moduleId);
        $questionSeqs =  array();
@@ -297,6 +300,36 @@ class ModuleMgr{
        return $questionSeqs;    
     }
     
+    public function getModuleQuestionAnswer($moduleId){
+       $QuestionAnsList = self::$moduleQuesDataStore->getQuestionAnswers($moduleId);
+       return $QuestionAnsList;        
+    }
+    public function getQuestionAnswer($questionSeq){
+       $ansDataStore = new BeanDataStore(QuestionAnswer::$classname,QuestionAnswer::$tablename);
+       $colvalues["questionseq"] = $questionSeq;
+       $quesAnsList = $ansDataStore->executeConditionQuery($colvalues);
+       return $quesAnsList;        
+    }
+    
+    public function getCorrectAnswers($ansSeqs,$quesSeq){
+        $answers = $this->getQuestionAnswer($quesSeq);
+        $correctAnswer = array();
+        $inCorrectAnswer = array();
+        foreach($answers as $ans){
+            if($ans->getMarks() > 0){
+                $correctAnswer[$ans->getSeq()] = $ans->getFeedback();        
+            }else{
+                if(in_array($ans->getSeq(),$ansSeqs)) {
+                    $inCorrectAnswer[$ans->getSeq()] = $ans->getFeedback();            
+                }    
+            } 
+                                                            
+        }
+        $mainArr = array();
+        $mainArr["correct"] =   $correctAnswer;
+        $mainArr["incorrect"]  =  $inCorrectAnswer;            
+        return $mainArr;
+    }
     public function moduleAlreadyExist($moduleid,$name){
         $moduleDataStore = ModuleDataStore::getInstance();
         $sessionUtil = SessionUtil::getInstance();
@@ -312,6 +345,6 @@ class ModuleMgr{
         return false;
     }
     
-                                                          
+
 }
 ?>

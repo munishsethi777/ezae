@@ -91,13 +91,16 @@ class SessionUtil{
     }
 
     public function getUserLoggedInSeq(){
-      if($_SESSION[self::$LOGIN_MODE] == "user" &&
+    if(!empty($_SESSION)){
+        if($_SESSION[self::$LOGIN_MODE] == "user" &&
             $_SESSION[self::$USER_LOGGED_IN] != null){
                 $arr = $_SESSION[self::$USER_LOGGED_IN];
                 return $arr[0];
-        }
-        return null;
+        }    
     }
+    return null;
+    }
+      
 
     public function getUserLoggedInCompanySeq(){
       if($_SESSION[self::$LOGIN_MODE] == "user" &&

@@ -35,7 +35,11 @@
 <!-- datepicker-->
 <link href="styles/jquery.datetimepicker.css" rel="stylesheet">
 <script src="scripts/jquery.datetimepicker.js"></script>
-
+<!--liquidslider--->
+<script src="scripts/jquery.easing.min.js"></script>
+<script src="scripts/jquery.touchSwipe.min.js"></script>s
+<script src="scripts/plugins/liquidslider/jquery.liquid-slider.min.js"></script>
+<link rel="stylesheet" href="styles/plugins/liquidslider/liquid-slider.css">  
 <!-- SUMMERNOTE -->
 <link href="styles/plugins/summernote/summernote.css" rel="stylesheet">
 <link href="styles/plugins/summernote/summernote-bs3.css" rel="stylesheet">

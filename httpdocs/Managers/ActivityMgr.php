@@ -1,5 +1,6 @@
 <?php
 require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/Activity.php");
+require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/QuizProgress.php"); 
 require_once($ConstantsArray['dbServerUrl']. "DataStores/ActivityDataStore.php5");
 require_once($ConstantsArray['dbServerUrl']. "Utils/MailMessageUtil.php");
 require_once($ConstantsArray['dbServerUrl']. "Utils/SessionUtil.php5");
@@ -13,12 +14,14 @@ class ActivityMgr{
     private static $activityMgr;
     private static $mailMessageMgr;
     private static $sessionUtil;
+    private static $quizProgressDataStore;
     public static function getInstance()
     {
         if (!self::$activityMgr)
         {
             self::$activityMgr = new ActivityMgr();
             self::$mailMessageMgr = new MailMessageMgr();
+            self::$quizProgressDataStore = new BeanDataStore(QuizProgress::$classname,QuizProgress::$tablename);
             self::$sessionUtil = new SessionUtil();
             return self::$activityMgr;
         }
@@ -96,6 +99,10 @@ class ActivityMgr{
 
     }
 
+    public function saveQuizProgress($quizProgress){
+        $id = self::$quizProgressDataStore->save($quizProgress);
+        return $id;
+    }
     //called from AdminMgr for performance page table MMM
     public static function getMeanMedianModePassPercentForPerformance($learningPlanSeq,$moduleSeq){
         $ads = ActivityDataStore::getInstance();
@@ -122,7 +129,7 @@ class ActivityMgr{
         $mainArray['median'] = round($median,2);
         $mainArray['mode'] = round($mode,2);
         return json_encode($mainArray);
-    }
+    } 
 
 }
 ?>

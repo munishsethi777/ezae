@@ -1,7 +1,7 @@
 <?php
  require_once('../IConstants.inc');
  require_once($ConstantsArray['dbServerUrl'] ."Managers/ActivityMgr.php");
-
+  require_once($ConstantsArray['dbServerUrl'] ."Managers/ModuleMgr.php");
    $call = "";
    if(isset($_GET["call"])){
         $call = $_GET["call"];
@@ -230,5 +230,41 @@
         echo json_encode($response);
     }
 
-
+     if($call == "submitAnswer"){
+         $isCorrect = 0;
+         try{
+            $moduleid = $_POST['moduleseq'];
+            $questionid = $_POST['questionseq'];
+            $selectedAns = $_POST['answer'.$questionid];
+            $learningPlanSeq = $_POST['learningplanseq'];
+            
+            $quizProgress = new QuizProgress();
+            $quizProgress->setModuleSeq($moduleid); 
+            $quizProgress->setDated(new DateTime());
+            $quizProgress->setQuestionSeq($questionid);
+            $quizProgress->setAnswerSeq($selectedAns);
+            $quizProgress->setLearningPlanSeq($learningPlanSeq);
+            $quizProgress->setUserSeq($userSeq);
+            $activityMgr = ActivityMgr::getInstance();
+           // $id = $activityMgr->saveQuizProgress($quizProgress);
+            $ansSeqs = explode(",",$selectedAns); 
+            $moduleMgr = ModuleMgr::getInstance();
+            $ansList = $moduleMgr->getCorrectAnswers($ansSeqs,$questionid);
+            $incorrectAns = $ansList["incorrect"];
+            if(!empty($incorrectAns)){
+                $success = 0;         
+            }
+         }catch (Exception $e){
+            $success = 0;
+            $message  = $e->getMessage();
+        }
+        $response = new ArrayObject();
+        $response["success"]  = $success;
+        $response["message"]  = $message;
+        $response["ansList"]  = $ansList;
+        $json = json_encode($response);
+        echo $json;
+         
+         
+     }
 ?>
