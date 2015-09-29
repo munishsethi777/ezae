@@ -27,5 +27,12 @@
     font-family:inherit !important;
 }
 
-
 /** Grid Styling ends here**/
+
+.liquid-slider .panel-wrapper{
+    padding:0px !important;
+}
+.liquid-slider-parent{
+    padding:10px 0px 20px 0px !important;
+
+}
