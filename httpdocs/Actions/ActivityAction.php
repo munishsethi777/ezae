@@ -237,17 +237,22 @@
             $questionid = $_POST['questionseq'];
             $selectedAns = $_POST['answer'.$questionid];
             $learningPlanSeq = $_POST['learningplanseq'];
-            
-            $quizProgress = new QuizProgress();
-            $quizProgress->setModuleSeq($moduleid); 
-            $quizProgress->setDated(new DateTime());
-            $quizProgress->setQuestionSeq($questionid);
-            $quizProgress->setAnswerSeq($selectedAns);
-            $quizProgress->setLearningPlanSeq($learningPlanSeq);
-            $quizProgress->setUserSeq($userSeq);
-            $activityMgr = ActivityMgr::getInstance();
-           // $id = $activityMgr->saveQuizProgress($quizProgress);
-            $ansSeqs = explode(",",$selectedAns); 
+            if(is_array($selectedAns)){
+                $ansSeqs =   $selectedAns;  
+            }else{
+                $ansSeqs = explode(",",$selectedAns);     
+            }
+            foreach($ansSeqs as $anseq){
+                $quizProgress = new QuizProgress();
+                $quizProgress->setModuleSeq($moduleid); 
+                $quizProgress->setDated(new DateTime());
+                $quizProgress->setQuestionSeq($questionid);
+                $quizProgress->setAnswerSeq($anseq);
+                $quizProgress->setLearningPlanSeq($learningPlanSeq);
+                $quizProgress->setUserSeq($userSeq);
+                $activityMgr = ActivityMgr::getInstance();
+                //$id = $activityMgr->saveQuizProgress($quizProgress);    
+            }
             $moduleMgr = ModuleMgr::getInstance();
             $ansList = $moduleMgr->getCorrectAnswers($ansSeqs,$questionid);
             $incorrectAns = $ansList["incorrect"];

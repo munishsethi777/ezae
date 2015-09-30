@@ -317,11 +317,15 @@ class ModuleMgr{
         $correctAnswer = array();
         $inCorrectAnswer = array();
         foreach($answers as $ans){
-            if($ans->getMarks() > 0){
-                $correctAnswer[$ans->getSeq()] = $ans->getFeedback();        
+             $feedback = $ans->getTitle() . "- " .$ans->getFeedback();
+            if($ans->getMarks() > 0){               
+                if(!in_array($ans->getSeq(),$ansSeqs)){
+                    $feedback = "";       
+                }
+                $correctAnswer[$ans->getSeq()] = $feedback;        
             }else{
                 if(in_array($ans->getSeq(),$ansSeqs)) {
-                    $inCorrectAnswer[$ans->getSeq()] = $ans->getFeedback();            
+                    $inCorrectAnswer[$ans->getSeq()] = $feedback;            
                 }    
             } 
                                                             

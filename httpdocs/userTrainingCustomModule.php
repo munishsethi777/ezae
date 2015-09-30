@@ -8,12 +8,13 @@
 <?include "ScriptsInclude.php"?>
 <?
     require_once($ConstantsArray['dbServerUrl'] ."Managers/ModuleMgr.php");
-    $learningPlanSeq = 11;//$_GET['lpid'];
-    $moduleId = 5;//$_GET['id'];
+    $learningPlanSeq = 2;//$_GET['lpid'];
+    $moduleId = 2;//$_GET['id'];
     $moduleMgr = ModuleMgr::getInstance();
     $module = $moduleMgr->getModule($moduleId);
     $moduleQuestions = $moduleMgr->getQuestions($moduleId);
-    $questionPossibleAns = $moduleMgr->getModuleQuestionAnswer($moduleId)?>
+    $allOptions = $moduleMgr->getModuleQuestionAnswer($moduleId)?>
+    
 <script language="javascript">
     var learningPlanSeq = "<?echo $learningPlanSeq;?>";
 </script>
@@ -39,8 +40,10 @@
                          <?$totalCount = count($moduleQuestions);
                              $i = 1;
                              foreach($moduleQuestions as $question){
-                                    $questionSeq = $question->getSeq();?>
+                                    $questionSeq = $question->getSeq();
+                                    $questionType = $question->getQuestionType();?>
                              <div style="width:100%">
+
                                  <div class="col-md-8 col-md-offset-2" >
                                      <div  style="border:silver solid 1px;height:500px">
                                         <div class="ibox-content">
@@ -55,30 +58,47 @@
                                             <input type="hidden" name="questionseq" value="<?echo $questionSeq?>"/>
                                             <input type="hidden" name="moduleseq" value="<?echo $module->getSeq()?>"/>
                                             <input type="hidden" name="learningplanseq" value="<?echo $module->getSeq()?>"/>
+                             
+                                        <table class="table table-hover table-mail">
+                                            <tbody>
+                                            <?$possibleAnsCount = 0;
+                                            $possibleAns = $allOptions[$question->getSeq()];
+                                            foreach($possibleAns as $ans){
+                                            if($ans->getMarks() > 0){                                               
+                                                $possibleAnsCount++;    
+                                            }?>
+                                                <tr class="read">
+                                                    <td class="check-mail">
+                                                      
+                                                        <div class="i-checks">
+                                                        <?if($questionType == "multi"){?>
+                                                            <label>
+                                                                <input type="checkbox" id="chkOpt<?echo$ans->getSeq()?>" onchange="checkPossibleAnsValidation(<?echo$questionSeq?>,<?echo$ans->getSeq()?>)" value="<?echo $ans->getSeq()?>" name="answer<?echo$questionSeq?>[]">
+                                                            <i></i></label>    
+                                                        <?}else{?>
+                                                            <label>
+                                                                <input type="radio" value="<?echo $ans->getSeq()?>" name="answer<?echo$questionSeq?>">
+                                                            <i></i></label>    
+                                                        <?}?>
+                                                            </div>
+                                                    </td>
+                                                    <td width="90%"><?echo $ans->getTitle()?></td>
+                                                    <td><i id="check<?echo $ans->getSeq()?>" class="fa fa-check text-navy" style="display: none;"></i></td>
+                                                </tr>
+                                             <?}?>
+                                             <input type="hidden" id="possibleAnsCount<?echo $questionSeq?>" name="possibleAnsCount<?echo $questionSeq?>" value="<?echo $possibleAnsCount?>" />
+                                            </tbody>
+                                         </table>
+                                         <div class="p-xl">
+                                             <div class="col-sm-offset-5">
+                                                <button class="btn btn-primary" id="submitBtnDiv<?echo $questionSeq?>" onclick="submitAns(<?echo $questionSeq?>,this,'<?echo $questionType?>')" type="button"><strong><i class="fa fa-lock"></i> <span class="ladda-label">Submit Answer</strong></span></button>
 
-                                            <table class="table table-hover table-mail">
-                                                <tbody>
-                                                <?$possibleAns = $questionPossibleAns[$question->getSeq()];
-                                                foreach($possibleAns as $ans){?>
-                                                    <tr class="read">
-                                                        <td class="check-mail">
-                                                            <div class="i-checks">
-                                                                <label>
-                                                                    <input type="radio" value="<?echo $ans->getSeq()?>" name="answer<?echo$questionSeq?>">
-                                                                <i></i></label></div>
-                                                        </td>
-                                                        <td width="90%"><?echo $ans->getTitle()?></td>
-                                                        <td><i id="check<?echo $ans->getSeq()?>" class="fa fa-check text-navy" style="display: none;"></i></td>
-                                                    </tr>
-                                                 <?}?>
-                                                </tbody>
-                                             </table>
-                                            <div class="p-xl">
-                                                 <div class="col-sm-offset-5">
-                                                    <button class="btn btn-primary" id="submitBtnDiv<?echo $questionSeq?>" onclick="submitAns(<?echo $questionSeq?>,<?echo $i?>,this)" type="submit"><strong><i class="fa fa-lock"></i> <span class="ladda-label">Submit Answer</strong></span></button>
-                                                </div>
-                                                <div id="success<?echo $questionSeq?>" class="alert alert-success" style="display: none;"></div>
-                                                <div id="danger<?echo $questionSeq?>" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                            <div id="success<?echo $questionSeq?>" class="alert alert-success" style="display: none;">
+
+                                            </div>
+                                            <div id="danger<?echo $questionSeq?>" class="alert alert-danger" style="display: none;">
+
                                                 <button class="btn btn-sm btn-primary m-t-n-xs pull-left" onclick="setPrevPannel(this)" id="prevBtnDiv<?echo $questionSeq?>" style="display: none;" type="button"><strong><i class="fa fa-long-arrow-left"></i> Previous</strong></button>
                                                 <button class="btn btn-sm btn-primary m-t-n-xs pull-right" onclick="setNextPannel(this)" id="nextBtnDiv<?echo $questionSeq?>" style="display: none;" type="button"><strong>Next <i class="fa fa-long-arrow-right"></i></strong></button>
                                             </div>
@@ -105,7 +125,35 @@ $(document).ready(function(){
     $(".liquid-slider .panel-container .clone form").attr("id","");
     api = $.data( $('#main-slider')[0], 'liquidSlider');
     $("#main-slider-nav-ul").hide();
+       $('.i-checks').iCheck({
+        checkboxClass: 'icheckbox_square-green',
+        radioClass: 'iradio_square-green',
+        });
+    //$('.i-checks input').on('ifChecked', function(event){
+       // if(event.currentTarget.type == "checkbox"){
+         //   event.currentTarget.onchange(); 
+      //  }        
+    //});
 });
+
+function checkPossibleAnsValidation(quesSeq){
+  selectedCount = 0;
+  pcount = $("#form" + quesSeq + " #possibleAnsCount" + quesSeq).val();
+  pcount = parseInt(pcount);  
+  $("#form" + quesSeq + " input:checkbox").each(function() {
+      if(this.checked){
+        selectedCount++;    
+      } 
+  });
+  if(selectedCount > pcount){
+    toastr.error("You can't select more than " + pcount +" options","Failed");
+    return false;
+   // var input = $("#form" + quesSeq + ' input[id=chkOpt' + ansSeq + ']');
+    //input.iCheck('uncheck');
+  }
+  return true;
+}
+
 function setNextPannel(btn){
     $slideCounter++;
     api.setNextPanel($slideCounter);api.updateClass($(btn));
@@ -114,10 +162,36 @@ function setPrevPannel(btn){
     $slideCounter--;
     api.setNextPanel($slideCounter);api.updateClass($(btn));
 }
-function submitAns(quesSeq,questionNumber,btn){
-    var l = Ladda.create(btn);
-    l.start();
+
+function checkValidations(quesSeq,type){
+    inputType = "radio"
+    if(type == "multi"){
+        inputType = "checkbox";    
+    }
+    hasChecked = false;
+    var inputs = $("#form" + quesSeq + " input:" + inputType).each(function() {
+      if(this.checked){
+         hasChecked = true;
+      }
+  });
+   return hasChecked;
+}
+function submitAns(quesSeq,questionNumber,quesType,btn){
+     if(!checkValidations(quesSeq,quesType)){
+         toastr.error("Select at least one option");  
+         return;  
+     }
+
      //var form = $(btn).parents('form:first');
+     if(quesType == "multi"){
+         isValid = checkPossibleAnsValidation(quesSeq)
+         if(!isValid){
+             
+             return;
+         }
+      }
+      var l = Ladda.create(btn);
+      l.start();
      $("#form" + quesSeq).ajaxSubmit(function( data ){
         l.stop();
         var obj = $.parseJSON(data);
@@ -129,12 +203,21 @@ function submitAns(quesSeq,questionNumber,btn){
             anslist =  obj.ansList.incorrect;
         }
         htmlCont = "";
+        html = "";
         $.each(anslist, function(key, value){
-           htmlCont = value + "<br/>";
+           htmlCont += value + "<br/>";
         })
         $.each(obj.ansList.correct, function(key, value){
            $("#form" + quesSeq + " #check" + key).show();
+           if(value != ""){
+                html += value + "<br/>";     
+           }
         })
+        if(quesType == "multi"){
+            var sucessDiv = "#form" + quesSeq + " #success" + quesSeq;
+            $(sucessDiv).html(html);
+            $(sucessDiv).show();    
+        }
         $(divClass).html(htmlCont);
         $(divClass).show();
         var totalCount = "<?echo $totalCount?>";
