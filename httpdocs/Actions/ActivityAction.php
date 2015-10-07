@@ -237,6 +237,7 @@
             $questionid = $_POST['questionseq'];
             $selectedAns = $_POST['answer'.$questionid];
             $learningPlanSeq = $_POST['learningplanseq'];
+            $progress = $_POST['progress'];
             if(is_array($selectedAns)){
                 $ansSeqs =   $selectedAns;  
             }else{
@@ -251,10 +252,12 @@
                 $quizProgress->setLearningPlanSeq($learningPlanSeq);
                 $quizProgress->setUserSeq($userSeq);
                 $activityMgr = ActivityMgr::getInstance();
-                //$id = $activityMgr->saveQuizProgress($quizProgress);    
+                $id = $activityMgr->saveQuizProgress($quizProgress);    
             }
             $moduleMgr = ModuleMgr::getInstance();
             $ansList = $moduleMgr->getCorrectAnswers($ansSeqs,$questionid);
+            $scores = $ansList["score"];
+            $activityMgr->saveActivityData($moduleid,$learningPlanSeq,$userSeq,$progress,$scores);
             $incorrectAns = $ansList["incorrect"];
             if(!empty($incorrectAns)){
                 $success = 0;         

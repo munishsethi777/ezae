@@ -44,6 +44,11 @@ class ActivityMgr{
             $mailMessageMailUtils->checkForModuleOnMarksNotification($learningPlanSeq,$moduleId,$score,$userSeq);
             $mailMessageMailUtils->checkForModuleCompletedNotification($learningPlanSeq,$moduleId,$score,$userSeq);
         }
+        $existingActivity = $this->getActivityByUser($userSeq,$moduleId);
+        if(!empty($existingActivity)){
+            $activity->setSeq(intval($existingActivity->getSeq()));
+            $activity->setScore($score + $existingActivity->getScore());      
+        }
         $ads->saveActivityData($activity);
 
     }
@@ -130,6 +135,46 @@ class ActivityMgr{
         $mainArray['mode'] = round($mode,2);
         return json_encode($mainArray);
     } 
-
+    public function getActivityByUser($userSeq,$moduleId){
+        $ads = ActivityDataStore::getInstance();
+        $activity = $ads->findByUserAndModule($userSeq,$moduleId);    
+        return $activity;
+    }
+    
+    public function getQuizProgressByUser($userSeq,$moduleId,$lpseq){
+        $colval["userseq"] = $userSeq;
+        $colval["moduleseq"] = $moduleId;
+        $colval["learningplanseq"] = $lpseq; 
+        $quizProgressList = self::$quizProgressDataStore->executeConditionQuery($colval);
+        return $quizProgressList;
+    }
+    public function getQuizProgressArr($userSeq,$moduleId,$lpseq){
+        $quizProgressList = $this->getQuizProgressByUser($userSeq,$moduleId,$lpseq);
+        $array = array();
+        $quizProgressArr = array();
+        foreach($quizProgressList as $quizProgress){
+            $quesSeq = $quizProgress->getQuestionSeq();
+            if(array_key_exists($quesSeq,$array)){
+                $quizProgressArr = $array[$quesSeq];   
+            }else{
+                $quizProgressArr = array();
+            }
+            array_push($quizProgressArr,$quizProgress); 
+            $array[$quesSeq] = $quizProgressArr;  
+        }
+        return $array;
+    }
+     public function getSelectedAnswerSeqs($userSeq,$moduleId,$lpseq){
+        $colval["userseq"] = $userSeq;
+        $colval["moduleseq"] = $moduleId;
+        $colval["learningplanseq"] = $lpseq;
+        $attr[0] = "answerseq"; 
+        $ansSeqs = self::$quizProgressDataStore->executeAttributeQuery($attr,$colval);
+        $arr = array();
+        foreach($ansSeqs as $seq){
+            array_push($arr,$seq[0]);    
+        }
+        return $arr;
+    }
 }
 ?>

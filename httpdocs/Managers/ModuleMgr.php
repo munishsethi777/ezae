@@ -316,11 +316,14 @@ class ModuleMgr{
         $answers = $this->getQuestionAnswer($quesSeq);
         $correctAnswer = array();
         $inCorrectAnswer = array();
+        $score = 0;
         foreach($answers as $ans){
              $feedback = $ans->getTitle() . "- " .$ans->getFeedback();
             if($ans->getMarks() > 0){               
                 if(!in_array($ans->getSeq(),$ansSeqs)){
                     $feedback = "";       
+                }else{
+                    $score += $ans->getMarks();
                 }
                 $correctAnswer[$ans->getSeq()] = $feedback;        
             }else{
@@ -332,7 +335,8 @@ class ModuleMgr{
         }
         $mainArr = array();
         $mainArr["correct"] =   $correctAnswer;
-        $mainArr["incorrect"]  =  $inCorrectAnswer;            
+        $mainArr["incorrect"]  =  $inCorrectAnswer;
+        $mainArr["score"]  =  $score;             
         return $mainArr;
     }
     public function moduleAlreadyExist($moduleid,$name){
