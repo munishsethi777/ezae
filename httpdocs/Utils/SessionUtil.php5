@@ -128,7 +128,7 @@ class SessionUtil{
     }
 
     public function getAdminLoggedInCompanySeq(){
-        if((count($_SESSION) > 0)){
+        if((count($_SESSION) > 0) && !empty($_SESSION[self::$LOGIN_MODE])){
           if($_SESSION[self::$LOGIN_MODE] == "admin" &&
                 $_SESSION[self::$ADMIN_LOGGED_IN] != null){
                     $arr = $_SESSION[self::$ADMIN_LOGGED_IN];
@@ -145,7 +145,7 @@ class SessionUtil{
         return null;
     }
     public function getAdminLoggedInSeq(){
-        if((count($_SESSION) > 0)){
+        if((count($_SESSION) > 0) && !empty($_SESSION[self::$LOGIN_MODE])){
             if($_SESSION[self::$LOGIN_MODE] == "admin" &&
                 $_SESSION[self::$ADMIN_LOGGED_IN] != null){
                     $arr = $_SESSION[self::$ADMIN_LOGGED_IN];

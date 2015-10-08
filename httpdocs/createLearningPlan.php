@@ -294,6 +294,11 @@ if(isset($_POST["moduleIds"])){
             });
             $(".chosen-modulesSelect").append(options);
             $(".chosen-modulesSelect").chosen({width:"100%"});
+            var values = "<?echo $moduleIds?>";
+            if(values.length > 0){
+                values = values.split(",")
+                $('.chosen-modulesSelect').val(values).trigger("chosen:updated");
+            }
             dragChosen();
         });
     }

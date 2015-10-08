@@ -9,9 +9,11 @@
 <?
     require_once($ConstantsArray['dbServerUrl'] ."Managers/ModuleMgr.php");
     require_once($ConstantsArray['dbServerUrl'] ."Managers/ActivityMgr.php");
+    require_once($ConstantsArray['dbServerUrl'] ."Utils/SessionUtil.php5");
     $learningPlanSeq = 2;//$_GET['lpid'];
-    $moduleId = 3;//$_GET['id'];
-    $userSeq = 18116;
+    $moduleId = 2;//$_GET['id'];
+    $sessionUtil = SessionUtil::getInstance();
+    $userSeq = intval($sessionUtil->getUserLoggedInSeq());
     $moduleMgr = ModuleMgr::getInstance();
     $activityMgr = ActivityMgr::getInstance();
     $module = $moduleMgr->getModule($moduleId);

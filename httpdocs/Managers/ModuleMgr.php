@@ -284,7 +284,8 @@ class ModuleMgr{
     
     public function getModuleQuestions($moduleId){
        $colVal["moduleseq"] = $moduleId;
-       $moduleQuestionList = self::$moduleQuesDataStore->executeConditionQuery($colVal);
+       $moduleQuestionDataStore = new BeanDataStore(ModuleQuestion::$className,ModuleQuestion::$tableName);
+       $moduleQuestionList =$moduleQuestionDataStore->executeConditionQuery($colVal);
        return $moduleQuestionList;
     }
     public function getQuestions($moduleId){

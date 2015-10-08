@@ -124,6 +124,7 @@ function checkPossibleAnsValidation(quesSeq){
 }
 
 function setValuesOnEdit(){
+    <?if(count($quizProgressList) > 0){?>
     var isLast = false;
    <?$i = 0;
    $questionCount = 0;
@@ -174,6 +175,7 @@ function setValuesOnEdit(){
     
     api.setNextPanel(slide);api.updateClass($(formId)); 
     slideCounter = slide;
+    <?}?>
 }
 
 

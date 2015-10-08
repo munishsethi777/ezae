@@ -230,8 +230,8 @@
 </body>
 </html>
 
-<script src="scripts/FormValidators/CreateQuestionValidations.js"></script>
-<script src="scripts/FormValidators/CreateModuleValidations.js"></script> 
+<script src="scripts/FormValidators/createQuestionValidations.js"></script>
+<script src="scripts/FormValidators/createModuleValidations.js"></script> 
 <script type="text/javascript">
     isDocumentLoaded = <?echo $isDocumentLoaded?> 
     optionsCount = 1;
@@ -303,6 +303,7 @@
          });
 
     });
+    
     function resetQuestionForm(){
         $("#questionname").val("");
         $("#questionType")[0].selectedIndex = 0;
@@ -313,7 +314,9 @@
         for(var i =1;i<=optionsCount;i++){
             removeOption(i);      
         }
+       
     }
+    
     function calTotalMarks(value){
        
         var marks = 0;
@@ -404,7 +407,7 @@
             $('.chosen-questionsSelect').trigger("chosen:updated"); 
             var values = "<?echo $selectedQuesSeqs?>";
             if(values.length > 0){
-               // values = values.split(",");
+                values = values.split(",");
                 $('.chosen-questionsSelect').val(values).trigger("chosen:updated");
                 
             }
@@ -463,6 +466,13 @@
                      window.setTimeout(function(){window.location.href = "adminModulesManagement.php"},500);
                 }
             }else{
+                $("#moduleImg").attr("src","images/modules/dummy.jpg"); 
+                $('.chosen-questionsSelect').val("").trigger("chosen:updated");
+                $(".quizEditor").show();
+                $(".essayEditor").hide();
+                $(".documentEditor").hide();
+                $(".videoEditor").hide();
+                $(".audioEditor").hide();                
                 showResponseNotification(data,"mainDiv","createModuleForm");
             }
 

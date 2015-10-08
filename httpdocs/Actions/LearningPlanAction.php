@@ -8,6 +8,7 @@ require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/LeaderBoard.php");
 require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/LearningPlanModule.php");
 require_once($ConstantsArray['dbServerUrl'] ."DataStores/LearningPlanDataStore.php");
 require_once($ConstantsArray['dbServerUrl'] ."Utils/SessionUtil.php5");
+require_once($ConstantsArray['dbServerUrl'] ."Utils/ErrorUtil.php");
 require_once($ConstantsArray['dbServerUrl'] ."Utils/MailMessageUtil.php");
 $call = "";
 if(isset($_GET["call"])){
@@ -122,7 +123,7 @@ if($call == "deleteLearningPlan"){
         $message = "Record Deleted successfully";
     }catch(Exception $e){
         $success = 0;
-        $message  = $e->getMessage();
+        $message = ErrorUtil::checkReferenceError(LearningPlan::$className,$e);
     }
     $response = new ArrayObject();
     $response["message"] = $message;

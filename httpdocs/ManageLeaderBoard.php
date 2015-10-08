@@ -70,7 +70,6 @@
             altrows: true,
             columnsresize: true,
             columnsreorder: true,
-            selectionmode: 'checkbox',
             showstatusbar: true,
             pageable: true,
             virtualmode: true,

@@ -215,6 +215,9 @@
                             if(selectedRowIndexes.length == 1){
                                 var dataRow = $("#learnersGrid").jqxGrid('getrowdata', selectedRowIndexes[0]);
                                 values = dataRow.profileseqs;
+                                if(values == undefined){
+                                    values = "";    
+                                }
                                 values = values.split(",");
                             }
                             $('#profileSelect').val(values).trigger("chosen:updated");
@@ -282,22 +285,22 @@
             var l = Ladda.create(btn);
             l.start();
             var ids = [];
-
             var selctedValues = [];
-            $( '#profileSelect :selected' ).each( function( i, selected ) {
+            $( '#profileSelect :selected' ).each( function( i, selected ){
                 selctedValues[i] = $( selected ).text();
             });
             var selectedIndexes  = $("#learnersGrid").jqxGrid('selectedrowindexes');
-            $.each(selectedIndexes,function(key,value) {
+            $.each(selectedIndexes,function(key,value){
                 ids.push($("#learnersGrid").jqxGrid('getrowid',value));
             })
-            $("#ids").html(ids);
+            $("#ids").val(ids);
             $('#setProfileForm').ajaxSubmit(function( data ){
                    l.stop();
                    $("#learnersGrid").jqxGrid('updatebounddata');
                    showResponseToastr(data,"setProfileModelForm","setProfileForm","profileMainDiv");
-             })
+            })
         }
+        
         function saveLearners(e,btn){
             e.preventDefault();
             var l = Ladda.create(btn);
