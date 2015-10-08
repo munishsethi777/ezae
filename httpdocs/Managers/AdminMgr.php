@@ -437,8 +437,33 @@ class AdminMgr{
         }
         return $dataFieldsArr;
     }
-
-    public function saveAdmin($companySeq){
+    public function checkValidations($admin){
+        if($this->isExist($admin,$admin->getUserName(),"username")){
+            throw new Exception("Administrator Username is already exist.");
+        }
+        if($this->isExist($admin,$admin->getEmailId(),"emailid")){
+            throw new Exception("Administrator Email Address is already exist.");
+        } 
+        if($this->isExist($admin,$admin->getMobileNo(),"mobileno")){
+            throw new Exception("Administrator Mobile no. is already exist.");
+        }       
+    }
+    private function isExist($admin,$value,$attrName){
+        $seq = $admin->getSeq();
+        $att[0] = $attrName;
+        $att[1] = "seq";
+        $colVal[$attrName] = $value;
+        $ADS = AdminDataStore::getInstance();
+        $existingAdmin = $ADS->executeAttributeQuery($att,$colVal);
+        $isExist = false;
+        if(!empty($existingAdmin)){   
+            if(empty($seq) || $seq != $existingAdmin[0]["seq"]){
+                $isExist = true;        
+            }
+        }
+        return $isExist;
+    }
+    public function getAdminObjectFromRequest(){
             $name = $_GET["adminName"];
             $username = $_GET["adminUserName"];
             $password = $_GET["adminPassword"];
@@ -448,8 +473,7 @@ class AdminMgr{
             if(isset($_GET["isUpdate"])){
                $isUpdate = $_GET["isUpdate"];    
             }
-            $admin = new Admin();
-            $admin->setCompanySeq($companySeq);
+            $admin = new Admin();            
             $admin->setName($name);
             $admin->setUserName($username);
             $admin->setPassword($password); //TODO -- save encrypted password --
@@ -464,12 +488,16 @@ class AdminMgr{
                 $seq = $sessionUtil->getAdminLoggedInSeq();
                 $admin->setSeq($seq);
             }
-            $ADS = AdminDataStore::getInstance();
-            $id = $ADS->save($admin);
-            if($id > 0){
-                $sessionUtil = SessionUtil::getInstance();
-                $sessionUtil->createAdminSession($admin);
-            }
+            return $admin;
+    }
+    public function saveAdmin($admin,$companySeq){
+        $admin->setCompanySeq($companySeq);
+        $ADS = AdminDataStore::getInstance();
+        $id = $ADS->save($admin);
+        if($id > 0){
+            $sessionUtil = SessionUtil::getInstance();
+            $sessionUtil->createAdminSession($admin);
+        }
     }
     //calling from manager action for save manager
     public function saveAdminManager($admin){

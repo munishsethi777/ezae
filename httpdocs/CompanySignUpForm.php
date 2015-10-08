@@ -9,9 +9,27 @@
         $(document).ready(function () {
             //$('.form-control').jqxInput({  });
             $('#createCompanyForm').jqxValidator({
+                hintType: 'label',
+                animationDuration: 0,
                 rules: [
                        { input: '#name', message: 'Company Name is required!', action: 'keyup, blur', rule: 'required' },
-                       { input: '#adminPassword', message: 'password is required!', action: 'keyup, blur', rule: 'required' }
+                       { input: '#email', message: 'Email is required!', action: 'keyup, blur', rule: 'required' },
+                       { input: '#email', message: 'Invalid e-mail!', action: 'keyup', rule: 'email' },
+                       { input: '#mobileno', message: 'Mobile no is required!', action: 'keyup', rule: 'required' },
+                       { input: '#adminUserName', message: 'User Name is required!', action: 'keyup, blur', rule: 'required' },
+                       { input: '#adminEmail', message: 'Email is required!', action: 'keyup, blur', rule: 'required' }, 
+                       { input: '#adminPassword', message: 'Password is required!', action: 'keyup, blur', rule: 'required' }, 
+                       { input: '#confirmPassword', message: 'Confirm password Name is required!', action: 'keyup, blur', rule: 'required'},
+                       { input: '#confirmPassword', message: 'Confirm Password doesn\'t match!', action: 'keyup, focus', 
+                                rule: function (input, commit) {
+                                   if (input.val() === $('#adminPassword').val()) {
+                                        return true;
+                                   }
+                                   return false;
+                                }       
+                       },
+                       { input: '#adminEmail', message: 'Invalid e-mail!', action: 'keyup, blur', rule: 'email' },
+                       { input: '#adminMobile', message: 'Mobile is required!', action: 'keyup, blur', rule: 'required' }
                       
                        
                        ]
@@ -53,11 +71,6 @@
     <div class="adminSingup animated fadeInRight">
         <div class="row">
             <div class="col-md-6">
-                <span>
-                     <?php if(isset($_GET['msg']))
-                        echo $_GET['msg'];
-                      ?>
-                </span>
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
                         <h5>Company</h5>
@@ -66,7 +79,7 @@
                         <form id="createCompanyForm" class="form-horizontal">
                             <input type="hidden" name="call" id="call" value="saveCompany">                           
                             <div class="form-group">
-                                <label class="col-lg-2 control-label">Name</label>  
+                                <label class="col-lg-2 control-label">Name<span style="color: #FF0000;">*</span></label>  
                                 <div class="col-lg-10">
                                     <input type="text" name="name" id="name" placeholder="Company Name" class="form-control">
                                 </div>
@@ -79,14 +92,14 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-lg-2 control-label">Email</label>
+                                <label class="col-lg-2 control-label">Email<span class="star">*</span></label>
 
                                 <div class="col-lg-10">
                                     <input type="text" name="email" id="email" placeholder="Email" class="form-control">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-lg-2 control-label">Mobile No</label>
+                                <label class="col-lg-2 control-label">Mobile No<span class="star">*</span></label>
 
                                 <div class="col-lg-10">
                                     <input type="text" name="mobileno" id="mobileno"  placeholder="Mobile" class="form-control">
@@ -122,26 +135,33 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-lg-2 control-label">User Name</label>  
+                                <label class="col-lg-2 control-label">User Name<span class="star">*</span></label>  
                                 <div class="col-lg-10">
-                                    <input type="text" name="adminUserName" id="name" placeholder="User Name" class="form-control">
+                                    <input type="text" name="adminUserName" id="adminUserName" placeholder="User Name" class="form-control">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-lg-2 control-label">Password</label>
+                                <label class="col-lg-2 control-label">Password<span class="star">*</span></label>
 
                                 <div class="col-lg-10">
                                     <input type="password" name="adminPassword" id="adminPassword" placeholder="Password" class="form-control">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-lg-2 control-label">Email</label>
+                                <label class="col-lg-2 control-label">Confirm Password<span class="star">*</span></label>
+
+                                <div class="col-lg-10">
+                                    <input type="password" id="confirmPassword" placeholder="Confirm Password" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label">Email<span class="star">*</span></label>
                                 <div class="col-lg-10">
                                     <input type="text" name="adminEmail" id="adminEmail" placeholder="Email" class="form-control">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-lg-2 control-label">Mobile</label>
+                                <label class="col-lg-2 control-label">Mobile<span class="star">*</span></label>
                                 <div class="col-lg-10">
                                     <input type="text" name="adminMobile" id="adminMobile"  placeholder="Mobile" class="form-control">
                                 </div>

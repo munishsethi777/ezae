@@ -44,14 +44,54 @@ class CompanyMgr{
             $seq = $sessionUtil->getAdminLoggedInCompanySeq();
             $company->setSeq($seq);
         }
-
-        $CDS = CompanyDataStore::getInstance();
-        $id = $CDS->save($company);
+        $this->checkVaidations($company);
         $adminMgr = new AdminMgr();
-        $adminMgr->saveAdmin($id);
-
+        $admin = $adminMgr->getAdminObjectFromRequest();
+        $adminMgr->checkValidations($admin);
+        $CDS = CompanyDataStore::getInstance();
+        $id = $CDS->save($company);       
+        $adminMgr->saveAdmin($admin,$id);
     }
-
+    
+    
+    private function checkVaidations($company){
+        if($this->isExist($company,$company->getEmailId(),"emailid")){
+            throw new Exception("Email Address is already exist.");
+        } 
+        if($this->isExist($company,$company->getMobileNo(),"mobileno")){
+            throw new Exception("Mobile is already exist.");
+        }       
+    }
+    private function isExist($company,$value,$attrName){
+        $seq = $company->getSeq();
+        $att[0] = $attrName;
+        $att[1] = "seq";
+        $colVal[$attrName] = $value;
+        $CDS = CompanyDataStore::getInstance();
+        $existingCompany = $CDS->executeAttributeQuery($att,$colVal);
+        $isExist = false;
+        if(!empty($existingCompany)){   
+            if(empty($seq) || $seq != $existingCompany[0]["seq"]){
+                $isExist = true;        
+            }
+        }
+        return $isExist;
+    }
+   private function isAdminExist($admin,$attrName){
+        $seq = $company->getSeq();
+        $att[0] = $attrName;
+        $att[1] = "seq";
+        $colVal[$attrName] = $company->getEmailId();
+        $CDS = CompanyDataStore::getInstance();
+        $existingCompany = $CDS->executeAttributeQuery($att,$colVal);
+        $isExist = false;
+        if(!empty($existingCompany)){   
+            if(empty($seq) || $seq != $existingCompany[0]["seq"]){
+                $isExist = true;        
+            }
+        }
+        return $isExist;
+    }
     public function getCompanyBySeq($companySeq){
         $CDS = CompanyDataStore::getInstance();
         $company =  $CDS->FindBySeq($companySeq);
