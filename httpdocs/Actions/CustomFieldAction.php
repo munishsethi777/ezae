@@ -8,6 +8,7 @@
  require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/User.php");
  require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/MatchingRule.php");
  require_once($ConstantsArray['dbServerUrl'] ."Utils/StringUtil.php"); 
+  require_once($ConstantsArray['dbServerUrl'] ."StringConstants.php");
  require_once($ConstantsArray['dbServerUrl'] ."Utils/ErrorUtil.php"); 
  require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/UserCustomField.php");
  require_once($ConstantsArray['dbServerUrl'] ."DataStores/UserDataStore.php5");
@@ -29,6 +30,7 @@
         $emailField = $_POST["emailId"];
         $prefix = $_POST["userNamePrefix"];
         $randomPassword = "off";
+        $isFirstRowContainsFields = $_POST["isFirstRowContainFields"];
         if(isset($_POST["randomPassword"])){
            $randomPassword =$_POST["randomPassword"];
         }
@@ -37,7 +39,19 @@
         $fieldData = $_POST["fieldData"];
         $fieldData = str_replace('\\', '', $fieldData);
         $fieldRows = json_decode($fieldData,true);
-
+       
+        
+        if($isFirstRowContainsFields == "false"){
+            $newArr = array();
+            $selectedFields = $fieldRows[0];
+            array_push($selectedFields,"uid");
+            foreach($rows as $row){
+                $list = array_combine($selectedFields, array_values($row));
+                array_push($newArr,$list);
+            }
+            $rows = $newArr;
+        }
+        
 
         $msg = validateImportedData($rows,$fieldRows,$userNameField,$passwordField,$emailField);
         if(count($msg) > 0){
@@ -46,10 +60,10 @@
                 $message .=  $value . "<br/>";
             }
         }else{
-             $userMgr = UserMgr::getInstance();
-             $userMgr->saveUserRowsData($rows,$userNameField,$passwordField,$emailField,$prefix,$isRandomPassword,$companySeq,$adminSeq);               
-             $customMgr = CustomFieldMgr::getInstance();
-             $isExist = $customMgr->isExists($adminSeq,$companySeq);
+              $userMgr = UserMgr::getInstance();
+              $userMgr->saveUserRowsData($rows,$userNameField,$passwordField,$emailField,$prefix,$isRandomPassword,$companySeq,$adminSeq);               
+              $customMgr = CustomFieldMgr::getInstance();
+              $isExist = $customMgr->isExists($adminSeq,$companySeq);
              if(!$isExist){
                 saveFieldRowsData($fieldRows,$companySeq,$adminSeq);
              }             
@@ -111,6 +125,10 @@
         }catch(Exception $e){
             $success = 0;
             $message  = $e->getMessage();
+            $trace = $e->getTrace();
+            if($trace[0]["args"][0][1] == "1062"){
+                $message = StringConstants::DUPLICATE_CUSTOMFIELD_NAME;
+            }  
         }
         $response = new ArrayObject();
         $response["success"]  = $success;
@@ -155,7 +173,7 @@
         $message = "Record Deleted successfully";
     }catch(Exception $e){
         $success = 0;
-        $message  = $e->getMessage();
+        $message  = ErrorUtil::checkReferenceError("Field",$e);
     }
     $response = new ArrayObject();
     $response["message"]  = $message;
@@ -242,7 +260,7 @@
      if(count($msg) > 0){
          return $msg;
      }
-     $msg = validateData($data,$userNameField,$passwordField,$emailField);
+     $msg = validateData($data,$userNameField,$passwordField,$emailField,$fieldData);
      return $msg;
     }
 
@@ -258,7 +276,7 @@
                 $msg[$key] = $key . " cannot be null";
            }else{
                  if (in_array($value, $values)){
-                     $msg[$key] = $key . " has dulicate Value :- $value .";
+                     $msg[$key] = $key . " has dulicate Value :- $value in imported file.";
                  }else{
                      array_push($values,$value);
                  }

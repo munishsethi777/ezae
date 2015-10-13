@@ -174,6 +174,7 @@
                     reloadButton.jqxButton({  width: 70, height: 18 });
                     // create new row.
                     addButton.click(function (event) {
+                        removeMessagesDivs();
                         $("#saveNewBtnDiv").show();
                         $("#msgDiv").hide();
                         $("#errorDiv").hide();
@@ -233,6 +234,7 @@
                     });
                     // edit grid data.
                     editButton.click(function (event) {
+                        removeMessagesDivs();
                         $("#saveNewBtnDiv").hide();
                         $("#msgDiv").hide();
                         $("#errorDiv").hide();

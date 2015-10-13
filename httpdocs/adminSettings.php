@@ -13,6 +13,22 @@
  
 <script type="text/javascript">
 $(document).ready(function(){ 
+    $('#createCompanyForm').jqxValidator({
+                hintType: 'label',
+                animationDuration: 0,
+                rules: [
+                       { input: '#name', message: 'Company Name is required!', action: 'keyup, blur', rule: 'required' },
+                       { input: '#email', message: 'Email is required!', action: 'keyup, blur', rule: 'required' },
+                       { input: '#email', message: 'Invalid e-mail!', action: 'keyup', rule: 'email' },
+                       { input: '#mobileno', message: 'Mobile no is required!', action: 'keyup', rule: 'required' },
+                       { input: '#adminUserName', message: 'User Name is required!', action: 'keyup, blur', rule: 'required' },
+                       { input: '#adminEmail', message: 'Email is required!', action: 'keyup, blur', rule: 'required' }, 
+                       { input: '#adminPassword', message: 'Password is required!', action: 'keyup, blur', rule: 'required' },
+                       { input: '#adminEmail', message: 'Invalid e-mail!', action: 'keyup, blur', rule: 'email' },
+                       { input: '#adminMobile', message: 'Mobile is required!', action: 'keyup, blur', rule: 'required' }
+                      
+                       ]
+            });
     $.getJSON("Actions/CompanyAction.php?call=getSettings" ,function(data){
         if(data.success == 1){
             var company = $.parseJSON(data.company);
@@ -36,7 +52,13 @@ $(document).ready(function(){
     });
     
     $("#createButton").click(function(e){
-        submitCreate(e,this);
+        var btn = this;
+        var validationResult = function (isValid) {
+            if (isValid) {
+                submitCreate(e,btn);
+            }
+        }
+        $('#createCompanyForm').jqxValidator('validate', validationResult);
     })
 });
 function submitCreate(e,btn){

@@ -56,10 +56,10 @@ class CompanyMgr{
     
     private function checkVaidations($company){
         if($this->isExist($company,$company->getEmailId(),"emailid")){
-            throw new Exception("Email Address is already exist.");
+            throw new Exception(StringConstants::EMAIL_EXIST);
         } 
         if($this->isExist($company,$company->getMobileNo(),"mobileno")){
-            throw new Exception("Mobile is already exist.");
+            throw new Exception(StringConstants::MOBILE_EXIST);
         }       
     }
     private function isExist($company,$value,$attrName){

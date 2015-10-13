@@ -56,13 +56,13 @@
          l.start();
          $formData = $("#customFieldForm").serializeArray();
             $.get( "Actions/CustomFieldAction.php?call=saveCustomField", $formData,function( data ){
+                l.stop();
                 if(data != ""){
                    var obj = $.parseJSON(data);
                    if(obj.success == 1){
                        var dataRow = $.parseJSON(obj.row);
                        var id = $("#id").val();
-                       $("#jqxgrid").jqxGrid('updatebounddata');
-                       l.stop();
+                       $("#jqxgrid").jqxGrid('updatebounddata');                       
                    }
                   if(btn.id == "saveButton"){
                      showResponseToastr(data,"createNewModalForm","customFieldForm","mainDiv");
@@ -171,6 +171,7 @@
 
                 // create new row.
                 addButton.click(function (event) {
+                    removeMessagesDivs();
                     $("#saveNewBtnDiv").show();
                     $("#msgDiv").hide();
                     $("#errorDiv").hide();
@@ -181,6 +182,7 @@
                 });
                 // update row.
                 editButton.click(function (event) {
+                     removeMessagesDivs();
                     $("#saveNewBtnDiv").hide();
                     $("#msgDiv").hide();
                     $("#errorDiv").hide();

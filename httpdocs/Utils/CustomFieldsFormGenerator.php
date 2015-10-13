@@ -114,6 +114,7 @@
             $customFieldObj =  $userCustomField;
             $fieldName = $customFieldObj->getTitle();
             $fieldNameLbl = "";
+            $flag = true;
             if($fieldName == $matchingRules->getUserNameField()){
                     $fieldNameLbl = $fieldName . " (UserName)";      
             }
@@ -123,11 +124,15 @@
             if($fieldName == $matchingRules->getPasswordField() && 
                                         $fieldName == $matchingRules->getUserNameField()){
                     $fieldNameLbl = $fieldName .  " (UserName,Password)";      
-            }                        
+            } 
+            if(empty($fieldNameLbl)){
+                $fieldNameLbl = $fieldName;
+                $flag = false;
+            }                       
             $customFieldObj = $userCustomField;              
             $html = '<div class="ibox border-bottom" id="block_'. $customFieldObj->getSeq() . '">';
             $html .= '<input type="hidden" name="seq[]" value="' . $customFieldObj->getSeq() . '" />';
-            $html .= '<input type="hidden" name="fieldName_'. $customFieldObj->getSeq() . '" value="' . $fieldNameLbl . '" />';
+            $html .= '<input type="hidden" name="fieldName_'. $customFieldObj->getSeq() . '" value="' . $fieldName . '" />';
             $html .= '<input type="hidden" name="fieldType_'. $customFieldObj->getSeq() . '" value="' . $customFieldObj->getFieldType() . '" />';
             $html .= '<div class="ibox-title" style="padding-bottom:40px;">';
             $html .= '<div class="col-sm-6"><h3>Field Name: '. $fieldNameLbl .'</h3></div>';
@@ -137,15 +142,15 @@
             $html .= '<label style="padding-left:0px">';            
             $visibleChecked = "";
             $requiredChecked = "";
-            if($isVisible || !empty($fieldNameLbl)){
+            if($isVisible || $flag){
                 $visibleChecked = 'checked="checked"';
             }
-            if($isRequired || !empty($fieldNameLbl)){
+            if($isRequired || $flag){
                 $requiredChecked = 'checked="checked"';
             }
             $disabled = "";
-            if(!empty($fieldNameLbl)){
-                $disabled = "disabled";    
+            if($flag){
+                //$disabled = "disabled";    
             }
             $html .= '<input type="checkbox"'. $disabled .' name="required_'. $customFieldObj->getSeq() .'"' . $requiredChecked . '>';
             $html .= '<i></i> Required Field</label>';

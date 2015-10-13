@@ -8,6 +8,8 @@ require_once($ConstantsArray['dbServerUrl'] ."Utils/SessionUtil.php5");
 require_once($ConstantsArray['dbServerUrl'] ."Utils/FileUtil.php");
 require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/Question.php");
 require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/QuestionAnswer.php");
+require_once($ConstantsArray['dbServerUrl'] ."StringConstants.php");
+
 $call = "";
 if(isset($_GET["call"])){
     $call = $_GET["call"];
@@ -70,7 +72,7 @@ if($call == "saveModule"){
         $name = $_POST["name"];
         $isalreadyExist = $moduleMgr->moduleAlreadyExist($id,$name);
         if($isalreadyExist){
-            throw new Exception("Module is already exist with this name!");    
+            throw new Exception(StringConstants::DUPLICATE_MODULE_NAME);    
         }
         $description = $_POST["description"];
         $type = $_POST["moduleType"];
@@ -135,7 +137,7 @@ if($call == "saveModule"){
             $imgfilePath = FileUtil::uploadImageFiles($file,$uploaddir,$moduleImageName);
             $moduleMgr->updateMoudleImageName($id,$imgfilePath);
         }
-        $message = "Module Added Sucessfully";     
+        $message = StringConstants::MODULE_ADDED;     
     }catch(Exception $e){
         $success = 0;
         $message  = $e->getMessage();
@@ -164,7 +166,7 @@ if($call == "saveQuestion"){
         $name = $_POST["questionname"];
         $isalreadyExist = $questionMgr->isAlreadyExist($name);
         if($isalreadyExist){
-            throw new Exception("Question is already exist with this name!");    
+            throw new Exception("Question already exist with this name!");    
         }
         $questionType = $_POST["questiontype"];
         $options = $_POST["option"];

@@ -181,6 +181,7 @@
               return strTime;
             }
             function showResponseDiv(data,divClassName){
+                removeMessagesDivs();
                 var obj = $.parseJSON(data);
                 var message = obj.message;
                 $("#msgDiv").remove();
@@ -201,6 +202,7 @@
             }
 
             function showResponseNotification(data,divClassName,formId){
+                removeMessagesDivs();
                 var obj = $.parseJSON(data);
                 var message = obj.message;
                 $("#msgDiv").remove();
@@ -248,6 +250,7 @@
                     }
                     toastr.success(message);
                 }else{
+                   removeMessagesDivs();
                    var errorDiv = getErrorDiv(message);
                    $("." + divClassName).append(errorDiv);
                 }

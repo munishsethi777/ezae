@@ -359,7 +359,7 @@ class BeanDataStore {
     }
 
 
-    private function throwException($error){
+    public function throwException($error){
        if($error[2] <> ""){
             $logger = Logger::getLogger("logger");
             $logger->error("Error occured :" . $error[2]);

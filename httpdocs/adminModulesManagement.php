@@ -13,6 +13,9 @@
    function showDetail(id){
        $("#moduleDetailsModal" + id).modal('show')
    }
+   function viewModule(id){
+       $("#viewModuleModal" + id).modal('show')
+   }
    function editModule(id){
        $("#moduleId").val(id);
        $("#moduleEditForm").submit();
@@ -59,7 +62,11 @@
                                     <div class="ibox">
                                         <div class="ibox-content product-box">
                                             <div class="product-imitation">
-                                                <img height="200px" src="images/modules/<?echo $module['seq']?>.jpg" alt="" style="">
+                                               <?$imagePath = "images/modules/" . $module['seq']. ".jpg";
+                                               if(!file_exists ($imagePath)){
+                                                    $imagePath = "images/modules/dummy.jpg";
+                                               }?>
+                                                <img height="200px" src="<?echo $imagePath?>" alt="" style="">
                                             </div>
                                             <div class="product-desc">
                                                 <span class="product-price"><?echo $moduleType;?></span>
@@ -74,7 +81,7 @@
                                                     <a href="#" class="btn btn-xs btn-outline btn-primary moduleDetailsButton" onclick=showDetail(<?echo $module['seq']?>)>
                                                         Info <i class="fa fa-info"></i>
                                                     </a>
-                                                    <a href="#" class="btn btn-xs btn-outline btn-primary moduleDetailsButton" onclick=showDetail(<?echo $module['seq']?>)>
+                                                    <a href="#" class="btn btn-xs btn-outline btn-primary moduleDetailsButton" onclick=viewModule(<?echo $module['seq']?>)>
                                                         View <i class="fa fa-eye"></i>
                                                     </a>
                                                     <?if ($moduleType != ModuleType::FLASH){?>
@@ -134,7 +141,46 @@
                                         </div>
                                     </div>
                                </div>
-
+                                <div id="viewModuleModal<?echo $module["seq"]?>" style="width: auto;" class="modal fade" aria-hidden="true">
+                                    <div class="modal-dialog" >
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                                <h4 class="modal-title">Modules Details</h4>
+                                            </div>
+                                            <div class="modal-body mainDiv">
+                                                <h4><?echo $module["title"]?></h4>
+                                                <p><?echo $module["description"]?></p>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="wrapper wrapper-content">
+                                                            <div class="ibox">
+                                                                <?
+                                                                  $fileName = $moduleType ."TypeModule.php";
+                                                                  $detail = $module["typedetails"];
+                                                                  if($moduleType == ModuleType::DOCUMENT){?>
+                                                                      <?echo "<label class='col-sm-5'>Download Document<a href='docs\\moduledocs\\". $detail . "'> here</a></label>"?>
+                                                                  <?}else if($moduleType == ModuleType::QUIZ){?>
+                                                                      <?include("ViewQuizModule.php")?>
+                                                                  <?}else if($moduleType == ModuleType::FLASH){?>
+                                                                      <iframe frameborder="0" src="Modules/<?echo $module["seq"];?>/story.php" width="600" height="500"></iframe>
+                                                                  <?}
+                                                                  else{
+                                                                      echo $detail;
+                                                                  }
+                                                                  
+                                                                ?>
+                                                           </div>
+                                                        </div>
+                                                     </div>
+                                                  </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                 <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                               </div>
 
                                   <?}?>
 

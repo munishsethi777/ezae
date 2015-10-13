@@ -6,7 +6,7 @@
           $trace = $exception->getTrace();
           if($trace[0]["args"][0][1] == "1062"){
             $msg = str_ireplace("entry","value",$msg);
-            $msg = str_ireplace("key ","",$msg) ;
+            $msg = str_ireplace("key ","",$msg ) ;
           }
           return $msg;
       }
@@ -15,7 +15,7 @@
           $msg  = $exception->getMessage();
           $trace = $exception->getTrace();
           if($trace[0]["args"][0][1] == "1451"){
-            $msg = "$objName is in use.You cannot delete it.";
+            $msg = "$objName in use.You cannot delete it.";
           }
           return $msg;
       }

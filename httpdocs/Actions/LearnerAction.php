@@ -3,6 +3,7 @@
  require_once($ConstantsArray['dbServerUrl'] ."Managers/UserMgr.php");
  require_once($ConstantsArray['dbServerUrl'] ."Managers/LearningProfileMgr.php");
  require_once($ConstantsArray['dbServerUrl'] ."Managers/CustomFieldMgr.php");
+ require_once($ConstantsArray['dbServerUrl'] ."Utils/ErrorUtil.php");
     $call = "";
    if(isset($_POST["call"])){
         $call = $_POST["call"];    
@@ -90,7 +91,7 @@
             
         }catch(Exception $e){ 
             $success = 0;
-            $message  = "Exception During Save Learner : - " . $e->getMessage();   
+            $message  = ErrorUtil::checkDulicateEntryError($e);
         }
         $res = new ArrayObject(); 
         $res["success"]  = $success;
@@ -107,7 +108,7 @@
             $message = "Record Deleted successfully";
         }catch(Exception $e){
             $success = 0;
-            $message  = $e->getMessage();
+            $message  = ErrorUtil::checkReferenceError("Learner(s)",$e);
         }
         writeResponse($message,$success);
      }

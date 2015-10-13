@@ -34,7 +34,7 @@
         </div>
         <div class="ibox-content no-padding">
             <div class="summernote">
-                <h3>Enter text for Singnup form header</h3>
+                
             </div>
         </div>
         <div class="wrapper wrapper-content animated fadeIn mainDiv">
@@ -90,9 +90,7 @@
 <script type="text/javascript">
     $(document).ready(function(){
 
-        loadFieldBlocks();
-        loadSignupURL();
-        checkBindingCompleted();
+        
         $("#saveBtn").click(function(e){
             saveSignupfields(e,this);
         })
@@ -111,7 +109,9 @@
         });
         //enable draggable components
         WinMove();
-
+        loadFieldBlocks();
+        loadSignupURL();
+        checkBindingCompleted();
 
     })
     var edit = function() {

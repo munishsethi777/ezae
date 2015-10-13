@@ -439,13 +439,13 @@ class AdminMgr{
     }
     public function checkValidations($admin){
         if($this->isExist($admin,$admin->getUserName(),"username")){
-            throw new Exception("Administrator Username is already exist.");
+            throw new Exception(StringConstants::ADMIN_USERNAME_EXIST);
         }
         if($this->isExist($admin,$admin->getEmailId(),"emailid")){
-            throw new Exception("Administrator Email Address is already exist.");
+            throw new Exception(StringConstants::ADMIN_EMAIL_EXIST);
         } 
         if($this->isExist($admin,$admin->getMobileNo(),"mobileno")){
-            throw new Exception("Administrator Mobile no. is already exist.");
+            throw new Exception(StringConstants::ADMIN_MOBILE_EXIST);
         }       
     }
     private function isExist($admin,$value,$attrName){

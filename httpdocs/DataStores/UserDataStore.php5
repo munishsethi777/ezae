@@ -85,11 +85,9 @@
             $stmt->bindValue(':seq',$user->getSeq());
             $stmt->execute(); 
             $error = $stmt->errorInfo();
-            if($error[2] <> ""){
-                throw new Exception($error[2]);
-            }        
+            $this->throwException($error);
         }else{
-            $id = self::save($userObj);    
+            $id = $this->save($userObj);    
         }
         return $id;   
       }

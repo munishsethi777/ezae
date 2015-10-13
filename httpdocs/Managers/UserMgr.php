@@ -108,22 +108,28 @@ class UserMgr{
         //$jsonStr = str_replace($replace_keys, $value_arr, $json);
         return $json;
     }
-    private function getDataFieldsAndColumns($row){
+    private function getDataFieldsAndColumns($row,$isFirstRowContainsFields = false){
         $fullArr = array();
         $colArr = array();
         $dataFieldArr = array();
+        $i = 1;
         foreach ($row as $key => $value) {
             //if(!StringUtil::IsNullOrEmptyString($value)){
-                $dataFields = array();
-                $dataFields['name'] = $value;
-                $dataFields['type'] = "string";
-                array_push($dataFieldArr,$dataFields);
+            $dataFieldName = $value;
+            if(!$isFirstRowContainsFields){
+                $dataFieldName =  $i;      
+            }
+            $dataFields = array();
+            $dataFields['name'] = $dataFieldName;
+            $dataFields['type'] = "string";
+            array_push($dataFieldArr,$dataFields);
 
-                $col = array();
-                $col['text'] = $value;
-                $col['datafield'] = $value;
-                $col['width'] = 250;
-                array_push($colArr,$col);
+            $col = array();
+            $col['text'] = $value;
+            $col['datafield'] = $dataFieldName;
+            $col['width'] = 250;
+            array_push($colArr,$col);
+            $i++;
             //}
         }
         array_push($fullArr,$dataFieldArr);
@@ -134,7 +140,7 @@ class UserMgr{
         $rows = array();
         $learnersArr =  $sheetData;
         $fieldRow = $learnersArr[1];
-        $dataFieldAndColArr = $this->getDataFieldsAndColumns($fieldRow);
+        $dataFieldAndColArr = $this->getDataFieldsAndColumns($fieldRow,$isFirstRowContainsFields);
         $dataFields = $dataFieldAndColArr[0];
         $columns = $dataFieldAndColArr[1];
         if($isFirstRowContainsFields){

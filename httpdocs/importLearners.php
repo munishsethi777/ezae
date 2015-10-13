@@ -361,7 +361,12 @@
         var data = JSON.stringify(dataRows);
         $("#fieldData").val(fieldData);
         $("#data").val(data);
+        var obj = {
+          name: "isFirstRowContainFields",
+          value: $("#isfirstRowField")[0].checked
+        };
         matchingFormData = $("#matchingform").serializeArray();
+        matchingFormData.push(obj);
         var url = "Actions/CustomFieldAction.php?call=saveImportedFields";
         $.post(url,matchingFormData,function( data ){
             showResponseDiv(data,"mainDiv");

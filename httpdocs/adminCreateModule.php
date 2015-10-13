@@ -270,6 +270,7 @@
         });
         $("#cancelQues").click(function(e){
             $(".quizQuestionEditor").hide();
+            resetQuestionForm();
         });
         $("#moduleType").val("<?echo $moduleType?>").change(); 
         
@@ -312,7 +313,7 @@
         $("#feedback1").val("");
         $("#marks1").val("");
         for(var i =1;i<=optionsCount;i++){
-            removeOption(i);      
+            removeOption(i + 1);      
         }
        
     }
@@ -375,6 +376,7 @@
         }
        $('#createQuestionForm').jqxValidator('validate', validationResult);  
     }
+    
     function saveQuestion(e,btn){
          var l = Ladda.create(btn);
         l.start();
@@ -385,7 +387,7 @@
             if(obj.success == 1){
                selectAddedQuetion(obj.question);                  
             }else{
-                showResponseNotification(data,"mainDiv","createQuestionForm"); 
+                showNotificationMessage(data,"mainDiv","createQuestionForm"); 
             }
             if(btn.id == "saveQuesBtn"){
                 if(obj.success == 1){;
@@ -393,11 +395,25 @@
                     $(".quizQuestionEditor").hide();                   
                 }
             }else{
-                showResponseNotification(data,"mainDiv","createQuestionForm");
+                showNotificationMessage(data,"mainDiv","createQuestionForm");
             }
-
         })    
     }
+    
+    function showNotificationMessage(data,divClassName,formId){
+            removeMessagesDivs();
+            var obj = $.parseJSON(data);
+            var message = obj.message;
+            if(obj.success == 1){
+                var statusDiv = getStatusDiv(message)
+                $("." + divClassName).append(statusDiv);
+                resetQuestionForm();
+            }else{
+                var errorDiv = getErrorDiv(message);
+                $("." + divClassName).append(errorDiv);
+            }
+    }
+    
     function loadQuestion(){
          url = "Actions/ModuleAction.php?call=getQuestions";
          $.getJSON(url, function(data){
