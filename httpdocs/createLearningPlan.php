@@ -2,7 +2,6 @@
 <html>
 <head>
 <?include "ScriptsInclude.php";
-
 $name = "";
 $active ="";
 $inActive ="";
@@ -13,8 +12,10 @@ $isDeactivate="";
 $isEnableLeaderBoard="";
 $moduleIds = "";
 $lockSequence = "";
+$profileDisabled = "";
 if(isset($_POST["id"])){
     $id = $_POST["id"];
+   //$profileDisabled = "disabled";
 }
 if(isset($_POST["lpName"])){
     $name = $_POST["lpName"];
@@ -91,13 +92,8 @@ if(isset($_POST["moduleIds"])){
                                     <label class="col-sm-2 control-label">Profile</label>
                                         <div class="row">
                                             <div class="col-sm-3">
-                                                 <select class="form-control" id="profiles" name="profile" style="font-family: 'FontAwesome', Helvetica;">
-                                                    <option value="fa-medium">&#xf23a; Medium</option>
-                                                    <option value="fa-sellsy">&#xf213; Sellsy</option>
-                                                    <option value="fa-diamond">&#xf219; Diamond</option>
-                                                    <option value="fa-user-secret">&#xf21b; Secret</option>
-                                                    <option value="fa-venus">&#xf221; Venus</option></label>
-                                           </select>
+                                                 <select class="form-control" <?echo$profileDisabled?> id="profiles" name="profile">
+                                                 </select>
                                             </div>
 
                                  </div>
@@ -133,7 +129,7 @@ if(isset($_POST["moduleIds"])){
                                     </div>
                                 </div>
                                 <div class="ibox-title">
-                                    <h5>Selected Courses for learning plan(0 Selected)</h5>
+                                    <h5>Selected Module(s) for learning Plan</h5>
                                     <?include "SelectedModuleGridInclude.php"?>
 
                                     <select class="form-control chosen-modulesSelect" name="modulesSelect[]" id="modulesSelect" multiple></select>
@@ -182,9 +178,10 @@ if(isset($_POST["moduleIds"])){
 <script src="scripts/FormValidators/CreateLearningPlanValidations.js"></script>
 <script type="text/javascript">
     $(document).ready(function(){
+        populateProfiles();
         $('#activationDate').datetimepicker({step:5,format:"m/d/Y h:i A"});
         $('#deactiveDate').datetimepicker({step:5,format:"m/d/Y h:i A"});
-        populateProfiles();
+        
         $("#saveBtn").click(function(e){
             ValidateAndSave(e,this);
         });

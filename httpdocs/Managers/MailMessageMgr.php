@@ -45,7 +45,9 @@
             if(array_key_exists ($seq, $fullArr)){
                 $mmArr =  $fullArr[$seq];
                 $learningPlans = $mmArr["learningplans"] . " , " . $mailMessage["title"];
-                $lpSeqs = $mmArr["lpSeqs"] . "," . $lpSeqs;
+                if(!empty($lpSeqs)){
+                    $lpSeqs = $mmArr["lpSeqs"] . "," . $lpSeqs;   
+                }                
                 $moduleSeqs = $mmArr["moduleSeqs"] . "," . $moduleSeqs;
                 $mmArr["moduleSeqs"] = $moduleSeqs;
                 if(isset($mmArr["moduleNames"])){

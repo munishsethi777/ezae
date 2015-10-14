@@ -35,16 +35,19 @@
      }
     
     public function checkForModuleEnrolementNotification($moduleSeqs,$profileSeqs){
-        $userLearningProfiles = self::$userMgr->getUserLearningProfileByProfileSeq($profileSeqs);
-        $mailMessages = self::$mailMessageMgr->getMailMessageForModuleEnrollment($moduleSeqs);
-        $sendDate = new DateTime();
-        foreach($userLearningProfiles as $userLearningProfile){
-            $userSeq = $userLearningProfile->getUserSeq();
-            if(!empty($mailMessage)){
-                $this->saveMailMessageMail($mailMessage,$userSeq,$sendDate);
-            }
-        }
-                    
+        if(!empty($moduleSeqs)){
+            $userLearningProfiles = self::$userMgr->getUserLearningProfileByProfileSeq($profileSeqs);
+            $mailMessages = self::$mailMessageMgr->getMailMessageForModuleEnrollment($moduleSeqs);
+            $sendDate = new DateTime();
+            foreach($userLearningProfiles as $userLearningProfile){
+                $userSeq = $userLearningProfile->getUserSeq();
+                if(!empty($mailMessages)){
+                    foreach($mailMessages as $mailMessage){
+                        $this->saveMailMessageMail($mailMessage,$userSeq,$sendDate);    
+                    }                
+                }
+            }    
+        }          
     }
     
     public function checkForPariculerDateNotification($condition,$lerningPlanSeqs,$senddate){

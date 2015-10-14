@@ -25,7 +25,7 @@
                                         <input type="hidden" name="call" value="submitAnswer" />
                                         <input type="hidden" name="questionseq" value="<?echo $questionSeq?>"/>
                                         <input type="hidden" name="moduleseq" value="<?echo $module->getSeq()?>"/>
-                                        <input type="hidden" name="learningplanseq" value="<?echo $module->getSeq()?>"/>
+                                        <input type="hidden" name="learningplanseq" value="<?echo $learningPlanSeq?>"/>
                                         <input type="hidden" name="progress" id="progress"/>
                                     <table class="table table-hover table-mail">
                                         <tbody>

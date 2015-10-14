@@ -144,11 +144,11 @@ class ModuleMgr{
                     $arr["action"] = "Locked";
                 }else{
                     $lastLocked = false;
-                    $arr["action"] = '<a href="userTraining.php?id='.$arr['id'].'&lpid='. $value['learningplanseq'] .'" class="btn btn-white btn-sm"><i class="fa fa-folder"></i> View </a>';
+                    $arr["action"] = '<a href="userTrainingCustomModule.php?id='.$arr['id'].'&lpid='. $value['learningplanseq'] .'" class="btn btn-white btn-sm"><i class="fa fa-folder"></i> View </a>';
 
                 }
             }else{
-                $arr["action"] = '<a href="userTraining.php?id='.$arr['id'].'&lpid='. $value['learningplanseq'] .'" class="btn btn-white btn-sm"><i class="fa fa-folder"></i> View </a>';
+                $arr["action"] = '<a href="userTrainingCustomModule.php?id='.$arr['id'].'&lpid='. $value['learningplanseq'] .'" class="btn btn-white btn-sm"><i class="fa fa-folder"></i> View </a>';
             }
 
             array_push($mainArr,$arr);

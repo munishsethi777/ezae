@@ -10,8 +10,8 @@
     require_once($ConstantsArray['dbServerUrl'] ."Managers/ModuleMgr.php");
     require_once($ConstantsArray['dbServerUrl'] ."Managers/ActivityMgr.php");
     require_once($ConstantsArray['dbServerUrl'] ."Utils/SessionUtil.php5");
-    $learningPlanSeq = 2;//$_GET['lpid'];
-    $moduleId = 2;//$_GET['id'];
+    $learningPlanSeq = $_GET['lpid'];
+    $moduleId = $_GET['id'];
     $sessionUtil = SessionUtil::getInstance();
     $userSeq = intval($sessionUtil->getUserLoggedInSeq());
     $moduleMgr = ModuleMgr::getInstance();

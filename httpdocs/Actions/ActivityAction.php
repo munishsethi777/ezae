@@ -17,7 +17,7 @@
 
    if($call == "saveActivityData"){
         try{
-            $moduleSeq = $_GET['moduleId'];;
+            $moduleSeq = $_GET['moduleId'];
             $learningPlanSeq = $_GET['lpid'];
             $progress = $_GET['progress'];
             $score = $_GET['score'];

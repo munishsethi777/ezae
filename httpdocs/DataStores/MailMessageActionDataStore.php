@@ -33,9 +33,9 @@ class MailMessageActionDataStore extends BeanDataStore {
         }
         return null;        
      }
-     public function getMailMessageForOnModuleCompletion($learningPlanSeq){
+     public function getMailMessageForOnModuleCompletion($learningPlanSeq,$moduleSeq){
         $condition = MessageConditions::ON_COMPLETION;
-        $sql = "select * from mailmessageaction where learningplanseq = $learningPlanSeq and messagecondition like ('%$condition%') ";
+        $sql = "select * from mailmessageaction where learningplanseq = $learningPlanSeq and moduleseq = $moduleSeq and messagecondition like ('%$condition%') ";
         $mailMessage = self::executeQuery($sql);
         if(!empty($mailMessage)){
            return $mailMessage[0]; 
@@ -47,10 +47,10 @@ class MailMessageActionDataStore extends BeanDataStore {
         $condition = MessageConditions::ON_ENROLLMENT;
         $sql = "select * from mailmessageaction where moduleseq in ($moduleSeqs) and messagecondition like ('%$condition%') ";
         $mailMessage = self::executeQuery($sql);
-        if(!empty($mailMessage)){
-           return $mailMessage[0]; 
-        }
-        return null;        
+       // if(!empty($mailMessage)){
+//           return $mailMessage[0]; 
+//        }
+        return $mailMessage;        
      } 
 }
 ?>

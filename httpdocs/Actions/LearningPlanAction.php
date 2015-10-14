@@ -92,6 +92,15 @@ if($call == "saveLearningPlan"){
         $learningPlan->setIsSequenceLocked($isLockSequence);
         $learningPlanMgr = LearningPlanMgr::getInstance();
         $moduleIdArr = explode(",",$moduleIds);
+        $modules = $moduleIdArr;
+        $earlierModulesArr = array();
+        if(!empty($id)){
+            $earlierModules = $learningPlanMgr->getCoursesIdBylearnigPlanSeq($id);
+            if(!empty($earlierModules)){
+                $earlierModulesArr = explode(",",$earlierModules);
+            }
+            $modules = array_diff($moduleIdArr,$earlierModulesArr);   
+        }
         //nableModuleLeaderboard = 1;
        //enableLeaderboardArr = getArray($enableModuleLeaderboard);
         $id = $learningPlanMgr->saveLearningPlan($learningPlan,$moduleIdArr,null);
@@ -104,10 +113,14 @@ if($call == "saveLearningPlan"){
         $profileId = saveLearningPlanProfile($id);
         $message = "Learning Plan saved successfully.";
         $mailMessageUtil = MailMessageUtil::getInstance();
-        $mailMessageUtil->checkForModuleEnrolementNotification($moduleIdArr,$profileSeq);
+        $mailMessageUtil->checkForModuleEnrolementNotification($modules,$profileSeq);
     }catch(Exception $e){
         $success = 0;
         $message  = $e->getMessage();
+        $trace = $e->getTrace();
+        if($trace[0]["args"][0][1] == "1062"){
+            $message = StringConstants::DUPLICATE_LEARNING_PLAN;        
+        }
     }
     $response = new ArrayObject();
     $response["message"] = $message;

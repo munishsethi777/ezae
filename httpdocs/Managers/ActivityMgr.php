@@ -38,17 +38,18 @@ class ActivityMgr{
         $activity->setUserSeq($userSeq);
         $activity->setIsCompleted(0);
         $activity->setLearningPlanSeq($learningPlanSeq);
-        if($progres == 100 || $progres == "100"){
-            $activity->setIsCompleted(1);
-            $mailMessageMailUtils = MailMessageUtil::getInstance();
-            $mailMessageMailUtils->checkForModuleOnMarksNotification($learningPlanSeq,$moduleId,$score,$userSeq);
-            $mailMessageMailUtils->checkForModuleCompletedNotification($learningPlanSeq,$moduleId,$score,$userSeq);
-        }
         $existingActivity = $this->getActivityByUser($userSeq,$moduleId);
         if(!empty($existingActivity)){
             $activity->setSeq(intval($existingActivity->getSeq()));
             $activity->setScore($score + $existingActivity->getScore());      
         }
+        if(($progres == 100 || $progres == "100")){
+            $activity->setIsCompleted(1);
+            $mailMessageMailUtils = MailMessageUtil::getInstance();
+            $mailMessageMailUtils->checkForModuleOnMarksNotification($learningPlanSeq,$moduleId,$activity->getScore(),$userSeq);
+            $mailMessageMailUtils->checkForModuleCompletedNotification($learningPlanSeq,$moduleId,$score,$userSeq);
+        }
+
         $ads->saveActivityData($activity);
 
     }
