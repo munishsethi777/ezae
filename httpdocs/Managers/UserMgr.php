@@ -172,8 +172,8 @@ class UserMgr{
     public function Save($user,$isAjaxCall = false,$isChangePassword = false){
         $dataStore = UserDataStore::getInstance();
         $id = $dataStore->saveUser($user,$isChangePassword);
-        if($isAjaxCall){
-            $user->setSeq($id);
+        $user->setSeq($id);
+        if($isAjaxCall){           
             return $this->getSavedRowArray($user);
         }
         return $id;
@@ -262,6 +262,15 @@ class UserMgr{
         $count = $userDataStore->executeCountQuery($params);
         return $count > 0;
     }
+    
+    
+     public function isUserExist(){
+        $userDataStore = UserDataStore::getInstance();
+        $sessionUtil = SessionUtil::getInstance();
+        $companyseq = $sessionUtil->getAdminLoggedInCompanySeq();
+        $count = $userDataStore->isExist($companyseq);
+        return $count > 0;
+     }
 
     public function ChangePassword($password){
         $userDataStore = UserDataStore::getInstance();

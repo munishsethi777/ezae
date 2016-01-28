@@ -177,7 +177,11 @@
           $logger->info("Login Successful");
           $sessionUtil = SessionUtil::getInstance();
           $sessionUtil->createAdminSession($admin);
-          echo 1;
+          if($admin->getIsManager() == 1){
+             echo 2;
+          }else{
+             echo 1;    
+          }
       }else{
           $logger->info("Login Failure");
           echo 0;

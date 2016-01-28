@@ -1,6 +1,7 @@
 <?
     $cid = $_GET["cid"];
     $aid = $_GET["aid"];
+    $lpfId = $_GET["lpfId"];
 ?>
 <html>
 <head>
@@ -18,7 +19,8 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
-                <div class="ibox-title" id="formHeader">
+                <div class="ibox-title">
+                    <div class="col-lg-offset-2" id="formHeader"></div>
                     
                 </div>
                 <div class="ibox-content mainDiv">
@@ -26,10 +28,11 @@
                         <input type="hidden" value="signup" name="call">
                         <input type="hidden" value="<?echo $cid?>" name="cid">
                         <input type="hidden" value="<?echo $aid?>" name="aid">
+                        <input type="hidden" value="<?echo $lpfId?>" name="lpfId">
                         <div id="showSampleBlock">
                         </div>
                         <div class="row">
-                            <div class="col-sm-10">
+                            <div class="col-sm-10 col-lg-offset-3">
                                 <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveBtn" type="button">
                                 <span class="ladda-label">Sign up</span></button>
                             </div>
@@ -85,14 +88,21 @@
                     showResponseNotification(data,"mainDiv","SignupFieldForm");
                     l.stop();
                     if(obj.success == 1){
-                        window.setTimeout(function(){window.location.href = "UserDashboard.php"},500);
+                        window.setTimeout(function(){window.location.href = "userTrainings.php"},500);
                     }
                })
             }
          }
          $('#SignupFieldForm').jqxValidator('validate', validationResult);
     }
-
+     function getFieldHtml(label,name){
+         var input =  '<div class="form-group">'; 
+                      input += '<label class="col-sm-3 control-label">' + label + '</label>';
+                      input += '<div class="col-sm-5">';
+                      input += '<input type="text" id="'+  name + '" name="'+  name + '" placeholder="' + label + '"  class="form-control">';
+                      input += '</div></div>';
+                      return input;
+     }
     function loadForm(){
         var url = 'Actions/SignupFormAction.php?call=getSignupFormFields&aid=<?echo $aid;?>&cid=<?echo $cid;?>';
         $.get(url, function(data){
@@ -104,45 +114,91 @@
                 var matchingRules = obj.matchingrule;
                 var usernamefield = matchingRules.usernamefield;
                 var passwordfield = matchingRules.passwordfield;
+                var emailfield = matchingRules.emailfield; 
+                var datefieldIds = [];
+                 if(usernamefield == null){
+                     formHtml = getFieldHtml("UserName","default_username");
+                    var rule = { input: '#default_username', message:'Username is required!', action: 'keyup, blur', rule: 'required'};
+                           validationRules.push(rule);
+                           hasValidation = true; 
+                 }
+                 
+                 if(emailfield == null){
+                     formHtml += getFieldHtml("Email","default_email");  
+                      var rule = { input: '#default_email', message:'Email is required!', action: 'keyup, blur', rule: 'required'};
+                           validationRules.push(rule);
+                           hasValidation = true; 
+                 }
                  $.each(fields, function(id,fieldobj){
                     var inputs = fieldobj;
-                    var show = inputs[6];
+                    var show = inputs[7];
                     if(show == 1){
-                        var name = inputs[3];
-                        var type = inputs[4];
+                        var fieldName = inputs[3];
+                        var name = inputs[4];
+                        var type = inputs[5];
+                        fieldType = type;
                         var label = name;
-                        var id = name;
-                        if(name == usernamefield){
+                        var id = fieldName;
+                        if(fieldName == usernamefield){
                             label += " (UserName)";
                            
                         }
-                        if(name == passwordfield){
+                        if(fieldName == passwordfield){
                             label += " (Password)";
-                                                   }
-                        if(name == usernamefield && name == passwordfield){
+                        }
+                        if(fieldName == usernamefield && fieldName == passwordfield){
                             label = name;
                             label += " (UserName,Password)";
                         }
-                        var required = inputs[5];
+                        var required = inputs[6];
                         var input =  '<div class="form-group">';
                             input += '<label class="col-sm-3 control-label">' + label + '</label>';
                             input += '<div class="col-sm-5">';
-                            if(type == 'string' || type == 'numeric' || type == 'Text'){
-                                 type = 'text';
+                            fieldType = 'text';
+                            className = 'form-control';
+                            if(type == 'Yes/No' || type =="boolean"){
+                                 fieldType = 'checkbox';
+                                 className = "";
                             }
-                            input += '<input type="' + type + '" id="'+  id + '" name="'+  name + '" placeholder="' + name + '" class="form-control">';
+                            if(type == "Dropdown"){
+                                dropdown = '<select id="'+  id + '" name="'+  fieldName + '" class="' + className + '">';
+                                pValues = fieldobj.possiblevalues;
+                                pValues = pValues.split(/\n/);
+                                $.each(pValues, function(optVal,optText){
+                                    dropdown += '<option value="'+ optText + '">' + optText + '</option>';     
+                                });
+                                dropdown += '</select>';                                
+                                input += dropdown;
+                            }else{
+                                input += '<input type="' + fieldType + '" id="'+  id + '" name="'+  fieldName + '" placeholder="' + name + '"  class="' + className + '">';
+                            }
+                            
                             input += '</div></div>';
                        formHtml += input;
-                       
+                       if(type == "Date"){
+                           datefieldIds.push(name);
+                       }
                        if(required == 1 || name == usernamefield || name == passwordfield){
                            var rule = { input: '#' + id, message: name + ' is required!', action: 'keyup, blur', rule: 'required'};
+                           validationRules.push(rule);
+                           hasValidation = true;
+                       }
+                       if(type == "Numeric"){
+                           var rule = { input: '#' + id, message:'Numeric only !', action: 'keyup, blur', rule: 'number'};
                            validationRules.push(rule);
                            hasValidation = true;
                        }
                     }    
                  });
                 $("#formHeader").html(header);
+                if(passwordfield == null){
+                     formHtml += getFieldHtml("Password","default_password"); 
+                      var rule = { input: '#default_password', message:'Password is required!', action: 'keyup, blur', rule: 'required'};
+                           validationRules.push(rule);
+                           hasValidation = true; 
+                 }
                 $("#showSampleBlock").html(formHtml);
+                generateDateType(datefieldIds);
                 $('#SignupFieldForm').jqxValidator({
                     hintType: 'label',
                     animationDuration: 0,
@@ -153,5 +209,9 @@
                 });        
             });
     }
-
+    function generateDateType(fieldIds){
+         $.each(fieldIds, function(id,value){
+            $('#' + value).datetimepicker({step:5,format:"m/d/Y h:i A"});
+         });
+    }
 </script>

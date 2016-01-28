@@ -85,7 +85,7 @@
         </div>
 </body>
 </html>
-<script src="scripts/plugins/pace/pace.min.js"></script>
+
 
 <script type="text/javascript">
     $(document).ready(function(){
@@ -124,7 +124,7 @@
     function checkBindingCompleted(){
          var url = 'Actions/CustomFieldAction.php?call=isBindingCompleted';
             $.getJSON(url, function(data){
-                $("#bindingMsgDiv").html(data.message);    
+                //$("#bindingMsgDiv").html(data.message);    
            });
     }
     function loadSignupURL(){
@@ -160,33 +160,60 @@
         var divs = $("#customFieldsBlock").find("div.ibox:not(div.ibox div.ibox)")
         var formHtml = "";
         var validationRules = [];
+        var datefieldIds = [];
         $.each(divs, function(key,value){
             var div = value;
             var inputs = $("#" + div.id).find("input");
-            var show = inputs[4].checked;
+            var show = inputs[6].checked;
             if(show){
                 var name = inputs[1].value;
                 var type = inputs[2].value;
-                var required = inputs[3].checked;
+                var acutalName = inputs[3].value;
+                var pValues = inputs[4].value;
+                fieldType = type;
+                var id = acutalName;
+                var required = inputs[5].checked;
                 var input =  '<div class="form-group">';
                     input += '<label class="col-sm-3 control-label">' + name + '</label>';
                     input += '<div class="col-sm-9">';
-                    if(type == 'string' || type == 'numeric'){
-                         type = 'text';
+                    fieldType = 'text';
+                    className = 'form-control';
+                    if(type == 'Yes/No' || type =="boolean"){
+                         fieldType = 'checkbox';
+                         className = "";
                     }
-                    input += '<input type="' + type + '" id="'+  name + '" placeholder="' + name + '" class="form-control">';
+                    if(type == "Dropdown"){
+                        dropdown = '<select id="'+  id + '" name="'+  acutalName + '" class="' + className + '">';
+                        pValues = pValues.split(/\n/);
+                        $.each(pValues, function(optVal,optText){
+                            dropdown += '<option value="'+ optText + '">' + optText + '</option>';     
+                        });
+                        dropdown += '</select>';                                
+                        input += dropdown;
+                    }else{
+                        input += '<input type="' + fieldType + '" id="'+  id + '" name="'+  name + '" placeholder="' + name + '" class="' + className + '">';    
+                    }
+                    
+                    
                     input += '</div></div>'
                formHtml += input;
-               if(required){
-                var rule = { input: '#' + name, message: name + ' is required!', action: 'keyup, blur', rule: 'required'};
-                validationRules.push(rule);
+               if(type == "Date"){
+                    datefieldIds.push(name);
+               }
+               if(required && type !== "Dropdown"){
+                    var rule = { input: '#' + id, message: name + ' is required!', action: 'keyup, blur', rule: 'required'};
+                    validationRules.push(rule);
+               }
+               if(type == "Numeric"){
+                    var rule = { input: '#' + id, message:'Numeric only !', action: 'keyup, blur', rule: 'number'};
+                    validationRules.push(rule);
                }
 
             }
-
         });
         $("#formHeader").html($('.summernote').code());
         $("#showSampleBlock").html(formHtml);
+        generateDateType(datefieldIds)
         $('#showSampleModalForm').modal('show');
         $('#showSampleForm').jqxValidator({
             hintType: 'label',
@@ -198,5 +225,9 @@
             $("#showSampleForm-iframe").fadeIn('fast');
         });
     }
-
+    function generateDateType(fieldIds){
+         $.each(fieldIds, function(id,value){
+            $('#' + value).datetimepicker({step:5,format:"m/d/Y h:i A"});
+         });
+    }
 </script>

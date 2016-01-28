@@ -6,13 +6,14 @@
 <script type="text/javascript">
     $(document).ready(function (){
         theme = "arctic";
-        loadModulesCombo();
-        var value = $("#trainingsCombo").val();
-        var url = 'Actions/ActivityAction.php?call=getActivityHeadersForGrid&moduleSeq='+ value;
-        $.getJSON(url, function(data){
-            loadGrid(data,value);
-            loadColsList(data.columns);
-        });
+        loadLearningPlansCombo(); 
+       // loadModulesCombo();
+        //var value = $("#trainingsCombo").val();
+        //var url = 'Actions/ActivityAction.php?call=getActivityHeadersForGrid&moduleSeq='+ value;
+        //$.getJSON(url, function(data){
+            //loadGrid(data,value);
+            //loadColsList(data.columns);
+        //});
         
         var exportInfo;
         $("#excelExport").jqxButton({ theme: theme, width:200 });
@@ -29,7 +30,7 @@
         });
 
     });
-    function loadGrid(data,value){
+    function loadGrid(data,value,learningPlanSeq){
         var columns = Array();
         var rows = Array();
         var dataFields = Array();
@@ -43,7 +44,7 @@
             id: 'id',
             pagesize: 20,
             datafields: dataFields,
-            url : 'Actions/ActivityAction.php?call=getActivityDataForGrid&moduleSeq='+ value,
+            url : 'Actions/ActivityAction.php?call=getActivityDataForGrid&moduleSeq='+ value +'&lpSeq='+learningPlanSeq,
             root: 'Rows',
             cache: false,
             beforeprocessing: function(data)
@@ -64,7 +65,7 @@
         var dataAdapter = new $.jqx.dataAdapter(source);
         $("#jqxgrid").jqxGrid(
         {
-            theme:'arctic',
+           
             width: '100%',
             source: dataAdapter,
             filterable: true,
@@ -104,48 +105,105 @@
             $("#jqxgrid").jqxGrid('endupdate');
         });
     }
+    function loadLearningPlansCombo(){
+            var source =
+            {
+                datatype: "json",
+                datafields: [
+                { name: 'id'},
+                { name: 'title'}
+                ],
+                url: 'Actions/LearningPlanAction.php?call=getLearnerPlansForReporting',
+                async: true
+            };
 
-    function loadModulesCombo(){
-        var source =
-        {
-            datatype: "json",
-            datafields: [
-            { name: 'id'},
-            { name: 'title'}
-            ],
-            url: 'Actions/ModuleAction.php?call=getModulesForGrid',
-            async: false
-        };
+            var dataAdapter = new $.jqx.dataAdapter(source);
 
-        var dataAdapter = new $.jqx.dataAdapter(source);
+            $("#learningPlanComboBox").jqxComboBox({
+                source: dataAdapter,
+                width: '300',
+                height: 25,
+                selectedIndex: 0,
+                displayMember: 'title',
+                valueMember: 'id',
+                theme: 'arctic'
+            });
+            $('#learningPlanComboBox').on('change', function (event){
+                var args = event.args;
+                if (args) {
+                   var item = args.item;
+                   loadModulesCombo(item.value);
+                }
+            });
 
-        $("#trainingsCombo").jqxComboBox(
-        {
-            source: dataAdapter,
-            width: '100%',
-            height: 25,
-            selectedIndex: 0,
-            displayMember: 'title',
-            valueMember: 'id',
-            theme: 'arctic'
-        });
+        }
+        function loadModulesCombo(learningPlanSeq){
+            var source1 =
+            {
+                datatype: "json",
+                datafields: [
+                { name: 'id'},
+                { name: 'title'}
+                ],
+                url: 'Actions/ModuleAction.php?call=getModulesByLearningPlanForReporting&learningPlanSeq='+learningPlanSeq,
+                async: true
+            };
 
-        $('#trainingsCombo').on('change', function (event)
-        {
+            var dataAdapter1 = new $.jqx.dataAdapter(source1);
+
+            $("#trainingsCombo").jqxComboBox({
+                source: dataAdapter1,
+                width: '300',
+                height: 25,
+                selectedIndex: 0,
+                displayMember: 'title',
+                valueMember: 'id',
+                theme: 'arctic'
+            });
+            
+             $('#trainingsCombo').on('change', function (event)
+             {
             var args = event.args;
             if (args) {
                 var value = args.item.value;
                 var url = 'Actions/ActivityAction.php?call=getActivityHeadersForGrid&moduleSeq='+ value;
                 $.getJSON(url, function(data){
-                    loadGrid(data,value);
+                    learningPlanSeq = $("#learningPlanComboBox").jqxComboBox('getSelectedItem');
+                    loadGrid(data,value,learningPlanSeq.value);
                     loadColsList(data.columns);
                 });
 
             }
         });
-        $("#trainingsCombo").jqxComboBox('clearSelection');
-        $("#trainingsCombo").jqxComboBox('selectIndex', 0 );
-    }
+        
+        }
+   // function loadModulesCombo(){
+//        var source =
+//        {
+//            datatype: "json",
+//            datafields: [
+//            { name: 'id'},
+//            { name: 'title'}
+//            ],
+//            url: 'Actions/ModuleAction.php?call=getModulesForGrid',
+//            async: false
+//        };
+
+//        var dataAdapter = new $.jqx.dataAdapter(source);
+
+//        $("#trainingsCombo").jqxComboBox(
+//        {
+//            source: dataAdapter,
+//            width: '100%',
+//            height: 25,
+//            selectedIndex: 0,
+//            displayMember: 'title',
+//            valueMember: 'id',
+//            theme: 'arctic'
+//        });
+
+//       
+//    }
 
     //function not in use right now
     function loadModulesList(trainingsJson){
@@ -172,9 +230,13 @@
 <body class='default'>
 <div id="wrapper">
     <?include("adminMenu.php");?>
-    <div style="height:550px;">
-        <div class="col-sm-2">
-            <div style="margin-bottom:10px;" id="trainingsCombo"></div>
+    <div style="height:50px;"> 
+            <div style="float:left;margin-top:5px;margin-right:6px;">Learning Plan : </div>
+            <div style="float:left" id="learningPlanComboBox"></div>
+            <div style="float:left;margin-top:5px;margin-right:6px;">Module : </div>
+            <div style="float:left" id="trainingsCombo"></div>
+    </div>
+        <div class="col-sm-2">    
             <div id="jqxUserCustomFieldslistbox"></div>
         </div>
         <div class="col-sm-10">

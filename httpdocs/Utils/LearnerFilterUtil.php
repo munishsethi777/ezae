@@ -44,6 +44,7 @@
                 {
                     usort($fullArr, function($a, $b)
                     {
+                      if(array_key_exists($_GET['sortdatafield'],$a) && array_key_exists($_GET['sortdatafield'],$b))
                         return strcmp($b[$_GET['sortdatafield']], $a[$_GET['sortdatafield']]);
                     });
                 }
@@ -51,6 +52,7 @@
                 {
                     usort($fullArr, function($a, $b)
                     {
+                        if(array_key_exists($_GET['sortdatafield'],$a) && array_key_exists($_GET['sortdatafield'],$b))
                         return strcmp($a[$_GET['sortdatafield']], $b[$_GET['sortdatafield']]);
                     });
                 }            
@@ -250,6 +252,9 @@
                         }
                         $flag = false;
                         // build the "WHERE" clause depending on the filter's condition, value and datafield.
+                        if(!array_key_exists($filterdatafield,$customFields)){
+                            continue;
+                        }
                         $value = $customFields[$filterdatafield];
                         $value = strtolower($value);
                         $filtervalue = strtolower($filtervalue);

@@ -77,7 +77,6 @@
             {
                   return dataAdapter.records;
             }
-
         });
     }
 
@@ -104,7 +103,7 @@
                 datafields:
                 [
                     { name: 'username', type: 'string' },
-                    { name: 'progress', type: 'string' },
+                    { name: 'progress', type: 'numeric' },
                     { name: 'score', type: 'string' },
                     { name: 'dateofplay', type: 'string' }
                 ]
@@ -119,7 +118,7 @@
                 sortable: true,
                 columns: [
                   { text: 'UserName', datafield: 'username', width: '20%' },
-                  { text: 'Progress', datafield: 'progress', width: '20%', cellsalign: 'right' },
+                  { text: 'Progress', datafield: 'progress', width: '20%', cellsalign: 'right'},
                   { text: 'Score', datafield: 'score', width: '20%', cellsalign: 'right' },
                   { text: 'Date Of Play', datafield: 'dateofplay', width: '40%' }
                 ]

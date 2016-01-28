@@ -195,6 +195,8 @@ if(isset($_POST["sendOnDate"]) && $_POST["sendOnDate"] != ""){
     </div>
 </body>
 </html>
+<!--ckeditor-->
+<script src="scripts/plugins/ckeditor/ckeditor.js"></script>
 <script src="scripts/FormValidators/CreateMessageValidations.js"></script>
 <script type="text/javascript">
     $(document).ready(function(){

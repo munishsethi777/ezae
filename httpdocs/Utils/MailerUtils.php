@@ -16,19 +16,25 @@ class MailerUtils{
         $problemDetails = $GET['problemDetails'];
 
         $txt = "Name: ". $name;
-        $txt .= "\nEmployeeId: ". $employeeId;
-        $txt .= "\nWork Location: ". $workLocation;
-        $txt .= "\nInternet Speed: ". $internetSpeed;
-        $txt .= "\nYour Location: ". $yourLocation;
-        $txt .= "\nPhone No: ". $phoneNo;
-        $txt .= "\nEmail Id: ". $emailId;
-        $txt .= "\nProblem: ". $problemDetails;
+        $txt .= "<br/>EmployeeId: ". $employeeId;
+        $txt .= "<br/>Work Location: ". $workLocation;
+        $txt .= "<br/>Internet Speed: ". $internetSpeed;
+        $txt .= "<br/>Your Location: ". $yourLocation;
+        $txt .= "<br/>Phone No: ". $phoneNo;
+        $txt .= "<br/>Email Id: ". $emailId;
+        $txt .= "<br/>Problem: ". $problemDetails;
 
-        $to = "munishsethi777@gmail.com";
+        $to = "baljeetgaheer@gmail.com";
         $subject = "Contact Form at EZAE.IN";
         $headers = "From: noreply@ezae.in" . "\r\n" .
-    "CC: amandeepdubey@gmail.com";
-        mail($to,$subject,$txt,$headers);
+    "CC: baljeetgaheer@gmail.com@gmail.com";
+        $mailMessage = new MailMessage();
+        $mailMessage->setMessage($txt);
+        $mailMessage->setSubject("Contact Form at EZAE.IN");
+        $user = new User();
+        $user->setEmailId($to);
+        $user->setUserName($name);
+        MailerUtils::sendMandrillEmailNotification($mailMessage,$user);
         return true;
     }
 

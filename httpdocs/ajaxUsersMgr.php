@@ -47,7 +47,7 @@
   }
 
   if($call == "submitContactForm"){
-      $bool = MailerUtils::sendContactEmail($_GET);
+      $bool = MailerUtils::sendContactEmail($_POST);
       if($bool){
           echo "Your ticket has been successfully submitted. We will get back to you shortly";
       }

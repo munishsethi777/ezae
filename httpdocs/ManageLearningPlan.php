@@ -34,6 +34,7 @@
         <input type="hidden" id="moduleIds" name="moduleIds"/>
         <input type="hidden" id="isEnabledLeaderboard" name="isEnabledLeaderboard"/>
         <input type="hidden" id="lockSequence" name="lockSequence"/>
+        <input type="hidden" id="profileId" name="profileId"/>
     </form>
 </body>
 </html>
@@ -65,6 +66,7 @@
                 { name: 'activateon', type: 'date' },
                 { name: 'isactive', type: 'boolean' },
                 { name: 'moduleIds', type: 'string' },
+                { name: 'profileId', type: 'string' },
                 { name: 'isdeactivate', type: 'boolean' },
                 { name: 'isenableleaderboard', type: 'boolean' },
                 { name: 'lockSequence', type: 'boolean' },
@@ -166,7 +168,7 @@
                     $("#isDeactivate").val(row.isdeactivate);
                     $("#isEnabledLeaderboard").val(row.isenableleaderboard);
                     $("#moduleIds").val(row.moduleIds);
-
+                    $("#profileId").val(row.profileId);
                     $("#form1").submit();
                 });
                 // delete row.

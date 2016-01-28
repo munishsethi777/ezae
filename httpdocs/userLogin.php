@@ -1,10 +1,11 @@
+ <?include "ScriptsInclude.php"?>
 <!DOCTYPE html>
 <html>
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Administration - Easy Assessment Engine</title>
-        <?include "ScriptsInclude.php"?>
+       
         <script type="text/javascript">
             $(document).ready(function () {
                 //$('.form-control').jqxInput({  });
@@ -18,20 +19,39 @@
                            ]
                 });
                 //$('#loginButton').jqxButton({ width: 100, height: 25 });
+                
                 $("#loginButton").click(function (e) {
                     var btn = this;
+                    validateAndSave(e,btn);
+                });
+                $("#userLoginForm").on('validationSuccess', function () {
+                    $("#userLoginForm-iframe").fadeIn('fast');
+                });
+                $('#usernameInput').keypress(function (e) {
+                    btn = $("#loginButton")[0];
+                    if (e.which == 13) {
+                        validateAndSave(e,btn);
+                        return false;
+                    }
+                })
+                $('#passwordInput').keypress(function (e) {
+                    btn = $("#loginButton")[0];
+                    if (e.which == 13) {
+                        validateAndSave(e,btn);
+                        return false;
+                    }
+                })
+            });
+            function validateAndSave(e,btn){
+                 
+                
                     var validationResult = function (isValid) {
                         if (isValid) {
                             submitLogin(e,btn);
                         }
                     }
-                    $('#userLoginForm').jqxValidator('validate', validationResult);
-                });
-                $("#userLoginForm").on('validationSuccess', function () {
-                    $("#userLoginForm-iframe").fadeIn('fast');
-                });
-            });
-
+                    $('#userLoginForm').jqxValidator('validate', validationResult);    
+            }
             function submitLogin(e,btn){
                 e.preventDefault();
                 var l = Ladda.create(btn);
@@ -40,7 +60,7 @@
                       l.stop();
                       var obj = $.parseJSON(data);
                       if(obj.success == 1){
-                            window.location = "UserDashboard.php";
+                            window.location = "userTrainings.php";
                       } else{
                           showResponseNotification(data,"mainDiv","userLoginForm");
                       }
@@ -79,7 +99,8 @@
                     </div>
                   </div>
                 </form>
-                <a href="forgotPassword.php">Forgot Password</a><br/>
+                <a href="forgotUserPassword.php">Forgot Password</a><br/>
+                <a href="userContactUs.php">Contact Us</a><br/>
             </div>
         </div>
 

@@ -107,6 +107,7 @@ class AdminMgr{
             $arr = array();
             $arr['id'] = $user["seq"]; 
             $arr['username'] = $user["username"];
+            $arr['password'] = $user["password"];
             $arr['emailid'] = $user["emailid"];
             $profile = $userMgr->getUserLearningProfiles($user["seq"]);            
             $arr['prof_profiles'] = implode("," , $profile[1]);
@@ -178,8 +179,15 @@ class AdminMgr{
     public function getActivitiesGridHeardersJSON($companySeq,$moduleSeq){
         $userFieldsJSON = $this->getUserAllFieldsJsonByCompany($companySeq);
         $userFieldsArr = json_decode($userFieldsJSON);
-        unset($userFieldsArr[1]);//removing password field
-
+        unset($userFieldsArr[0]);//removing id field
+        unset($userFieldsArr[5]);//removing profileseq field
+        $searchedValue = "lastmodifiedon";
+        $neededObject = array_filter($userFieldsArr,
+        function ($e) use (&$searchedValue) {
+            return $e->datafield == $searchedValue;
+        }
+        );
+        unset($userFieldsArr[key($neededObject)]);
         $arr = array();
         $arr['text'] = "Progress";
         $arr['datafield'] = "progress";
@@ -198,9 +206,11 @@ class AdminMgr{
         return json_encode($mainJsonArray);
     }
     
-    public function getActivitiesGridJSON($companySeq,$moduleSeq){
+    public function getActivitiesGridJSON($companySeq,$moduleSeq,$lpSeq){
         $activityDS = ActivityDataStore::getInstance();
-        $data = $activityDS->getUsersActivity($moduleSeq,$companySeq,true);
+        $activityMgr = ActivityMgr::getInstance();
+        $userSeqs = $activityMgr->getUserSeqsByCustomFieldCriteria();
+        $data = $activityDS->getUsersActivity($moduleSeq,$companySeq,$lpSeq,$userSeqs,true);
         $fullArr = array();
         $pagination = LearnerFilterUtil::getPagination();
         $start = $pagination["start"];
@@ -211,7 +221,8 @@ class AdminMgr{
             $arr = array();
             $arr['id'] = $dataArr['seq'];
             $arr['username'] = $dataArr['username'];
-            //$arr['password'] = $dataArr['password'];
+            $arr['password'] = $dataArr['password'];
+            $arr['emailid'] = $dataArr['emailid'];
             $profile = $userMgr->getUserLearningProfiles($dataArr['seq']);
             $arr['prof_profiles'] = implode(",",$profile[1]);
             $arrCustomFields = ActivityMgr::getCustomValuesArray($dataArr['customfieldvalues']);
@@ -224,6 +235,7 @@ class AdminMgr{
             $arr = array_merge($arr,$arrCustomFields);
             $arr['score'] = $dataArr['score'];
             $arr['progress'] = $dataArr['progress'];
+            $arr["lastmodifiedon"] = $dataArr["lastmodifiedon"];
             array_push($fullArr,$arr);
             $count++;
         }
@@ -349,6 +361,12 @@ class AdminMgr{
     private static function getUserFieldsGridHeadersJSON($customFields,$isOnlyCustomFields = false){
         $fullArr = array();
         if($isOnlyCustomFields == false){
+            $mappingMgr  = MatchingRuleMgr::getInstance();
+            $mapping = $mappingMgr->getMatchingRule();
+            $userNameMapping = $mapping->getUserNameField();
+            $passwordMapping = $mapping->getPasswordField();
+            $emailMapping = $mapping->getEmailField();
+            
             $arr = array();
             $arr['text'] = "id";
             $arr['datafield'] = "id";
@@ -357,25 +375,32 @@ class AdminMgr{
             array_push($fullArr,$arr);
             
            
-           
-            $arr = array();
-            $arr['text'] = "User name";
-            $arr['datafield'] = "username";
-            $arr['type'] = "string";
-            array_push($fullArr,$arr);
-
-            $arr = array();
-            $arr['text'] = "Password";
-            $arr['datafield'] = "password";
-            $arr['type'] = "string";
-            array_push($fullArr,$arr);
-
-            $arr = array();
-            $arr['text'] = "EmailId";
-            $arr['datafield'] = "emailid";
-            $arr['type'] = "string";
-            array_push($fullArr,$arr);
             
+                $arr = array();
+                $arr['text'] = "User name";
+                $arr['datafield'] = "username";
+                $arr['type'] = "string";
+                array_push($fullArr,$arr);    
+          
+           
+           
+                $arr = array();
+                $arr['text'] = "Password";
+                $arr['datafield'] = "password";
+                $arr['type'] = "string";
+                array_push($fullArr,$arr);
+            
+            
+            
+          
+          
+                $arr = array();
+                $arr['text'] = "EmailId";
+                $arr['datafield'] = "emailid";
+                $arr['type'] = "string";
+                array_push($fullArr,$arr);
+           
+           
             $arr = array();
             $arr['text'] = "Profiles";
             $arr['datafield'] = "prof_profiles";
@@ -398,14 +423,17 @@ class AdminMgr{
             $arr = array();
             $arr['text'] = $field->getTitle();
             $prefix = "cus_";
-            $arr['datafield'] = $prefix . $field->getName();
-            $arr['type'] = $field->getFieldType();
-            $arr['filtertype'] = "custom";
-            if($field->getFieldType() == "date"){
-                $arr['cellsformat'] = "d";
-                //$arr['filtertype'] = "date";
+            if($field->getName() != $userNameMapping && $field->getName() != $passwordMapping && $field->getName() != $emailMapping ){
+                $arr['datafield'] = $prefix . $field->getName();
+                $arr['type'] = $field->getFieldType();
+                $arr['filtertype'] = "custom";
+                if($field->getFieldType() == "date"){
+                    $arr['cellsformat'] = "d";
+                    //$arr['filtertype'] = "date";
+                }
+                array_push($fullArr,$arr);    
             }
-            array_push($fullArr,$arr);
+            
         }
             $arr = array();
             $arr['text'] = "Modified On";

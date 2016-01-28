@@ -10,7 +10,7 @@ if(isset($_POST["id"])){
     $id = $_POST["id"];
 }
 if(isset($_POST["username"])){
-    $userName = $_POST["username"];
+    $mgrName = $_POST["username"];
 }
 if(isset($_POST["password"])){
     $password = $_POST["password"];
@@ -46,7 +46,7 @@ if(isset($_POST["mobile"])){
                                 <input type="hidden" id="call" name="call" value="saveAdminMgr">
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">UserName</label>
-                                    <div class="col-sm-4"><input type="text" name="username" value="<?echo $userName?>" id="username" class="form-control"></div>
+                                    <div class="col-sm-4"><input type="text" name="username" value="<?echo $mgrName?>" id="username" class="form-control"></div>
 
                                     <label class="col-sm-2 control-label">Password</label>
                                     <div class="col-sm-4"><input type="text" name="password" value="<?echo $password?>" id="password" class="form-control"></div>
@@ -262,7 +262,7 @@ if(isset($_POST["mobile"])){
             var values = data.names
             var options = "<option value='0'>Select Option</option>";
             $.each(values, function(index , value){
-                  options += "<option value='" + value + "'>" + value + "</option>";
+                  options += "<option value='" + value.name + "'>" + value.title + "</option>";
             });
             $("#cusFieldNameDD").html(options);
             $customFieldSelectHtml = options;

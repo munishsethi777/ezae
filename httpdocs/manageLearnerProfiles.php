@@ -64,12 +64,23 @@
                   }
              })
      }
-
+    function openSignupUrl(id){
+        $.get("Actions/LearningProfileAction.php?call=getSignupFormURL&id="+id,function(data){
+               window.open(data);  
+        });
+    }
     function loadGrid(){
+         var actions = function (row, columnfield, value, defaulthtml, columnproperties) {
+                data = $('#jqxgrid').jqxGrid('getrowdata', row);
+                var html = "<div style='text-align: center; margin-top: 5px;'>";
+                    html +="<a href='javascript:openSignupUrl("+ data['id'] + ")' ><i class='fa fa-link' title='Open Signup Form'></i></div></a>";
+                return html;
+        }
         var columns = [
           { text: 'id', datafield: 'id' , hidden:true},
+          { text: 'Signup URL' , datafield: 'urlAction', width: '8%',cellsrenderer:actions},  
           { text: 'Profile Name' , datafield: 'tag', width: '20%'},
-          { text: 'Description', datafield: 'description', width: '40%'},
+          { text: 'Description', datafield: 'description', width: '42%'},
           { text: 'Icon', datafield: 'awesomefontid', width: '10%'},
           { text: 'Modified On', datafield: 'lastmodifiedon' ,cellsformat: 'MM-dd-yyyy hh:mm:ss tt' }
         ]
@@ -86,6 +97,7 @@
             //localData: rows,
             datafields: [
                 { name: 'id', type: 'integer' },
+                { name: 'signupUrl', type: 'string' },
                 { name: 'tag', type: 'string' },
                 { name: 'description', type: 'string' },
                 { name: 'awesomefontid', type: 'string' },
@@ -103,6 +115,7 @@
             }
         };
         var dataAdapter = new $.jqx.dataAdapter(source);
+       
         $("#jqxgrid").jqxGrid(
         {
             width: '100%',
@@ -124,17 +137,18 @@
                 var addButton = $("<div style='float: left; margin-left: 5px;'><i class='fa fa-plus-square'></i><span style='margin-left: 4px; position: relative;'>    Add</span></div>");
                 var deleteButton = $("<div style='float: left; margin-left: 5px;'><i class='fa fa-times-circle'></i><span style='margin-left: 4px; position: relative;'>Delete</span></div>");
                 var editButton = $("<div style='float: left; margin-left: 5px;'><i class='fa fa-edit'></i><span style='margin-left: 4px; position: relative;'>Edit</span></div>");
-
+                var generateRegURLButton = $("<div style='float: left; margin-left: 5px;'><i class='fa fa-edit'></i><span style='margin-left: 4px; position: relative;'>Registration URL</span></div>");
 
                 container.append(addButton);
                 container.append(editButton);
                 container.append(deleteButton);
+                container.append(generateRegURLButton);
 
                 statusbar.append(container);
                 addButton.jqxButton({  width: 65, height: 18 });
                 deleteButton.jqxButton({  width: 70, height: 18 });
                 editButton.jqxButton({  width: 65, height: 18 });
-
+                generateRegURLButton.jqxButton({  width: 150, height: 18 }); 
 
                 // create new row.
                 addButton.click(function (event) {
@@ -254,7 +268,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                          </div>
                     </div>
                 </div>
             </div>

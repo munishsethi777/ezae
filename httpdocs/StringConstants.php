@@ -20,5 +20,10 @@
       //ExportOption
       const ALL_ROWS = "allRows";
       const SELECTED_ROWS = "selectedRows";
+      
+      const DEFAULT_USERNAME_FIELDNAME = "default_username";
+      const DEFAULT_PASSWORD_FIELDNAME = "default_password";
+      const DEFAULT_EMAIL_FIELDNAME = "default_email";
+      
   }
 ?>

@@ -42,6 +42,7 @@ if(!file_exists ($path)){
     $notificaitons = null;
     $company = null;
     $adminManagers = null;
+    $companyProfile = null;
 
     if($page == "dashboard.php"){
         $dashboard = "active";
@@ -97,9 +98,12 @@ if(!file_exists ($path)){
     }
     elseif($page == "notifications.php"){
         $notificaitons = "active";
-    }elseif($page == "adminManagers.php"){
+    }elseif($page == "manageAdminManagers.php"){
         $company = "active";
         $adminManagers = "active";
+    }elseif($page == "AdminSettings.php"){
+        $company = "active";
+        $companyProfile = "active";
     }
 
 ?>
@@ -184,9 +188,9 @@ if(!file_exists ($path)){
                         <li class="<?=$company?>">
                             <a href="#"><i class="fa fa-life-ring"></i> <span class="nav-label">Company</span><span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
-                                <li><a href="form_basic.html">Company Profile</a></li>
+                                <li class="<?=$companyProfile?>"><a href="AdminSettings.php">Company Profile</a></li>
                                 <!--<li><a href="form_advanced.html">Administrators</a></li>-->
-                                <li class="<?=$adminManagers?>"><a href="adminManagers.php">Managers</a></li>
+                                <li class="<?=$adminManagers?>"><a href="manageAdminManagers.php">Managers</a></li>
                             </ul>
                         </li>
                     <?}?>

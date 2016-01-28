@@ -207,9 +207,11 @@
                             var names = [];
                             $("#profileSelect").val("");
                             $.each(selectedRowIndexes, function(index , value){
-                                var dataRow = $("#learnersGrid").jqxGrid('getrowdata', value);
-                                names.push(dataRow.username);
-                                i++;
+                                if(value != -1){
+                                    var dataRow = $("#learnersGrid").jqxGrid('getrowdata', value);
+                                    names.push(dataRow.username);
+                                    i++;
+                                }
                             });
                             $("#learnerNamesDiv").html(names.join(", "));
                             var values = []
@@ -293,7 +295,9 @@
             });
             var selectedIndexes  = $("#learnersGrid").jqxGrid('selectedrowindexes');
             $.each(selectedIndexes,function(key,value){
-                ids.push($("#learnersGrid").jqxGrid('getrowid',value));
+                if(value != -1){
+                    ids.push($("#learnersGrid").jqxGrid('getrowid',value));
+                }
             })
             $("#ids").val(ids);
             $('#setProfileForm').ajaxSubmit(function( data ){

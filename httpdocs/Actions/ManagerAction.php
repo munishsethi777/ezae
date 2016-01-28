@@ -61,7 +61,7 @@
             $admin = new Admin();
             $admin->setCompanySeq($companySeq);
             $admin->setName($name);
-            $admin->setUserName($name);
+            $admin->setUserName($userName);
             $admin->setPassword($password); //TODO -- save encrypted password --
             $admin->setEmailId($email);
             $admin->setMobileNo($mobile);

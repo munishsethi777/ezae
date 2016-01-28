@@ -83,18 +83,29 @@
    if($call == "saveCustomField"){
         $id = $_GET["id"];
         $fieldName = $_GET["fieldName"];
+        $name = $_GET["cusname"];
         $fieldType = $_GET["fieldType"];
         $mappedField = $_GET["mappedField"];
+        $possibleValues = $_GET["possibleValues"];
         $customField = new UserCustomField();
         $customField->setSeq(intval($id));
         $customField->setTitle($fieldName);
-        $name =  str_replace(" ","_",trim($fieldName));
+        $userMgr = UserMgr::getInstance();
+        $isUserExist = $userMgr->isUserExist(); 
+        if(!$isUserExist || empty($name)){
+            $name =  str_replace(" ","_",trim($fieldName));
+                
+        }
         $customField->setName($name);
         $customField->setFieldType($fieldType);
         $adminSeq =  $sessionUtil->getAdminLoggedInSeq();
         $customField->setCompanySeq($companySeq);
         $customField->setAdminSeq($adminSeq);
         $customField->setLastModifiedOn(new DateTime());
+        if($fieldType != "Dropdown"){
+            $possibleValues = "";
+        }
+        $customField->setPossibleValues($possibleValues);
         $dataRow = "";
         try{
             $customFieldMgr = CustomFieldMgr ::getInstance();
@@ -115,7 +126,7 @@
             if(!empty($arr)){
                 $attribute = implode(",",$arr);    
             }            
-            saveOrUpdateMatchingRules($value,$attribute,$mappedField);
+            saveOrUpdateMatchingRules($name,$attribute,$mappedField);
             $dataRow["mappedfield"] = $attribute;
             $dataRow = json_encode($dataRow);
             $message  = "Custom Field Saved Sucessfully";
@@ -151,7 +162,13 @@
        // $json = json_encode($response);
         echo $customfields;
     }
-
+     if($call == "isUserExist"){
+         $userMgr = UserMgr::getInstance();
+         $isExist = $userMgr->isUserExist();
+         echo$isExist;
+         return;
+     }
+     
     if($call == "isCustomFieldsExists"){
      $isExist = 0;
      try{

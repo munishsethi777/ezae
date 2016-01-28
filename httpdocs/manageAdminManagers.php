@@ -20,8 +20,8 @@
         function loadGrid(data){
             var columns = [
               { text: 'id', datafield: 'id' , hidden:true},
-              { text: 'UserName' , datafield: 'username', width: 250 },
               { text: 'Name', datafield: 'name' },
+              { text: 'User Name' , datafield: 'username', width: 250 },              
               { text: 'Password', datafield: 'password'},
               { text: 'Email', datafield: 'emailid'}
             ]

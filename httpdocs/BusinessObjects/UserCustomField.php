@@ -2,7 +2,7 @@
 
   class UserCustomField{
       public static $tableName = "usercustomfields";
-      private $seq,$companyseq,$name,$title,$fieldtype,$adminseq,$lastmodifiedon;
+      private $seq,$companyseq,$name,$title,$fieldtype,$adminseq,$lastmodifiedon,$possiblevalues;
  
       public function setSeq($seq_){
         $this->seq = $seq_;
@@ -54,6 +54,13 @@
       }
       public function getLastModifiedOn(){
          return $this->lastmodifiedon;
+      }
+      
+      public function setPossibleValues($possibleValues_){
+          $this->possiblevalues = $possibleValues_;
+      }
+      public function getPossibleValues(){
+          return $this->possiblevalues;
       }
 
   }

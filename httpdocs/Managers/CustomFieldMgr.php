@@ -38,13 +38,15 @@ require_once($ConstantsArray['dbServerUrl']. "Utils/CustomFieldsFormGenerator.ph
         $arr = array();
         $title = $customField->getTitle();
         $arr['id'] = $customField->getSeq();
-        $arr['name'] = $title;
+        $arr['name'] = $customField->getName();
         $arr['type'] = $customField->getFieldType();
         $arr['lastmodifiedon'] = $customField->getLastModifiedOn();
         $matchinRuleMgr = MatchingRuleMgr::getInstance();
-        $mappedField = $matchinRuleMgr->findNameForCustomfield($customField->getTitle());
+        $mappedField = $matchinRuleMgr->findNameForCustomfield($customField->getName());
         $arr["mappedfield"] = $mappedField;
         $arr['title'] = $title;
+        $arr['label'] = $title;
+        $arr['possiblevalues'] = $customField->getPossibleValues();
         $fields = array();
         if (strpos($mappedField,'usernamefield') !== false) {
             array_push($fields,"UserName");
@@ -56,7 +58,7 @@ require_once($ConstantsArray['dbServerUrl']. "Utils/CustomFieldsFormGenerator.ph
              array_push($fields,"Email");            
         }
         if(!empty($fields)){
-            $arr['title']  = $title . " (" . implode(", ",$fields) . ")";
+            $arr['label']  = $title . " (" . implode(", ",$fields) . ")";
         }
         return $arr;     
     }
@@ -69,8 +71,11 @@ require_once($ConstantsArray['dbServerUrl']. "Utils/CustomFieldsFormGenerator.ph
             $arr = $this->getJson($customField);
             array_push($fullArr,$arr);
         }
+        $sessionUtil = SessionUtil::getInstance();
+        $companySeq = $sessionUtil->getAdminLoggedInCompanySeq();
+        $colVal["companyseq"] = $companySeq;
         $gridData["Rows"] = $fullArr;
-        $gridData["TotalRows"] = $dataStore->executeCountQuery(null,$isApplyFilter);
+        $gridData["TotalRows"] = $dataStore->executeCountQuery($colVal,$isApplyFilter);
         return json_encode($gridData);
      }
 
@@ -92,14 +97,18 @@ require_once($ConstantsArray['dbServerUrl']. "Utils/CustomFieldsFormGenerator.ph
         $params = array();
         $attributes = array();
         array_push($attributes,"title");
+        array_push($attributes,"name");
         $params['adminseq'] = $adminSeq;
         $params['companyseq'] = $companyseq;
-        $titles = $dataStore->executeAttributeQuery($attributes,$params);
+        $titleAndNames = $dataStore->executeAttributeQuery($attributes,$params);
         $titleArr = array();
-        foreach($titles as $arr ){
-            array_push($titleArr,$arr[0]);
+        $mainArr = array();
+        foreach($titleAndNames as $arr ){
+            $titleArr["title"] = $arr["title"];
+            $titleArr["name"] = $arr["name"];
+            array_push($mainArr,$titleArr);
         }
-        return $titleArr;
+        return $mainArr;
     }
     //Calling From CustomFieldAction For show the values on adminManagers.php
     public function getCustomFieldValuesByName($customFieldName,$adminSeq){

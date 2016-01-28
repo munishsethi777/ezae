@@ -3,6 +3,7 @@ require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/Company.php");
 require_once($ConstantsArray['dbServerUrl'] ."Managers/AdminMgr.php");
 require_once($ConstantsArray['dbServerUrl'] ."DataStores/CompanyDataStore.php");
 require_once($ConstantsArray['dbServerUrl'] ."Utils/SessionUtil.php5");
+require_once($ConstantsArray['dbServerUrl'] ."Utils/SecurityUtil.php");
 require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/CompanyModule.php");
 class CompanyMgr{
 
@@ -53,6 +54,17 @@ class CompanyMgr{
         $adminMgr->saveAdmin($admin,$id);
     }
     
+    public function getSignUpUrl($appUrl){
+        $sessionUtil = SessionUtil::getInstance();
+        $adminSeq = $sessionUtil->getAdminLoggedInSeq();
+        $companySeq = $sessionUtil->getAdminLoggedInCompanySeq();
+        $url = $appUrl;
+        $url .= "/userSignup.php?aid=";
+        $url .= SecurityUtil::Encode($adminSeq);
+        $url .= "&cid=";
+        $url .= SecurityUtil::Encode($companySeq);        
+        return $url;
+    }
     
     private function checkVaidations($company){
         if($this->isExist($company,$company->getEmailId(),"emailid")){

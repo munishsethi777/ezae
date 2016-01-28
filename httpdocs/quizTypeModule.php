@@ -257,6 +257,7 @@ function submitAns(quesSeq,btn,questionNumber,quesType){
             $("#form" + quesSeq + " #nextBtnDiv" + quesSeq).show();
         }
         $("#form" + quesSeq + " #submitBtnDiv" + quesSeq).hide();
+        percent = Math.round(percent);
         setProgress(percent);
         if(slideCounter == (totalCount-1)){
             toastr.success("Quiz Completed.");

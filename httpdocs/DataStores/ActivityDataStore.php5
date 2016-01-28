@@ -70,24 +70,31 @@ class ActivityDataStore extends BeanDataStore{
         $list = $this->executeQuery($sql);
         return $list;
     }
-    public function getUsersActivity($moduleSeq,$companySeq,$isApplyFilter = false){
+    public function getUsersActivity($moduleSeq,$companySeq,$lpseq,$userSeqs,$isApplyFilter = false){
         //$sql= "select * from users left join activities on users.seq = activities.userseq and activities.moduleseq = ".$moduleSeq;
-        $sql= "select users.*,activities.*, users.seq from users left join activities on activities.userseq = users.seq
-        and activities.moduleseq = ".$moduleSeq ." where users.companyseq=".$companySeq  ;
+       // $sql= "select users.*,activities.*, users.seq from users left join activities on activities.userseq = users.seq
+        //and activities.moduleseq = ".$moduleSeq ." where users.companyseq=".$companySeq  ;
+        $sql = "select u.*,a.*, u.seq from users u inner join userlearningprofiles ulp on u.seq = ulp.userseq inner join learningplanprofiles lpp on ulp.tagseq = lpp.learningprofileseq left join activities a on u.seq = a.userseq and a.moduleseq = $moduleSeq where lpp.learningplanseq = $lpseq ";
         if($isApplyFilter){
             $sql = LearnerFilterUtil::applyFilter($sql,false);    
-        }          
+        } 
+        if(count($userSeqs) > 0){
+            $sql .= " and u.seq  in (". implode(",",$userSeqs) .")";
+        }         
         $list = $this->executeQuery($sql);
         return $list;
     }
+    
     public function getCompletionCounts($learningPlanSeq,$moduleId,$userSeqs){
-        $sql = "select count(u.seq) as totalUsers , u.customfieldvalues as customfields, count(attemptedTable.seq) as attemtedCount, ";
-        $sql .= "count(completedTable.seq) as completedCount from users u ";
-        $sql .= "left join activities attemptedTable on u.seq = attemptedTable.userseq and attemptedTable.moduleseq = ".$moduleId ." and attemptedTable.learningplanseq = ".$learningPlanSeq;
-        $sql .= " left join activities completedTable on u.seq = completedTable.userseq ";
-        $sql .= "and completedTable.iscompleted = 1  and completedTable.moduleseq = ".$moduleId;
+        //$sql = "select count(u.seq) as totalUsers , u.customfieldvalues as customfields, count(attemptedTable.seq) as attemtedCount, ";
+//        $sql .= "count(completedTable.seq) as completedCount from users u ";
+//        $sql .= "inner join activities attemptedTable on u.seq = attemptedTable.userseq and attemptedTable.moduleseq = ".$moduleId ." and attemptedTable.learningplanseq = ".$learningPlanSeq;
+//        $sql .= " left join activities completedTable on u.seq = completedTable.userseq ";
+//        $sql .= "and completedTable.iscompleted = 1  and completedTable.moduleseq = ".$moduleId;
+        
+        $sql = "select count(u.seq) as totalUsers, u.customfieldvalues as customfields,count(a.seq) as attemtedCount , count(a1.seq) as completedCount  from users u inner join userlearningprofiles ulp on u.seq = ulp.userseq inner join learningplanprofiles lpp on ulp.tagseq = lpp.learningprofileseq left join activities a on u.seq = a.userseq and a.moduleseq = $moduleId left join activities a1 on a.seq = a1.seq and a1.iscompleted = 1 where lpp.learningplanseq = $learningPlanSeq ";
         if(count($userSeqs) > 0){
-            $sql .= " where u.seq  in (". implode(",",$userSeqs) .")";
+            $sql .= " and u.seq  in (". implode(",",$userSeqs) .")";
         }
         
         $list = $this->executeQuery($sql);

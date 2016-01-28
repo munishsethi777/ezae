@@ -31,6 +31,7 @@
                     $cfObj->setSeq($customField["seq"]);
                     $cfObj->setTitle($customField["title"]);
                     $cfObj->setFieldType($customField["fieldtype"]);
+                    $cfObj->setPossibleValues($customField["possiblevalues"]);
                     $cfObj->setName($customField["name"]);
                     $isRequired = $customField["isrequired"] == "1" ? true : false;
                     $isVisible = $customField["isvisible"] == "1" ? true : false;
@@ -113,15 +114,17 @@
             $customFieldObj = new UserCustomField();
             $customFieldObj =  $userCustomField;
             $fieldName = $customFieldObj->getTitle();
+            $acutalName = $customFieldObj->getName();
+            $possibleValues = $customFieldObj->getPossibleValues();
             $fieldNameLbl = "";
             $flag = true;
-            if($fieldName == $matchingRules->getUserNameField()){
+            if($acutalName == $matchingRules->getUserNameField()){
                     $fieldNameLbl = $fieldName . " (UserName)";      
             }
-            if($fieldName == $matchingRules->getPasswordField()){
+            if($acutalName == $matchingRules->getPasswordField()){
                     $fieldNameLbl = $fieldName . " (Password)"; 
             }
-            if($fieldName == $matchingRules->getPasswordField() && 
+            if($acutalName == $matchingRules->getPasswordField() && 
                                         $fieldName == $matchingRules->getUserNameField()){
                     $fieldNameLbl = $fieldName .  " (UserName,Password)";      
             } 
@@ -134,6 +137,8 @@
             $html .= '<input type="hidden" name="seq[]" value="' . $customFieldObj->getSeq() . '" />';
             $html .= '<input type="hidden" name="fieldName_'. $customFieldObj->getSeq() . '" value="' . $fieldName . '" />';
             $html .= '<input type="hidden" name="fieldType_'. $customFieldObj->getSeq() . '" value="' . $customFieldObj->getFieldType() . '" />';
+            $html .= '<input type="hidden" name="fieldActualName_'. $customFieldObj->getSeq() . '" value="' . $acutalName . '" />';
+            $html .= '<input type="hidden" name="possibleValues_'. $customFieldObj->getSeq() . '" value="' . $possibleValues . '" />';
             $html .= '<div class="ibox-title" style="padding-bottom:40px;">';
             $html .= '<div class="col-sm-6"><h3>Field Name: '. $fieldNameLbl .'</h3></div>';
             $html .= '<div class="col-sm-2"><h3>Field Type: '. $customFieldObj->getFieldType() .'</h3></div>';

@@ -28,6 +28,12 @@
             $("#createCompanyForm-iframe").fadeIn('fast');
         });
     })
+    function showPossibleValues(selectedVal){
+        $("#possibleValueDiv").hide();
+        if(selectedVal == "Dropdown"){
+            $("#possibleValueDiv").show();    
+        } 
+    }
     function populateGrid(){
          var url = 'Actions/CustomFieldAction.php?call=getCustomFields';
                 $.getJSON(url, function(data){
@@ -37,7 +43,7 @@
     function checkBindingCompleted(){
          var url = 'Actions/CustomFieldAction.php?call=isBindingCompleted';
             $.getJSON(url, function(data){
-                $("#bindingMsgDiv").html(data.message);    
+               // $("#bindingMsgDiv").html(data.message);    
            });
     }
     function validateAndSave(e,btn){
@@ -80,13 +86,15 @@
         $('#passwordchk').prop('checked',(value == "password" && isChecked));
         $('#emailchk').prop('checked',(value == "email" && isChecked));
     }
+
     function loadGrid(){
         var columns = [
           { text: 'id', datafield: 'id' , hidden:true},
           { text: 'mappedfield', datafield: 'mappedfield' , hidden:true},
           { text: 'name', datafield: 'name' , hidden:true},
-          { text: 'Field Name' , datafield: 'title' },
+          { text: 'Field Name' , datafield: 'label' },
           { text: 'Field Type', datafield: 'type' },
+          { text: 'possiblevalues', datafield: 'possiblevalues',hidden:true },
           { text: 'Modified On', datafield: 'lastmodifiedon',cellsformat: 'MM-dd-yyyy hh:mm:ss tt' }
         ]
         var rows = Array();
@@ -104,10 +112,12 @@
             datafields: [
                 { name: 'id', type: 'integer' },
                 { name: 'title', type: 'string' },
+                { name: 'label', type: 'string' },
                 { name: 'name', type: 'string' },
                 { name: 'type', type: 'string' },
                 { name: 'lastmodifiedon', type: 'date' },
                 { name: 'mappedfield', type: 'string' },
+                { name: 'possiblevalues', type: 'string' },
             ],
             url: 'Actions/CustomFieldAction.php?call=getCustomFields',
             beforeprocessing: function(data)
@@ -172,17 +182,23 @@
                 // create new row.
                 addButton.click(function (event) {
                     removeMessagesDivs();
+                    showPossibleValues("Text");
+                    $('#fieldName').removeAttr('readonly');
+                    $("#cusname").val("");
                     $("#saveNewBtnDiv").show();
                     $("#msgDiv").hide();
                     $("#errorDiv").hide();
                     $("#id").val(0);
                     $("#mappedField").val("");
                     $("#customFieldForm")[0].reset();
+                    $('#usernamechk').attr('checked', false);
+                    $('#passwordchk').attr('checked', false);
+                    $('#emailchk').attr('checked', false);
                     $('#createNewModalForm').modal('show');
                 });
                 // update row.
                 editButton.click(function (event) {
-                     removeMessagesDivs();
+                   removeMessagesDivs();
                     $("#saveNewBtnDiv").hide();
                     $("#msgDiv").hide();
                     $("#errorDiv").hide();
@@ -192,31 +208,37 @@
                          return;
                     }
                     $("#customFieldForm")[0].reset();
-                    var row = $('#jqxgrid').jqxGrid('getrowdata', selectedrowindex);
-                    $("#id").val(row.id);
-                    $("#fieldName").val(row.name);
-                    $('#fieldType').val(row.type).attr("selected", "selected");
-                    isUserName = false;
-                    isPassword = false;
-                    isEmail = false;
-                    fields = row.mappedfield.split(",");
-                     $.each(fields,function(key,value) {
-                        if(value == "usernamefield" ){
-                            isUserName = true;    
-                        }
-                        if(value == "passwordfield" ){
-                            isPassword = true;
-                        }
-                        if(value == "emailfield" ){
-                            isEmail = true;
-                        }
-                     })
-                    $('#usernamechk').attr('checked', isUserName);
-                    $('#passwordchk').attr('checked', isPassword);
-                    $('#emailchk').attr('checked', isEmail);
-                    $("#mappedField").val(row.mappedfield);
-                    $('#createNewModalForm').modal('show');
-                });
+                   
+                        var row = $('#jqxgrid').jqxGrid('getrowdata', selectedrowindex);
+                        $("#id").val(row.id);
+                        $("#fieldName").val(row.title);
+                        showPossibleValues(row.type);
+                        $("#possibleValues").val(row.possiblevalues);
+                        $("#cusname").val(row.name);
+                        
+                        $('#fieldType').val(row.type).attr("selected", "selected");
+                        isUserName = false;
+                        isPassword = false;
+                        isEmail = false;
+                        fields = row.mappedfield.split(",");
+                         $.each(fields,function(key,value) {
+                            if(value == "usernamefield" ){
+                                isUserName = true;    
+                            }
+                            if(value == "passwordfield" ){
+                                isPassword = true;
+                            }
+                            if(value == "emailfield" ){
+                                isEmail = true;
+                            }
+                         })
+                        $('#usernamechk').attr('checked', isUserName);
+                        $('#passwordchk').attr('checked', isPassword);
+                        $('#emailchk').attr('checked', isEmail);
+                        $("#mappedField").val(row.mappedfield);
+                        $('#createNewModalForm').modal('show');
+                    })
+               
                 // delete row.
                 deleteButton.click(function (event) {
                      deleteRows("jqxgrid","Actions/CustomFieldAction.php?call=deleteCustomfield");
@@ -275,19 +297,26 @@
                                                 <form role="form" id="customFieldForm" class="form-horizontal">
                                                     <input type="hidden" id="id" name="id" value="0">
                                                     <input type="hidden" id="mappedField" name="mappedField">
+                                                    <input type="hidden" id="cusname" name="cusname">
                                                     <div class="form-group">
                                                         <label>Field Name</label>
                                                         <input type="text" id="fieldName" name="fieldName" placeholder="Field Name" class="form-control">
                                                     </div>
                                                     <div class="form-group">
                                                         <label>Field Type</label>
-                                                        <select id="fieldType" name="fieldType" class="form-control">
+                                                        <select id="fieldType" onchange="showPossibleValues(this.value)" name="fieldType" class="form-control">
                                                         <option value="Text">Text</option>
-                                                        <option value="Data">Date</option>
+                                                        <option value="Date">Date</option>
                                                         <option value="Numeric">Numeric</option>
                                                         <option value="Yes/No">Yes/No</option>
+                                                        <option value="Dropdown">Dropdown</option>
                                                         </select>
                                                     </div>
+                                                    <div class="form-group" id="possibleValueDiv">
+                                                         <label>Possible Values</label>
+                                                         <textarea id="possibleValues" name="possibleValues" cols="75" class="form-control" rows="4"></textarea>
+                                                    </div>
+                                                    
                                                      <div class="form-group">
                                                         <div class="col-sm-4">
                                                             <label class="checkbox-inline"><input type="checkbox" value="username" name="username_map" id="usernamechk"> UserName </label></div>

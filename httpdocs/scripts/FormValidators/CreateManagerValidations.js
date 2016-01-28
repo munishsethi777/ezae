@@ -51,7 +51,7 @@ function requiredProfile(input){
             return true;           
         }    
         $("#profilesDD_chosen").addClass("hilight");
-        $("#lprofileError").text("Select atleast one Module!");
+        $("#lprofileError").text("Select atleast one learner profile!");
         return false;
     }
     return true;

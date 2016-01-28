@@ -117,9 +117,15 @@ class ChartsUtil{
         $completed = intval($countArr[0][3]);
         $uncompleted = $attempted -$completed;
         $unAttempted = $total - $attempted;
-        $completedPercent = round(($completed * 100)/$total);
-        $uncompletedPercent = ($uncompleted * 100)/$total;
-        $unattemptedPercent = round(($unAttempted * 100)/$total);
+        $completedPercent = 0;
+        $uncompletedPercent = 0;
+        $unattemptedPercent = 0;
+        if($total > 0){
+             $completedPercent = round(($completed * 100)/$total);
+             $uncompletedPercent = ($uncompleted * 100)/$total;
+             $unattemptedPercent = round(($unAttempted * 100)/$total);    
+        }
+       
 
         if($mode == self::$ATTEMPTED_NOTATTEMPTED){
             $arr['Status'] = "Unattempted";

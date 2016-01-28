@@ -13,9 +13,13 @@ $isEnableLeaderBoard="";
 $moduleIds = "";
 $lockSequence = "";
 $profileDisabled = "";
+$profileId = "";
 if(isset($_POST["id"])){
     $id = $_POST["id"];
    //$profileDisabled = "disabled";
+}
+if(isset($_POST["profileId"])){
+    $profileId = $_POST["profileId"];
 }
 if(isset($_POST["lpName"])){
     $name = $_POST["lpName"];
@@ -161,10 +165,13 @@ if(isset($_POST["moduleIds"])){
                                        <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveBtn" type="button">
                                             <span class="ladda-label">Save</span>
                                        </button>
-                                        <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveNewBtn" type="button">
+                                       <?if($id == 0){?>
+                                            <button class="btn btn-primary ladda-button" data-style="expand-right" id="saveNewBtn" type="button">
                                                 <span class="ladda-label">Save & New</span>
-                                        </button>
-                                        <button type="button" class="btn btn-white" id="cancelBtn" data-dismiss="modal">Cancel</button>
+                                           </button>
+    
+                                       <?}?>
+                                       <button type="button" class="btn btn-white" id="cancelBtn" data-dismiss="modal">Cancel</button>
                                     </div>
                                     </div>
                             </form>
@@ -237,6 +244,7 @@ if(isset($_POST["moduleIds"])){
                   options += "<option value='" + value.id + "'>" + value.awesomefontid  + " " + value.tag + "</option>";
             });
               $("#profiles").html(options);
+              $("#profiles").val(<?echo$profileId?>);
         });
     }
     function saveLearningPlan(e,btn){
@@ -283,20 +291,34 @@ if(isset($_POST["moduleIds"])){
         })
      }
     function loadModules(){
+        var selectedSeqs = "<?echo $moduleIds?>";
+        if(selectedSeqs.length > 0){
+            selectedSeqs = selectedSeqs.split(",");
+        }
+        selectedValues = [];
         var url = 'Actions/ModuleAction.php?call=getModulesForGrid';
         $.getJSON(url, function(data){
             var options = "";
             $.each(data, function(index , value){
-                options += "<option value='" + value.id + "'>" + value.title +" - "+ value.moduleType +"</option>";
+                if(selectedSeqs.length > 0 && selectedSeqs.indexOf(value.id) > -1){
+                    selectedValues[value.id] = value.title +" - "+ value.moduleType; 
+                }else{
+                    options += "<option value='" + value.id + "'>" + value.title +" - "+ value.moduleType +"</option>";
+                }  
             });
+            if(selectedSeqs.length > 0){
+                addSelectedModules(selectedSeqs,selectedValues);
+            }
             $(".chosen-modulesSelect").append(options);
             $(".chosen-modulesSelect").chosen({width:"100%"});
-            var values = "<?echo $moduleIds?>";
-            if(values.length > 0){
-                values = values.split(",")
-                $('.chosen-modulesSelect').val(values).trigger("chosen:updated");
-            }
             dragChosen();
         });
+    }
+    function addSelectedModules(selectedSeqs,selectedValues){
+        $.each(selectedSeqs, function(index , value){
+             val = selectedValues[value];
+             $('.chosen-modulesSelect').append("<option value='" + value+"'>"+val + "</option>");                
+        });
+        $("#modulesSelect").val(selectedSeqs);            
     }
 </script>

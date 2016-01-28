@@ -229,7 +229,7 @@
     </div>
 </body>
 </html>
-
+<script src="scripts/plugins/ckeditor/ckeditor.js"></script>
 <script src="scripts/FormValidators/createQuestionValidations.js"></script>
 <script src="scripts/FormValidators/createModuleValidations.js"></script> 
 <script type="text/javascript">
@@ -240,7 +240,7 @@
     $(document).ready(function(){        
         //display quiz module by default
         $(".quizEditor").show();
-        $(".chosen-questionsSelect").chosen({width:"100%"});
+        
        
         loadQuestion(); 
         CKEDITOR.replace( 'editor');
@@ -415,20 +415,37 @@
     }
     
     function loadQuestion(){
+         var selectedQuesSeqs = "<?echo $selectedQuesSeqs?>";
+         if(selectedQuesSeqs.length > 0){
+            selectedQuesSeqs = selectedQuesSeqs.split(",");
+         }
          url = "Actions/ModuleAction.php?call=getQuestions";
+         selectedValues = [];
+         values = "";
          $.getJSON(url, function(data){
             $.each(data, function(index , value){
-                $('.chosen-questionsSelect').append("<option value='" + value.id+"'>"+value.title + "</option>");
+                if(selectedQuesSeqs.length > 0 && selectedQuesSeqs.indexOf(value.id) > -1){
+                    selectedValues[value.id] = value.title; 
+                }else{
+                    values += "<option value='" + value.id+"'>"+value.title + "</option>";      
+                }
             });
-            $('.chosen-questionsSelect').trigger("chosen:updated"); 
-            var values = "<?echo $selectedQuesSeqs?>";
-            if(values.length > 0){
-                values = values.split(",");
-                $('.chosen-questionsSelect').val(values).trigger("chosen:updated");
-                
+            if(selectedQuesSeqs.length > 0){
+                addSelectedQuestions(selectedQuesSeqs,selectedValues); 
             }
-        dragChosen();
+            $('.chosen-questionsSelect').append(values);
+            $(".chosen-questionsSelect").chosen({width:"100%"});
+            dragChosen();
         });
+    }
+    
+    
+    function addSelectedQuestions(selectedQuesSeqs,selectedValues){
+        $.each(selectedQuesSeqs, function(index , value){
+             val = selectedValues[value];
+             $('.chosen-questionsSelect').append("<option value='" + value+"'>"+val + "</option>");                
+        });
+        $("#questionsSelect").val(selectedQuesSeqs);            
     }
     
     function selectAddedQuetion(question){

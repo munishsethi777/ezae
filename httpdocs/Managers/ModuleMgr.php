@@ -2,6 +2,7 @@
     require_once($ConstantsArray['dbServerUrl']. "DataStores/ModuleDataStore.php5");
     require_once($ConstantsArray['dbServerUrl']. "DataStores/QuestionDataStore.php");
     require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/ModuleQuestion.php");
+    require_once($ConstantsArray['dbServerUrl']. "Enums/ModuleType.php");
 
 class ModuleMgr{
     private static $moduleMgr;
@@ -136,6 +137,10 @@ class ModuleMgr{
             $arr['leaderboardRank'] =  0;
             $arr["inactiveRemarks"] =  "No Remarks";
             $arr["scores"] =  $value["score"];
+            $url = "userTrainingCustomModule.php";
+            if($value['moduletype'] == ModuleType::FLASH){
+                $url = "userTraining.php";   
+            }
             if($value["issequencelocked"] == "1"){ //locked case
                 if($value["iscompleted"] == 1){
                     $arr["action"] = "Completed";
@@ -144,11 +149,11 @@ class ModuleMgr{
                     $arr["action"] = "Locked";
                 }else{
                     $lastLocked = false;
-                    $arr["action"] = '<a href="userTrainingCustomModule.php?id='.$arr['id'].'&lpid='. $value['learningplanseq'] .'" class="btn btn-white btn-sm"><i class="fa fa-folder"></i> View </a>';
+                    $arr["action"] = '<a href="'.$url.'?id='.$arr['id'].'&lpid='. $value['learningplanseq'] .'" class="btn btn-white btn-sm"><i class="fa fa-folder"></i> View </a>';
 
                 }
             }else{
-                $arr["action"] = '<a href="userTrainingCustomModule.php?id='.$arr['id'].'&lpid='. $value['learningplanseq'] .'" class="btn btn-white btn-sm"><i class="fa fa-folder"></i> View </a>';
+                $arr["action"] = '<a href="'.$url.'?id='.$arr['id'].'&lpid='. $value['learningplanseq'] .'" class="btn btn-white btn-sm"><i class="fa fa-folder"></i> View </a>';
             }
 
             array_push($mainArr,$arr);

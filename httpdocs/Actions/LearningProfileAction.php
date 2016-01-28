@@ -2,6 +2,8 @@
     require_once('../IConstants.inc');  
     require_once($ConstantsArray['dbServerUrl'] ."Managers/LearningProfileMgr.php");
     require_once($ConstantsArray['dbServerUrl'] ."Managers/CustomFieldMgr.php");
+    require_once($ConstantsArray['dbServerUrl'] ."Managers/CompanyMgr.php");
+     require_once($ConstantsArray['dbServerUrl'] ."Utils/SecurityUtil.php");
      require_once($ConstantsArray['dbServerUrl'] ."StringConstants.php");
 
     $call = "";
@@ -66,7 +68,16 @@
 //        $json = json_encode($response);
         echo $data;
     }
-    
+    if($call == "getSignupFormURL"){
+        $id = $_GET["id"];
+        $appUrl = $ConstantsArray['ApplicationURL'];
+        $companyMgr = CompanyMgr::getInstance(); 
+        $url = $companyMgr->getSignUpUrl($appUrl);
+        $id = SecurityUtil::Encode($id);
+        $url .= "&lpfId=".$id;
+        echo $url;
+        return;
+   }
     if($call == "getLearnerProfiles"){
         try{
             $lpMgr = LearningProfileMgr::getInstance();

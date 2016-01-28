@@ -97,7 +97,7 @@ class ActivityMgr{
             if($line != "") {
                 $nameValueArray = explode(':', $line);
                 $val = $nameValueArray[1];
-                $mainArray[trim("cus_".$nameValueArray[0])] =  $val;
+                $mainArray[trim("cus_".$nameValueArray[0])] =  urldecode($val);
             }
 
         }

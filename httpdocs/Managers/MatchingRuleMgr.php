@@ -101,6 +101,7 @@ require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/MatchingRule.php")
         $arr = array();
         $arr["usernamefield"] = $obj->getUserNameField();
         $arr["passwordfield"] = $obj->getPasswordField();
+        $arr["emailfield"] = $obj->getEmailField();
         return $arr;  
     }
     

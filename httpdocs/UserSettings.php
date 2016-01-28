@@ -36,20 +36,22 @@ $(document).ready(function(){
 //        }
 //    });
     
-    $("#createButton").click(function(e){
+    $("#saveBtn").click(function(e){
         submitCreate(e,this);
     })
 });
 function submitCreate(e,btn){
     var l = Ladda.create(btn);
     l.start();
-    $formData = $("#createCompanyForm").serializeArray();
-    $.get( "Actions/CompanyAction.php?call=saveCompany&isUpdate=true", $formData,function( data ){
+    $formData = $("#customFieldForm").serializeArray();
+    $.get( "Actions/UserAction.php?call=saveCompany&isUpdate=true", $formData,function( data ){
         l.stop();
         showResponseToastr(data,null,null,"mainDiv");  
     }).always(function() { l.stop(); }); 
 } 
-
+function fillFormData(data){
+    
+}
   
 </script>
 

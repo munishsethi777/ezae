@@ -12,7 +12,7 @@ $('#createMessageForm').jqxValidator({
                 var val = $("input:radio[name='actOption']:checked").val();
                 return requiredIf(input,"onParticulerDate",val);}
        },
-       { input: '#percent', message: 'Particuler date is required!', action: 'keyup, blur', rule: function (input, commit) {
+       { input: '#percent', message: 'Percent is required!', action: 'keyup, blur', rule: function (input, commit) {
                 var val = $("input:radio[name='actOption']:checked").val();
                 return requiredIf(input,"onMarks",val);}
        

@@ -16,6 +16,13 @@
         }
         return self::$userDataStore;
     }
+    
+    public function isExist($companySeq){
+        $colVal["companyseq"] = $companySeq;
+        $count = self::executeCountQuery($colVal);
+        return $count > 0;
+    }
+    
     public function findByUserName($userName){
         $colValuePair = array();
         $colValuePair["username"] = $userName;

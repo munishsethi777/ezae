@@ -47,8 +47,9 @@
         $sessionUtil = SessionUtil::getInstance();
         $companySeq = $sessionUtil->getAdminLoggedInCompanySeq();
         $moduleSeq = $_GET['moduleSeq'];
+        $lpSeq = $_GET['lpSeq'];
         $adminMgr = AdminMgr::getInstance();
-        $activityGridJSON = $adminMgr->getActivitiesGridJSON($companySeq,$moduleSeq);
+        $activityGridJSON = $adminMgr->getActivitiesGridJSON($companySeq,$moduleSeq,$lpSeq);
         echo $activityGridJSON;
         return;
    }

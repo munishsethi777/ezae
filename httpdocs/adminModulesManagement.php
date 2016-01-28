@@ -13,7 +13,10 @@
    function showDetail(id){
        $("#moduleDetailsModal" + id).modal('show')
    }
-   function viewModule(id){
+   function viewModule(id,moduleType){
+       if(moduleType = "flash"){
+        $("#flashModuleDiv").html('<iframe frameborder="0" src="Modules/'+id+'/story.php" width="600" height="500"></iframe>')   
+       }
        $("#viewModuleModal" + id).modal('show')
    }
    function editModule(id){
@@ -81,9 +84,9 @@
                                                     <a href="#" class="btn btn-xs btn-outline btn-primary moduleDetailsButton" onclick=showDetail(<?echo $module['seq']?>)>
                                                         Info <i class="fa fa-info"></i>
                                                     </a>
-                                                    <a href="#" class="btn btn-xs btn-outline btn-primary moduleDetailsButton" onclick=viewModule(<?echo $module['seq']?>)>
+                <!--a href="#" class="btn btn-xs btn-outline btn-primary moduleDetailsButton" onclick=viewModule(<?echo $module['seq']?>,'<?echo $moduleType?>')>
                                                         View <i class="fa fa-eye"></i>
-                                                    </a>
+                                                    </a!-->
                                                     <?if ($moduleType != ModuleType::FLASH){?>
                                                         <a href="#" class="btn btn-xs btn-outline btn-primary moduleDetailsButton" onclick=editModule(<?echo $module['seq']?>)>
                                                             Edit <i class="fa fa-edit"></i>
@@ -163,7 +166,7 @@
                                                                   <?}else if($moduleType == ModuleType::QUIZ){?>
                                                                       <?include("ViewQuizModule.php")?>
                                                                   <?}else if($moduleType == ModuleType::FLASH){?>
-                                                                      <iframe frameborder="0" src="Modules/<?echo $module["seq"];?>/story.php" width="600" height="500"></iframe>
+                                                                      <div id="flashModuleDiv"></div>        
                                                                   <?}
                                                                   else{
                                                                       echo $detail;

@@ -1,4 +1,6 @@
-<?require("sessionCheckForUser.php");?>
+<?require("sessionCheckForUser.php");
+require_once('IConstants.inc');
+require_once($ConstantsArray['dbServerUrl'] ."Managers/ModuleMgr.php");?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,6 +11,8 @@
 <?
     $learningPlanSeq = $_GET['lpid'];
     $moduleId = $_GET['id'];
+    $moduleMgr = ModuleMgr::getInstance();
+    $module = $moduleMgr->getModule($moduleId);
 ?>
 <script language="javascript">
     var learningPlanSeq = "<?echo $learningPlanSeq;?>";;
@@ -27,7 +31,7 @@
 
                     <div class="ibox">
                         <div class="ibox-title">
-                            <h5>Training Module Demo Test</h5>
+                            <h5><?echo $module->getTitle()?></h5>
 
                         </div>
                         <div class="ibox-content">
@@ -45,11 +49,11 @@
                                     params = loc.split('?')[1],
                                     params2 = loc.split('&')[2],
                                     iframe = $('#myiframe');
-                                    iframe.src = "Modules/"+ <?echo $moduleId?> +"/story.html" + '?' + params + '&' + params2;
-                                    alert(iframe.src);
+                                    iframe.src = "Modules/"+ <?echo $moduleId?> +"/story.php" + '?' + params + '&' + params2;
+                                    //alert(iframe.src);
                                 });
                             </script>
-                            <iframe id="myiframe" frameborder="0" src="Modules/<?echo $moduleId?>/story.html" width="1000" height="670"></iframe>
+                            <iframe id="myiframe" style="display: none;" frameborder="0" src="Modules/<?echo $moduleId?>/story.php" width="1000" height="670"></iframe>
                         </div>
                     </div>
                 </div>

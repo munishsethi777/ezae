@@ -25,7 +25,7 @@ class SignupFormFieldDataStore extends BeanDataStore{
     }
     
     public function findByAdmin($adminseq){
-        $query = "Select cf.seq, cf.companyseq , cf.name, cf.title, cf.fieldtype ,ff.isrequired , ff.isvisible from usercustomfields cf left join signupformfields ff on cf.seq = ff.customfieldseq";
+        $query = "Select cf.seq, cf.companyseq , cf.possiblevalues,cf.name, cf.title, cf.fieldtype ,ff.isrequired , ff.isvisible from usercustomfields cf left join signupformfields ff on cf.seq = ff.customfieldseq";
         $query .= " where cf.adminseq = $adminseq";
         $arrList = $this->executeQuery($query);
         return $arrList;

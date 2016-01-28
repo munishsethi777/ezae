@@ -155,6 +155,7 @@ class LearningPlanMgr{
         private static function getLearningPlanArry($learningPlanObj){
             $learningPlan = new LearningPlan();
             $learningPlan = $learningPlanObj;
+            $learningProfileMgr = LearningProfileMgr::getInstance();
             $lpArr = array();
             $lpArr["id"] = $learningPlan->getSeq();
             $lpArr["title"] = $learningPlan->getTitle();
@@ -165,6 +166,8 @@ class LearningPlanMgr{
             $lpArr["lastmodifiedon"] = $learningPlan->getLastModifiedOn();
             $lpArr["lockSequence"] = $learningPlan->getIsSequenceLocked() == 1 ? true : false;
             $lpArr["moduleIds"] = self::getCoursesIdBylearnigPlanSeq($learningPlan->getSeq());
+            $profile =  $learningProfileMgr->getLearningPlanProfile($learningPlan->getSeq());
+            $lpArr["profileId"] = $profile[0]->getLearningProfileSeq();
             $isDeactivate = false;
             if($learningPlan->getDeactivateOn() != null && $learningPlan->getDeactivateOn() != ""){
                 $isDeactivate =  true;
