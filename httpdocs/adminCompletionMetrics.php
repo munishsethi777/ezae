@@ -4,12 +4,17 @@
 <?include "ScriptsInclude.php"?>
 
     <script type="text/javascript">
-
+        var isloaded = false
         $(document).ready(function (){
             loadLearningPlansCombo();
             $('#showReportButton').jqxButton({ width: 100, height: 25, theme:'arctic' });
             $("#showReportButton").click(function () {
-                $(".list-group").fadeOut();
+                   populatePie();
+            });
+           
+        });
+        function populatePie(){
+            $(".list-group").fadeOut();
                 var learningPlanItem = $("#learningPlanComboBox").jqxComboBox('getSelectedItem');
                 var moduleItem = $("#moduleComboBox").jqxComboBox('getSelectedItem');
                 var learningPlanSeq = learningPlanItem.value;
@@ -19,8 +24,7 @@
                 loadPie(learningPlanSeq,moduleSeq,moduleLabel,"completedNotCompleted");
                 loadPie(learningPlanSeq,moduleSeq,moduleLabel,"completedNotCompletedNotAttempted");
                 loadTablesStats(learningPlanSeq,moduleSeq);
-            });
-        });
+        }
         function loadLearningPlansCombo(){
             var source =
             {
@@ -48,9 +52,10 @@
                 var args = event.args;
                 if (args) {
                    var item = args.item;
-                   loadModulesCombo(item.value);
+                   loadModulesCombo(item.value); 
                 }
             });
+
 
         }
         function loadModulesCombo(learningPlanSeq){
@@ -76,6 +81,15 @@
                 valueMember: 'id',
                 theme: 'arctic'
             });
+            if(!isloaded) {
+                $("#moduleComboBox").on('bindingComplete', function (event) {
+                    populatePie();
+                    isloaded = true;
+                });
+            } else{
+                $( "#moduleComboBox").unbind( "bindingComplete" );
+            }
+
         }
 
         function loadPie(learningPlanSeq,moduleSeq,moduleLabel,mode){

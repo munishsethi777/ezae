@@ -6,6 +6,7 @@
     <script type="text/javascript">
 
         $(document).ready(function (){
+            
             loadLearningPlansCombo();
             //loadModulesCombo();
             loadCustomFieldsCombo();

@@ -32,7 +32,9 @@
             <span style="font-size:14px" class="label label-primary signupURL">www.ezae.in/v2/usersignup.php?cid=1 </span>
             <span style="color: red;" id="bindingMsgDiv"></span>
         </div>
+        <h4>Sign Up Form Header : - </h4>
         <div class="ibox-content no-padding">
+             
             <div class="summernote">
                 
             </div>
@@ -82,7 +84,7 @@
                       </div>
                   </div>
               </div>
-        </div>
+        </div> 
 </body>
 </html>
 

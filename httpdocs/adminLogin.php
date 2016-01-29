@@ -79,7 +79,7 @@
                     }else if(data == 2){
                         window.location = "adminCompletionMetrics.php";
                     }else{
-                        window.location = "dashboard.php";
+                        window.location = "adminCompletionMetrics.php";
                     }
                 });
             }
@@ -92,11 +92,17 @@
                 <h1 class="font-bold">Welcome to EZAE Administration area</h1>
 
                 <p>
-                    Please login with your credentials sent to you.
+                    Perfectly designed and precisely prepared admin theme with over 50 pages with extra new web app views.
                 </p>
+
                 <p>
-                    For any feedback please write to amandeepdubey@learntech.in This page is a Property of Learn Tech, meant for use only by authorized individuals. 
+                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
                 </p>
+
+                <p>
+                    <small>It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</small>
+                </p>
+
             </div>
         <div class="col-md-6">
             <div class="ibox-content">

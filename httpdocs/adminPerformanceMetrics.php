@@ -3,24 +3,27 @@
 <head>
 <?include "ScriptsInclude.php"?>
     <script type="text/javascript">
-
+        var isloaded = false;
         $(document).ready(function (){
             loadPercentages();
             loadLearningPlansCombo();
             $('#showReportButton').jqxButton({ width: 100, height: 25, theme:'arctic' });
             $("#showReportButton").click(function () {
-                var learningPlanItem = $("#learningPlanComboBox").jqxComboBox('getSelectedItem');
-                var moduleItem = $("#moduleComboBox").jqxComboBox('getSelectedItem');
-
-                var learningPlanSeq = learningPlanItem.value;
-                var moduleSeq = moduleItem.value;
-                var moduleLabel = moduleItem.label;
-                var passPercent = $("#percentages").jqxComboBox('getSelectedItem');
-                loadGraphChart(learningPlanSeq,moduleSeq,moduleLabel);
-                loadPassPie(learningPlanSeq,moduleSeq, moduleLabel, passPercent.value);
-                loadPerformanceTablesStats(learningPlanSeq,moduleSeq);
+                 populatePie();  
             });
         });
+        function populatePie(){
+            var learningPlanItem = $("#learningPlanComboBox").jqxComboBox('getSelectedItem');
+            var moduleItem = $("#moduleComboBox").jqxComboBox('getSelectedItem');
+
+            var learningPlanSeq = learningPlanItem.value;
+            var moduleSeq = moduleItem.value;
+            var moduleLabel = moduleItem.label;
+            var passPercent = $("#percentages").jqxComboBox('getSelectedItem');
+            loadGraphChart(learningPlanSeq,moduleSeq,moduleLabel);
+            loadPassPie(learningPlanSeq,moduleSeq, moduleLabel, passPercent.value);
+            loadPerformanceTablesStats(learningPlanSeq,moduleSeq);    
+        }
         function loadLearningPlansCombo(){
             var source =
             {
@@ -76,6 +79,14 @@
                 valueMember: 'id',
                 theme: 'arctic'
             });
+            if(!isloaded) {
+                $("#moduleComboBox").on('bindingComplete', function (event) {
+                    populatePie();
+                    isloaded = true;
+                });
+            } else{
+                $( "#moduleComboBox").unbind( "bindingComplete" );
+            }
         }
 
         function loadPercentages(){

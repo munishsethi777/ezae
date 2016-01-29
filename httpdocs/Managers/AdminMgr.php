@@ -171,10 +171,7 @@ class AdminMgr{
         $mainJsonArray["datafields"] = json_encode($dataFieldsArr);
         return json_encode($mainJsonArray);
     }
-
-   private function FilterUserGridData(){
-
-   }
+ 
     //called from ajaxAdminMgr
     public function getActivitiesGridHeardersJSON($companySeq,$moduleSeq){
         $userFieldsJSON = $this->getUserAllFieldsJsonByCompany($companySeq);
@@ -188,6 +185,23 @@ class AdminMgr{
         }
         );
         unset($userFieldsArr[key($neededObject)]);
+        
+       
+        
+        $arr = array();
+        $arr['text'] = "Date of Registration";
+        $arr['datafield'] = "dateofregistration";
+        $arr['type'] = "date";
+        $arr['cellsformat'] =  "MM-dd-yyyy hh:mm:ss tt";
+        array_push($userFieldsArr,$arr);
+        
+        $arr = array();
+        $arr['text'] = "Date of Completion";
+        $arr['datafield'] = "dateofcompletion";
+        $arr['type'] = 'date';
+        $arr['cellsformat'] =  "MM-dd-yyyy hh:mm:ss tt";          
+        array_push($userFieldsArr,$arr);
+        
         $arr = array();
         $arr['text'] = "Progress";
         $arr['datafield'] = "progress";
@@ -198,6 +212,7 @@ class AdminMgr{
         $arr['datafield'] = "score";
         $arr['type'] = "number";
         array_push($userFieldsArr,$arr);
+        
         $mainJsonArray = array();
         $mainJsonArray["columns"] = json_encode($userFieldsArr);
         $dataFieldsArr = $this->getDataFieldsArr($userFieldsArr);//for column types
@@ -235,6 +250,8 @@ class AdminMgr{
             $arr = array_merge($arr,$arrCustomFields);
             $arr['score'] = $dataArr['score'];
             $arr['progress'] = $dataArr['progress'];
+            $arr['dateofregistration'] = $dataArr['createdon'];
+            $arr['dateofcompletion'] = $dataArr['dateofplay'];
             $arr["lastmodifiedon"] = $dataArr["lastmodifiedon"];
             array_push($fullArr,$arr);
             $count++;
@@ -254,7 +271,13 @@ class AdminMgr{
         return $customFieldsJSON;
 
     }
+    //called from ActivityAction
+     public function getCustomFields($companySeq){
+        $customFields =  $this->getCustomFieldsByCompany($companySeq);
+        $customFieldsJSON = $this->getUserFieldsGridHeadersJSON($customFields);
+        return $customFieldsJSON;
 
+    }
     //called from ajaxAdminMgr for registration form settings
     public function getLearnersFieldsForFormManagementHtml($adminSeq){
         $customFieldsFormGenerator = CustomFieldsFormGenerator::getInstance();
@@ -360,12 +383,16 @@ class AdminMgr{
 
     private static function getUserFieldsGridHeadersJSON($customFields,$isOnlyCustomFields = false){
         $fullArr = array();
+        $userNameMapping ="";
+        $passwordMapping = "";
+        $emailMapping = "";
         if($isOnlyCustomFields == false){
             $mappingMgr  = MatchingRuleMgr::getInstance();
             $mapping = $mappingMgr->getMatchingRule();
             $userNameMapping = $mapping->getUserNameField();
             $passwordMapping = $mapping->getPasswordField();
             $emailMapping = $mapping->getEmailField();
+            
             
             $arr = array();
             $arr['text'] = "id";
@@ -447,7 +474,10 @@ class AdminMgr{
 
     }
 
-
+    private function isFieldMapped($fieldName){
+       if($field->getName() != $userNameMapping){ 
+       }    
+    }
     private static function getDataFieldsArr($customFieldsArr){
         $dataFieldsArr = array();
         foreach($customFieldsArr as $customField){
