@@ -160,6 +160,7 @@
                                  fieldType = 'checkbox';
                                  className = "";
                             }
+                            
                             if(type == "Dropdown"){
                                 dropdown = '<select id="'+  id + '" name="'+  fieldName + '" class="' + className + '">';
                                 pValues = fieldobj.possiblevalues;
@@ -185,6 +186,11 @@
                        }
                        if(type == "Numeric"){
                            var rule = { input: '#' + id, message:'Numeric only !', action: 'keyup, blur', rule: 'number'};
+                           validationRules.push(rule);
+                           hasValidation = true;
+                       }
+                       if(type == "email"){
+                           var rule = { input: '#' + id, message:'Invalid Email !', action: 'keyup, blur', rule: 'email'};
                            validationRules.push(rule);
                            hasValidation = true;
                        }

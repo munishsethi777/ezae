@@ -232,7 +232,18 @@
                     });
                     // delete selected row.
                     deleteButton.click(function (event) {
-                        deleteRows("learnersGrid","Actions/LearnerAction.php?call=deleteLearners");
+                        var selectedRowIndexes = $("#learnersGrid").jqxGrid('selectedrowindexes');
+                        if(selectedRowIndexes.length > 0){
+                            var names = "";
+                            $.each(selectedRowIndexes, function(index , value){
+                                if(value != -1){
+                                    var dataRow = $("#learnersGrid").jqxGrid('getrowdata', value);
+                                    names += "<br>" + dataRow.username;
+                                }
+                            });
+                        }
+                        comfirmMessage = "Are you sure you want to delete selected user(s) : - " + names + "?";
+                        deleteObjects("learnersGrid","Actions/LearnerAction.php?call=deleteLearners",comfirmMessage);
                     });
                     // edit grid data.
                     editButton.click(function (event) {

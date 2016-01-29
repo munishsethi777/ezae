@@ -40,6 +40,7 @@ require_once($ConstantsArray['dbServerUrl']. "Utils/CustomFieldsFormGenerator.ph
         $arr['id'] = $customField->getSeq();
         $arr['name'] = $customField->getName();
         $arr['type'] = $customField->getFieldType();
+        $arr['fieldtype'] = $customField->getFieldType();
         $arr['lastmodifiedon'] = $customField->getLastModifiedOn();
         $matchinRuleMgr = MatchingRuleMgr::getInstance();
         $mappedField = $matchinRuleMgr->findNameForCustomfield($customField->getName());
@@ -58,7 +59,7 @@ require_once($ConstantsArray['dbServerUrl']. "Utils/CustomFieldsFormGenerator.ph
              array_push($fields,"Email");            
         }
         if(!empty($fields)){
-            $arr['label']  = $title . " (" . implode(", ",$fields) . ")";
+            $arr['title']  = $title . " (" . implode(", ",$fields) . ")";
         }
         return $arr;     
     }

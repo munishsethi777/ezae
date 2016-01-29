@@ -92,8 +92,8 @@
           { text: 'id', datafield: 'id' , hidden:true},
           { text: 'mappedfield', datafield: 'mappedfield' , hidden:true},
           { text: 'name', datafield: 'name' , hidden:true},
-          { text: 'Field Name' , datafield: 'label' },
-          { text: 'Field Type', datafield: 'type' },
+          { text: 'Field Name' , datafield: 'title' },
+          { text: 'Field Type', datafield: 'fieldtype' },
           { text: 'possiblevalues', datafield: 'possiblevalues',hidden:true },
           { text: 'Modified On', datafield: 'lastmodifiedon',cellsformat: 'MM-dd-yyyy hh:mm:ss tt' }
         ]
@@ -114,7 +114,8 @@
                 { name: 'title', type: 'string' },
                 { name: 'label', type: 'string' },
                 { name: 'name', type: 'string' },
-                { name: 'type', type: 'string' },
+                { name: 'fieldtype', type: 'string' },
+                { name: 'type', type: 'string' }, 
                 { name: 'lastmodifiedon', type: 'date' },
                 { name: 'mappedfield', type: 'string' },
                 { name: 'possiblevalues', type: 'string' },
@@ -128,6 +129,11 @@
             {
                 // update the grid and send a request to the server.
                 $("#jqxgrid").jqxGrid('updatebounddata', 'filter');
+            },
+            sort: function()
+            {
+                    // update the grid and send a request to the server.
+                    $("#jqxgrid").jqxGrid('updatebounddata', 'sort');
             },
             addrow: function (rowid, rowdata, position, commit) {
                 commit(true);
@@ -211,7 +217,7 @@
                    
                         var row = $('#jqxgrid').jqxGrid('getrowdata', selectedrowindex);
                         $("#id").val(row.id);
-                        $("#fieldName").val(row.title);
+                        $("#fieldName").val(row.label);
                         showPossibleValues(row.type);
                         $("#possibleValues").val(row.possiblevalues);
                         $("#cusname").val(row.name);
@@ -310,6 +316,7 @@
                                                         <option value="Numeric">Numeric</option>
                                                         <option value="Yes/No">Yes/No</option>
                                                         <option value="Dropdown">Dropdown</option>
+                                                        <option value="email">Email</option>
                                                         </select>
                                                     </div>
                                                     <div class="form-group" id="possibleValueDiv">

@@ -299,4 +299,43 @@
                 }
 
         }
+        function deleteObjects(gridId,deleteURL,message){
+                var selectedRowIndexes = $("#" + gridId).jqxGrid('selectedrowindexes');
+                if(selectedRowIndexes.length > 0){
+                    bootbox.confirm(message, function(result) {
+                        if(result){
+                            var ids = [];
+                            $.each(selectedRowIndexes, function(index , value){
+                                if(value != -1){
+                                    var dataRow = $("#" + gridId).jqxGrid('getrowdata', value);
+                                    ids.push(dataRow.id);    
+                                }
+                                
+                            });
+                            $.get( deleteURL + "&ids=" + ids,function( data ){
+                                if(data != ""){
+                                    var obj = $.parseJSON(data);
+                                    var message = obj.message;
+                                    if(obj.success == 1){
+
+                                        toastr.success(message,'Success');
+                                       //$.each(selectedRowIndexes, function(index , value){
+                                          //  var id = $("#"  + gridId).jqxGrid('getrowid', value);
+                                            var commit = $("#"  + gridId).jqxGrid('deleterow', ids);
+                                            $("#"+gridId).jqxGrid('clearselection');
+                                        //});
+                                    }else{
+                                        toastr.error(message,'Failed');
+                                    }
+                                }
+
+                            });
+
+                        }
+                    });
+                }else{
+                     bootbox.alert("No row selected.Please select row to delete!", function() {});
+                }
+
+        }
        </script>
