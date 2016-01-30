@@ -17,9 +17,6 @@
             });
         });
         var exportInfo;
-        $("#excelExport").jqxButton({ theme: theme, width:200 });
-        $("#csvExport").jqxButton({ theme: theme , width:200});
-        $("#htmlExport").jqxButton({ theme: theme , width:200});
         $("#excelExport").click(function () {
              $("#jqxgrid").jqxGrid('exportdata', 'xls',jqxgrid,true,null,true,'save-file.php');
         });
@@ -187,10 +184,12 @@
                                 <div id="jqxgrid"></div>
                             </div>
                         </div>
-                        <div class="row">
-                            <input type="button" class="col-sm-1" value="Export to Excel" id='excelExport' />
-                            <input style="margin-left:8px;" type="button" class="col-sm-1" value="Export to CSV" id='csvExport' />
-                            <input style="margin-left:8px;" type="button" class="col-sm-1" value="Export to HTML" id='htmlExport' />
+                        <div class="row" style="margin-top:5px">
+                            <div class="col-sm-12">
+                                <input type="button" class="btn-sm btn-primary" value="Export to Excel" id='excelExport' />
+                                <input style="margin-left:8px;" type="button" class="btn-sm btn-primary" value="Export to CSV" id='csvExport' />
+                                <input style="margin-left:8px;" type="button" class="btn-sm btn-primary" value="Export to HTML" id='htmlExport' />
+                            </div>
                         </div>
                     </div>
                 </div>

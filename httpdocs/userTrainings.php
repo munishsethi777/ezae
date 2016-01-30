@@ -26,6 +26,9 @@
     background:#F9F9F9;
     line-height:30px;
 }
+.jqx-item{
+    line-height:30px;
+}
 </style>
 </head>
 <body class='default'>
