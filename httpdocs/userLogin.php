@@ -5,7 +5,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Administration - Easy Assessment Engine</title>
-       
+
         <script type="text/javascript">
             $(document).ready(function () {
                 //$('.form-control').jqxInput({  });
@@ -19,7 +19,7 @@
                            ]
                 });
                 //$('#loginButton').jqxButton({ width: 100, height: 25 });
-                
+
                 $("#loginButton").click(function (e) {
                     var btn = this;
                     validateAndSave(e,btn);
@@ -43,14 +43,14 @@
                 })
             });
             function validateAndSave(e,btn){
-                 
-                
+
+
                     var validationResult = function (isValid) {
                         if (isValid) {
                             submitLogin(e,btn);
                         }
                     }
-                    $('#userLoginForm').jqxValidator('validate', validationResult);    
+                    $('#userLoginForm').jqxValidator('validate', validationResult);
             }
             function submitLogin(e,btn){
                 e.preventDefault();
@@ -81,13 +81,13 @@
                   <div class="form-group">
                     <label for="inputEmail3" class="col-sm-3 control-label">Username</label>
                     <div class="col-sm-9">
-                      <input type="text" name="username" class="form-control input-lg" id="usernameInput" value="munish">
+                      <input type="text" name="username" class="form-control input-lg" id="usernameInput">
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="inputPassword3" class="col-sm-3 control-label">Password</label>
                     <div class="col-sm-9">
-                      <input type="password" name="password" class="form-control input-lg" id="passwordInput" value="a">
+                      <input type="password" name="password" class="form-control input-lg" id="passwordInput">
                     </div>
                   </div>
 

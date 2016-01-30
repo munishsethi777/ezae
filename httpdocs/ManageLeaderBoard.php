@@ -87,7 +87,8 @@
             $.each(data, function(key,val){
                 $(".leaderBoardName").html(val.leaderboardName);
                 if($i < 4){
-                    $str += "<p>"+ $i++ +". "+ val.username +" (Score: "+ val.score +")</p>";
+                    var intvalue = Math.round( val.score );
+                    $str += "<p>"+ $i++ +". "+ val.username +" (Score: "+ intvalue +")</p>";
                 }
             });
             loadLeaderBoardActivityGrid(data);
@@ -103,9 +104,9 @@
                 datafields:
                 [
                     { name: 'username', type: 'string' },
-                    { name: 'progress', type: 'numeric' },
-                    { name: 'score', type: 'string' },
-                    { name: 'dateofplay', type: 'string' }
+                    { name: 'progress', type: 'integer' },
+                    { name: 'score', type: 'integer' },
+                    { name: 'dateofplay', type: 'date' }
                 ]
             };
             var dataAdapter = new $.jqx.dataAdapter(source);
@@ -113,14 +114,14 @@
             $("#jqxgridLB").jqxGrid(
             {
                 width: 500,
-                height:100,
+                height:200,
                 source: dataAdapter,
                 sortable: true,
                 columns: [
                   { text: 'UserName', datafield: 'username', width: '20%' },
-                  { text: 'Progress', datafield: 'progress', width: '20%', cellsalign: 'right'},
-                  { text: 'Score', datafield: 'score', width: '20%', cellsalign: 'right' },
-                  { text: 'Date Of Play', datafield: 'dateofplay', width: '40%' }
+                  { text: 'Progress', datafield: 'progress', width: '20%', cellsalign: 'right',cellsformat: 'n'},
+                  { text: 'Score', datafield: 'score', width: '20%', cellsalign: 'right',cellsformat: 'n' },
+                  { text: 'Date Of Play', datafield: 'dateofplay', width: '40%',cellsformat: 'MM-dd-yyyy hh:mm:ss tt',cellsalign: 'right' }
                 ]
             });
     }
@@ -144,7 +145,7 @@
         </div>
     </div>
 
-    <div id="leaderBoardDetailsModal" style="width:1000px;" class="modal fade" aria-hidden="true">
+    <div id="leaderBoardDetailsModal" style="width:100%;" class="modal fade" aria-hidden="true">
         <div class="modal-dialog" >
             <div class="modal-content">
                 <div class="modal-header">

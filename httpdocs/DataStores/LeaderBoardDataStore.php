@@ -42,11 +42,11 @@ where learningplans.companyseq = $companySeq";
     where leaderboard.learningplanseq = activities.learningplanseq
     and leaderboard.seq = $seq order by score DESC LIMIT 10";
         }else{
-           $sql = "select users.username,leaderboard.name leaderboardName,avg(progress) progress, avg(score) score from activities
+           $sql = "select activities.dateofplay, users.username,leaderboard.name leaderboardName,avg(progress) progress, avg(score) score from activities
 left join leaderboard on  leaderboard.learningplanseq = activities.learningplanseq
 left join users on users.seq = activities.userseq
 where leaderboard.learningplanseq = activities.learningplanseq
-and leaderboard.seq = $seq group by userseq order by userseq DESC LIMIT 10";
+and leaderboard.seq = $seq group by userseq order by  score DESC LIMIT 10";
            
         }
         $leaderBoardData = $this->executeQuery($sql);

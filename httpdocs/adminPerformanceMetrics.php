@@ -7,87 +7,49 @@
         $(document).ready(function (){
             loadPercentages();
             loadLearningPlansCombo();
-            $('#showReportButton').jqxButton({ width: 100, height: 25, theme:'arctic' });
             $("#showReportButton").click(function () {
-                 populatePie();  
+                 populatePie();
             });
         });
         function populatePie(){
-            var learningPlanItem = $("#learningPlanComboBox").jqxComboBox('getSelectedItem');
-            var moduleItem = $("#moduleComboBox").jqxComboBox('getSelectedItem');
-
-            var learningPlanSeq = learningPlanItem.value;
-            var moduleSeq = moduleItem.value;
-            var moduleLabel = moduleItem.label;
+            var learningPlanSeq = $("#learningPlanComboBox").val();
+            var moduleSeq = $("#moduleComboBox").val();
+            var moduleLabel = $("#moduleComboBox").text();
             var passPercent = $("#percentages").jqxComboBox('getSelectedItem');
             loadGraphChart(learningPlanSeq,moduleSeq,moduleLabel);
             loadPassPie(learningPlanSeq,moduleSeq, moduleLabel, passPercent.value);
-            loadPerformanceTablesStats(learningPlanSeq,moduleSeq);    
+            loadPerformanceTablesStats(learningPlanSeq,moduleSeq);
         }
         function loadLearningPlansCombo(){
-            var source =
-            {
-                datatype: "json",
-                datafields: [
-                { name: 'id'},
-                { name: 'title'}
-                ],
-                url: 'Actions/LearningPlanAction.php?call=getLearnerPlansForReporting',
-                async: true
-            };
-
-            var dataAdapter = new $.jqx.dataAdapter(source);
-
-            $("#learningPlanComboBox").jqxComboBox({
-                source: dataAdapter,
-                width: '300',
-                height: 25,
-                selectedIndex: 0,
-                displayMember: 'title',
-                valueMember: 'id',
-                theme: 'arctic'
+            var url = 'Actions/LearningPlanAction.php?call=getLearnerPlansForReporting';
+            $.getJSON(url, function(data){
+                var options = "";
+                $.each(data.Rows, function(index , value){
+                    options += "<option value='" + value.id + "'>" + value.title + "</option>";
+                });
+                $("#learningPlanComboBox").html(options);
+                loadModulesCombo(data.Rows[0].id);
             });
-            $('#learningPlanComboBox').on('change', function (event){
-                var args = event.args;
-                if (args) {
-                   var item = args.item;
-                   loadModulesCombo(item.value);
+            $('#learningPlanComboBox').change(function(){
+                loadModulesCombo(this.value);
+            });
+        }
+        function loadModulesCombo(learningPlanSeq){
+            var url = 'Actions/ModuleAction.php?call=getModulesByLearningPlanForReporting&learningPlanSeq='+learningPlanSeq;
+            $.getJSON(url, function(data){
+                var options = "";
+                $.each(data, function(index , value){
+                      options += "<option value='" + value.id + "'>" + value.title + "</option>";
+                });
+                $("#moduleComboBox").html(options);
+                if(!isloaded){
+                    populatePie();
+                    isloaded = true;
                 }
             });
 
         }
-        function loadModulesCombo(learningPlanSeq){
-            var source1 =
-            {
-                datatype: "json",
-                datafields: [
-                { name: 'id'},
-                { name: 'title'}
-                ],
-                url: 'Actions/ModuleAction.php?call=getModulesByLearningPlanForReporting&learningPlanSeq='+learningPlanSeq,
-                async: true
-            };
 
-            var dataAdapter1 = new $.jqx.dataAdapter(source1);
-
-            $("#moduleComboBox").jqxComboBox({
-                source: dataAdapter1,
-                width: '300',
-                height: 25,
-                selectedIndex: 0,
-                displayMember: 'title',
-                valueMember: 'id',
-                theme: 'arctic'
-            });
-            if(!isloaded) {
-                $("#moduleComboBox").on('bindingComplete', function (event) {
-                    populatePie();
-                    isloaded = true;
-                });
-            } else{
-                $( "#moduleComboBox").unbind( "bindingComplete" );
-            }
-        }
 
         function loadPercentages(){
             var source = [
@@ -142,7 +104,7 @@
                         showGridLines: true,
                         flip: false
                     },
-                colorScheme: 'scheme17',
+                colorScheme: 'scheme20',
                 seriesGroups:
                     [
                         {
@@ -190,7 +152,7 @@
                 showBorderLine: false,
                 legendLayout : { left: 400, top: 0, width: 200, height: 100, flow: 'vertical' },
                 source: dataAdapter,
-                colorScheme: 'scheme17',
+                colorScheme: 'scheme20',
                 seriesGroups:
                     [
                         {
@@ -232,52 +194,67 @@
 <body class='default'>
 <div id="wrapper">
         <?include("adminMenu.php");?>
-        <div style="float:left;margin-top:5px;margin-right:6px;">Learning Plan : </div>
-        <div style="float:left" id="learningPlanComboBox"></div>
-        <div style="float:left;margin-top:5px;margin-right:6px;">Module : </div>
-        <div style="float:left" id="moduleComboBox"></div>
-        <input style="margin-left:10px;" type="button" value="Show Report" id="showReportButton" />
-        <hr>
-
-        <div class="col-sm-8" style="height:600px">
-            <div id='chartContainer' style="width:100%;height:100%"></div>
-        </div>
-
-        <div class="col-sm-4" style="height:600px">
-            <div class="panel panel-default" style="height:60%">
-                <div class="panel-heading">
-                    <h3 class="panel-title" style="float: left;margin-right:60px">Pass Chart</h3>
-                    <div>
-                        <div id="percentages" style="margin-left:6px;float:right"></div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins ">
+                    <div class="ibox-title">
+                        <h5>Performance Metrics Report <small>View performance reports selecting Learning Plan and Learning Module</small></h5>
                     </div>
-                    <div style="clear:both"></div>
-                </div>
-                <div class="panel-body">
-                    <div class="chartDiv" style="width:100%;height:83%" id="passPercentageChartDiv"></div>
+                    <div class="ibox-content mainDiv">
+                        <div class="row">
+                            <div class="form-group form-horizontal">
+                                <label class="col-lg-2 control-label">Learning Plan</label>
+                                <div class="col-lg-3">
+                                    <select class="form-control" id="learningPlanComboBox" name="learningPlanComboBox"></select>
+                                </div>
+                                <label class="col-lg-2 control-label">Learning Module</label>
+                                <div class="col-lg-3">
+                                    <select class="form-control" id="moduleComboBox" name="moduleComboBox"></select>
+                                </div>
+                                    <input class="btn btn-primary" style="margin-left:10px;" type="button" value="Show Report" id="showReportButton" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-8" style="height:600px">
+                                <div id='chartContainer' style="width:100%;height:100%"></div>
+                            </div>
 
-                </div>
-             </div>
+                            <div class="col-sm-4" style="height:600px">
+                                <div class="panel panel-default" style="height:60%">
+                                    <div class="panel-heading badge-primary">
+                                        <h3 class="panel-title" style="float: left;margin-right:60px">Pass Chart</h3>
+                                        <div>
+                                            <div id="percentages" style="margin-left:6px;float:right"></div>
+                                        </div>
+                                        <div style="clear:both"></div>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="chartDiv" style="width:100%;height:83%" id="passPercentageChartDiv"></div>
+
+                                    </div>
+                                 </div>
 
 
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Performance Information of Selected Module <span class="moduleName"></span></h3>
-                </div>
-                <div class="panel-body">
-                    <ul class="list-group">
-                      <li class="list-group-item">
-                        <span class="badge meanCount"></span>Mean
-                      </li>
-                      <li class="list-group-item">
-                        <span class="badge medianCount"></span>Median
-                      </li>
-                      <li class="list-group-item">
-                        <span class="badge modeCount"></span>Mode
-                      </li>
-                    </ul>
-                </div>
-             </div>
-        </div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading badge-primary">
+                                        <h3 class="panel-title">Performance Information of Selected Module <span class="moduleName"></span></h3>
+                                    </div>
+                                    <div class="panel-body">
+                                        <ul class="list-group">
+                                          <li class="list-group-item">
+                                            <span class="badge meanCount"></span>Mean
+                                          </li>
+                                          <li class="list-group-item">
+                                            <span class="badge medianCount"></span>Median
+                                          </li>
+                                          <li class="list-group-item">
+                                            <span class="badge modeCount"></span>Mode
+                                          </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
 </div>
 </body>

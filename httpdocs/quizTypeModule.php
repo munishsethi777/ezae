@@ -1,4 +1,4 @@
-<div id="progressbar" class="progress progress-bar-default">
+<div id="progressbar" class="progress progress-bar-default" style="margin:10px 0px 10px 0px">
                             <div style="width:0%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="0" role="progressbar" class="progress-bar">
                                <span class="completionPercent">0</span>% completed
                             </div>
@@ -32,21 +32,21 @@
                                             <?$possibleAnsCount = 0;
                                             $possibleAns = $allOptions[$question->getSeq()];
                                             foreach($possibleAns as $ans){
-                                            if($ans->getMarks() > 0){                                               
-                                                $possibleAnsCount++;    
+                                            if($ans->getMarks() > 0){
+                                                $possibleAnsCount++;
                                             }?>
                                                 <tr class="read">
                                                     <td class="check-mail">
-                                                       
+
                                                         <div class="i-checks">
                                                         <?if($questionType == "multi"){?>
                                                             <label>
                                                                 <input type="checkbox"  id="chkOpt<?echo$ans->getSeq()?>" onchange="checkPossibleAnsValidation(<?echo$questionSeq?>,<?echo$ans->getSeq()?>)" value="<?echo $ans->getSeq()?>" name="answer<?echo$questionSeq?>[]">
-                                                            <i></i></label>    
+                                                            <i></i></label>
                                                         <?}else{?>
                                                             <label>
                                                                 <input type="radio" value="<?echo $ans->getSeq()?>" name="answer<?echo$questionSeq?>">
-                                                            <i></i></label>    
+                                                            <i></i></label>
                                                         <?}?>
                                                             </div>
                                                     </td>
@@ -54,13 +54,13 @@
                                                     <td><i id="check<?echo $ans->getSeq()?>" class="fa fa-check text-navy" style="display: none;"></i></td>
                                                 </tr>
                                              <?}?>
-                                             
+
                                              <input type="hidden" id="possibleAnsCount<?echo $questionSeq?>" name="possibleAnsCount<?echo $questionSeq?>" value="<?echo $possibleAnsCount?>" />
                                         </tbody>
                                      </table>
                                      <div class="p-xl">
                                         <div class="col-sm-offset-5">
-                                             <button class="btn btn-primary" id="submitBtnDiv<?echo $questionSeq?>" onclick="submitAns(<?echo $questionSeq?>,this,<?echo$i?>,'<?echo $questionType?>')" type="button"><strong><i class="fa fa-lock"></i> 
+                                             <button class="btn btn-primary" id="submitBtnDiv<?echo $questionSeq?>" onclick="submitAns(<?echo $questionSeq?>,this,<?echo$i?>,'<?echo $questionType?>')" type="button"><strong><i class="fa fa-lock"></i>
                                                 <span class="ladda-label">Submit Answer</strong></span>
                                              </button>
                                         </div>
@@ -69,7 +69,7 @@
 
                                         <button class="btn btn-sm btn-primary m-t-n-xs pull-left" onclick="setPrevPannel(this)" id="prevBtnDiv<?echo $questionSeq?>" style="display: none;" type="button"><strong><i class="fa fa-long-arrow-left"></i> Previous</strong></button>
                                         <button class="btn btn-sm btn-primary m-t-n-xs pull-right" onclick="setNextPannel(this)" id="nextBtnDiv<?echo $questionSeq?>" style="display: none;" type="button"><strong>Next <i class="fa fa-long-arrow-right"></i></strong></button>
-                                     </div>                                    
+                                     </div>
                                     </form>
                                 </div>
                              </div>
@@ -79,27 +79,27 @@
                     <div class="p-xl">
                         <button class="btn btn-sm btn-primary m-t-n-xs pull-right" onclick="finish()" style="display: none;"  id="finishBtn" type="button"><strong>Finish <i class="fa fa-long-arrow-right"></i></strong></button>
                     </div>
-                         
+
                     </div>
-                    
+
 <script>
     var api = null;
 slideCounter = 0;
 $(document).ready(function(){
     <?if($userActivity != null){?>
-        setProgress(<?echo$userActivity->getProgress()?>);    
+        setProgress(<?echo$userActivity->getProgress()?>);
     <?}?>
-    
+
     $('#main-slider').liquidSlider();
     $(".liquid-slider .panel-container .clone form").attr("id","");
     api = $.data( $('#main-slider')[0], 'liquidSlider');
     $("#main-slider-nav-ul").hide();
-     setValuesOnEdit();    
+     setValuesOnEdit();
     $('.i-checks').iCheck({
         checkboxClass: 'icheckbox_square-green',
         radioClass: 'iradio_square-green',
     });
-    
+
 });
 
 function finish(){
@@ -108,11 +108,11 @@ function finish(){
 function checkPossibleAnsValidation(quesSeq){
   selectedCount = 0;
   pcount = $("#form" + quesSeq + " #possibleAnsCount" + quesSeq).val();
-  pcount = parseInt(pcount);  
+  pcount = parseInt(pcount);
   $("#form" + quesSeq + " input:checkbox").each(function() {
       if(this.checked){
-        selectedCount++;    
-      } 
+        selectedCount++;
+      }
   });
   if(selectedCount > pcount){
     toastr.error("You can't select more than " + pcount +" options","Failed");
@@ -129,7 +129,7 @@ function setValuesOnEdit(){
    <?$i = 0;
    $questionCount = 0;
    $quesSeqArr = array();
-   
+
    foreach($quizProgressList as $qp){
        if(!in_array($qp->getQuestionSeq(),$quesSeqArr)){
             array_push($quesSeqArr,$qp->getQuestionSeq());
@@ -141,16 +141,16 @@ function setValuesOnEdit(){
         var formId = "#form" + quesSeq;
         $(formId + " input:radio[value=<?echo$qp->getAnswerSeq()?>]").attr('checked',true);
         $(formId + " input:checkbox[value=<?echo$qp->getAnswerSeq()?>]").attr('checked',true);
-        
+
        <?if($questionCount == $totalCount){?>
-            $("#finishBtn").show(); 
-            isLast = true;           
+            $("#finishBtn").show();
+            isLast = true;
         <?}else{?>
             $(formId + " #nextBtnDiv" + quesSeq).show();
         <?}?>
-        $(formId +  " #submitBtnDiv" + quesSeq).hide(); 
+        $(formId +  " #submitBtnDiv" + quesSeq).hide();
         <?if($i > 0){?>
-            $(formId + " #prevBtnDiv" + quesSeq).show();               
+            $(formId + " #prevBtnDiv" + quesSeq).show();
         <?}?>
         <?$ans = getFeedback($qp->getAnswerSeq(),$qp->getQuestionSeq());?>
             var feedback = "<?echo$ans->getTitle() ." - " .$ans->getFeedback()?>";
@@ -160,7 +160,7 @@ function setValuesOnEdit(){
                 $(formId + " #check" + ansSeq).show();
             <?}else{?>
                 $(formId + " #danger" + quesSeq).html(feedback);
-                $(formId + " #danger" + quesSeq).show(); 
+                $(formId + " #danger" + quesSeq).show();
                 <?$correctAnsSeqs = getCorrectAns($qp->getQuestionSeq());
                     foreach($correctAnsSeqs as $seq){?>
                         $(formId + " #check" + "<?echo$seq?>").show();
@@ -169,11 +169,11 @@ function setValuesOnEdit(){
            <? }?>
    <?$i++;}?>
     var slide = "<?echo $questionCount?>"
-    
-    
+
+
         slide = slide - 1;
-    
-    api.setNextPanel(slide);api.updateClass($(formId)); 
+
+    api.setNextPanel(slide);api.updateClass($(formId));
     slideCounter = slide;
     <?}?>
 }
@@ -192,7 +192,7 @@ function setPrevPannel(btn){
 function checkValidations(quesSeq,type){
     inputType = "radio"
     if(type == "multi"){
-        inputType = "checkbox";    
+        inputType = "checkbox";
     }
     hasChecked = false;
     var inputs = $("#form" + quesSeq + " input:" + inputType).each(function() {
@@ -204,13 +204,13 @@ function checkValidations(quesSeq,type){
 }
 function submitAns(quesSeq,btn,questionNumber,quesType){
      if(!checkValidations(quesSeq,quesType)){
-         toastr.error("Select at least one option");  
-         return;  
+         toastr.error("Select at least one option");
+         return;
      }
      //var form = $(btn).parents('form:first');
      if(quesType == "multi"){
          isValid = checkPossibleAnsValidation(quesSeq)
-         if(!isValid){             
+         if(!isValid){
              return;
          }
       }
@@ -238,17 +238,17 @@ function submitAns(quesSeq,btn,questionNumber,quesType){
         $.each(obj.ansList.correct, function(key, value){
            $("#form" + quesSeq + " #check" + key).show();
            if(value != ""){
-                html += value + "<br/>";     
+                html += value + "<br/>";
            }
         })
         if(quesType == "multi"){
             var sucessDiv = "#form" + quesSeq + " #success" + quesSeq;
             $(sucessDiv).html(html);
-            $(sucessDiv).show();    
+            $(sucessDiv).show();
         }
         $(divClass).html(htmlCont);
         $(divClass).show();
-        
+
         //$("next");
         if(slideCounter > 0){
             $("#form" + quesSeq + " #prevBtnDiv" + quesSeq).show();
@@ -265,6 +265,6 @@ function submitAns(quesSeq,btn,questionNumber,quesType){
         }
     })
 
-        
+
 }
 </script>

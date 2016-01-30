@@ -48,6 +48,7 @@
 <script src="scripts/plugins/pace/pace.min.js"></script>
 
 <script type="text/javascript">
+    var isValidate = false;
     $(document).ready(function(){
         loadForm();
         $("#saveBtn").click(function(e){
@@ -78,22 +79,25 @@
 
 
     function saveSignupfields(e,btn){
-        e.preventDefault();
-        var l = Ladda.create(btn);                
-         var validationResult = function (isValid){
-            if (isValid) {
-               l.start();
-               $('#SignupFieldForm').ajaxSubmit(function( data ){
-                    var obj = $.parseJSON(data);
-                    showResponseNotification(data,"mainDiv","SignupFieldForm");
-                    l.stop();
-                    if(obj.success == 1){
-                        window.setTimeout(function(){window.location.href = "userTrainings.php"},500);
-                    }
-               })
-            }
-         }
-         $('#SignupFieldForm').jqxValidator('validate', validationResult);
+        if(isValidate){
+            e.preventDefault();
+            var l = Ladda.create(btn);                
+             var validationResult = function (isValid){
+                if (isValid) {
+                   l.start();
+                   $('#SignupFieldForm').ajaxSubmit(function( data ){
+                        var obj = $.parseJSON(data);
+                        showResponseNotification(data,"mainDiv","SignupFieldForm");
+                        l.stop();
+                        if(obj.success == 1){
+                            window.setTimeout(function(){window.location.href = "userTrainings.php"},500);
+                        }
+                   })
+                }
+             }
+             $('#SignupFieldForm').jqxValidator('validate', validationResult);    
+        }
+        
     }
      function getFieldHtml(label,name){
          var input =  '<div class="form-group">'; 
@@ -139,9 +143,12 @@
                         fieldType = type;
                         var label = name;
                         var id = fieldName;
+                        var isUsernameField = false;
+                        var userNameErrLbl = "";
+                        icon = "";
                         if(fieldName == usernamefield){
                             label += " (UserName)";
-                           
+                            isUsernameField = true;
                         }
                         if(fieldName == passwordfield){
                             label += " (Password)";
@@ -171,7 +178,15 @@
                                 dropdown += '</select>';                                
                                 input += dropdown;
                             }else{
-                                input += '<input type="' + fieldType + '" id="'+  id + '" name="'+  fieldName + '" placeholder="' + name + '"  class="' + className + '">';
+                                var focusOut = "";
+                                if(isUsernameField){
+                                   focusOut = "onfocusout='checkDuplicateUserName(this.id)'";
+                                   userNameErrLbl = '<label id="'+  id + 'lbl" class="jqx-validator-error-label" style="position: relative; left: 0px; width: 466px; top: 2px;"></label>';
+                                   icon = '<span id="iconspan" style="color:green;display:none">Available <i class="fa fa-check-circle style="color:green"></i></span>';
+                                }
+                                input += '<input type="' + fieldType + '" id="'+  id + '" name="'+  fieldName + '" ' + focusOut +  '  placeholder="' + name + '"  class="' + className + '">';
+                                input += icon;
+                                input += userNameErrLbl;
                             }
                             
                             input += '</div></div>';
@@ -179,7 +194,7 @@
                        if(type == "Date"){
                            datefieldIds.push(name);
                        }
-                       if(required == 1 || name == usernamefield || name == passwordfield){
+                       if(required == 1 || fieldName == usernamefield || fieldName == passwordfield){
                            var rule = { input: '#' + id, message: name + ' is required!', action: 'keyup, blur', rule: 'required'};
                            validationRules.push(rule);
                            hasValidation = true;
@@ -214,6 +229,24 @@
                         $("#SignupFieldForm-iframe").fadeIn('fast');
                 });        
             });
+    }
+    
+    function checkDuplicateUserName(id){
+        var name = $("#"+id).val();
+        $("#"+id+"lbl").text("");
+        $("#iconspan").hide();
+        if(name) {
+            var url = 'Actions/UserAction.php?call=isUserNameExist&username='+name;
+            $.getJSON(url, function(data){
+                if(data.isExist == 1){
+                    $("#"+id+"lbl").html('UserName Already Exists!');
+                    isValidate = false;
+                } else{
+                    $("#iconspan").show();
+                    isValidate = true;
+                }
+            });
+        }
     }
     function generateDateType(fieldIds){
          $.each(fieldIds, function(id,value){
