@@ -1409,7 +1409,7 @@ a.list-group-item.active:focus {
   margin-bottom: 0;
 }
 .list-group-item {
-  background-color: inherit;
+  /*background-color: inherit;*/
   border: 1px solid #e7eaec;
   display: block;
   margin-bottom: -1px;

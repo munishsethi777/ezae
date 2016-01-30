@@ -1,6 +1,6 @@
 
 <!-- Jquery avascripts -->
-<script src="scripts/jquery-2.1.1.js"></script>  
+<script src="scripts/jquery-2.1.1.js"></script>
 
 <!-- Custom and plugin javascript -->
 <script src="scripts/inspinia.js"></script>
@@ -37,9 +37,9 @@
 <script src="scripts/jquery.datetimepicker.js"></script>
 <!--liquidslider--->
 <script src="scripts/jquery.easing.min.js"></script>
-<script src="scripts/jquery.touchSwipe.min.js"></script>s
+<script src="scripts/jquery.touchSwipe.min.js"></script>
 <script src="scripts/plugins/liquidslider/jquery.liquid-slider.min.js"></script>
-<link rel="stylesheet" href="styles/plugins/liquidslider/liquid-slider.css">       
+<link rel="stylesheet" href="styles/plugins/liquidslider/liquid-slider.css">
 <!-- SUMMERNOTE -->
 <link href="styles/plugins/summernote/summernote.css" rel="stylesheet">
 <link href="styles/plugins/summernote/summernote-bs3.css" rel="stylesheet">
@@ -129,7 +129,7 @@
 <script type="text/javascript" src="jqwidgets/jqxchart.core.js"></script>
 <script type="text/javascript" src="jqwidgets/jqxnumberinput.js"></script>
 <script type="text/javascript" src="jqwidgets/jqxinput.js"></script>
- 
+
 <script>
             $(function() {
                toastr.options = {
@@ -269,9 +269,9 @@
                             $.each(selectedRowIndexes, function(index , value){
                                 if(value != -1){
                                     var dataRow = $("#" + gridId).jqxGrid('getrowdata', value);
-                                    ids.push(dataRow.id);    
+                                    ids.push(dataRow.id);
                                 }
-                                
+
                             });
                             $.get( deleteURL + "&ids=" + ids,function( data ){
                                 if(data != ""){
