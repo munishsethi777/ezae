@@ -178,7 +178,7 @@
                         flip: false,
                         textRotationAngle: 90,
                     },
-                colorScheme: 'scheme17',
+                colorScheme: 'scheme20',
                 seriesGroups:
                     [
                         {
@@ -187,7 +187,7 @@
                             valueAxis:
                             {
                                 flip: false,
-                                description: '',
+                                description: 'Score',
 
                             },
                             series: [
