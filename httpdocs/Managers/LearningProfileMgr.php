@@ -2,7 +2,6 @@
 require_once($ConstantsArray['dbServerUrl']. "DataStores/BeanDataStore.php5");
 require_once($ConstantsArray['dbServerUrl']. "DataStores/LearningProfileDataStore.php");
 require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/tag.php");
-require_once($ConstantsArray['dbServerUrl']. "Managers/CompanyMgr.php");
 require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/UserLearningProfile.php");
 require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/LearningPlanProfile.php");
 class LearningProfileMgr{
@@ -32,7 +31,6 @@ class LearningProfileMgr{
                 $lp = $lpObj;
                 $arr = array();
                 $arr['id'] = $lp->getSeq();
-                $arr['signupUrl'] = $row['awesomefontid'] = "<a href='#' onClick='openSignUpUrl(" . $lp->getSeq() +")'><i class='fa fa-pencil-square-o' title='Open Signup Form'></i></a>";
                 $arr['tag'] = $lp->getTag();
                 $arr['description'] = $lp->getDescription();
                 $arr['awesomefontid'] = "<i id='icon". $lp->getSeq() . "' class='fa ". $lp->getAwesomeFontId() . "'></i>";

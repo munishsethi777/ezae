@@ -271,7 +271,11 @@ class UserMgr{
         $count = $userDataStore->isExist($companyseq);
         return $count > 0;
      }
-
+    public function isUserNameAlreadyExist($username){
+        $userDataStore = UserDataStore::getInstance();
+        $user = $userDataStore->findByUserName($username);
+        return $user != null;    
+    }
     public function ChangePassword($password){
         $userDataStore = UserDataStore::getInstance();
         $sessionUtil = SessionUtil::getInstance();

@@ -180,7 +180,15 @@
      echo json_encode($res);
 
   }
-
+    if($call == "isUserNameExist"){
+        $userMgr = UserMgr::getInstance();
+        $username = $_GET["username"];
+        $flag = $userMgr->isUserNameAlreadyExist($username);
+        $res = new ArrayObject();
+        $res["isExist"]  = $flag ? 1 :0;
+        echo json_encode($res);
+        return;
+    }
      //used to display learningplans in user's training page learningplans dropdown
     if($call == "getLearningPlansForUser"){
         $learningPlanMgr = LearningPlanMgr::getInstance();
