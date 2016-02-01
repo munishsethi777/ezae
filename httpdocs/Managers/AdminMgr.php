@@ -190,14 +190,14 @@ class AdminMgr{
         
         $arr = array();
         $arr['text'] = "Date of Registration";
-        $arr['datafield'] = "dateofregistration";
+        $arr['datafield'] = "u.createdon";
         $arr['type'] = "date";
         $arr['cellsformat'] =  "MM-dd-yyyy hh:mm:ss tt";
         array_push($userFieldsArr,$arr);
         
         $arr = array();
         $arr['text'] = "Date of Completion";
-        $arr['datafield'] = "dateofcompletion";
+        $arr['datafield'] = "a.dateofplay";
         $arr['type'] = 'date';
         $arr['cellsformat'] =  "MM-dd-yyyy hh:mm:ss tt";          
         array_push($userFieldsArr,$arr);
@@ -250,8 +250,8 @@ class AdminMgr{
             $arr = array_merge($arr,$arrCustomFields);
             $arr['score'] = $dataArr['score'];
             $arr['progress'] = $dataArr['progress'];
-            $arr['dateofregistration'] = $dataArr['createdon'];
-            $arr['dateofcompletion'] = $dataArr['dateofplay'];
+            $arr['u.createdon'] = $dataArr['createdon'];
+            $arr['a.dateofplay'] = $dataArr['dateofplay'];
             $arr["lastmodifiedon"] = $dataArr["lastmodifiedon"];
             array_push($fullArr,$arr);
             $count++;

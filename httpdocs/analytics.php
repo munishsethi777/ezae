@@ -42,6 +42,8 @@
             id: 'id',
             pagesize: 20,
             datafields: dataFields,
+            sortcolumn: 'a.dateofplay',
+            sortdirection: 'desc',
             url : 'Actions/ActivityAction.php?call=getActivityDataForGrid&moduleSeq='+ value +'&lpSeq='+learningPlanSeq,
             root: 'Rows',
             cache: false,

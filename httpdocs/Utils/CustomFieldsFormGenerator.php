@@ -100,6 +100,15 @@
                         $usrCustomFld->getTitle().' </label></div>';
                     $labelTitle = "";
                 }
+                if($usrCustomFld->getFieldType() == "Dropdown"){
+                    $dropdown = '<select id="cus_'. $usrCustomFld->getName() . '" name="'.  $usrCustomFld->getName() . '" class="form-control">';
+                    $pValues = explode("\r\n",$userCustomField->getPossibleValues());
+                   foreach($pValues as $key=>$value){
+                        $dropdown .= '<option value="'. $value . '">' . $value . '</option>';     
+                    }
+                    $dropdown .= '</select>';                                
+                    $inputCode = $dropdown;
+                }
                 $html .= '<div class="form-group">';
                 $html .= '<label class="col-sm-3 control-label">'. $labelTitle .'</label>';
                 $html .= '<div class="col-sm-9">'. $inputCode .'</div>';

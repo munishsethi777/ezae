@@ -158,7 +158,8 @@
                                 </div>
                             </form>
                             <form method="post" action="Actions/ModuleAction.php" id="createQuestionForm" class="form-horizontal">
-                                <input type="hidden" id="call" name="call" value="saveQuestion">  
+                                <input type="hidden" id="call" name="call" value="saveQuestion"> 
+                                <input type="hidden" id="maxMarks" name="maxMarks">    
                                 <div class="quizEditor editorPanel animated fadeInRight" style="display: none;">
                                     <div class="form-group">
                                         <label class="col-sm-1 control-label">Questions</label>
@@ -312,7 +313,8 @@
         $("#option1").val("");
         $("#feedback1").val("");
         $("#marks1").val("");
-        for(var i =1;i<=optionsCount;i++){
+        var count = optionsCount;
+        for(var i =1;i<=count;i++){
             removeOption(i + 1);      
         }
        
@@ -378,6 +380,8 @@
     }
     
     function saveQuestion(e,btn){
+        var totlaMarks = $("#totalMarks");
+        $("#maxMarks").val(totlaMarks);
          var l = Ladda.create(btn);
         l.start();
         $('#createQuestionForm').ajaxSubmit(function( data ){

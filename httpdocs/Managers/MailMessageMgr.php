@@ -69,7 +69,7 @@
             $mmArr["lpSeqs"] = $lpSeqs;
             $mmArr["moduleSeqs"] = $moduleSeqs;
             $mmArr["moduleNames"] = $moduleNames;            
-            $mmArr["dated"] = $mailMessage["sendondate"];
+            $mmArr["dated"] = $mailMessage["sendondate"];;
             $mmArr["condition"] = $this->getCondition($mailMessage,$mmArr);//$mailMessage["messagecondition"];//
             $mmArr["status"] = "";
             $mmArr["percent"] = $mailMessage["percent"];

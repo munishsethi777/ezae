@@ -45,8 +45,10 @@ if(!file_exists ($path)){
     $companyProfile = null;
 
     if($page == "dashboard.php"){
+       
         $dashboard = "active";
     }elseif($page == "CustomFields.php"){
+        $learners = "active"; 
         $customFields = "active";
     }elseif($page == "ManageLeaderBoard.php"){
         $manageLeaderBoard = "active";
@@ -86,7 +88,8 @@ if(!file_exists ($path)){
     }elseif($page == "manageLearnerProfiles.php"){
         $learners = "active";
         $manageLearnerProfiles = "active";
-    }elseif($page == "manageMessages.php"){
+    }
+    elseif($page == "manageMessages.php"){
         $communications = "active";
         $manageMessages = "active";
     }elseif($page == "createMessage.php"){
