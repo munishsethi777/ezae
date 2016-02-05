@@ -76,7 +76,7 @@
             </div>
         <div class="col-md-6">
             <div class="ibox-content mainDiv">
-                <form class="form-horizontal" action="Actions\UserAction.php" id="userLoginForm" method="POST" name="loginForm">
+                <form class="form-horizontal" action="Actions/UserAction.php" id="userLoginForm" method="POST" name="loginForm">
                   <input type="hidden" name="call" id="call" value="loginUser">
                   <div class="form-group">
                     <label for="inputEmail3" class="col-sm-3 control-label">Username</label>
