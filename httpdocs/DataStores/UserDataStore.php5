@@ -37,7 +37,7 @@
         $colValuePair = array();
         /*'companyseq' is columnName*/
         $colValuePair["companyseq"] = $companySeq;
-        $sql = "select * from users where companyseq = $companySeq ORDER BY lastmodifiedon desc" ;
+        $sql = "select * from users where companyseq = $companySeq" ;
         $sql = LearnerFilterUtil::applyFilter($sql,false);
         $userList = self::executeQuery($sql);
         return $userList;
