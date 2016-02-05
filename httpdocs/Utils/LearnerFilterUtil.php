@@ -237,6 +237,9 @@
             $filterscount = $_GET['filterscount'];            
             if ($filterscount > 0)                
                 {
+                    $isAnd = false;
+                    $conditions = array();
+                    $flag = !$isCustomField;
                     for ($i=0; $i < $filterscount; $i++)
                     {
                         // get the filter's value.
@@ -248,39 +251,62 @@
                         // get the filter's operator.
                         $filteroperator = $_GET["filteroperator" . $i];
                         if(!StringUtil::startsWith($filterdatafield,$prefix)){
+                             $flag = true;  
                             continue;
                         }
-                        $flag = false;
-                        // build the "WHERE" clause depending on the filter's condition, value and datafield.
+                        if($filteroperator == 0){
+                            $isAnd = true;
+                            $flag = false;    
+                        }
+                        
+                        //build the "WHERE" clause depending on the filter's condition, value and datafield.
                         if(!array_key_exists($filterdatafield,$customFields)){
+                           
                             continue;
                         }
                         $value = $customFields[$filterdatafield];
                         $value = strtolower($value);
                         $filtervalue = strtolower($filtervalue);
+                       
                         switch($filtercondition)
                         {
                             case "CONTAINS":
                                if (strpos($value, $filtervalue) !== false){
                                     $flag = true;
                                }
-                               break;
+                                $conditions[$filterdatafield] = $flag;
+                                break;
                             case "DOES_NOT_CONTAIN":
                                 if (strpos($value, $filtervalue) !== true){
                                     $flag = true;
                                 }
+                                $conditions[$filterdatafield] = $flag;
                                 break;
                             case "EQUAL":
                                if ($value == $filtervalue){
                                     $flag = true;
                                 }
+                                $conditions[$filterdatafield] = $flag;
                                 break;
                             case "NOT_EQUAL":
                                 if ($value != $filtervalue){
                                     $flag = true;
                                 }
+                                $conditions[$filterdatafield] = $flag;
                                 break;
                         }
+                        
+                    }
+                    foreach($conditions as $condition){
+                        if(!$isAnd){
+                            if($condition){
+                                return true;
+                            }
+                        }else{
+                            if(!$condition){
+                                return false;
+                            }
+                        }    
                     }
                 }
             }

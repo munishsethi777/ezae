@@ -17,9 +17,9 @@
         $pagenum = intval($_GET['pagenum']);
         $pagesize = intval($_GET['pagesize']);
         $start = $pagenum;
-        if($pagenum > 1){
+        //if($pagenum > 1){
              $start = $pagenum * $pagesize;    
-        }       
+       // }       
         $query = $query . " limit " . $start . "," . $pagesize;
     }    
     return $query;         

@@ -452,10 +452,11 @@ class AdminMgr{
             $prefix = "cus_";
             if($field->getName() != $userNameMapping && $field->getName() != $passwordMapping && $field->getName() != $emailMapping ){
                 $arr['datafield'] = $prefix . $field->getName();
-                $arr['type'] = $field->getFieldType();
-                $arr['filtertype'] = "custom";
+                $arr['type'] = "string";
+                //$arr['filtertype'] = "custom";
                 if($field->getFieldType() == "date"){
-                    $arr['cellsformat'] = "d";
+                     $arr['cellsformat'] = "d";
+                     $arr['type'] = "date";
                     //$arr['filtertype'] = "date";
                 }
                 array_push($fullArr,$arr);    

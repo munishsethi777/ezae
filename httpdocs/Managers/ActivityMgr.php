@@ -53,7 +53,33 @@ class ActivityMgr{
         $ads->saveActivityData($activity);
 
     }
-
+    public function exportActivities($lpSeq,$moduleSeq){
+        $activityDS = ActivityDataStore::getInstance();
+        $companySeq = self::$sessionUtil->getAdminLoggedInCompanySeq();
+        $userSeqs = $this->getUserSeqsByCustomFieldCriteria();
+        $data = $activityDS->getUsersActivity($moduleSeq,$companySeq,$lpSeq,$userSeqs,true);
+        $fullArr = array();
+        $count = 0;
+        $userMgr = UserMgr::getInstance();
+        foreach($data as $dataArr){
+            $arr = array();
+            $arr['User Name'] = $dataArr['username'];
+            $arr['Password'] = $dataArr['password'];
+            $arr['Email'] = $dataArr['emailid'];
+            $profile = $userMgr->getUserLearningProfiles($dataArr['seq']);
+            $arr['Profiles'] = implode(",",$profile[1]);
+            $arrCustomFields = ActivityMgr::getCustomValuesArray($dataArr['customfieldvalues']);
+            $arr = array_merge($arr,$arrCustomFields);
+            $arr['Score'] = $dataArr['score'];
+            $arr['Progress'] = $dataArr['progress'];
+            $arr['Date Of Registration'] = $dataArr['createdon'];
+            $arr['Date of Play'] = $dataArr['dateofplay'];
+            array_push($fullArr,$arr);
+            $count++;
+        }
+        ExportUtil::ExportData($fullArr);           
+    }
+    
     public function getUserSeqsByCustomFieldCriteria(){
         $userSeqs = array();
         $role = self::$sessionUtil->getLoggedInRole();

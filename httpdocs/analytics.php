@@ -18,9 +18,14 @@
         });
         var exportInfo;
         $("#excelExport").click(function () {
-             $("#jqxgrid").jqxGrid('exportdata', 'xls',jqxgrid,true,null,true,'save-file.php');
+            learningPlanSeq = $("#learningPlanComboBox").val();
+            learningModuleSeq = $("#moduleComboBox").val();
+            $("#lpSeq").val(learningPlanSeq);
+            $("#moduleSeq").val(learningModuleSeq);
+            $("#exportActivitiesForm").submit();
         });
         $("#csvExport").click(function () {
+            
             $("#jqxgrid").jqxGrid('exportdata', 'csv',jqxgrid,true,null,true,'save-file.php');
         });
         $("#htmlExport").click(function () {
@@ -159,6 +164,11 @@
 </script>
 </head>
 <body class='default'>
+    <form role="form" method="post" action="Actions/ActivityAction.php" id="exportActivitiesForm" class="form-horizontal">
+        <input type="hidden" value="exportActivitiesData" name="call">
+        <input type="hidden" name="lpSeq" id="lpSeq">
+        <input type="hidden" name="moduleSeq" id="moduleSeq">
+    </form>
 <div id="wrapper">
     <?include("adminMenu.php");?>
     <div class="row">
@@ -189,8 +199,8 @@
                         <div class="row" style="margin-top:5px">
                             <div class="col-sm-12">
                                 <input type="button" class="btn-sm btn-primary" value="Export to Excel" id='excelExport' />
-                                <input style="margin-left:8px;" type="button" class="btn-sm btn-primary" value="Export to CSV" id='csvExport' />
-                                <input style="margin-left:8px;" type="button" class="btn-sm btn-primary" value="Export to HTML" id='htmlExport' />
+                                <!--input style="margin-left:8px;" type="button" class="btn-sm btn-primary" value="Export to CSV" id='csvExport' /-->
+                                <!--input style="margin-left:8px;" type="button" class="btn-sm btn-primary" value="Export to HTML" id='htmlExport' /-->
                             </div>
                         </div>
                     </div>

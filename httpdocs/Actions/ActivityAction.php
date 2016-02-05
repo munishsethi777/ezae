@@ -43,6 +43,26 @@
         return;
    }
    
+   if($call == "exportActivitiesData"){
+       try{
+            $sessionUtil = SessionUtil::getInstance();
+            $companySeq = $sessionUtil->getAdminLoggedInCompanySeq();
+            $moduleSeq = $_POST['moduleSeq'];
+            $lpSeq = $_POST['lpSeq'];
+            $activityMgr = ActivityMgr::getInstance();
+            $activityMgr->exportActivities($lpSeq,$moduleSeq);
+            return;    
+       }catch(Exception $e){
+            $success = 0;
+            $message  = $e->getMessage();
+       }
+       $response = new ArrayObject();
+       $response["success"]  = $success;
+       $response["message"]  = $message;
+       echo json_encode($response);
+        
+   }
+   
    if($call == "getActivityDataForGrid"){
         $sessionUtil = SessionUtil::getInstance();
         $companySeq = $sessionUtil->getAdminLoggedInCompanySeq();
