@@ -127,6 +127,9 @@
 <script type="text/javascript" src="jqwidgets/jqxcheckbox.js"></script>
 <script type="text/javascript" src="jqwidgets/jqxdraw.js"></script>
 <script type="text/javascript" src="jqwidgets/jqxchart.core.js"></script>
+<script type="text/javascript" src="jqwidgets/globalization/globalize.js"></script>
+<script type="text/javascript" src="jqwidgets/jqxcalendar.js"></script>
+<script type="text/javascript" src="jqwidgets/jqxdatetimeinput.js"></script>
 <script type="text/javascript" src="jqwidgets/jqxnumberinput.js"></script>
 <script type="text/javascript" src="jqwidgets/jqxinput.js"></script>
 
