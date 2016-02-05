@@ -27,7 +27,7 @@ require_once($ConstantsArray['dbServerUrl'] ."Managers/ModuleMgr.php");?>
 
         <div class="row">
             <div class="col-lg-12">
-                <div class="wrapper wrapper-content animated fadeInUp">
+                <div class="wrapper wrapper-content">
 
                     <div class="ibox">
                         <div class="ibox-title">
@@ -53,7 +53,7 @@ require_once($ConstantsArray['dbServerUrl'] ."Managers/ModuleMgr.php");?>
                                     //alert(iframe.src);
                                 });
                             </script>
-                            <iframe id="myiframe" style="display: none;" frameborder="0" src="Modules/<?echo $moduleId?>/story.php" width="1000" height="670"></iframe>
+                            <iframe id="myiframe" frameborder="0" src="Modules/<?echo $moduleId?>/story.php" width="1000" height="670"></iframe>
                         </div>
                     </div>
                 </div>
