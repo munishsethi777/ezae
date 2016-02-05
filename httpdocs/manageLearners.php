@@ -108,6 +108,8 @@
                 url: 'ajaxAdminMgr.php?call=getLearnersForGrid',
                 root: 'Rows',
                 cache: false,
+                sortcolumn: 'lastmodifiedon',
+                sortdirection: 'desc',
                 addrow: function (rowid, rowdata, position, commit) {
                    commit(true);
                 },
