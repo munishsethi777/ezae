@@ -96,11 +96,11 @@ class SessionUtil{
             $_SESSION[self::$USER_LOGGED_IN] != null){
                 $arr = $_SESSION[self::$USER_LOGGED_IN];
                 return $arr[0];
-        }    
+        }
     }
     return null;
     }
-      
+
 
     public function getUserLoggedInCompanySeq(){
       if($_SESSION[self::$LOGIN_MODE] == "user" &&
@@ -169,7 +169,7 @@ class SessionUtil{
         }
 
         if($boolUser == true){
-            header("Location:index.php");
+            header("Location:userLogin.php");
 
         }
 
@@ -179,7 +179,7 @@ class SessionUtil{
         if($loginType == LoginType::USER){
             $bool = self::isSessionUser();
             if($bool == false){
-                header("location: UserLogin.php");
+                header("location: userLogin.php");
             }
         }else{
             if($bool == false){
