@@ -2,8 +2,8 @@
 require_once('../IConstants.inc');
 require_once($ConstantsArray['dbServerUrl'] ."Managers/ModuleMgr.php");
 require_once($ConstantsArray['dbServerUrl'] ."Managers/CompanyMgr.php");
-require_once($ConstantsArray['dbServerUrl'] ."Enums/ModuleType.php");    
-require_once($ConstantsArray['dbServerUrl'] ."Managers/QuestionMgr.php"); 
+require_once($ConstantsArray['dbServerUrl'] ."Enums/ModuleType.php");
+require_once($ConstantsArray['dbServerUrl'] ."Managers/QuestionMgr.php");
 require_once($ConstantsArray['dbServerUrl'] ."Utils/SessionUtil.php5");
 require_once($ConstantsArray['dbServerUrl'] ."Utils/FileUtil.php");
 require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/Question.php");
@@ -72,13 +72,23 @@ if($call == "saveModule"){
         $name = $_POST["name"];
         $isalreadyExist = $moduleMgr->moduleAlreadyExist($id,$name);
         if($isalreadyExist){
-            throw new Exception(StringConstants::DUPLICATE_MODULE_NAME);    
+            throw new Exception(StringConstants::DUPLICATE_MODULE_NAME);
         }
         $description = $_POST["description"];
         $type = $_POST["moduleType"];
-        $tagline = $_POST["tagline"];
-        $preReq = $_POST["prereq"];
-        $tags = $_POST["tags"];
+        //$tagline = $_POST["tagline"];
+        //$preReq = $_POST["prereq"];
+        //$tags = $_POST["tags"];
+        $maxQuestions = $_POST["maxquestions"];
+        $isFaceAuthentication =  0;
+        if(isset($_POST["isfaceauthentication"])){
+            $isFaceAuthentication = 1;
+        }
+
+        $isCertificationEnabled =  0;
+        if(isset($_POST["iscertificationenabled"])){
+            $isCertificationEnabled = 1;
+        }
         $maxMarks = $_POST["maxmarks"];
         $passPercent = $_POST["passpercent"];
         $timeAllowed = $_POST["time"];
@@ -87,25 +97,25 @@ if($call == "saveModule"){
         $typeDetail = "";
         $imgfilePath = "";
         $module = new Module();
-        
+
         if($id > 0){
             $moduleObj = $moduleMgr->getModule($id);
             $typeDetail = $moduleObj->getTypeDetails();
             $imgfilePath = $moduleObj->getImagePath();
         }
         if($type == ModuleType::EASSY){
-            $typeDetail = $_POST["eassy"];    
+            $typeDetail = $_POST["eassy"];
         }else if($type == ModuleType::VIDEO){
             $typeDetail = $_POST["vembedCode"];
         }else if($type == ModuleType::AUDIO){
             $typeDetail = $_POST["aembedCode"];
-        }else if($type == ModuleType::DOCUMENT){  
+        }else if($type == ModuleType::DOCUMENT){
              if(isset($_FILES["fileToUpload"])){
                 $file = $_FILES["fileToUpload"];
                 $uploaddir = $ConstantsArray["docspath"] . "moduledocs\\";
                 $fileName = FileUtil::uploadFiles($file,$uploaddir);
-                $typeDetail = $fileName;        
-             }   
+                $typeDetail = $fileName;
+             }
         }
         $module->setSeq($id);
         $module->setCompanySeq($companySeq);
@@ -113,17 +123,20 @@ if($call == "saveModule"){
         $module->setCreatedOn(new DateTime());
         $module->setIsEnabled(1);
         $module->setIsPaid(0);
-        $module->setPrerequisties($preReq);
+        //$module->setPrerequisties($preReq);
         $module->setModuleType($moduleType);
-        $module->setTagLine($tagline);
+        //$module->setTagLine($tagline);
         $module->setTimeAllowed($timeAllowed);
         $module->setTitle($name);
         $module->setImagePath($imgfilePath);
-        $module->setTags($tags);
+        //$module->setTags($tags);
         $module->setMaxScore($maxMarks);
+        $module->setMaxQuestions($maxQuestions);
         $module->setPassPercent($passPercent);
         $module->setTypeDetails($typeDetail);
         $module->setLastModifiedOn(new DateTime());
+        $module->setIsFaceAuthentication($isFaceAuthentication);
+        $module->setIsCertificationEnabled($isCertificationEnabled);
         $id = $moduleMgr->saveModule($module);
         if($type == ModuleType::QUIZ){
             $moduleMgr->saveModuleQuestion($questions,$id);
@@ -137,7 +150,7 @@ if($call == "saveModule"){
             $imgfilePath = FileUtil::uploadImageFiles($file,$uploaddir,$moduleImageName);
             $moduleMgr->updateMoudleImageName($id,$imgfilePath);
         }
-        $message = StringConstants::MODULE_ADDED;     
+        $message = StringConstants::MODULE_ADDED;
     }catch(Exception $e){
         $success = 0;
         $message  = $e->getMessage();
@@ -146,7 +159,7 @@ if($call == "saveModule"){
      $response["success"] = $success;
      $response["message"] = $message;
      echo json_encode($response);
-    
+
 }
 if($call == "getQuestions"){
     try{
@@ -161,12 +174,12 @@ if($call == "getQuestions"){
 
 if($call == "saveQuestion"){
     $questionMgr = QuestionMgr::getInstance();
-    $addedQuestionArr = array(); 
+    $addedQuestionArr = array();
     try{
         $name = $_POST["questionname"];
         $isalreadyExist = $questionMgr->isAlreadyExist($name);
         if($isalreadyExist){
-            throw new Exception("Question already exist with this name!");    
+            throw new Exception("Question already exist with this name!");
         }
         $questionType = $_POST["questiontype"];
         $options = $_POST["option"];
@@ -174,9 +187,9 @@ if($call == "saveQuestion"){
         $marks = $_POST["marks"];
         $maxMarks = 0;
         if(isset($_POST["totalMarks"])){
-            $maxMarks = $_POST["totalMarks"];    
-        }    
-        $addedQuestionArr = array();  
+            $maxMarks = $_POST["totalMarks"];
+        }
+        $addedQuestionArr = array();
         $question = new Question();
         $question->setAdminSeq($adminSeq);
         $question->setCompanySeq($companySeq);
@@ -187,7 +200,7 @@ if($call == "saveQuestion"){
         $question->setQuestionType($questionType);
         $question->setTitle($name);
         $id = $questionMgr->saveQuestion($question);
-        $question->setSeq($id); 
+        $question->setSeq($id);
         for($i = 0;$i < count($options);$i++){
             $feedback = $feedbacks[$i];
             $option = $options[$i];
@@ -199,8 +212,8 @@ if($call == "saveQuestion"){
             $questionAnswer->setTitle($option);
             $questionMgr->saveQuestionAnswer($questionAnswer);
         }
-        $message = "Question Added Sucessfully"; 
-        $addedQuestionArr = $questionMgr->toArray($question);                               
+        $message = "Question Added Sucessfully";
+        $addedQuestionArr = $questionMgr->toArray($question);
     }catch(Exception $e){
         $success = 0;
         $message  = $e->getMessage();
@@ -210,7 +223,7 @@ if($call == "saveQuestion"){
      $response["message"] = $message;
      $response["question"] = $addedQuestionArr;
      echo json_encode($response);
-     return; 
+     return;
 }
 
 //* REPORTING METHODS STARTS HERE //*
@@ -228,7 +241,7 @@ if($call == "getModulesByLearningPlanForReporting"){
     }
     echo $data;
 }
- 
+
 
 
 //* REPORTING METHODS ENDS HERE //*

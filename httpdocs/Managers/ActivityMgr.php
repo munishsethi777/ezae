@@ -1,6 +1,6 @@
 <?php
 require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/Activity.php");
-require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/QuizProgress.php"); 
+require_once($ConstantsArray['dbServerUrl']. "BusinessObjects/QuizProgress.php");
 require_once($ConstantsArray['dbServerUrl']. "DataStores/ActivityDataStore.php5");
 require_once($ConstantsArray['dbServerUrl']. "Utils/MailMessageUtil.php");
 require_once($ConstantsArray['dbServerUrl']. "Utils/SessionUtil.php5");
@@ -28,7 +28,7 @@ class ActivityMgr{
         return self::$activityMgr;
     }
 
-    public function saveActivityData($moduleId, $learningPlanSeq, $userSeq, $progres, $score){
+    public function saveActivityData($moduleId, $learningPlanSeq, $userSeq, $progres, $score, $isFlash = true){
         $ads = ActivityDataStore::getInstance();
         $activity = new Activity();
         $activity->setDateOfPlay(new DateTime());
@@ -41,7 +41,12 @@ class ActivityMgr{
         $existingActivity = $this->getActivityByUser($userSeq,$moduleId);
         if(!empty($existingActivity)){
             $activity->setSeq(intval($existingActivity->getSeq()));
-            $activity->setScore($score + $existingActivity->getScore());      
+            if($isFlash == true){
+                $activity->setScore($score);
+            }else{
+                $activity->setScore($score + $existingActivity->getScore());
+            }
+
         }
         if(($progres == 100 || $progres == "100")){
             $activity->setIsCompleted(1);
@@ -161,19 +166,23 @@ class ActivityMgr{
         $mainArray['median'] = round($median,2);
         $mainArray['mode'] = round($mode,2);
         return json_encode($mainArray);
-    } 
+    }
     public function getActivityByUser($userSeq,$moduleId){
         $ads = ActivityDataStore::getInstance();
-        $activity = $ads->findByUserAndModule($userSeq,$moduleId);    
+        $activity = $ads->findByUserAndModule($userSeq,$moduleId);
         return $activity;
     }
-    
+
     public function getQuizProgressByUser($userSeq,$moduleId,$lpseq){
         $colval["userseq"] = $userSeq;
         $colval["moduleseq"] = $moduleId;
-        $colval["learningplanseq"] = $lpseq; 
+        $colval["learningplanseq"] = $lpseq;
         $quizProgressList = self::$quizProgressDataStore->executeConditionQuery($colval);
-        return $quizProgressList;
+        $quizProgressListSeqKey = array();
+        foreach($quizProgressList as $quizProgress){
+            $quizProgressListSeqKey[$quizProgress->getQuestionSeq()] = $quizProgress;
+        }
+        return $quizProgressListSeqKey;
     }
     public function getQuizProgressArr($userSeq,$moduleId,$lpseq){
         $quizProgressList = $this->getQuizProgressByUser($userSeq,$moduleId,$lpseq);
@@ -182,12 +191,12 @@ class ActivityMgr{
         foreach($quizProgressList as $quizProgress){
             $quesSeq = $quizProgress->getQuestionSeq();
             if(array_key_exists($quesSeq,$array)){
-                $quizProgressArr = $array[$quesSeq];   
+                $quizProgressArr = $array[$quesSeq];
             }else{
                 $quizProgressArr = array();
             }
-            array_push($quizProgressArr,$quizProgress); 
-            $array[$quesSeq] = $quizProgressArr;  
+            array_push($quizProgressArr,$quizProgress);
+            $array[$quesSeq] = $quizProgressArr;
         }
         return $array;
     }
@@ -195,11 +204,11 @@ class ActivityMgr{
         $colval["userseq"] = $userSeq;
         $colval["moduleseq"] = $moduleId;
         $colval["learningplanseq"] = $lpseq;
-        $attr[0] = "answerseq"; 
+        $attr[0] = "answerseq";
         $ansSeqs = self::$quizProgressDataStore->executeAttributeQuery($attr,$colval);
         $arr = array();
         foreach($ansSeqs as $seq){
-            array_push($arr,$seq[0]);    
+            array_push($arr,$seq[0]);
         }
         return $arr;
     }

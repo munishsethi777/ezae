@@ -260,28 +260,28 @@
             $learningPlanSeq = $_POST['learningplanseq'];
             $progress = $_POST['progress'];
             if(is_array($selectedAns)){
-                $ansSeqs =   $selectedAns;  
+                $ansSeqs =   $selectedAns;
             }else{
-                $ansSeqs = explode(",",$selectedAns);     
+                $ansSeqs = explode(",",$selectedAns);
             }
             foreach($ansSeqs as $anseq){
                 $quizProgress = new QuizProgress();
-                $quizProgress->setModuleSeq($moduleid); 
+                $quizProgress->setModuleSeq($moduleid);
                 $quizProgress->setDated(new DateTime());
                 $quizProgress->setQuestionSeq($questionid);
                 $quizProgress->setAnswerSeq($anseq);
                 $quizProgress->setLearningPlanSeq($learningPlanSeq);
                 $quizProgress->setUserSeq($userSeq);
                 $activityMgr = ActivityMgr::getInstance();
-                $id = $activityMgr->saveQuizProgress($quizProgress);    
+                $id = $activityMgr->saveQuizProgress($quizProgress);
             }
             $moduleMgr = ModuleMgr::getInstance();
             $ansList = $moduleMgr->getCorrectAnswers($ansSeqs,$questionid);
             $scores = $ansList["score"];
-            $activityMgr->saveActivityData($moduleid,$learningPlanSeq,$userSeq,$progress,$scores);
+            $activityMgr->saveActivityData($moduleid,$learningPlanSeq,$userSeq,$progress,$scores,false);
             $incorrectAns = $ansList["incorrect"];
             if(!empty($incorrectAns)){
-                $success = 0;         
+                $success = 0;
             }
          }catch (Exception $e){
             $success = 0;
@@ -293,7 +293,7 @@
         $response["ansList"]  = $ansList;
         $json = json_encode($response);
         echo $json;
-         
-         
+
+
      }
 ?>

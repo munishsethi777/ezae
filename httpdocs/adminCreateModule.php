@@ -5,16 +5,18 @@
 <?
     require_once('IConstants.inc');
     require_once($ConstantsArray['dbServerUrl'] ."Managers/ModuleMgr.php");
-    require_once($ConstantsArray['dbServerUrl'] ."Enums/ModuleType.php");    
+    require_once($ConstantsArray['dbServerUrl'] ."Enums/ModuleType.php");
     require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/Module.php");
     require_once($ConstantsArray['dbServerUrl'] ."BusinessObjects/ModuleQuestion.php");
     $module = new Module();
     $selectedQuesSeqs = "";
+    $isFaceAuthentication="";
+    $isCertificationEnabled ="";
     $moduleMgr = ModuleMgr::getInstance();
-     $id = 0; 
+     $id = 0;
     if(isset($_POST["moduleId"])){
         $id = $_POST["moduleId"];
-        $module = $moduleMgr->getModule($id);                  
+        $module = $moduleMgr->getModule($id);
     }
     $essay = "";
     $videoUrl = "";
@@ -30,17 +32,21 @@
         $imagePath = "dummy.jpg";
     }
     if($module->getModuleType() == ModuleType::EASSY){
-        $essay = $module->getTypeDetails();    
+        $essay = $module->getTypeDetails();
     }else if($module->getModuleType() == ModuleType::VIDEO){
-        $videoUrl = $module->getTypeDetails(); 
+        $videoUrl = $module->getTypeDetails();
     }else if($module->getModuleType() == ModuleType::AUDIO){
-        $audioUrl = $module->getTypeDetails(); 
+        $audioUrl = $module->getTypeDetails();
     }else if($module->getModuleType() == ModuleType::QUIZ){
         $selectedQuesSeqs = $moduleMgr->getSelectedQuestionSeqs($module->getSeq());
     }else if($module->getModuleType() == ModuleType::DOCUMENT){
         $document = "Selected Document : - <a>". $module->getTypeDetails() ."</a>";
         $isDocumentLoaded = 1;
-    } 
+    }
+    if(isset($module)){
+        $isFaceAuthentication = $module->getIsFaceAuthentication() == "1" ? "checked" : "";
+        $isCertificationEnabled = $module->getIsCertificationEnabled() == "1" ? "checked" : "";
+    }
 ?>
 <style>
 .chosen-container-multi .chosen-choices li.search-choice{
@@ -92,12 +98,14 @@
                                             <option value="audio">Audio</option>
                                         </select>
                                     </div>
-                                    <label class="col-sm-1 control-label">TagLine</label>
-                                    <div class="col-sm-2"><input type="text" name="tagline" value="<?echo $module->getTagLine()?>" id="tagline" class="form-control"></div>
-                                    <label class="col-sm-1 control-label">Prerequisities</label>
-                                    <div class="col-sm-2"><input type="text" name="prereq" value="<?echo $module->getPrerequisties()?>" id="prereq" class="form-control"></div>
-                                    <label class="col-xs-1 control-label">Tags</label>
-                                    <div class="col-sm-2"><input type="text" name="tags" value="<?echo $module->getTags()?>" id="tags" class="form-control"></div>
+                                    <label class="col-sm-1 control-label">Certification</label>
+                                    <div class="col-sm-2"><label class="checkbox-inline"><input type="checkbox" <?echo $isCertificationEnabled?> name="iscertificationenabled" id="deactivateChk"> Enable Certification </label>
+                                    </div>
+                                    <label class="col-sm-1 control-label">Authentication</label>
+                                    <div class="col-sm-2"><label class="checkbox-inline"><input type="checkbox" <?echo $isFaceAuthentication?> name="isfaceauthentication" id="deactivateChk"> Enable Face Authentication </label>
+                                    </div>
+                                    <label class="col-xs-1 control-label">Max Quest.</label>
+                                    <div class="col-sm-2"><input type="text" name="maxquestions" value="<?echo $module->getMaxQuestions()?>" id="maxquestions" class="form-control"></div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label">Max Marks</label>
@@ -114,13 +122,13 @@
                                     </div>
                                 </div>
                                 <div class="essayEditor editorPanel animated fadeInRight" style="display: none;">
-                                    <h4>Create New Essay</h4> <label class="jqx-validator-error-label" id="essayError"></label> 
+                                    <h4>Create New Essay</h4> <label class="jqx-validator-error-label" id="essayError"></label>
                                     <div class="form-group">
                                         <div class="col-sm-12">
                                             <div id="editor">
 
                                             </div>
-                                            
+
                                         </div>
                                     </div>
                                     <div class="hr-line-dashed"></div>
@@ -130,12 +138,12 @@
                                     <div class="form-group">
                                         <div class="col-sm-12">
                                            <input type="file" name="fileToUpload" id="fileToUpload" class="hidden">
-                                           <label id="lblFileUpload" for="fileToUpload" class="control-label"><?echo $document?></label> 
-                                           <label class="jqx-validator-error-label" id="documentError"></label>                                            
+                                           <label id="lblFileUpload" for="fileToUpload" class="control-label"><?echo $document?></label>
+                                           <label class="jqx-validator-error-label" id="documentError"></label>
                                         </div>
                                     </div>
                                     <div class="hr-line-dashed"></div>
-                                </div>                                                                               
+                                </div>
                                 <div class="videoEditor editorPanel animated fadeInRight"  style="display: none;">
                                     <h4>Create New Video</h4>
                                     <div class="form-group">
@@ -160,16 +168,17 @@
                             <form method="post" action="Actions/ModuleAction.php" id="createQuestionForm" class="form-horizontal">
                                 <input type="hidden" id="call" name="call" value="saveQuestion"> 
                                 <input type="hidden" id="maxMarks" name="maxMarks">    
+
                                 <div class="quizEditor editorPanel animated fadeInRight" style="display: none;">
                                     <div class="form-group">
                                         <label class="col-sm-1 control-label">Questions</label>
                                         <div class="col-sm-9">
                                             <select class="form-control chosen-questionsSelect" onchange="requiredQuestion(this)" name="questionsSelect" id="questionsSelect" multiple></select>
-                                            <label class="jqx-validator-error-label" id="questionError"></label> 
+                                            <label class="jqx-validator-error-label" id="questionError"></label>
                                         </div>
                                         <button class="col-sm-1 btn-xs btn-success" id="addNewQuestionButton" type="button">Add New Question</button>
                                     </div>
-                                    <div class="hr-line-dashed"></div>                                    
+                                    <div class="hr-line-dashed"></div>
                                     <div class="quizQuestionEditor animated fadeInDown" style="display:none">
                                         <h4>Create New Question</h4>
                                         <div class="form-group">
@@ -232,23 +241,23 @@
 </html>
 <script src="scripts/plugins/ckeditor/ckeditor.js"></script>
 <script src="scripts/FormValidators/createQuestionValidations.js"></script>
-<script src="scripts/FormValidators/createModuleValidations.js"></script> 
+<script src="scripts/FormValidators/createModuleValidations.js"></script>
 <script type="text/javascript">
-    isDocumentLoaded = <?echo $isDocumentLoaded?> 
+    isDocumentLoaded = <?echo $isDocumentLoaded?>;
     optionsCount = 1;
     totalMarks = 0;
-   
-    $(document).ready(function(){        
+
+    $(document).ready(function(){
         //display quiz module by default
         $(".quizEditor").show();
-        
-       
-        loadQuestion(); 
+
+
+        loadQuestion();
         CKEDITOR.replace( 'editor');
-        
+
         <?$essay = str_replace("\r\n", "\\r\\n",$essay)?>
         CKEDITOR.instances.editor.setData("<?echo $essay?>");
-        
+
         $("#saveBtn").click(function(e){
             ValidateAndSave(e,this);
         });
@@ -273,14 +282,14 @@
             $(".quizQuestionEditor").hide();
             resetQuestionForm();
         });
-        $("#moduleType").val("<?echo $moduleType?>").change(); 
-        
+        $("#moduleType").val("<?echo $moduleType?>").change();
+
         $("#addQuizQuestionOptionButton").click(function(e){
             ++optionsCount;
             rules = $("#createQuestionForm").jqxValidator('rules')
-            optionName = "option" + optionsCount;  
-            feedbackName = "feedback" + optionsCount; 
-            marksName = "marks" + optionsCount; 
+            optionName = "option" + optionsCount;
+            feedbackName = "feedback" + optionsCount;
+            marksName = "marks" + optionsCount;
             option = '<div class="form-group animated fadeInDown" id="quizQuestionOption'+ optionsCount +'">';
             option += '<label class="col-sm-1 control-label">Option '+ optionsCount +'</label>' ;
             option += '<div class="col-sm-4"><input type="text" name="option[]" value="" id="'+ optionName + '" class="form-control"></div>';
@@ -305,7 +314,7 @@
          });
 
     });
-    
+
     function resetQuestionForm(){
         $("#questionname").val("");
         $("#questionType")[0].selectedIndex = 0;
@@ -313,26 +322,26 @@
         $("#option1").val("");
         $("#feedback1").val("");
         $("#marks1").val("");
-        var count = optionsCount;
-        for(var i =1;i<=count;i++){
-            removeOption(i + 1);      
+        for(var i =1;i<=optionsCount;i++){
+            removeOption(i + 1);
+
         }
-       
+
     }
-    
+
     function calTotalMarks(value){
-       
+
         var marks = 0;
         for(var i =1;i<=optionsCount;i++){
             val = $("#marks" + i).val();
             if(val  != "" && !isNaN(val)){
-                 marks = marks + parseInt(val);    
-            }           
+                 marks = marks + parseInt(val);
+            }
         }
         $("#totalMarks").val(marks).change();
-        
+
     }
-    
+
     function checkValidation(input){
         requiredQuestion(input);
     }
@@ -345,15 +354,15 @@
 
             reader.readAsDataURL(input.files[0]);
         }
-    } 
+    }
     function setDocName(input) {
         validateFile(input);
         if (input.files && input.files[0]) {
-            name = input.files[0]["name"];  
+            name = input.files[0]["name"];
             $('#lblFileUpload').html("Selected Document : - <a>" + name + "</a>");
         }
     }
-    
+
     function removeOption(id){
        $("#quizQuestionOption"+id).remove();
        rules = $("#createQuestionForm").jqxValidator('rules')
@@ -363,22 +372,22 @@
             var optionName = "#option" + id;
             var marksName = "#marks" + id;
             if(inputName != optionName && inputName != marksName){
-                $updatedRules.push(value);    
+                $updatedRules.push(value);
             }
        });
-       $('#createQuestionForm').jqxValidator('rules', $updatedRules);       
+       $('#createQuestionForm').jqxValidator('rules', $updatedRules);
        optionsCount--;
     }
-    
+
     function validateAndSaveQuestion(e,btn){
         var validationResult = function (isValid){
            if (isValid) {
                saveQuestion(e,btn);
             }
         }
-       $('#createQuestionForm').jqxValidator('validate', validationResult);  
+       $('#createQuestionForm').jqxValidator('validate', validationResult);
     }
-    
+
     function saveQuestion(e,btn){
         var totlaMarks = $("#totalMarks");
         $("#maxMarks").val(totlaMarks);
@@ -387,23 +396,23 @@
         $('#createQuestionForm').ajaxSubmit(function( data ){
             l.stop();
             var obj = $.parseJSON(data);
-            var dataRow = "";             
+            var dataRow = "";
             if(obj.success == 1){
-               selectAddedQuetion(obj.question);                  
+               selectAddedQuetion(obj.question);
             }else{
-                showNotificationMessage(data,"mainDiv","createQuestionForm"); 
+                showNotificationMessage(data,"mainDiv","createQuestionForm");
             }
             if(btn.id == "saveQuesBtn"){
                 if(obj.success == 1){;
                     resetQuestionForm();
-                    $(".quizQuestionEditor").hide();                   
+                    $(".quizQuestionEditor").hide();
                 }
             }else{
                 showNotificationMessage(data,"mainDiv","createQuestionForm");
             }
-        })    
+        })
     }
-    
+
     function showNotificationMessage(data,divClassName,formId){
             removeMessagesDivs();
             var obj = $.parseJSON(data);
@@ -417,7 +426,7 @@
                 $("." + divClassName).append(errorDiv);
             }
     }
-    
+
     function loadQuestion(){
          var selectedQuesSeqs = "<?echo $selectedQuesSeqs?>";
          if(selectedQuesSeqs.length > 0){
@@ -429,42 +438,42 @@
          $.getJSON(url, function(data){
             $.each(data, function(index , value){
                 if(selectedQuesSeqs.length > 0 && selectedQuesSeqs.indexOf(value.id) > -1){
-                    selectedValues[value.id] = value.title; 
+                    selectedValues[value.id] = value.title;
                 }else{
-                    values += "<option value='" + value.id+"'>"+value.title + "</option>";      
+                    values += "<option value='" + value.id+"'>"+value.title + "</option>";
                 }
             });
             if(selectedQuesSeqs.length > 0){
-                addSelectedQuestions(selectedQuesSeqs,selectedValues); 
+                addSelectedQuestions(selectedQuesSeqs,selectedValues);
             }
             $('.chosen-questionsSelect').append(values);
             $(".chosen-questionsSelect").chosen({width:"100%"});
             dragChosen();
         });
     }
-    
-    
+
+
     function addSelectedQuestions(selectedQuesSeqs,selectedValues){
         $.each(selectedQuesSeqs, function(index , value){
              val = selectedValues[value];
-             $('.chosen-questionsSelect').append("<option value='" + value+"'>"+val + "</option>");                
+             $('.chosen-questionsSelect').append("<option value='" + value+"'>"+val + "</option>");
         });
-        $("#questionsSelect").val(selectedQuesSeqs);            
+        $("#questionsSelect").val(selectedQuesSeqs);
     }
-    
+
     function selectAddedQuetion(question){
         var vals = [];
         $( '#questionsSelect :selected' ).each( function( i, selected ) {
             vals[i] = $( selected ).val();
         });
-        $(".chosen-questionsSelect").chosen({width:"100%"});   
+        $(".chosen-questionsSelect").chosen({width:"100%"});
         vals.push(question.id);
         $('.chosen-questionsSelect').append("<option value='" + question.id+"'>" + question.title + "</option>");
-        $('.chosen-questionsSelect').trigger("chosen:updated"); 
+        $('.chosen-questionsSelect').trigger("chosen:updated");
         $('.chosen-questionsSelect').val(vals).trigger("chosen:updated");
-        dragChosen();  
+        dragChosen();
     }
-    
+
     function ValidateAndSave(e,btn){
        var validationResult = function (isValid){
            if (isValid) {
@@ -503,17 +512,17 @@
                      window.setTimeout(function(){window.location.href = "adminModulesManagement.php"},500);
                 }
             }else{
-                $("#moduleImg").attr("src","images/modules/dummy.jpg"); 
+                $("#moduleImg").attr("src","images/modules/dummy.jpg");
                 $('.chosen-questionsSelect').val("").trigger("chosen:updated");
                 $(".quizEditor").show();
                 $(".essayEditor").hide();
                 $(".documentEditor").hide();
                 $(".videoEditor").hide();
-                $(".audioEditor").hide();                
+                $(".audioEditor").hide();
                 showResponseNotification(data,"mainDiv","createModuleForm");
             }
 
-        })    
+        })
     }
 
 </script>

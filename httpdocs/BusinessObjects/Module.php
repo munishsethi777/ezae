@@ -3,7 +3,7 @@
   class Module{
       public static $tableName = "modules";
       private $seq, $title, $description, $createdon, $isenabled, $ispaid, $price, $lastmodifiedon, $maxscore, $passpercent,
-      $companyseq, $timeallowed, $tagline, $imagepath, $synopsis, $author, $moduletype, $tags, $prerequisties, $prework, $videourl,$typedetails;
+      $companyseq, $timeallowed, $tagline, $imagepath, $synopsis, $author, $moduletype, $tags, $prerequisties, $prework, $videourl,$typedetails, $maxquestions, $isfaceauthentication, $iscertificationenabled;
 
 
       public function setSeq($seq_){
@@ -152,12 +152,33 @@
       public function getVideoUrl(){
             return $this->videourl;
       }
-      
+
       public function setTypeDetails($typeDetail_){
             $this->typedetails = $typeDetail_;
       }
       public function getTypeDetails(){
             return $this->typedetails;
+      }
+
+      public function setMaxQuestions($value){
+            $this->maxquestions = $value;
+      }
+      public function getMaxQuestions(){
+            return $this->maxquestions;
+      }
+
+      public function setIsFaceAuthentication($value){
+            $this->isfaceauthentication = $value;
+      }
+      public function getIsFaceAuthentication(){
+            return $this->isfaceauthentication;
+      }
+
+      public function setIsCertificationEnabled($value){
+            $this->iscertificationenabled = $value;
+      }
+      public function getIsCertificationEnabled(){
+            return $this->iscertificationenabled;
       }
 
   }
