@@ -22,6 +22,32 @@
     $userActivity = $activityMgr->getActivityByUser($userSeq,$moduleId);
     //$selecedOptions = $activityMgr->getSelectedAnswerSeqs($userSeq,$moduleId,$learningPlanSeq);
     $quizProgressList = $activityMgr->getQuizProgressByUser($userSeq,$moduleId,$learningPlanSeq);
+    if(($module->getMaxQuestions() != null)){
+        $randomModuleQuestions = array();
+        $random_keys = null;
+        if(count($quizProgressList) > 0){//Edit mode with some ansered questions
+            foreach($quizProgressList as $key=>$value){
+                $randomModuleQuestions[$key] = $moduleQuestions[$key];
+                unset($moduleQuestions[$key]);
+            }
+            if($module->getMaxQuestions() - count($quizProgressList) > 0){
+                $random_keys = array_rand($moduleQuestions,$module->getMaxQuestions() - count($quizProgressList));
+            }
+        }else{
+            $random_keys = array_rand($moduleQuestions,$module->getMaxQuestions());
+        }
+        if($random_keys != null){
+            if(!is_array($random_keys)){
+                $random_keys = array($random_keys);
+            }
+            foreach($random_keys as $key){
+                $randomModuleQuestions[$key] = $moduleQuestions[$key];
+            }
+        }
+        if($randomModuleQuestions != null){
+            $moduleQuestions = $randomModuleQuestions;
+        }
+    }
     function getFeedback($anseq,$quesSeq){
         global $allOptions;
         $options = $allOptions[intval($quesSeq)];
@@ -29,7 +55,7 @@
             if($option->getSeq() == intval($anseq)){
                 return $option;
             }
-        }    
+        }
     }
     function getCorrectAns($quesSeq){
         global $allOptions;
@@ -40,10 +66,10 @@
                 array_push($correctAnsArrSeqs,$option->getSeq());
             }
         }
-        return $correctAnsArrSeqs;   
+        return $correctAnsArrSeqs;
     }
     ?>
-    
+
 <script language="javascript">
     var learningPlanSeq = "<?echo $learningPlanSeq;?>";
 </script>
@@ -58,11 +84,11 @@
                     <div class="ibox-title">
                         <h5><?echo $module->getTitle()?></h5><br><br>
                         <div><?echo $module->getDescription()?></div>
-                         
-                    </div>                    
-                    <?$type =$module->getModuleType(); 
-                      $fileName = $type ."TypeModule.php";     
-                      include($fileName);    
+
+                    </div>
+                    <?$type =$module->getModuleType();
+                      $fileName = $type ."TypeModule.php";
+                      include($fileName);
                     ?>
                </div>
             </div>
