@@ -212,7 +212,11 @@ class AdminMgr{
         $arr['datafield'] = "score";
         $arr['type'] = "number";
         array_push($userFieldsArr,$arr);
-        
+        $arr = array();
+        $arr['text'] = "Action";
+        $arr['datafield'] = "action";
+        $arr['type'] = "string";
+        array_push($userFieldsArr,$arr);
         $mainJsonArray = array();
         $mainJsonArray["columns"] = json_encode($userFieldsArr);
         $dataFieldsArr = $this->getDataFieldsArr($userFieldsArr);//for column types
@@ -222,6 +226,8 @@ class AdminMgr{
     }
     
     public function getActivitiesGridJSON($companySeq,$moduleSeq,$lpSeq){
+        $moduleMgr = ModuleMgr::getInstance();
+        $module = $moduleMgr->getModule($moduleSeq);
         $activityDS = ActivityDataStore::getInstance();
         $activityMgr = ActivityMgr::getInstance();
         $userSeqs = $activityMgr->getUserSeqsByCustomFieldCriteria();
@@ -249,6 +255,14 @@ class AdminMgr{
             }
             $arr = array_merge($arr,$arrCustomFields);
             $arr['score'] = $dataArr['score'];
+            $seq = $dataArr['seq'];
+            $action = "--";
+            $isFaceAuth = $module->getIsFaceAuthentication();
+            if(!empty($isFaceAuth)){
+                $action = "<a target='_blank' href='showUserImage.php?seq=$seq&moduleseq=$moduleSeq'><i class='fa fa-camera' aria-hidden='true'></i></a>";    
+            }
+            
+            $arr['action'] = $action;
             $arr['progress'] = $dataArr['progress'];
             $arr['u.createdon'] = $dataArr['createdon'];
             $arr['a.dateofplay'] = $dataArr['dateofplay'];

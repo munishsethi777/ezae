@@ -2,7 +2,7 @@
   class Activity{
 
       public static $tableName = "activities";
-      private $seq,$moduleseq,$userseq,$iscompleted,$progress,$score,$dateofplay,$learningplanseq;
+      private $seq,$moduleseq,$userseq,$iscompleted,$progress,$score,$dateofplay,$learningplanseq,$userimage;
 
       public function setSeq($seq_){
         $this->seq = $seq_;
@@ -58,6 +58,14 @@
       }
       public function getLearningPlanSeq(){
         return $this->learningplanseq;
+      }
+      
+      public function setUserImage($userImage_){
+         $this->userimage = $userImage_;
+      }
+      
+      public function getUserImage(){
+        return $this->userimage;
       }
   }
 ?>

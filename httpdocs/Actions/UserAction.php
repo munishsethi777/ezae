@@ -39,6 +39,35 @@
         $response["imagepath"] = "images/UserImages/$userSeq.png";
         echo json_encode($response);
     }
+    
+    if(isset($_GET['call']) && $_GET['call'] == "takeSnapeShot"){
+        try{
+            $img = $_FILES['webcam']['tmp_name'];
+            $moduleSeq = $_GET["moduleSeq"];
+            $lpSeq = $_GET["lpSeq"];
+            $bytes = file_get_contents($img);
+            $bytes = base64_encode($bytes);
+            $activity = new Activity();
+            $activity->setUserSeq($userSeq);
+            $activity->setDateOfPlay(new DateTime());
+            $activity->setIsCompleted(0);
+            $activity->setProgress(0);
+            $activity->setUserImage($bytes);
+            $activity->setLearningPlanSeq($lpSeq);
+            $activity->setModuleSeq($moduleSeq);
+            $activityMgr = ActivityMgr::getInstance();
+            $activityMgr->saveActivity($activity);            
+        }catch (Exception $e){
+            $success = 0;
+            $message  = $e->getMessage();
+        }
+        $response = new ArrayObject();
+        $response["success"]  = $success;
+        $response["message"]  = $message;
+        echo json_encode($response);
+    } 
+    
+    
      if($call == "forgotPassword"){
         $UDS = UserDataStore::getInstance();
         try{
@@ -168,8 +197,13 @@
             $userLearningProfile->setUserSeq($user->getSeq());
             $learningProfileMgr->setProfileOnLearner($userLearningProfile);    
         }
+        $mailMessage = new MailMessage();
+        $mailMessage->setSubject("Ezae - Welcome To EZAE");
+        $mailMessage->setMessage("Hello,<br/><br/>Hello " . $username . "<br>Welcome To EZAE <br/><br/>Ezae Team.");
+        MailerUtils::sendMandrillEmailNotification($mailMessage,$user);        
         $sessionUtil->createUserSession($user);  
         $message = "Sign up Successfully";
+        
     }catch(Exception $e){
           $success = 0;
           $message  = $e->getMessage();

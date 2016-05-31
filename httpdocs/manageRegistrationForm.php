@@ -202,15 +202,25 @@
                if(type == "Date"){
                     datefieldIds.push(name);
                }
-               if(required && type !== "Dropdown"){
+               var isValidate = false;
+               if(required && type != "Dropdown"){
                     var rule = { input: '#' + id, message: name + ' is required!', action: 'keyup, blur', rule: 'required'};
                     validationRules.push(rule);
+                    isValidate = true;
                }
                if(type == "Numeric"){
                     var rule = { input: '#' + id, message:'Numeric only !', action: 'keyup, blur', rule: 'number'};
                     validationRules.push(rule);
+                    isValidate = true; 
                }
-
+               if(!isValidate){
+                   var rule = { input: '#' + id, message: name + ' is required!', action: 'keyup, blur', 
+                   rule: function (input, commit) {
+                        return true;     
+                   }  
+                   };
+                   validationRules.push(rule);
+               }
             }
         });
         $("#formHeader").html($('.summernote').code());
@@ -221,7 +231,9 @@
             hintType: 'label',
             animationDuration: 0,
             rules:validationRules
-        });
+        });    
+    
+        
 
         $("#showSampleForm").on('validationSuccess', function () {
             $("#showSampleForm-iframe").fadeIn('fast');

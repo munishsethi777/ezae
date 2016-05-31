@@ -29,6 +29,11 @@
                         <input type="hidden" value="<?echo $cid?>" name="cid">
                         <input type="hidden" value="<?echo $aid?>" name="aid">
                         <input type="hidden" value="<?echo $lpfId?>" name="lpfId">
+                         <div class="row">
+                            <div class="col-sm-10 col-lg-offset-3">
+                                <a href="userLogin.php" class="btn btn-primary">Already registered? Click here to Login</a>
+                                </div>
+                            </div></br>
                         <div id="showSampleBlock">
                         </div>
                         <div class="row">
@@ -48,7 +53,7 @@
 <script src="scripts/plugins/pace/pace.min.js"></script>
 
 <script type="text/javascript">
-    var isValidate = false;
+    var isValidate = true;
     $(document).ready(function(){
         loadForm();
         $("#saveBtn").click(function(e){
@@ -100,11 +105,22 @@
         
     }
      function getFieldHtml(label,name){
+        focusOut = "";
+        userNameErrLbl = "";
+        focusOut = ""; 
+        if(label == "UserName"){
+            userNameErrLbl = '<label id="'+  name + 'lbl" class="jqx-validator-error-label" style="position: relative; left: 0px; width: 466px; top: 2px;"></label>';
+            icon = '<span id="iconspan" style="color:green;display:none">Available <i class="fa fa-check-circle style="color:green"></i></span>';
+            focusOut = "onfocusout='checkDuplicateUserName(this.id)'";     
+        }
+        
          var input =  '<div class="form-group">'; 
                       input += '<label class="col-sm-3 control-label">' + label + '</label>';
                       input += '<div class="col-sm-5">';
-                      input += '<input type="text" id="'+  name + '" name="'+  name + '" placeholder="' + label + '"  class="form-control">';
-                      input += '</div></div>';
+                      input += '<input type="text" id="'+  name +  '" name="'+  name + '" placeholder="' + label + '"  class="form-control" ' + focusOut + '>';
+                      input += icon;
+                      input += userNameErrLbl;
+                      input += '</div></div>'; 
                       return input;
      }
     function loadForm(){
@@ -121,7 +137,7 @@
                 var emailfield = matchingRules.emailfield; 
                 var datefieldIds = [];
                  if(usernamefield == null){
-                     formHtml = getFieldHtml("UserName","default_username");
+                    formHtml = getFieldHtml("UserName","default_username");
                     var rule = { input: '#default_username', message:'Username is required!', action: 'keyup, blur', rule: 'required'};
                            validationRules.push(rule);
                            hasValidation = true; 
@@ -194,21 +210,34 @@
                        if(type == "Date"){
                            datefieldIds.push(name);
                        }
-                       if(required == 1 || fieldName == usernamefield || fieldName == passwordfield){
+                       var isValid = false;
+                       if((type != "Dropdown" && required == 1) || fieldName == usernamefield || fieldName == passwordfield){
                            var rule = { input: '#' + id, message: name + ' is required!', action: 'keyup, blur', rule: 'required'};
                            validationRules.push(rule);
                            hasValidation = true;
+                           isValid = true;
                        }
                        if(type == "Numeric"){
                            var rule = { input: '#' + id, message:'Numeric only !', action: 'keyup, blur', rule: 'number'};
                            validationRules.push(rule);
                            hasValidation = true;
+                           isValid = true;
                        }
                        if(type == "email"){
                            var rule = { input: '#' + id, message:'Invalid Email !', action: 'keyup, blur', rule: 'email'};
                            validationRules.push(rule);
                            hasValidation = true;
+                           isValid = true;
                        }
+                       
+                       if(!isValid){
+                           var rule = { input: '#' + id, message: name + ' is required!', action: 'keyup, blur', 
+                           rule: function (input, commit) {
+                                return true;     
+                           }  
+                           };
+                           validationRules.push(rule);
+                        }
                     }    
                  });
                 $("#formHeader").html(header);

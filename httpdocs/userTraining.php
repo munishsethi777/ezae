@@ -1,6 +1,8 @@
 <?require("sessionCheckForUser.php");
 require_once('IConstants.inc');
-require_once($ConstantsArray['dbServerUrl'] ."Managers/ModuleMgr.php");?>
+require_once($ConstantsArray['dbServerUrl'] ."Managers/ModuleMgr.php");
+require_once($ConstantsArray['dbServerUrl'] ."Managers/ActivityMgr.php");
+require_once($ConstantsArray['dbServerUrl'] ."Utils/SessionUtil.php5");?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,7 +14,22 @@ require_once($ConstantsArray['dbServerUrl'] ."Managers/ModuleMgr.php");?>
     $learningPlanSeq = $_GET['lpid'];
     $moduleId = $_GET['id'];
     $moduleMgr = ModuleMgr::getInstance();
+    $activityMgr = ActivityMgr::getInstance();
     $module = $moduleMgr->getModule($moduleId);
+    $isFaceAuthentication = $module->getIsFaceAuthentication();
+    $faceAuthentication = "0";
+    
+    if(!empty($isFaceAuthentication)){
+          $sessionUtil = SessionUtil::getInstance();
+          $userSeq = $sessionUtil->getUserLoggedInSeq();
+          $activity = $activityMgr->getActivityByUser($userSeq,$moduleId);
+          $userImageBytes = $activity != null ? $activity->getUserImage() : null;
+          if(!empty($activity) && !empty($userImageBytes) ){
+              $faceAuthentication = "0";    
+          }else{
+              $faceAuthentication = "1";
+          }
+    } 
 ?>
 <script language="javascript">
     var learningPlanSeq = "<?echo $learningPlanSeq;?>";;
@@ -24,26 +41,25 @@ require_once($ConstantsArray['dbServerUrl'] ."Managers/ModuleMgr.php");?>
 
 <div id="wrapper">
         <?include("userMenu.php");?>
-
         <div class="row">
             <div class="col-lg-12">
                 <div class="wrapper wrapper-content">
-
                     <div class="ibox">
                         <div class="ibox-title">
                             <h5><?echo $module->getTitle()?></h5>
-
                         </div>
                         <div class="ibox-content">
                            <?
-                                $learningPlanSeq = 0;
                                 if(isset($_POST['lpid'])){
                                     $learningPlanSeq = $_POST['lpid'];
                                 }
-
                             ?>
                             <script language="javascript">
+                               var flag = "<?echo $faceAuthentication?>";
                                 $(function() {
+                                    if(flag == "1"){
+            location.href = "faceAuthentication.php?moduleSeq=<?echo $moduleId?>&lpSeq=<?echo $learningPlanSeq?>";
+                                    }
                                     var learningPlanSeq = "<?echo $learningPlanSeq;?>";
                                     var loc = window.location.toString(),
                                     params = loc.split('?')[1],

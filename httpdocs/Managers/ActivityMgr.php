@@ -58,6 +58,10 @@ class ActivityMgr{
         $ads->saveActivityData($activity);
 
     }
+    public function saveActivity($activity){
+         $ads = ActivityDataStore::getInstance();
+         $ads->save($activity);    
+    }
     public function exportActivities($lpSeq,$moduleSeq){
         $activityDS = ActivityDataStore::getInstance();
         $companySeq = self::$sessionUtil->getAdminLoggedInCompanySeq();
